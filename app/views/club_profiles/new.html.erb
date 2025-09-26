@@ -1,0 +1,11 @@
+<% content_for :title, "New club profile" %>
+
+<h1>New club profile</h1>
+
+<%= render "form", club_profile: @club_profile %>
+
+<br>
+
+<div>
+  <%= link_to "Back to club profiles", club_profiles_path %>
+</div>

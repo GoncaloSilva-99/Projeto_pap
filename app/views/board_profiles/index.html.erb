@@ -1,0 +1,16 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Board profiles" %>
+
+<h1>Board profiles</h1>
+
+<div id="board_profiles">
+  <% @board_profiles.each do |board_profile| %>
+    <%= render board_profile %>
+    <p>
+      <%= link_to "Show this board profile", board_profile %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New board profile", new_board_profile_path %>

@@ -1,0 +1,2 @@
+module CoachProfilesHelper
+end

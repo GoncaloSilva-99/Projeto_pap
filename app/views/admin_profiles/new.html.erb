@@ -1,0 +1,11 @@
+<% content_for :title, "New admin profile" %>
+
+<h1>New admin profile</h1>
+
+<%= render "form", admin_profile: @admin_profile %>
+
+<br>
+
+<div>
+  <%= link_to "Back to admin profiles", admin_profiles_path %>
+</div>

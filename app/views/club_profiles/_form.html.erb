@@ -1,0 +1,37 @@
+<%= form_with(model: club_profile) do |form| %>
+  <% if club_profile.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(club_profile.errors.count, "error") %> prohibited this club_profile from being saved:</h2>
+
+      <ul>
+        <% club_profile.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :name, style: "display: block" %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :status, style: "display: block" %>
+    <%= form.checkbox :status %>
+  </div>
+
+  <div>
+    <%= form.label :approved_by, style: "display: block" %>
+    <%= form.number_field :approved_by %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,16 @@
+<%= render 'home/navbar_partials/logo_search' %>
+
+<% if user_signed_in? %>
+  <%= render 'home/navbar_partials/notifications' %>
+
+  <%= render 'home/navbar_partials/menu' %>
+
+  <%= render 'home/navbar_partials/user_dropdown' %>
+<% else %>
+  <%= render 'home/navbar_partials/login_buttons' %>
+<% end %>
+
+
+
+
+

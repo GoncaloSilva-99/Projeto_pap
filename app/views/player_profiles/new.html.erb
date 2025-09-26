@@ -1,0 +1,11 @@
+<% content_for :title, "New player profile" %>
+
+<h1>New player profile</h1>
+
+<%= render "form", player_profile: @player_profile %>
+
+<br>
+
+<div>
+  <%= link_to "Back to player profiles", player_profiles_path %>
+</div>

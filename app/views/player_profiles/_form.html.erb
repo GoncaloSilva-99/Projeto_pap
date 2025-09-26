@@ -1,0 +1,57 @@
+<%= form_with(model: player_profile) do |form| %>
+  <% if player_profile.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(player_profile.errors.count, "error") %> prohibited this player_profile from being saved:</h2>
+
+      <ul>
+        <% player_profile.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :name, style: "display: block" %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :birth_date, style: "display: block" %>
+    <%= form.date_field :birth_date %>
+  </div>
+
+  <div>
+    <%= form.label :position, style: "display: block" %>
+    <%= form.text_field :position %>
+  </div>
+
+  <div>
+    <%= form.label :bio, style: "display: block" %>
+    <%= form.textarea :bio %>
+  </div>
+
+  <div>
+    <%= form.label :contact, style: "display: block" %>
+    <%= form.number_field :contact %>
+  </div>
+
+  <div>
+    <%= form.label :parents_contact, style: "display: block" %>
+    <%= form.number_field :parents_contact %>
+  </div>
+
+  <div>
+    <%= form.label :club_profile_id, style: "display: block" %>
+    <%= form.text_field :club_profile_id %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

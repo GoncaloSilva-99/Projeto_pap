@@ -1,0 +1,2 @@
+module ClubProfilesHelper
+end
