@@ -5,8 +5,8 @@ seguir tutorial: https://www.youtube.com/watch?v=0k7cwmx2W2g&t=309s
 ################### INSTALAR GIT #############################
 
 No WSL, correr:
-  sudo apt update
-  sudo apt install git -y
+    sudo apt update
+    sudo apt install git -y
 
 Para ter a certeza que correu tudo bem fazer:
   git --version
