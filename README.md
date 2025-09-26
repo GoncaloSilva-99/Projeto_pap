@@ -55,7 +55,7 @@ Das chaves tá tudo tratado, agora falta dares clone ao projeto, faz:
 Ótimo, tens aí o projeto base
 (eu sei que parece confuso, mas é só uma vez que fazes)
 
----------------------------------------------------ENVIAR ALTERAÇÕES PARA O GIT ---------------------------------------------------
+--------------------------------------------------- ENVIAR ALTERAÇÕES PARA O GIT ---------------------------------------------------
 
 Tas a trabalhar no projeto, quando acabares o que fizeste corre:
 
@@ -74,6 +74,6 @@ Já se for eu a trabalhar no projeto, para tu atualizares o teu projeto com as m
 Simples, tá feito
 
 
---------------------------------------------------- IMPORTANTE---------------------------------------------------
+--------------------------------------------------- IMPORTANTE ---------------------------------------------------
 
 Sempre antes de começares a trabalhar no projeto, faz git pull, posso ter mexido em alguma coisa sem te avisar e assim escusas de tar a mexer num projeto antigo (sem as alterações)
