@@ -41,6 +41,7 @@ gem "thruster", require: false
 # gem "image_processing", "~> 1.2"
 
 gem "tailwindcss-rails"
+gem "devise", "~> 4.9"
 
 
 group :development, :test do
@@ -52,7 +53,7 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
-endd
+end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
@@ -65,4 +66,4 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "devise", "~> 4.9"
+
