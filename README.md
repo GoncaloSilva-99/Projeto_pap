@@ -49,8 +49,26 @@ Das chaves tá tudo tratado, agora falta dares clone ao projeto, faz:
 	git clone git@github.com:GoncaloSilva-99/Projeto_pap.git
 	cd Projeto_pap
 	bundle install
+
+Depois tens de instalar a base de dados, o postgresql, corre:
+
+	sudo apt update
+	sudo apt install postgresql postgresql-contrib libpq-dev -y
+	psql --version
+
+Se ao executar o ultimo comando apareceu uma versão, correu tudo bem
+Depois fazes o seguinte comando para entrar na consola do psql e colocar palavra passe no user default, vai dar jeito
+
+	sudo -u postgres psql
+	ALTER USER postgres WITH PASSWORD 'tua_senha_aqui';
+	\q
+
+Tendo isto feito, basta criares a base de dados e correr as migrations:
+
 	rails db:create
 	rails db:migrate
+
+
 
 Ótimo, tens aí o projeto base
 (eu sei que parece confuso, mas é só uma vez que fazes)
