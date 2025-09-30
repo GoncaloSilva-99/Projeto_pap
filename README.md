@@ -77,3 +77,8 @@ Simples, tá feito
 --------------------------------------------------- IMPORTANTE ---------------------------------------------------
 
 Sempre antes de começares a trabalhar no projeto, faz git pull, posso ter mexido em alguma coisa sem te avisar e assim escusas de tar a mexer num projeto antigo (sem as alterações)
+
+--------------------------------------------------- PROXIMOS ---------------------------------------------------
+
+gunsalu - tratar da página de login / criar conta, front end e back end
+tumates - aprender alguma coisa
