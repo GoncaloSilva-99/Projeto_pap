@@ -48,4 +48,6 @@ class User < ApplicationRecord
     role == "Admin"
   end
 
+  
+
 end

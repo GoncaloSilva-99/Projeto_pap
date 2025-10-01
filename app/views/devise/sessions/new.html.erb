@@ -1,26 +1,113 @@
-<h2>Log in</h2>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="auth-container rounded-xl p-8 sm:p-10 w-full max-w-md">
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-5" }) do |f| %>
+        <!-- Back link -->
+        <a href="#" class="back-link flex items-center text-sm text-gray-500 mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Voltar atrás
+        </a>
+        
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Bem-vindo de volta</h1>
+            <p class="text-gray-500">Entre na sua conta para continuar</p>
+        </div>
+        
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <%= f.email_field :email, autofocus: true, id:"email", class:"input-field w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500", placeholder:"email@gmail.com" %>
+            </div>
+            
+            <div>
+                <div class="flex justify-between items-center mb-1">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
+                    <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500">Esqueceu?</a>
+                </div>
+                <%= f.password_field :password, autocomplete: "current-password", id:"password", class:"input-field w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500 ", placeholder:"••••••••"  %>
+            </div>
+            
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
-
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+            <%= f.submit "Entrar", class:"auth-btn w-full py-3 px-4 rounded-lg text-white font-medium" %>
+            
+            <div class="divider text-sm">ou</div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button type="button" class="flex items-center justify-center py-2 px-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.545,6.477,2.545,12s4.476,10,10,10c8.396,0,10-7.721,10-10c0-0.697-0.074-1.369-0.201-2.008H12.545z"/>
+                    </svg>
+                    Google
+                </button>
+                <button type="button" class="flex items-center justify-center py-2 px-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
+                    </svg>
+                    Facebook
+                </button>
+            </div>
+            
+            <div class="text-center text-sm text-gray-500">
+                Não tem uma conta? <a href="#" class="text-indigo-600 hover:text-indigo-500 font-medium">Criar conta</a>
+    <% end %>
     </div>
-  <% end %>
+</body>
 
-  <div class="actions">
-    <%= f.submit "Log in" %>
-  </div>
-<% end %>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .auth-container {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(249,250,251,0.95) 100%);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        
+        .auth-btn {
+            transition: all 0.3s ease;
+            background-image: linear-gradient(to right, #4f46e5, #7c3aed);
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #64748b;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .divider::before {
+            margin-right: 1rem;
+        }
+        
+        .divider::after {
+            margin-left: 1rem;
+        }
+        
+        .back-link {
+            transition: all 0.2s ease;
+        }
+        
+        .back-link:hover {
+            color: #4f46e5;
+        }
+</style>
 
-<%= render "devise/shared/links" %>
+
+
