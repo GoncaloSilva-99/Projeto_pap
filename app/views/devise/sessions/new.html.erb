@@ -1,53 +1,66 @@
 <body class="min-h-screen flex items-center justify-center p-4">
     <div class="auth-container rounded-xl p-8 sm:p-10 w-full max-w-md">
       <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-5" }) do |f| %>
+        
         <!-- Back link -->
-        <a href="#" class="back-link flex items-center text-sm text-gray-500 mb-6">
+
+        <%= link_to root_path, class: "back-link flex items-center text-sm text-sky-100 mb-6" do %>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Voltar atrás
-        </a>
+        <% end %>
         
+        <!-- Head do bloco -->
+
         <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">Bem-vindo de volta</h1>
-            <p class="text-gray-500">Entre na sua conta para continuar</p>
+            <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "mx-auto mb-4", height: 70, width: 70 %>
+            <p class="text-sky-50/70">Entre na sua conta para continuar</p>
         </div>
-        
+
+            <!-- Email -->
             <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label for="email" class="block text-sm font-medium text-sky-100 mb-1">Email</label>
                 <%= f.email_field :email, autofocus: true, id:"email", class:"input-field w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500", placeholder:"email@gmail.com" %>
             </div>
             
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
-                    <a href="#" class="text-sm text-indigo-600 hover:text-indigo-500">Esqueceu?</a>
-                </div>
-                <%= f.password_field :password, autocomplete: "current-password", id:"password", class:"input-field w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500 ", placeholder:"••••••••"  %>
+            <!-- Password -->
+
+            <div class="relative">
+                <label for="password" class="block text-sm font-medium text-sky-100 mb-1">Password</label>
+                <%= f.password_field :password, autocomplete: "current-password", id:"password", class:"input-field w-full px-4 py-3 pr-10 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500", placeholder:"••••••••"  %>
+                <button type="button" id="toggle-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-indigo-500">
+                    <!-- Olho aberto -->
+                    <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <!-- Olho fechado  -->
+                    <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95M6.634 6.634A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.293 5.032M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
+                    </svg>
+                </button>
             </div>
             
+            <!-- Botão de entrar -->
 
             <%= f.submit "Entrar", class:"auth-btn w-full py-3 px-4 rounded-lg text-white font-medium" %>
             
-            <div class="divider text-sm">ou</div>
+            <div class="divider text-sm "><p class="text-sky-50/70">ou</p></div>
             
-            <div class="grid grid-cols-2 gap-3">
-                <button type="button" class="flex items-center justify-center py-2 px-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                    <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.545,6.477,2.545,12s4.476,10,10,10c8.396,0,10-7.721,10-10c0-0.697-0.074-1.369-0.201-2.008H12.545z"/>
-                    </svg>
-                    Google
-                </button>
-                <button type="button" class="flex items-center justify-center py-2 px-4 border border-gray-200 rounded-lg hover:bg-gray-50">
-                    <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/>
-                    </svg>
-                    Facebook
+            <!-- OAuth -->
+
+            <div class="grid grid-cols-1 gap-3 text-sky-50/70 ">
+                <button type="button" class="w-full flex items-center justify-center py-2 px-4 border border-gray-200 rounded-lg bg-white text-black hover:bg-gray-300 transition">
+                    <svg width="20px" height="20px" class="mr-2" viewBox="-3 0 262 262" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid"><path d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622 38.755 30.023 2.685.268c24.659-22.774 38.875-56.282 38.875-96.027" fill="#4285F4"/><path d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055-34.523 0-63.824-22.773-74.269-54.25l-1.531.13-40.298 31.187-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1" fill="#34A853"/><path d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82 0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602l42.356-32.782" fill="#FBBC05"/><path d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0 79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251" fill="#EB4335" ></svg>
+                      Google
                 </button>
             </div>
+
+            <!-- Link criar conta -->
             
-            <div class="text-center text-sm text-gray-500">
+            <div class="text-center text-sm text-sky-50/70">
                 Não tem uma conta? <a href="#" class="text-indigo-600 hover:text-indigo-500 font-medium">Criar conta</a>
     <% end %>
     </div>
@@ -58,11 +71,11 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            background-color: #393E46;
         }
         
         .auth-container {
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(249,250,251,0.95) 100%);
+            background: #222831;
             backdrop-filter: blur(10px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
@@ -71,6 +84,7 @@
         .auth-btn {
             transition: all 0.3s ease;
             background-image: linear-gradient(to right, #4f46e5, #7c3aed);
+            cursor: pointer;
         }
         
         .auth-btn:hover {
@@ -107,7 +121,39 @@
         .back-link:hover {
             color: #4f46e5;
         }
+
+        button{
+            cursor: pointer;
+        }
+
+        #toggle-password {
+            top: 49px; 
+        }
+
 </style>
+
+<!-- Script de ver passe -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const passwordInput = document.getElementById("password");
+    const toggleBtn = document.getElementById("toggle-password");
+    const eyeOpen = document.getElementById("eye-open");
+    const eyeClosed = document.getElementById("eye-closed");
+
+    toggleBtn.addEventListener("click", function() {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        eyeOpen.classList.add("hidden");
+        eyeClosed.classList.remove("hidden");
+      } else {
+        passwordInput.type = "password";
+        eyeOpen.classList.remove("hidden");
+        eyeClosed.classList.add("hidden");
+      }
+    });
+  });
+</script>
 
 
 
