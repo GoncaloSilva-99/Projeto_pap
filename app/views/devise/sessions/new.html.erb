@@ -1,34 +1,30 @@
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex justify-start justify-center p-4 bg-gray-900">
     <div class="auth-container rounded-xl p-8 sm:p-10 w-full max-w-md">
       <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-5" }) do |f| %>
-        
-        <!-- Back link -->
-
-        <%= link_to root_path, class: "back-link flex items-center text-sm text-sky-100 mb-6" do %>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Voltar atrás
-        <% end %>
         
         <!-- Head do bloco -->
 
         <div class="text-center mb-8">
-            <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "mx-auto mb-4", height: 70, width: 70 %>
-            <p class="text-sky-50/70">Entre na sua conta para continuar</p>
+            <%= link_to root_path do %>
+                <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "mx-auto mb-4", height: 70, width: 70 %>
+            <% end %>
+            <p class="text-sky-50/70">Entrar na sua conta SportX</p>
         </div>
+
+        
 
             <!-- Email -->
             <div>
                 <label for="email" class="block text-sm font-medium text-sky-100 mb-1">Email</label>
-                <%= f.email_field :email, autofocus: true, id:"email", class:"input-field w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500", placeholder:"email@gmail.com" %>
+                <%= f.email_field :email, autofocus: true, id:"email", class:"input-field w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500 bg-black text-white ", placeholder:"email@gmail.com" %>
             </div>
             
             <!-- Password -->
 
             <div class="relative">
                 <label for="password" class="block text-sm font-medium text-sky-100 mb-1">Password</label>
-                <%= f.password_field :password, autocomplete: "current-password", id:"password", class:"input-field w-full px-4 py-3 pr-10 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500", placeholder:"••••••••"  %>
+                
+                <%= f.password_field :password, autocomplete: "current-password", id:"password", class:"input-field w-full px-4 py-3 pr-10 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500 bg-black text-white", placeholder:"••••••••"  %>
                 <button type="button" id="toggle-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-indigo-500">
                     <!-- Olho aberto -->
                     <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,6 +36,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95M6.634 6.634A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.293 5.032M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
                     </svg>
+                    
                 </button>
             </div>
             
@@ -71,13 +68,7 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #393E46;
-        }
-        
-        .auth-container {
-            background: #222831;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
         }
         
         
@@ -85,6 +76,7 @@
             transition: all 0.3s ease;
             background-image: linear-gradient(to right, #4f46e5, #7c3aed);
             cursor: pointer;
+            
         }
         
         .auth-btn:hover {
@@ -98,6 +90,7 @@
             text-align: center;
             color: #64748b;
         }
+
         
         .divider::before,
         .divider::after {
