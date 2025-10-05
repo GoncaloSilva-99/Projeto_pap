@@ -96,6 +96,26 @@ Simples, tá feito
 
 Sempre antes de começares a trabalhar no projeto, faz git pull, posso ter mexido em alguma coisa sem te avisar e assim escusas de tar a mexer num projeto antigo (sem as alterações)
 
+--------------------------------------------------- CRIAR BRANCH ---------------------------------------------------
+
+Uma branch é basicamente um repositorio adicional do projeto, vamos imaginar que estou a fazer testes e quero continuar a fazer testes amanhã, ao invés de dar push a um código instavel que está em fase de testes, faço uma nova branch e consigo guardar as alterações sem mudar o código principal, basta fazer
+
+	git checkout -b nome-branch
+	git add .
+	git commit -m "Descrição das alterações"
+	git push -u origin nome-branch
+
+Para passar isto para outro computador:
+
+	git branch -a (mostra as branches disponiveis)
+	git checkout -b nome-branch-local origin/nome-branch
+
+Para alternar entre branches:
+
+	git checkout nome-branch (main é a principal)
+	
+Para juntar o código da branch ao código principal, faz-se um pull request no github
+
 --------------------------------------------------- PROXIMOS ---------------------------------------------------
 
 gunsalu - tratar da página de login / criar conta, front end e back end
