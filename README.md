@@ -63,11 +63,22 @@ Depois fazes o seguinte comando para entrar na consola do psql e colocar palavra
 	ALTER USER postgres WITH PASSWORD 'tua_senha_aqui';
 	\q
 
+Depois de meter passe, alteramos permissões
+
+	psql --version (vamos necessitar dos primeiros numeros (inteiro))
+	cd /etc/postgresql/versão psql em inteiro/main/
+	sudo nano pg_hba.conf
+
+Depois disto vamos à linha do postgres e mudamos de peer para trust, depois CTRL+0 ENTER CTRL+X para guardar
+para finalizar, fazemos:
+
+	sudo service postgresql restart
+
+
 Tendo isto feito, basta criares a base de dados e correr as migrations:
 
 	rails db:create
 	rails db:migrate
-
 
 
 Ótimo, tens aí o projeto base
