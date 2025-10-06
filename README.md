@@ -107,6 +107,7 @@ Uma branch é basicamente um repositorio adicional do projeto, vamos imaginar qu
 
 Para passar isto para outro computador:
 
+	git fetch origin (atualiza o github com as novas branches)
 	git branch -a (mostra as branches disponiveis)
 	git checkout -b nome-branch-local origin/nome-branch
 
