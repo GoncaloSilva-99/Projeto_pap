@@ -29,8 +29,7 @@
 </div>
         
         <!-- Multi-step Form -->
-        <form class="space-y-4" id="multiStepForm">
-            <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-4", id: "multiStepForm" }) do |f| %>
             <!-- Step 1 -->
             <div class="step-content" data-step="1">
                 <!-- Email -->
@@ -51,46 +50,57 @@
 
                 <div class="pt-4">
                     <button type="button" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30 next-step" data-next="2">
-                        Continue
+                        Continuar
                     </button>
                 </div>
             
-            <% end %>
+            
         </div>
 
             <!-- Step 2 -->
+        <%= f.fields_for :player_profile_attributes do |pp| %>
             <div class="step-content hidden" data-step="2">
-                <!-- Name -->
+                <!-- Nome -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
-                    <input type="text" id="name" class="w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" placeholder="Enter your full name" required>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Nome</label>
+                    <%= pp.text_field :name, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"Insira aqui o seu nome" %>
                 </div>
-                <!-- Date of Birth -->
+                <!-- Data de nascimento -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Date of Birth</label>
-                    <input type="date" id="dob" class="w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" required>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Data de nascimento</label>
+                    <%= pp.date_field :birth_date, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" %>
                 </div>
-                <!-- Country -->
+                <!-- Posição -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Country</label>
-                    <select id="country" class="w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent">
-                        <option value="" disabled selected>Select your country</option>
-                        <option value="US">United States</option>
-                        <option value="UK">United Kingdom</option>
-                        <option value="CA">Canada</option>
-                        <option value="AU">Australia</option>
-                    </select>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Posição</label>
+                    <%= pp.text_field :position, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"Insira aqui a sua posição: p.e Guarda Redes" %>
+                </div>
+                <!-- Biografia -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Biografia</label>
+                    <%= pp.textarea :bio, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"Escreva aqui a sua biografia. Esta informação estará pública no seu perfil" %>
+                </div>
+                <!-- Contacto -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Contacto</label>
+                    <%= pp.number_field :contact, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"Insira aqui o seu seu contacto" %>
+                </div>
+                <!-- Contacto dos pais -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-1">Contacto dos pais</label>
+                    <%= pp.number_field :parents_contact, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"Insira aqui o contacto do carregado de educação (opcional)" %>
                 </div>
 
                 <div class="flex justify-between pt-4">
                     <button type="button" class="w-32 bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg prev-step" data-prev="1">
-                        Back
+                        Voltar
                     </button>
                     <button type="button" class="w-32 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30 next-step" data-next="3">
-                        Continue
+                        Continuar
                     </button>
 </div>
             </div>
+                    
 
             <!-- Step 3 -->
             <div class="step-content hidden" data-step="3">
@@ -113,17 +123,20 @@
 
                 <div class="flex justify-between pt-4">
                     <button type="button" class="w-32 bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg prev-step" data-prev="2">
-                        Back
+                        Voltar
                     </button>
-                    <button type="submit" class="w-32 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30">
-                        Complete
-                    </button>
+                    <%= f.submit "Criar Conta", class:"w-32 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30" %>
+        
 </div>
             </div>
 <div class="text-center text-sm text-gray-400">
                 Already have an account? <a href="#" class="text-primary-500 hover:underline font-medium">Sign in</a>
             </div>
-</form>
+            <% end %>
+
+
+
+
         <!-- Social Login -->
         <div class="mt-8">
             <div class="relative flex py-4 items-center">
@@ -295,5 +308,5 @@ function validateForm() {
             background-color: rgba(99, 102, 241, 0.2);
         }
     </style>
-</body>
-</html>
+
+<% end %>
