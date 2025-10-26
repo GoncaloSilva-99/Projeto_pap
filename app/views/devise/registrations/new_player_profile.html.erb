@@ -30,6 +30,7 @@
         
         <!-- Multi-step Form -->
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-4", id: "multiStepForm" }) do |f| %>
+        <%= f.hidden_field :role, value: "Player" %>
             <!-- Step 1 -->
             <div class="step-content" data-step="1">
                 <!-- Email -->
@@ -101,7 +102,7 @@
 </div>
             </div>
                     
-
+<% end %>
             <!-- Step 3 -->
             <div class="step-content hidden" data-step="3">
                 <!-- Profile Picture -->
@@ -132,9 +133,9 @@
 <div class="text-center text-sm text-gray-400">
                 Already have an account? <a href="#" class="text-primary-500 hover:underline font-medium">Sign in</a>
             </div>
-            <% end %>
+            
 
-
+<% end %>
 
 
         <!-- Social Login -->
@@ -164,97 +165,62 @@
         </div>
     </div>
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const form = document.getElementById('multiStepForm');
-                const steps = document.querySelectorAll('.step');
-                const stepContents = document.querySelectorAll('.step-content');
+document.addEventListener('DOMContentLoaded', function() {
+  const steps = Array.from(document.querySelectorAll('.step'));
+  const stepContents = Array.from(document.querySelectorAll('.step-content'));
+  const progressLine = document.querySelector('.progress-line');
 
-                // Next step button click handler
-                document.querySelectorAll('.next-step').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const currentStep = document.querySelector('.step-content:not(.hidden)').dataset.step;
-                        const nextStep = this.dataset.next;
-                        
-                        // Validate current step before proceeding
-                        if (validateStep(currentStep)) {
-                            document.querySelector(`.step-content[data-step="${currentStep}"]`).classList.add('hidden');
-                            document.querySelector(`.step-content[data-step="${nextStep}"]`).classList.remove('hidden');
-                            // Update progress indicators and line
-                            steps.forEach(step => {
-                                if (parseInt(step.dataset.step) <= parseInt(nextStep)) {
-                                    step.classList.add('active');
-                                    step.querySelector('div').classList.remove('bg-gray-700', 'text-gray-400');
-                                    step.querySelector('div').classList.add('bg-primary-500', 'text-white');
-                                } else {
-                                    step.classList.remove('active');
-                                    step.querySelector('div').classList.add('bg-gray-700', 'text-gray-400');
-                                    step.querySelector('div').classList.remove('bg-primary-500', 'text-white');
-                                }
-                            });
-                            
-                            // Update progress line
-                            const progressLine = document.querySelector('.progress-line');
-                            const totalSteps = steps.length;
-                            const completedSteps = parseInt(nextStep) - 1;
-                            const progressPercentage = (completedSteps / (totalSteps - 1)) * 100;
-                            progressLine.style.width = `${progressPercentage}%`;
-}
-                    });
-                });
+  function showStep(stepNum) {
+    // mostrar conteúdo
+    stepContents.forEach(el => el.classList.add('hidden'));
+    const content = document.querySelector(`.step-content[data-step="${stepNum}"]`);
+    if (content) content.classList.remove('hidden');
 
-                // Previous step button click handler
-                document.querySelectorAll('.prev-step').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const currentStep = document.querySelector('.step-content:not(.hidden)').dataset.step;
-                        const prevStep = this.dataset.prev;
-                        
-                        document.querySelector(`.step-content[data-step="${currentStep}"]`).classList.add('hidden');
-                        document.querySelector(`.step-content[data-step="${prevStep}"]`).classList.remove('hidden');
-                            // Update progress indicators and line
-                            steps.forEach(step => {
-                                if (parseInt(step.dataset.step) <= parseInt(prevStep)) {
-                                    step.classList.add('active');
-                                    step.querySelector('div').classList.remove('bg-gray-700', 'text-gray-400');
-                                    step.querySelector('div').classList.add('bg-primary-500', 'text-white');
-                                } else {
-                                    step.classList.remove('active');
-                                    step.querySelector('div').classList.add('bg-gray-700', 'text-gray-400');
-                                    step.querySelector('div').classList.remove('bg-primary-500', 'text-white');
-                                }
-                            });
-                            
-                            // Update progress line
-                            const progressLine = document.querySelector('.progress-line');
-                            const totalSteps = steps.length;
-                            const completedSteps = parseInt(prevStep) - 1;
-                            const progressPercentage = (completedSteps / (totalSteps - 1)) * 100;
-                            progressLine.style.width = `${progressPercentage}%`;
+    // actualizar indicadores
+    steps.forEach(s => {
+      const n = parseInt(s.dataset.step, 10);
+      const circle = s.querySelector('div');
+      if (n <= stepNum) {
+        s.classList.add('active');
+        if (circle) {
+          circle.classList.remove('bg-gray-700','text-gray-400');
+          circle.classList.add('bg-primary-500','text-white');
+        }
+      } else {
+        s.classList.remove('active');
+        if (circle) {
+          circle.classList.add('bg-gray-700','text-gray-400');
+          circle.classList.remove('bg-primary-500','text-white');
+        }
+      }
+    });
+
+    // actualizar linha de progresso
+    const totalSteps = steps.length;
+    const completed = Math.max(0, stepNum - 1);
+    const percent = (completed / (totalSteps - 1)) * 100;
+    if (progressLine) progressLine.style.width = `${percent}%`;
+  }
+
+  // inicializar
+  showStep(1);
+
+  // next / prev handlers (buttons already são type="button")
+  document.querySelectorAll('.next-step').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const next = parseInt(btn.dataset.next, 10);
+      if (!isNaN(next)) showStep(next);
+    });
+  });
+
+  document.querySelectorAll('.prev-step').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const prev = parseInt(btn.dataset.prev, 10);
+      if (!isNaN(prev)) showStep(prev);
+    });
+  });
 });
-                });
-
-                // Form submission
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    if (validateForm()) {
-                        // Form is valid, submit data
-                        console.log('Form submitted successfully');
-                        alert('Account created successfully!');
-                        // Here you would typically send data to server
-                    }
-                });
-                function validateStep(step) {
-                    // Skip validation as requested
-                    return true;
-                }
-function validateForm() {
-                    if (!document.getElementById('terms').checked) {
-                        alert('You must agree to the Terms of Service and Privacy Policy');
-                        return false;
-                    }
-                    return true;
-                }
-            });
-        </script>
+</script>
         <style>
             .step.active p {
                 color: #6366f1;
@@ -309,4 +275,4 @@ function validateForm() {
         }
     </style>
 
-<% end %>
+
