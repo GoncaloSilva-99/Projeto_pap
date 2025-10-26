@@ -30,6 +30,16 @@
         
         <!-- Multi-step Form -->
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-4", id: "multiStepForm" }) do |f| %>
+        <% if resource.errors.any? %>
+    <div class="mb-4 text-red-400 text-sm">
+      <ul>
+        <% resource.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+        
         <%= f.hidden_field :role, value: "Player" %>
             <!-- Step 1 -->
             <div class="step-content" data-step="1">
@@ -59,7 +69,7 @@
         </div>
 
             <!-- Step 2 -->
-        <%= f.fields_for :player_profile_attributes do |pp| %>
+        <%= f.fields_for :player_profile do |pp| %>
             <div class="step-content hidden" data-step="2">
                 <!-- Nome -->
                 <div>
@@ -106,21 +116,6 @@
             <!-- Step 3 -->
             <div class="step-content hidden" data-step="3">
                 <!-- Profile Picture -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Profile Picture</label>
-                    <input type="file" id="profilePicture" class="w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary-500 file:text-white" accept="image/*">
-                </div>
-                <!-- Subscription -->
-                <div class="flex items-center">
-                    <input id="subscribe" type="checkbox" class="h-4 w-4 text-primary-500 focus:ring-primary-500 border-gray-600 rounded bg-gray-800">
-                    <label for="subscribe" class="ml-2 block text-sm text-gray-300">Subscribe to newsletter</label>
-                </div>
-
-                <!-- Terms -->
-                <div class="flex items-start">
-                    <input id="terms" type="checkbox" class="h-4 w-4 text-primary-500 focus:ring-primary-500 border-gray-600 rounded bg-gray-800 mt-1" required>
-                    <label for="terms" class="ml-2 block text-sm text-gray-300">I agree to the <a href="#" class="text-primary-500 hover:underline">Terms of Service</a> and <a href="#" class="text-primary-500 hover:underline">Privacy Policy</a></label>
-                </div>
 
                 <div class="flex justify-between pt-4">
                     <button type="button" class="w-32 bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg prev-step" data-prev="2">
