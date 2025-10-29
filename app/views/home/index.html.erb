@@ -1,3 +1,6 @@
+<div>
+
+<!-- Botões Testes -->
 <% if !user_signed_in? %>
     <%= link_to "Login", new_user_session_path  %>
 <% else %>
@@ -10,3 +13,314 @@
 
 <br><br><br>
 <%= link_to "Escolher Jogador", new_player_profile_registration_path, class: "mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition" %>
+
+</div>
+
+<br><br><br>    
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SportX - Club Management</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+<script src="https://unpkg.com/feather-icons"></script>
+<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<style>
+    .news-scroll {
+        animation: scroll 30s linear infinite;
+    }
+    @keyframes scroll {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .card-hover:hover {
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+    }
+    #search-bar {
+        transition: all 0.3s ease;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+    }
+    #search-bar.active {
+        max-width: 300px;
+        opacity: 1;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+</style>
+
+</head>
+
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-gray-800 py-4 px-6 shadow-lg">
+        <div class="container mx-auto flex items-center justify-between">
+            <!-- Logo and Search -->
+            <div class="flex items-center space-x-6">
+                <div class="flex items-center">
+                    <div class="bg-blue-500 w-8 h-8 rounded-md flex items-center justify-center">
+                        <i data-feather="activity" class="text-white"></i>
+                    </div>
+                    <span class="ml-2 font-bold text-xl">SportX</span>
+                </div>
+                <div class="relative flex items-center">
+                    <button id="search-button" class="p-2 rounded-full hover:bg-gray-700">
+                        <i data-feather="search"></i>
+                    </button>
+                    <input type="text" id="search-bar" placeholder="Search..." 
+                           class="bg-gray-700 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <!-- Center Links -->
+            <div class="hidden md:flex space-x-6">
+                <a href="#" class="hover:text-blue-400 transition">Dashboard</a>
+                <a href="#" class="hover:text-blue-400 transition">Clubs</a>
+                <a href="#" class="hover:text-blue-400 transition">Players</a>
+                <a href="#" class="hover:text-blue-400 transition">Schedule</a>
+                <a href="#" class="hover:text-blue-400 transition">Analytics</a>
+            </div>
+
+            <!-- Right Side -->
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md flex items-center space-x-1">
+                        <span>Apps</span>
+                        <i data-feather="chevron-down" class="w-4 h-4"></i>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden">
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-700">Team Management</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-700">Player Stats</a>
+                        <a href="#" class="block px-4 py-2 hover:bg-gray-700">Match Planner</a>
+                    </div>
+                </div>
+                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                    <i data-feather="user"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- News Ticker -->
+    <div class="bg-gray-800 py-2 px-6 overflow-hidden" id="news-ticker">
+        <div class="container mx-auto relative">
+            <div class="absolute left-0 top-0 bottom-0 flex items-center z-10">
+                <span class="bg-red-500 px-2 py-1 rounded text-xs font-bold">LATEST</span>
+            </div>
+            <div class="flex whitespace-nowrap news-scroll">
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/1" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">New tournament announced:</span>
+                    <span class="text-gray-400 ml-2">Regional Championship registration now open!</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/2" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">System Update:</span>
+                    <span class="text-gray-400 ml-2">New analytics dashboard now available</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/3" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">Training Tip:</span>
+                    <span class="text-gray-400 ml-2">Improve your endurance with these exercises</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/4" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">Player Spotlight:</span>
+                    <span class="text-gray-400 ml-2">Meet this month's rising star athlete</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .news-scroll {
+            /* Garante que a animação funciona no news-scroll */
+            animation: scroll 30s linear infinite; 
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            /* Se o conteúdo estiver DUPLICADO, -50% faz com que a primeira metade saia da vista e a segunda entre */
+            100% { transform: translateX(-50%); } 
+        }
+        .card-hover:hover {
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        #search-bar {
+            transition: all 0.3s ease;
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+
+        #search-bar.active {
+            max-width: 800px;
+            opacity: 1;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        /* container do ticker precisa de posição relativa para o gradiente de corte */
+        #news-ticker .container {
+            position: relative;
+        }
+
+        /* garante que as notícias iniciem logo após o span LATEST */
+        #news-ticker .news-scroll {
+            padding-left: 4rem; /* equivalente a pl-16 */
+        }
+
+        /* garante que o LATEST fique por cima do texto */
+        #news-ticker .absolute.left-0 {
+            z-index: 10;
+        }
+
+        #news-ticker .container::before {
+            content: "";
+            position: absolute;
+            left: -200px;
+            top: 0;
+            bottom: 0;
+            width: 260px; /* ajustar conforme necessário */
+            background: linear-gradient(to right, rgba(31, 41, 55, 0) 0%, rgba(31, 41, 55, 1) 50%, rgba(31, 41, 55, 1) 100%);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* area de corte / fade à direita para desaparecer debaixo do ícone user */
+        #news-ticker .container::after {
+            content: "";
+            position: absolute;
+            right: -100px;
+            top: 0;
+            bottom: 0;
+            width: 260px; /* ajustar conforme necessário */
+            background: linear-gradient(to right, rgba(31, 41, 55, 0) 0%, rgba(31, 41, 55, 1) 50%, rgba(31, 41, 55, 1) 100%);
+            z-index: 10;
+            pointer-events: none;
+        }
+    </style>
+
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        // inicializa ícones
+        if (typeof feather !== 'undefined') feather.replace();
+
+        const searchButton = document.getElementById('search-button');
+        const searchBar = document.getElementById('search-bar');
+        const navContainer = document.querySelector('nav .container');
+
+        if (!searchBar || !navContainer) return;
+
+        // right side (botões) — usado para calcular espaço disponível
+        const rightSideSelector = '.flex.items-center.space-x-4';
+        function getRightSideEl() {
+            return navContainer.querySelector(rightSideSelector);
+        }
+
+        // ajusta largura da search bar quando ativa / ao digitar / resize
+        function adjustSearchWidth() {
+            if (!searchBar.classList.contains('active')) {
+            searchBar.style.width = '';
+            return;
+            }
+
+            // largura máxima desejada
+            const MAX_WIDTH = 500;
+            const MIN_ACTIVE = 300;
+
+            const inputRect = searchBar.getBoundingClientRect();
+            const rightEl = getRightSideEl();
+            let available = window.innerWidth - inputRect.left - 16; // fallback: até borda da viewport
+
+            if (rightEl) {
+            const rightRect = rightEl.getBoundingClientRect();
+            // espaço até o início dos botões - pequeno gap
+            available = Math.max(80, rightRect.left - inputRect.left - 12);
+            }
+
+            // basear expansão no conteúdo: usamos scrollWidth (texto dentro) + padding
+            const contentWidth = Math.max(searchBar.scrollWidth, 0) + 24; // ~padding
+            const desired = Math.max(MIN_ACTIVE, Math.min(MAX_WIDTH, contentWidth, available));
+
+            searchBar.style.width = desired + 'px';
+        }
+
+        // toggle: mantém comportamento de empurrar elementos (não absolute) e define largura inicial 300px
+        if (searchButton) {
+            searchButton.addEventListener('click', () => {
+            const nowActive = searchBar.classList.toggle('active');
+            if (nowActive) {
+                // largura inicial ao ativar
+                searchBar.style.width = '300px';
+                // foco e ajuste imediato (depois do reflow)
+                setTimeout(() => {
+                searchBar.focus();
+                adjustSearchWidth();
+                }, 0);
+            } else {
+                // reset quando fechar
+                searchBar.style.width = '';
+            }
+            });
+        }
+
+        // redimensionar conforme o utilizador escreve — só aumenta quando insere carácter e diminui ao apagar
+        (function() {
+            let prevLen = searchBar.value ? searchBar.value.length : 0;
+
+            searchBar.addEventListener('input', (e) => {
+            const len = searchBar.value.length;
+            if (len === prevLen) return;
+
+            // se inseriu caracteres -> pode aumentar; se apagou -> pode diminuir
+            adjustSearchWidth();
+            prevLen = len;
+            });
+
+            // sincroniza prevLen ao abrir/fechar
+            if (searchButton) {
+            searchButton.addEventListener('click', () => {
+                setTimeout(() => {
+                prevLen = searchBar.classList.contains('active') ? (searchBar.value ? searchBar.value.length : 0) : 0;
+                }, 0);
+            });
+            }
+
+            // resize continua a recalcular (debounced)
+            window.addEventListener('resize', () => {
+            clearTimeout(window.__searchResizeTimer);
+            window.__searchResizeTimer = setTimeout(adjustSearchWidth, 120);
+            });
+        })();
+
+        // inicial
+        adjustSearchWidth();
+        });
+    </script>
+</body>
+
+
+
+
+
+
+
+
+
