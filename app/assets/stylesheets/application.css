@@ -1,84 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+*{
+  font-family: 'Inter', sans-serif;
+  
+}
 
-.btn-42,
-.btn-42 *,
-.btn-42 :after,
-.btn-42 :before,
-.btn-42:after,
-.btn-42:before {
-  border: 0 solid;
-  box-sizing: border-box;
+input[type="password"]::-ms-reveal {
+    display: none;
 }
-.btn-42 {
-  -webkit-tap-highlight-color: 
-transparent;
-  -webkit-appearance: button;
-  background-color: 
-#f72323ff;
-  background-image: none;
-  color: 
-#f7f7f7ff;
-  cursor: pointer;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
-    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-  font-size: 80%;
-  line-height: 1.5;
-  margin: 0;
-  -webkit-mask-image: -webkit-radial-gradient(#000, #fff);
+
+.login-btn {
+    transition: all 0.3s ease;
+    background-image: linear-gradient(to right, #4f46e5, #7c3aed);
+    cursor: pointer;
+    
 }
-.btn-42:disabled {
-  cursor: default;
+
+.login-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
-.btn-42:-moz-focusring {
-  outline: auto;
-}
-.btn-42 svg {
-  display: block;
-  vertical-align: middle;
-  height: 50px;
-  width: 20px;
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #64748b;
 }
 
 
-.btn-42 [hidden] {
-  display: none;
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #e2e8f0;
 }
-.btn-42 {
-  border-radius: 999px;
-  box-sizing: border-box;
-  display: flex;
-  font-weight: 900;
-  -webkit-mask-image: none;
-  padding: 1rem 1.8rem;
-  position: relative;
-  text-transform: uppercase;
-  align-items: center;
-  height: 50px;
-  width: auto;
-  gap: 8px;
+
+.divider::before {
+    margin-right: 1rem;
 }
-.btn-42 span {
-  color: aliceblue;
-}
-.btn-42:before {
-  --thickness: 4px;
-  border: var(--thickness) solid 
-#fff;
-  border-radius: 999px;
-  content: "";
-  inset: calc(var(--thickness) * -1);
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  transform: scale(1.3);
-  transition: transform 0.2s, opacity 0.2s;
-}
-.btn-42:hover:before {
-  opacity: 1;
-  transform: scale(1);
-}
-.btn-42:hover {
-  background-color: 
-transparent;
+
+.divider::after {
+    margin-left: 1rem;
 }

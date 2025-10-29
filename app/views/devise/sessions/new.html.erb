@@ -3,7 +3,7 @@
       <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-5" }) do |f| %>
         
         <!-- Header-->
-
+        <h1 class="text-white bold">CENTRAR TUDO COMO NO NEW_PLAYER_PROFILE</h1>
         <div class="text-center mb-8">
             <%= link_to root_path do %>
                 <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "mx-auto mb-4", height: 70, width: 70 %>
@@ -15,7 +15,7 @@
             <!-- Email -->
             <div>
                 <label for="email" class="block text-sm font-medium text-sky-100 mb-1">Email</label>
-                <%= f.email_field :email, autofocus: true, id:"email", class:"input-field w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500 bg-black text-white ", placeholder:"email@gmail.com" %>
+                <%= f.email_field :email, autofocus: true, id:"email", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"email@gmail.com" %>
             </div>
             
             <!-- Password -->
@@ -23,7 +23,7 @@
             <div class="relative">
                 <label for="password" class="block text-sm font-medium text-sky-100 mb-1">Password</label>
                 
-                <%= f.password_field :password, autocomplete: "current-password", id:"password", class:"input-field w-full px-4 py-3 pr-10 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500 bg-black text-white", placeholder:"••••••••"  %>
+                <%= f.password_field :password, autocomplete: "current-password", id:"password", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"••••••••"  %>
                 <button type="button" id="toggle-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-indigo-500">
                     <!-- Olho aberto -->
                     <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,7 +41,7 @@
             
             <!-- Botão de entrar -->
 
-            <%= f.submit "Entrar", class:"auth-btn w-full py-3 px-4 rounded-lg text-white font-medium" %>
+            <%= f.submit "Entrar", class:"login-btn w-full py-3 px-4 rounded-lg text-white font-medium" %>
             
             <div class="divider text-sm "><p class="text-sky-50/70">ou</p></div>
             
@@ -62,69 +62,7 @@
     </div>
 </body>
 
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            
-        }
-        
-        
-        .auth-btn {
-            transition: all 0.3s ease;
-            background-image: linear-gradient(to right, #4f46e5, #7c3aed);
-            cursor: pointer;
-            
-        }
-        
-        .auth-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: #64748b;
-        }
-
-        
-        .divider::before,
-        .divider::after {
-            content: "";
-            flex: 1;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .divider::before {
-            margin-right: 1rem;
-        }
-        
-        .divider::after {
-            margin-left: 1rem;
-        }
-        
-        .back-link {
-            transition: all 0.2s ease;
-        }
-        
-        .back-link:hover {
-            color: #4f46e5;
-        }
-
-        button{
-            cursor: pointer;
-        }
-
-        #toggle-password {
-            top: 49px; 
-        }
-
-</style>
-
-<!-- Script de ver passe -->
+<!-- JS de mostrar password -->
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -146,6 +84,14 @@
     });
   });
 </script>
+
+<!-- CSS para alinhar botão de ver password -->
+
+<style>
+    #toggle-password {
+        top: 49px; 
+    }
+</style>
 
 
 
