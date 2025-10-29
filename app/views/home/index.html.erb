@@ -219,82 +219,84 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-        // inicializa ícones
         if (typeof feather !== 'undefined') feather.replace();
 
         const searchButton = document.getElementById('search-button');
         const searchBar = document.getElementById('search-bar');
         const navContainer = document.querySelector('nav .container');
-
         if (!searchBar || !navContainer) return;
 
-        // right side (botões) — usado para calcular espaço disponível
         const rightSideSelector = '.flex.items-center.space-x-4';
-        function getRightSideEl() {
-            return navContainer.querySelector(rightSideSelector);
+        function getRightSideEl() { return navContainer.querySelector(rightSideSelector); }
+
+        // canvas-based text measurement (more reliable than scrollWidth)
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function measureTextWidth(text) {
+            const style = window.getComputedStyle(searchBar);
+            // use same font settings as the input
+            ctx.font = style.font || `${style.fontSize} ${style.fontFamily}`;
+            return Math.ceil(ctx.measureText(text || '').width);
         }
 
-        // ajusta largura da search bar quando ativa / ao digitar / resize
+        function parsePx(v) { return v ? parseFloat(v.replace('px','')) : 0; }
+
         function adjustSearchWidth() {
             if (!searchBar.classList.contains('active')) {
             searchBar.style.width = '';
             return;
             }
 
-            // largura máxima desejada
             const MAX_WIDTH = 500;
             const MIN_ACTIVE = 300;
 
             const inputRect = searchBar.getBoundingClientRect();
             const rightEl = getRightSideEl();
-            let available = window.innerWidth - inputRect.left - 16; // fallback: até borda da viewport
-
+            let available = window.innerWidth - inputRect.left - 16;
             if (rightEl) {
             const rightRect = rightEl.getBoundingClientRect();
-            // espaço até o início dos botões - pequeno gap
             available = Math.max(80, rightRect.left - inputRect.left - 12);
             }
 
-            // basear expansão no conteúdo: usamos scrollWidth (texto dentro) + padding
-            const contentWidth = Math.max(searchBar.scrollWidth, 0) + 24; // ~padding
-            const desired = Math.max(MIN_ACTIVE, Math.min(MAX_WIDTH, contentWidth, available));
+            // measure actual text width using canvas for reliable increase/decrease
+            const text = searchBar.value || searchBar.placeholder || '';
+            const textWidth = measureTextWidth(text);
 
+            // include horizontal paddings + small buffer
+            const cs = window.getComputedStyle(searchBar);
+            const paddingLR = parsePx(cs.paddingLeft) + parsePx(cs.paddingRight);
+            const extraBuffer = 24; // caret, spacing
+            const contentWidth = textWidth + paddingLR + extraBuffer;
+
+            const desired = Math.max(MIN_ACTIVE, Math.min(MAX_WIDTH, contentWidth, available));
             searchBar.style.width = desired + 'px';
         }
 
-        // toggle: mantém comportamento de empurrar elementos (não absolute) e define largura inicial 300px
         if (searchButton) {
             searchButton.addEventListener('click', () => {
             const nowActive = searchBar.classList.toggle('active');
             if (nowActive) {
-                // largura inicial ao ativar
                 searchBar.style.width = '300px';
-                // foco e ajuste imediato (depois do reflow)
-                setTimeout(() => {
-                searchBar.focus();
-                adjustSearchWidth();
-                }, 0);
+                setTimeout(() => { searchBar.focus(); adjustSearchWidth(); }, 0);
             } else {
-                // reset quando fechar
                 searchBar.style.width = '';
             }
             });
         }
 
-        // redimensionar conforme o utilizador escreve — só aumenta quando insere carácter e diminui ao apagar
+        // input handling: increase when typing, decrease when deleting (uses real text measurement)
         (function() {
             let prevLen = searchBar.value ? searchBar.value.length : 0;
 
-            searchBar.addEventListener('input', (e) => {
+            searchBar.addEventListener('input', () => {
             const len = searchBar.value.length;
             if (len === prevLen) return;
-
-            // se inseriu caracteres -> pode aumentar; se apagou -> pode diminuir
+            // always recalc based on actual text width (so backspace will shrink)
             adjustSearchWidth();
             prevLen = len;
             });
 
-            // sincroniza prevLen ao abrir/fechar
             if (searchButton) {
             searchButton.addEventListener('click', () => {
                 setTimeout(() => {
@@ -303,14 +305,13 @@
             });
             }
 
-            // resize continua a recalcular (debounced)
             window.addEventListener('resize', () => {
             clearTimeout(window.__searchResizeTimer);
             window.__searchResizeTimer = setTimeout(adjustSearchWidth, 120);
             });
         })();
 
-        // inicial
+        // initial
         adjustSearchWidth();
         });
     </script>
