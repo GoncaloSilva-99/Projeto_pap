@@ -79,11 +79,11 @@
 
             <!-- Center Links -->
             <div class="hidden md:flex space-x-6">
-                <a href="#" class="hover:text-blue-400 transition">Dashboard</a>
-                <a href="#" class="hover:text-blue-400 transition">Clubs</a>
-                <a href="#" class="hover:text-blue-400 transition">Players</a>
-                <a href="#" class="hover:text-blue-400 transition">Schedule</a>
-                <a href="#" class="hover:text-blue-400 transition">Analytics</a>
+                <a href="#" class="hover:text-orange-400 transition">Início</a>
+                <a href="#" class="hover:text-orange-400 transition">Clubes</a>
+                <a href="#" class="hover:text-orange-400 transition">Jogadores</a>
+                <a href="#" class="hover:text-orange-400 transition">Agenda</a>
+                <a href="#" class="hover:text-orange-400 transition">Análises</a>
             </div>
 
             <!-- Right Side -->
@@ -108,7 +108,7 @@
 
 
     <!-- News Ticker -->
-    <div class="bg-gray-800 py-2 px-6 overflow-hidden" id="news-ticker">
+    <div class="bg-gray-800 py-2 px-6 overflow-hidden bg-gradient-to-b from-gray-900 to-gray-800" id="news-ticker">
         <div class="container mx-auto relative">
             <div class="absolute left-0 top-0 bottom-0 flex items-center z-10">
                 <span class="bg-red-500 px-2 py-1 rounded text-xs font-bold">LATEST</span>
@@ -145,7 +145,6 @@
             </div>
         </div>
     </div>
-
     <style>
         .news-scroll {
             /* Garante que a animação funciona no news-scroll */
@@ -195,10 +194,11 @@
             content: "";
             position: absolute;
             left: -210px;
-            top: 0;
+            top: -7px;
             bottom: 0;
-            width: 260px; /* ajustar conforme necessário */
-            background: linear-gradient(to right, rgba(31, 41, 55, 0) 0%, rgba(31, 41, 55, 1) 50%, rgba(31, 41, 55, 1) 100%);
+            height: 40px;
+            width: 260px;
+            background-image: linear-gradient(to bottom, #111827 0%, #1f2937 100%);
             z-index: 10;
             pointer-events: none;
         }
@@ -208,96 +208,131 @@
             content: "";
             position: absolute;
             right: -100px;
-            top: 0;
+            top: -7px;
             bottom: 0;
-            width: 260px; /* ajustar conforme necessário */
-            background: linear-gradient(to right, rgba(31, 41, 55, 0) 0%, rgba(31, 41, 55, 1) 50%, rgba(31, 41, 55, 1) 100%);
+            height: 40px;
+            width: 119px; /* ajustar conforme necessário */
+            background-image: linear-gradient(to bottom, #111827 0%, #1f2937 100%);
             z-index: 10;
             pointer-events: none;
         }
-    </style>
-
-    
+    </style>    
     <script>
+        // Espera que o DOM(Document Object Model — representação em memória da página HTML/XML que o browser cria)
+        // esteja totalmente carregado antes de executar a função
         document.addEventListener('DOMContentLoaded', () => {
+        // Se a biblioteca feather estiver disponível, substitui os ícones <i> pelo SVG correspondente
         if (typeof feather !== 'undefined') feather.replace();
 
+        // Obtém o botão que activa a pesquisa pelo id
         const searchButton = document.getElementById('search-button');
+        // Obtém o campo de input da pesquisa pelo id
         const searchBar = document.getElementById('search-bar');
+        // Obtém o container do nav para cálculos de layout
         const navContainer = document.querySelector('nav .container');
+        // Se não existir a searchBar ou o navContainer, sai da função (não prossegue)
         if (!searchBar || !navContainer) return;
 
+        // Seletor do grupo de elementos do lado direito do nav (usado para calcular espaço)
         const rightSideSelector = '.flex.items-center.space-x-4';
+        // Função que devolve o elemento do lado direito dentro do nav
         function getRightSideEl() { return navContainer.querySelector(rightSideSelector); }
 
-        // canvas-based text measurement (more reliable than scrollWidth)
+        // Cria um elemento canvas(área bitmap onde se pode desenhar dinamicamente com JavaScript)
+        // para medir a largura do texto
         const canvas = document.createElement('canvas');
+        // Obtém o contexto 2D do canvas para medir texto
         const ctx = canvas.getContext('2d');
 
+        // Função que mede a largura em pixels de um texto dado usando o canvas
         function measureTextWidth(text) {
+            // Obtém os estilos computados do input para usar a mesma fonte na medição
             const style = window.getComputedStyle(searchBar);
-            // use same font settings as the input
+            // Define a fonte do contexto (usa style.font se existir, senão composição de tamanho e família)
             ctx.font = style.font || `${style.fontSize} ${style.fontFamily}`;
+            // Mede a largura do texto (ou string vazia) e arredonda para cima
             return Math.ceil(ctx.measureText(text || '').width);
         }
 
+        // Função utilitária que converte "NNpx" para número (float)
         function parsePx(v) { return v ? parseFloat(v.replace('px','')) : 0; }
 
+        // Função que ajusta dinamicamente a largura da barra de pesquisa
         function adjustSearchWidth() {
+            // Se a barra de pesquisa não tiver a classe 'active', remove a largura inline e sai
             if (!searchBar.classList.contains('active')) {
             searchBar.style.width = '';
             return;
             }
 
+            // Largura máxima permitida em px
             const MAX_WIDTH = 500;
+            // Largura mínima quando activa em px
             const MIN_ACTIVE = 300;
 
+            // Rect do input para cálculos de posição
             const inputRect = searchBar.getBoundingClientRect();
+            // Elemento do lado direito (botões) — pode ser null
             const rightEl = getRightSideEl();
+            // Espaço disponível até à borda da viewport como fallback
             let available = window.innerWidth - inputRect.left - 16;
+            // Se existir o elemento do lado direito, recalcula o espaço disponível até ao início desse elemento
             if (rightEl) {
             const rightRect = rightEl.getBoundingClientRect();
             available = Math.max(80, rightRect.left - inputRect.left - 12);
             }
 
-            // measure actual text width using canvas for reliable increase/decrease
+            // Texto actual (valor do input ou placeholder)
             const text = searchBar.value || searchBar.placeholder || '';
+            // Largura do texto medida via canvas
             const textWidth = measureTextWidth(text);
 
-            // include horizontal paddings + small buffer
+            // Inclui paddings horizontais e um buffer extra para o caret/espacamento
             const cs = window.getComputedStyle(searchBar);
             const paddingLR = parsePx(cs.paddingLeft) + parsePx(cs.paddingRight);
-            const extraBuffer = 24; // caret, spacing
+            const extraBuffer = 24; // espaço extra para caret e folga
             const contentWidth = textWidth + paddingLR + extraBuffer;
 
+            // Calcula a largura desejada respeitando mínimo, máximo e espaço disponível
             const desired = Math.max(MIN_ACTIVE, Math.min(MAX_WIDTH, contentWidth, available));
+            // Aplica a largura calculada ao input
             searchBar.style.width = desired + 'px';
         }
 
+        // Se o botão de pesquisa existir, adiciona o listener de clique
         if (searchButton) {
             searchButton.addEventListener('click', () => {
+            // Alterna a classe 'active' e guarda o estado resultante
             const nowActive = searchBar.classList.toggle('active');
+            // Se ficou activa, define uma largura inicial e foca no input (depois do reflow)
             if (nowActive) {
                 searchBar.style.width = '300px';
                 setTimeout(() => { searchBar.focus(); adjustSearchWidth(); }, 0);
             } else {
+                // Se foi desactivada, remove a largura inline
                 searchBar.style.width = '';
             }
             });
         }
 
-        // input handling: increase when typing, decrease when deleting (uses real text measurement)
+        // IIFE que gere eventos de input e resize sem poluir o escopo global
         (function() {
+            // Guarda o comprimento anterior do valor do input para detecção de mudanças
             let prevLen = searchBar.value ? searchBar.value.length : 0;
 
+            // Ao alterar o conteúdo do input
             searchBar.addEventListener('input', () => {
+            // Obtém o novo comprimento do texto
             const len = searchBar.value.length;
+            // Se o comprimento não mudou, não faz nada
             if (len === prevLen) return;
-            // always recalc based on actual text width (so backspace will shrink)
+            // Recalcula a largura com base no texto actual (assim backspace também reduz)
             adjustSearchWidth();
+            // Actualiza o comprimento anterior
             prevLen = len;
             });
 
+            // Ao clicar no botão de pesquisa, sincroniza prevLen após o reflow
             if (searchButton) {
             searchButton.addEventListener('click', () => {
                 setTimeout(() => {
@@ -306,16 +341,181 @@
             });
             }
 
+            // Ao redimensionar a janela, debounce e recalcula a largura
             window.addEventListener('resize', () => {
             clearTimeout(window.__searchResizeTimer);
             window.__searchResizeTimer = setTimeout(adjustSearchWidth, 120);
             });
         })();
 
-        // initial
+        // Chamada inicial para ajustar a largura quando a página carrega
         adjustSearchWidth();
         });
     </script>
+
+    <!-- Hero Section -->
+    <section class="py-16 px-6 bg-gradient-to-b from-gray-900 to-gray-800">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                        Eleva as Estatísticas <span class="text-blue-400"><br> Do Teu Clube</span>
+                    </h1>
+                    <p class="text-xl text-gray-400 mb-8">
+                        A plataforma completa para clubes de futebol e andebol gerirem jogadores, calendários e análises de desempenho.
+                    </p>
+                    <div class="flex space-x-4">
+                        <button class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-md font-medium">
+                            Começa Já
+                        </button>
+                        <button class="border border-gray-600 hover:bg-gray-800 px-6 py-3 rounded-md font-medium">
+                            Saiba Mais
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 px-6 bg-gray-800">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center">Estatísticas Da Plataforma</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-700 p-8 rounded-xl text-center">
+                    <div class="text-5xl font-bold text-blue-400 mb-2">1,250+</div>
+                    <div class="text-xl mb-4">Jogadores Ativos</div>
+                    <div class="text-gray-400">Monitoramento Diário do Desempenho Individual</div>
+                </div>
+                <div class="bg-gray-700 p-8 rounded-xl text-center">
+                    <div class="text-5xl font-bold text-blue-400 mb-2">86</div>
+                    <div class="text-xl mb-4">Clubes Ativos</div>
+                    <div class="text-gray-400">Desde os Amadores aos Profissionais</div>
+                </div>
+                <div class="bg-gray-700 p-8 rounded-xl text-center">
+                    <div class="text-5xl font-bold text-blue-400 mb-2">5,000+</div>
+                    <div class="text-xl mb-4">Jogos Agendados</div>
+                    <div class="text-gray-400">Lembretes Automáticos e Monitoramento</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Popular Profiles -->
+    <section class="py-16 px-6 bg-gray-900">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-4">Perfis Populares</h2>
+            <p class="text-gray-400 mb-12">Discover the most active clubs and players on our platform</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Profile 1 -->
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card-hover transition-transform duration-300">
+                    <div class="h-40 bg-gradient-to-r from-blue-500 to-purple-600 relative">
+                        <div class="absolute -bottom-12 left-6">
+                            <div class="w-24 h-24 rounded-full border-4 border-gray-800 overflow-hidden">
+                                <img src="http://static.photos/sport/200x200/1" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-16 px-6 pb-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold">City Strikers FC</h3>
+                            <span class="bg-blue-500 text-xs px-2 py-1 rounded-full">Football</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Premier league club with 25 active players and 3 coaches</p>
+                        <div class="flex justify-between text-sm">
+                            <div>
+                                <div class="text-gray-400">Matches</div>
+                                <div class="font-medium">42</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Players</div>
+                                <div class="font-medium">25</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Rating</div>
+                                <div class="flex items-center">
+                                    <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-yellow-400 mr-1"></i>
+                                    <span>4.8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile 2 -->
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card-hover transition-transform duration-300">
+                    <div class="h-40 bg-gradient-to-r from-orange-500 to-red-600 relative">
+                        <div class="absolute -bottom-12 left-6">
+                            <div class="w-24 h-24 rounded-full border-4 border-gray-800 overflow-hidden">
+                                <img src="http://static.photos/sport/200x200/2" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-16 px-6 pb-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold">Marcus Johnson</h3>
+                            <span class="bg-orange-500 text-xs px-2 py-1 rounded-full">Basketball</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Point guard with 18.5 PPG average and 7.2 assists per game</p>
+                        <div class="flex justify-between text-sm">
+                            <div>
+                                <div class="text-gray-400">Games</div>
+                                <div class="font-medium">38</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Points</div>
+                                <div class="font-medium">703</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Rating</div>
+                                <div class="flex items-center">
+                                    <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-yellow-400 mr-1"></i>
+                                    <span>4.9</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile 3 -->
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card-hover transition-transform duration-300">
+                    <div class="h-40 bg-gradient-to-r from-green-500 to-teal-600 relative">
+                        <div class="absolute -bottom-12 left-6">
+                            <div class="w-24 h-24 rounded-full border-4 border-gray-800 overflow-hidden">
+                                <img src="http://static.photos/sport/200x200/3" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-16 px-6 pb-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold">Elite Hoops Academy</h3>
+                            <span class="bg-green-500 text-xs px-2 py-1 rounded-full">Basketball</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Youth development program with 60 players across 4 age groups</p>
+                        <div class="flex justify-between text-sm">
+                            <div>
+                                <div class="text-gray-400">Teams</div>
+                                <div class="font-medium">4</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Players</div>
+                                <div class="font-medium">60</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Rating</div>
+                                <div class="flex items-center">
+                                    <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-yellow-400 mr-1"></i>
+                                    <span>4.7</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
 
 
