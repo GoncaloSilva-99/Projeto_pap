@@ -64,7 +64,7 @@
             <div class="flex items-center space-x-6">
                 <div class="flex items-center">
                     <div class=" w-8 h-8 rounded-md flex items-center justify-center">
-                        <%= image_tag "logo_sem_texto.png", alt: "Logo" %>
+                        <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "rounded-full" %>
                     </div>
                     <span class="ml-2 font-bold text-xl">SportX</span>
                 </div>
@@ -79,7 +79,7 @@
 
             <!-- Center Links -->
             <div class="hidden md:flex space-x-6">
-                <a href="#" class="hover:text-orange-400 transition">Início</a>
+                <a href="#inicio" class="hover:text-orange-400 transition">Início</a>
                 <a href="#" class="hover:text-orange-400 transition">Clubes</a>
                 <a href="#" class="hover:text-orange-400 transition">Jogadores</a>
                 <a href="#" class="hover:text-orange-400 transition">Agenda</a>
@@ -111,7 +111,7 @@
     <div class="bg-gray-800 py-2 px-6 overflow-hidden bg-gradient-to-b from-gray-900 to-gray-800" id="news-ticker">
         <div class="container mx-auto relative">
             <div class="absolute left-0 top-0 bottom-0 flex items-center z-10">
-                <span class="bg-red-500 px-2 py-1 rounded text-xs font-bold">LATEST</span>
+                <span class="bg-red-500 px-2 py-1 rounded text-xs font-bold">NOTÍCIAS</span>
             </div>
             <div class="flex whitespace-nowrap news-scroll">
                 <div class="flex items-center mr-16">
@@ -354,7 +354,7 @@
     </script>
 
     <!-- Hero Section -->
-    <section class="py-16 px-6 bg-gradient-to-b from-gray-900 to-gray-800">
+    <section id="inicio" class="py-16 px-6 bg-gradient-to-b from-gray-900 to-gray-800">
         <div class="container mx-auto">
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 mb-8 md:mb-0">
@@ -373,10 +373,12 @@
                         </button>
                     </div>
                 </div>
+                <div class="ml-20 rounded-md flex items-center justify-center">
+                    <%= image_tag "foto_baliza.jpg", alt: "baliza", class: "opacity-40 transition-opacity duration-200" %>
+                </div>
             </div>
         </div>
     </section>
-
     <!-- Stats Section -->
     <section class="py-16 px-6 bg-gray-800">
         <div class="container mx-auto">
@@ -401,12 +403,11 @@
         </div>
     </section>
 
-
     <!-- Popular Profiles -->
     <section class="py-16 px-6 bg-gray-900">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold mb-4">Perfis Populares</h2>
-            <p class="text-gray-400 mb-12">Discover the most active clubs and players on our platform</p>
+            <p class="text-gray-400 mb-12">Descubre os clubes e jogadores mais ativos/vistos na nossa plataforma</p>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Profile 1 -->
@@ -414,30 +415,30 @@
                     <div class="h-40 bg-gradient-to-r from-blue-500 to-purple-600 relative">
                         <div class="absolute -bottom-12 left-6">
                             <div class="w-24 h-24 rounded-full border-4 border-gray-800 overflow-hidden">
-                                <img src="http://static.photos/sport/200x200/1" class="w-full h-full object-cover">
+                                <%= image_tag "fcporto_logo.jpg", alt: "fcporto", class: "w-full h-full object-cover"  %>
                             </div>
                         </div>
                     </div>
                     <div class="pt-16 px-6 pb-6">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-xl font-bold">City Strikers FC</h3>
-                            <span class="bg-blue-500 text-xs px-2 py-1 rounded-full">Football</span>
+                            <h3 class="text-xl font-bold">FC Porto</h3>
+                            <span class="bg-blue-500 text-xs px-2 py-1 rounded-full">Futebol</span>
                         </div>
-                        <p class="text-gray-400 text-sm mb-4">Premier league club with 25 active players and 3 coaches</p>
+                        <p class="text-gray-400 text-sm mb-4">Clube da primeira divisão portuguesa com 29 jogadores ativos e 9 treinadores, 1 principal e 8 adjuntos</p>
                         <div class="flex justify-between text-sm">
                             <div>
-                                <div class="text-gray-400">Matches</div>
-                                <div class="font-medium">42</div>
+                                <div class="text-gray-400">Jogos</div>
+                                <div class="font-medium">12</div>
                             </div>
                             <div>
-                                <div class="text-gray-400">Players</div>
-                                <div class="font-medium">25</div>
+                                <div class="text-gray-400">Jogadores</div>
+                                <div class="font-medium">29</div>
                             </div>
                             <div>
-                                <div class="text-gray-400">Rating</div>
+                                <div class="text-gray-400">Avaliação</div>
                                 <div class="flex items-center">
                                     <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-yellow-400 mr-1"></i>
-                                    <span>4.8</span>
+                                    <span>4.9</span>
                                 </div>
                             </div>
                         </div>
@@ -449,30 +450,30 @@
                     <div class="h-40 bg-gradient-to-r from-orange-500 to-red-600 relative">
                         <div class="absolute -bottom-12 left-6">
                             <div class="w-24 h-24 rounded-full border-4 border-gray-800 overflow-hidden">
-                                <img src="http://static.photos/sport/200x200/2" class="w-full h-full object-cover">
+                                <%= image_tag "gidsel_logo.jpg", alt: "gidsel", class: "w-full h-full object-cover"  %>
                             </div>
                         </div>
                     </div>
                     <div class="pt-16 px-6 pb-6">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-xl font-bold">Marcus Johnson</h3>
-                            <span class="bg-orange-500 text-xs px-2 py-1 rounded-full">Basketball</span>
+                            <h3 class="text-xl font-bold">Mathias Gidsel</h3>
+                            <span class="bg-orange-500 text-xs px-2 py-1 rounded-full">Andebol</span>
                         </div>
-                        <p class="text-gray-400 text-sm mb-4">Point guard with 18.5 PPG average and 7.2 assists per game</p>
+                        <p class="text-gray-400 text-sm mb-4">Lateral Direito/Central de nacionalidade dinamarquesa de 26 anos, esquerdino com 1,9m e uma média de 9.11 golos e 12.3 assistências por jogo</p>
                         <div class="flex justify-between text-sm">
                             <div>
-                                <div class="text-gray-400">Games</div>
-                                <div class="font-medium">38</div>
+                                <div class="text-gray-400">Jogos</div>
+                                <div class="font-medium">18</div>
                             </div>
                             <div>
-                                <div class="text-gray-400">Points</div>
-                                <div class="font-medium">703</div>
+                                <div class="text-gray-400">Golos</div>
+                                <div class="font-medium">163</div>
                             </div>
                             <div>
-                                <div class="text-gray-400">Rating</div>
+                                <div class="text-gray-400">Avaliação</div>
                                 <div class="flex items-center">
                                     <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-yellow-400 mr-1"></i>
-                                    <span>4.9</span>
+                                    <span>5</span>
                                 </div>
                             </div>
                         </div>
@@ -484,30 +485,30 @@
                     <div class="h-40 bg-gradient-to-r from-green-500 to-teal-600 relative">
                         <div class="absolute -bottom-12 left-6">
                             <div class="w-24 h-24 rounded-full border-4 border-gray-800 overflow-hidden">
-                                <img src="http://static.photos/sport/200x200/3" class="w-full h-full object-cover">
+                                <%= image_tag "pogba_logo.jpg", alt: "pogba", class: "w-full h-full object-cover"  %>
                             </div>
                         </div>
                     </div>
                     <div class="pt-16 px-6 pb-6">
                         <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-xl font-bold">Elite Hoops Academy</h3>
-                            <span class="bg-green-500 text-xs px-2 py-1 rounded-full">Basketball</span>
+                            <h3 class="text-xl font-bold">Paul Pogba</h3>
+                            <span class="bg-green-500 text-xs px-2 py-1 rounded-full">Futebol</span>
                         </div>
-                        <p class="text-gray-400 text-sm mb-4">Youth development program with 60 players across 4 age groups</p>
+                        <p class="text-gray-400 text-sm mb-4">Médio(Centro) de nacionalidade francesa de 32 anos, destro com 1,91m e uma média de 9.11 golos e 12.3 assistências por jogo</p>
                         <div class="flex justify-between text-sm">
                             <div>
-                                <div class="text-gray-400">Teams</div>
-                                <div class="font-medium">4</div>
+                                <div class="text-gray-400">Jogos</div>
+                                <div class="font-medium">27</div>
                             </div>
                             <div>
-                                <div class="text-gray-400">Players</div>
-                                <div class="font-medium">60</div>
+                                <div class="text-gray-400">Golos</div>
+                                <div class="font-medium">7</div>
                             </div>
                             <div>
-                                <div class="text-gray-400">Rating</div>
+                                <div class="text-gray-400">Avaliação</div>
                                 <div class="flex items-center">
                                     <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-yellow-400 mr-1"></i>
-                                    <span>4.7</span>
+                                    <span>3.8</span>
                                 </div>
                             </div>
                         </div>
