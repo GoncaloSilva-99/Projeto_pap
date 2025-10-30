@@ -63,8 +63,8 @@
             <!-- Logo and Search -->
             <div class="flex items-center space-x-6">
                 <div class="flex items-center">
-                    <div class="bg-blue-500 w-8 h-8 rounded-md flex items-center justify-center">
-                        <i data-feather="activity" class="text-white"></i>
+                    <div class=" w-8 h-8 rounded-md flex items-center justify-center">
+                        <%= image_tag "logo_sem_texto.png", alt: "Logo" %>
                     </div>
                     <span class="ml-2 font-bold text-xl">SportX</span>
                 </div>
@@ -149,7 +149,7 @@
     <style>
         .news-scroll {
             /* Garante que a animação funciona no news-scroll */
-            animation: scroll 30s linear infinite; 
+            animation: scroll 15s linear infinite; 
         }
         @keyframes scroll {
             0% { transform: translateX(0); }
@@ -189,11 +189,12 @@
         #news-ticker .absolute.left-0 {
             z-index: 10;
         }
-
+        
+        /* area de corte / fade à esquerda para desaparecer no Latest */
         #news-ticker .container::before {
             content: "";
             position: absolute;
-            left: -200px;
+            left: -210px;
             top: 0;
             bottom: 0;
             width: 260px; /* ajustar conforme necessário */
