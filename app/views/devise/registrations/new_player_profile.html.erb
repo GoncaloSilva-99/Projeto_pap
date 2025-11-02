@@ -26,9 +26,8 @@
                     <p class="text-xs mt-1 text-gray-400 transition-all duration-300">Criar</p>
                 </div>
             </div>
-</div>
+    </div>
         
-        <!-- Multi-step Form -->
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-4", id: "multiStepForm" }) do |f| %>
         <% if resource.errors.any? %>
             <div class="mb-4 text-red-400 text-sm">
@@ -40,18 +39,34 @@
             </div>
         <% end %>
         
-        <%= f.hidden_field :role, value: "Player" %>
-            <!-- Step 1 -->
+        <%= f.hidden_field :role,
+            value: "Player" %>
+
+
+<!--------------------------------------------------------------- Step 1 ----------------------------------------------------------------------------->
+
+
             <div class="step-content" data-step="1">
                 <!-- Email -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Email</label>
-                    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder: "sportX@email.com" %>
+                    <%= f.email_field :email,
+                        autofocus: true,
+                        autocomplete: "email",
+                        class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                        placeholder: "sportX@email.com",
+                        pattern: User::REGEX_EMAIL,
+                        required: true %>
                 </div>
                 <!-- Password -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Password</label>
-                    <%= f.password_field :password, autocomplete: "new-password", id: "password", class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"••••••••" %>
+                    <%= f.password_field :password,
+                        autocomplete: "new-password",
+                        id: "password",
+                        class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                        placeholder:"••••••••" %>
+
                     <div class="relative">
                         <button type="button" id="toggle-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-indigo-500">
                             <!-- Olho aberto -->
@@ -97,54 +112,82 @@
                 </div>
             
             
-        </div>
+    </div>
 
-            <!-- Step 2 -->
+
+<!--------------------------------------------------------------- Step 2 ----------------------------------------------------------------------------->
+
+
         <%= f.fields_for :player_profile do |pp| %>
-            <div class="step-content hidden" data-step="2">
+            <div class="step-content hidden" data-step="2"> 
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Desporto</label>
-                      <%= pp.select :sport, options_for_select(["Futebol", "Andebol"], pp.sport), { include_blank: "Escolha o desporto" }, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" %>
+                    <%= pp.select :sport,
+                        PlayerProfile::SPORTS,
+                        {selected: PlayerProfile::SPORTS.first, include_blank: false},
+                        { id: "sport_select", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
                 </div>
                 <!-- Nome -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Nome</label>
-                    <%= pp.text_field :name, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"Ex. Juvesvaldo Ribeiro" %>
+                    <%= pp.text_field :name,
+                        class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                        placeholder:"Ex. Juvesvaldo Ribeiro",
+                        required: true %>
                 </div>
                 <!-- Data de nascimento -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Data de nascimento</label>
-                    <%= pp.date_field :birth_date, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" %>
+                    <%= pp.date_field :birth_date,
+                        class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                        max: PlayerProfile::MIN_AGE,
+                        required: true %>
                 </div>
                 <!-- Posição -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Posição</label>
-                    <%= pp.select :position, grouped_options_for_select(@positions[current_user.sport.to_sym]), { include_blank: "Escolha a posição" }, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" %>
+                    <%= pp.select :position,
+                        [],
+                        {},
+                        { id: "position_select", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", required: true } %>
                 </div>
-
+                <!-- Posição Secundária -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Posição Secundária</label>
-                      <%= pp.select :sport, options_for_select(PlayerProfile.sports.keys.map { |s| [s.titleize, s] }, pp.sport), { include_blank: "Escolha o desporto" }, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" %>
+                    <%= pp.select :secondary_position,
+                        [],
+                        {},
+                        { id: "secondary_position_select", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", required: true } %>
                 </div>
-
+                <!-- Pé / Mão dominante -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Pé / Mão predominante</label>
-                      <%= pp.select :dominant_foot_or_hand, options_for_select(["Direito", "Esquerdo"], pp.dominant_foot_or_hand), { include_blank: "Escolha a mão / pé predominante" }, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" %>
+                    <%= pp.select :dominant_foot_or_hand,
+                        PlayerProfile::DOMINANT,
+                        { selected: PlayerProfile::DOMINANT.first, include_blank:false},
+                        class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" %> 
                 </div>
                 <!-- Biografia -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Biografia</label>
-                    <%= pp.textarea :bio, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"Escreve uma breve descrição sobre ti. A informação estará visível para todos no teu perfil" %>
+                    <%= pp.textarea :bio,
+                        class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                        placeholder:"Escreve uma breve descrição sobre ti. A informação estará visível para todos no teu perfil" %>
                 </div>
                 <!-- Contacto -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Contacto</label>
-                    <%= pp.number_field :contact, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"Tenho de ver como faço para colocar isto para selecionar o país do + e como fazer o regex" %>
+                    <%= pp.number_field :contact,
+                        class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                        pattern: PlayerProfile::REGEX_NUM_TELEMOVEL %>
                 </div>
                 <!-- Contacto dos pais -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Contacto dos pais</label>
-                    <%= pp.number_field :parents_contact, class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"Tenho de ver como faço para colocar isto para selecionar o país do + e como fazer o regex" %>
+                    <%= pp.number_field :parents_contact,
+                        class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                        pattern: PlayerProfile::REGEX_NUM_TELEMOVEL, 
+                        max: 999999999 %>
                 </div>
 
                 <div class="flex justify-between pt-4">
@@ -154,18 +197,50 @@
                     <button type="button" class="login-btn w-32 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30 next-step" data-next="3">
                         Continuar
                     </button>
-</div>
+        </div>
             </div>
                     
-<% end %>
-            <!-- Step 3 -->
+
+<!--------------------------------------------------------------- Step 3 ----------------------------------------------------------------------------->
+
+
             <div class="step-content hidden" data-step="3">
-                <!-- Profile Picture -->
-                <h1>ADICIONAR FOTO DE PERFIL COM GEM</h1>
+                <!-- Foto de Perfil -->
+                <label class="block text-sm font-medium text-gray-400 mb-1">Foto de Perfil</label>
+                <div class="file-upload-wrapper flex flex-col items-center gap-4 w-full max-w-sm mx-auto" aria-live="polite">
+                <div class="file-upload-preview w-40 h-40 rounded-full overflow-hidden shadow-lg">
+                    <%= image_tag "default_pp.jpg",
+                    id: "pp_profile_preview",
+                    alt: "Pré-visualização da imagem de perfil",
+                    class: "w-full h-full object-cover" %>
+
+                </div>
+
+                <div class="flex items-center justify-center gap-3 w-full">
+                    <label for="pp_profile_picture" class="file-upload-label px-6 py-3 rounded-lg cursor-pointer select-none">
+                    Escolher ficheiro
+                    </label>
+
+                    <span class="file-upload-filename text-sm truncate">
+                    Nenhum ficheiro selecionado
+                    </span>
+
+                    
+
+                    <button type="button" class="button-delete file-upload-remove hidden text-sm rounded px-2 py-1">
+                    Remover
+                    </button>
+                </div>
+
+                <%= pp.file_field :profile_picture, id: "pp_profile_picture", class: "file-upload-input sr-only", accept: "image/*" %>
+                </div>
+
+
                 <div class="flex justify-between pt-4">
                     <button type="button" class="w-32 bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg prev-step" data-prev="2">
                         Voltar
                     </button>
+<% end %>
                     <%= f.submit "Criar Conta", class:"login-btn w-32 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30" %>
         
 </div>
@@ -239,7 +314,160 @@
             });
         </script>
 
-        <!-- CSS para os steps -->
+        <!-- Script para poder escolher as posições consoante o desporto -->
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+            const sportSelect = document.getElementById("sport_select");
+            const positionSelect = document.getElementById("position_select");
+            const secondaryPositionSelect = document.getElementById("secondary_position_select");
+
+            const positions = {
+                "Futebol": ["Guarda-Redes", "Lateral Direito", "Lateral Esquerdo", "Central", "Médio Centro", "Médio Ofensivo", "Médio Defensivo", "Extremo Direito", "Extremo Esquerdo", "Ponta de lança"],
+                "Andebol": ["Guarda-Redes", "Central", "Lateral Esquerdo", "Lateral Direito", "Ponta Esquerda", "Pivô", "Ponta Direita"]
+            };
+
+            const updatePositions = () => {
+                const selectedSport = sportSelect.value;
+
+                // Limpar opções existentes
+                positionSelect.innerHTML = "";
+                secondaryPositionSelect.innerHTML = "";
+
+                if (positions[selectedSport]) {
+                positions[selectedSport].forEach(pos => {
+                    const option1 = document.createElement("option");
+                    option1.value = pos;
+                    option1.text = pos;
+                    positionSelect.appendChild(option1);
+
+                    const option2 = document.createElement("option");
+                    option2.value = pos;
+                    option2.text = pos;
+                    secondaryPositionSelect.appendChild(option2);
+                });
+                }
+            };
+
+            sportSelect.addEventListener("change", updatePositions);
+
+            // Inicializar caso já haja valor
+            updatePositions();
+            });
+
+
+        </script>
+
+        <!-- Script para mostrar a foto de perfil quando é feito upload -->
+        <script>
+            const fileInput = document.getElementById('pp_profile_picture');
+            const previewImage = document.getElementById('pp_profile_preview');
+            const filenameSpan = document.querySelector('.file-upload-filename');
+            const wrapper = document.querySelector('.file-upload-wrapper');
+            const removeBtn = document.querySelector('.file-upload-remove');
+            let originalPreviewSrc = (previewImage && previewImage.src) ? previewImage.src : '';
+
+            if (fileInput) {
+            const updatePreview = (file) => {
+                if (!file) {
+                if (previewImage) previewImage.src = originalPreviewSrc;
+                if (filenameSpan) filenameSpan.textContent = 'Nenhum ficheiro selecionado';
+                if (removeBtn) removeBtn.classList.add('hidden');
+                if (wrapper) wrapper.classList.remove('has-file');
+                return;
+                }
+
+
+                if (!file.type.startsWith('image/')) {
+                alert('Por favor selecione um ficheiro de imagem (jpg, png, etc).');
+                fileInput.value = '';
+                updatePreview(null);
+                return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                if (previewImage) previewImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+
+                if (filenameSpan) filenameSpan.textContent = file.name;
+                if (removeBtn) removeBtn.classList.remove('hidden');
+                if (wrapper) wrapper.classList.add('has-file');
+            };
+
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files && event.target.files[0] ? event.target.files[0] : null;
+                updatePreview(file);
+            });
+
+            if (removeBtn) {
+                removeBtn.addEventListener('click', () => {
+                fileInput.value = '';
+                updatePreview(null);
+                });
+            }
+
+            }
+
+        </script>
+
+        <!-- Script de mostrar password -->
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const toggleButtons = [
+                    {
+                        input: document.getElementById("password"),
+                        button: document.getElementById("toggle-password"),
+                        eyeOpen: document.getElementById("eye-open-password"),
+                        eyeClosed: document.getElementById("eye-closed-password")
+                    },
+                    {
+                        input: document.getElementById("password-confirmation"),
+                        button: document.getElementById("toggle-password-confirmation"),
+                        eyeOpen: document.getElementById("eye-open-password-confirmation"),
+                        eyeClosed: document.getElementById("eye-closed-password-confirmation")
+                    }
+                ];
+
+                toggleButtons.forEach(({input, button, eyeOpen, eyeClosed}) => {
+                    button.addEventListener("click", function() {
+                        if (input.type === "password") {
+                            input.type = "text";
+                            eyeOpen.classList.add("hidden");
+                            eyeClosed.classList.remove("hidden");
+                        } else {
+                            input.type = "password";
+                            eyeOpen.classList.remove("hidden");
+                            eyeClosed.classList.add("hidden");
+                        }
+                    });
+                });
+            });
+        </script>
+
+        <!-- Configuração da cor principal e secundária do tailwind -->
+
+        <script>
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: {
+                                500: '#6366f1',
+                            },
+                            secondary: {
+                                500: '#8b5cf6',
+                            }
+                        }
+                    }
+                }
+            }
+        </script>
+
+        <!-- CSS dos steps -->
 
         <style>
             .step.active p {
@@ -257,75 +485,13 @@
                 transition: width 0.5s ease;
             }
         </style>
-
-    <!-- Configuração da cor principal e secundária do tailwind -->
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            500: '#6366f1',
-                        },
-                        secondary: {
-                            500: '#8b5cf6',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
     
-<!-- JS de mostrar password (primeira) -->
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const toggleButtons = [
-                {
-                    input: document.getElementById("password"),
-                    button: document.getElementById("toggle-password"),
-                    eyeOpen: document.getElementById("eye-open-password"),
-                    eyeClosed: document.getElementById("eye-closed-password")
-                },
-                {
-                    input: document.getElementById("password-confirmation"),
-                    button: document.getElementById("toggle-password-confirmation"),
-                    eyeOpen: document.getElementById("eye-open-password-confirmation"),
-                    eyeClosed: document.getElementById("eye-closed-password-confirmation")
-                }
-            ];
-
-            toggleButtons.forEach(({input, button, eyeOpen, eyeClosed}) => {
-                button.addEventListener("click", function() {
-                    if (input.type === "password") {
-                        input.type = "text";
-                        eyeOpen.classList.add("hidden");
-                        eyeClosed.classList.remove("hidden");
-                    } else {
-                        input.type = "password";
-                        eyeOpen.classList.remove("hidden");
-                        eyeClosed.classList.add("hidden");
-                    }
-                });
-            });
-        });
-    </script>
-
-<!-- JS de mostrar password (confirmação) -->
-
-
-
     <!-- CSS para alinhar botão de ver password -->
 
     <style>
         #toggle-password, #toggle-password-confirmation {
             top: -20px; 
         }
-
-
     </style>
 
 

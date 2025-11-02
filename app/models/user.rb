@@ -48,6 +48,7 @@ class User < ApplicationRecord
     role == "Admin"
   end
 
+  REGEX_EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   
 
 end

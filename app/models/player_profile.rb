@@ -1,8 +1,23 @@
 class PlayerProfile < ApplicationRecord
   belongs_to :user
   belongs_to :club_profile, optional: true
-  validates :name, presence: true
+  has_one_attached :profile_picture
+  
+  
+  SPORTS = ["Futebol", "Andebol"]
+  POSITIONS = {
+    "Futebol" => ["Guarda-Redes", "Lateral Direito", "Lateral Esquerdo", "Central", "Médio Centro", "Médio Ofensivo", "Médio Defensivo", "Extremo Direito", "Extremo Esquerdo", "Ponta de lança"],
+    "Andebol" => ["Guarda-Redes", "Central", "Lateral Esquerdo", "Lateral Direito", "Ponta Esquerda", "Pivô", "Ponta Direita"]
+  }
+  DOMINANT = ["Direito", "Esquerdo"]
 
-  validates :role, presence: true, inclusion: {in: ["Futebol", "Andebol"]}
-  validates :dominant_foot_or_hand, inclusion: {in: ["Direito", "Esquerdo"]}
+  REGEX_NUM_TELEMOVEL = /\A9\d{8}\z/
+
+  MIN_AGE = 4.years.ago.to_date
+
+  validates :position, inclusion: {in: POSITIONS}
+  validates :sport, inclusion: {in: SPORTS}
+  validates :dominant_foot_or_hand, inclusion: {in: DOMINANT}
+  validates_presence_of :name, :birth_date, :position, :bio
+
 end

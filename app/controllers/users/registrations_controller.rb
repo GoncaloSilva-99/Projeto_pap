@@ -9,19 +9,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
       when "Player"
         resource.build_player_profile
         render "devise/registrations/new_player_profile" and return
-        @positions = {
-          futebol: {
-            "Guarda-redes" => ["Guarda-redes"],
-            "Defesas" => ["Lateral Direito", "Central", "Lateral Esquerdo"],
-            "Médios" => ["Médio Centro", "Médio Ofensivo", "Médio Defensivo"],
-            "Avançados" => ["Extremo Direito", "Ponta de Lança", "Extremo Esquerdo"]
-          },
-          andebol: {
-            "Guarda-redes" => ["Guarda-redes"],
-            "1º Linha" => ["Central", "Lateral Esquerdo", "Lateral Direito"],
-            "2º Linha" => ["Ponta Esquerda", "Pivô", "Ponta Direita"]
-          }
-        }
       when "Club"
         resource.build_club_profile
         render "devise/registrations/new_club_profile" and return
