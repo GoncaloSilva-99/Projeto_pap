@@ -1,23 +1,3 @@
-<div>
-
-<!-- Botões Testes -->
-<% if !user_signed_in? %>
-    <%= link_to "Login", new_user_session_path  %>
-<% else %>
-    <%= button_to "logout", destroy_user_session_path, method: :delete  %>
-<% end %>
-<br><br><br>
-<%= link_to "Criar conta jogador", new_player_profile_registration_path %>
-<br><br><br>
-<%= link_to "Escolher tipo de conta", choose_account_type_path %>
-
-<br><br><br>
-<%= link_to "Escolher Jogador", new_player_profile_registration_path, class: "mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition" %>
-
-</div>
-
-<br><br><br>    
-
 <head>
 
 <meta charset="UTF-8">
@@ -58,7 +38,7 @@
 <body class="bg-gray-900 text-gray-100 min-h-screen">
 
     <!-- Navbar -->
-    <nav class="bg-gray-800 py-4 px-6 shadow-lg" id="inicio">
+    <nav class="bg-gray-800 py-4 px-6 shadow-lg fixed w-full z-20 top-0 start-0" id="inicio">
         <div class="container mx-auto flex items-center justify-between">
             <!-- Logo and Search -->
             <div class="flex items-center space-x-6">
@@ -88,19 +68,153 @@
 
             <!-- Right Side -->
             <div class="flex items-center space-x-4">
-                <div class="relative">
-                    <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md flex items-center space-x-1">
-                        <span>Apps</span>
-                        <i data-feather="chevron-down" class="w-4 h-4"></i>
-                    </button>
-                    <div class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 hidden">
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-700">Team Management</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-700">Player Stats</a>
-                        <a href="#" class="block px-4 py-2 hover:bg-gray-700">Match Planner</a>
+                    
+                <!-- Notifications -->
+                <button type="button" data-dropdown-toggle="notification-dropdown" class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900  dark:text-gray-400 dark:hover:text-white  focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
+                    <span class="sr-only">View notifications</span>
+                    <!-- Bell icon -->
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 20"><path d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z"/></svg>
+                </button>
+                <!-- Notifications menu -->
+                <div class="rounded-lg hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none" id="notification-dropdown">
+                    <div class="p-2">
+                        <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
+                            <div class="flex-shrink-0">
+                                <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="Bonnie Green avatar">
+                                <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white bg-primary-700 dark:border-gray-700">
+                                    <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
+                                </div>
+                            </div>
+                            <div class="pl-3 w-full">
+                                <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400">New message from <span class="font-semibold text-gray-900 dark:text-white">Bonnie Green</span>: "Hey, what's up? All set for the presentation?"</div>
+                                <div class="text-xs font-medium text-primary-700 dark:text-primary-400">a few moments ago</div>
+                            </div>
+                        </a>
+                        <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
+                            <div class="flex-shrink-0">
+                                <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png" alt="Jese Leos avatar">
+                                <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-red-500 rounded-full border border-white dark:border-gray-700">
+                                    <svg class="text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24"><path fill="currentColor" d="M12 20.962q-3.013-.895-5.007-3.651Q5 14.554 5 11.1V5.692l7-2.615l7 2.615V11.1q0 3.454-1.993 6.21q-1.994 2.757-5.007 3.652Z"/></svg>
+                                </div>
+                            </div>
+                            <div class="pl-3 w-full">
+                                <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Jese leos</span> and <span class="font-medium text-gray-900 dark:text-white">5 others</span> started following you.</div>
+                                <div class="text-xs font-medium text-primary-700 dark:text-primary-400">10 minutes ago</div>
+                            </div>
+                        </a>
+                        <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
+                            <div class="flex-shrink-0">
+                                <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png" alt="Joseph McFall avatar">
+                                <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white dark:border-gray-700">
+                                    <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
+                                </div>
+                                </div>
+                            <div class="pl-3 w-full">
+                                <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Joseph Mcfall</span> and <span class="font-medium text-gray-900 dark:text-white">141 others</span> love your story. See it and view more stories.</div>
+                                <div class="text-xs font-medium text-primary-700 dark:text-primary-400">44 minutes ago</div>
+                            </div>
+                        </a>
+                        <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
+                            <div class="flex-shrink-0">
+                                <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png" alt="Roberta Casas image">
+                                <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white dark:border-gray-700">
+                                    <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
+                                </div>
+                            </div>
+                            <div class="pl-3 w-full">
+                                <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Leslie Livingston</span> mentioned you in a comment: <span class="font-medium text-primary-700 dark:text-primary-500">@bonnie.green</span> what do you say?</div>
+                                <div class="text-xs font-medium text-primary-700 dark:text-primary-400">1 hour ago</div>
+                            </div>
+                        </a>
+                        <a href="#" class="flex py-3 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
+                            <div class="flex-shrink-0">
+                                <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png" alt="Robert image">
+                                <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white dark:border-gray-700">
+                                    <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
+                                </div>
+                            </div>
+                            <div class="pl-3 w-full">
+                                <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Robert Brown</span> posted a new video: Glassmorphism - learn how to implement the new design trend.</div>
+                                <div class="text-xs font-medium text-primary-700 dark:text-primary-400">3 hours ago</div>
+                            </div>
+                        </a>
+                        <a href="#" class="block py-2 rounded-lg text-base font-medium text-center text-gray-900 bg-gray-500 hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600 dark:text-white dark:hover:underline mt-1.5">
+                            <div class="inline-flex items-center ">
+                                <svg aria-hidden="true" class="mr-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>
+                                Ver Todas
+                            </div>
+                        </a>
+                    </div>
+                </div> 
+
+                <!-- Apps -->
+                <button type="button" data-dropdown-toggle="apps-dropdown" class="p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
+                    <span class="sr-only">View notifications</span>
+                    <!-- Icon -->
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                        <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
+                    </svg>              
+                </button>
+                <!-- Dropdown menu -->
+                <div class="rounded-lg hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600" id="apps-dropdown">
+                    <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        Apps
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 p-4">
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="shield" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Clube</div>
+                        </a>
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="users" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Equipa</div>
+                        </a>
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="briefcase" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Carreira</div>
+                        </a>
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="calendar" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Agenda</div>
+                        </a>
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="message-square" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Menssagens</div>
+                        </a>
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="heart" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Favoritos</div>
+                        </a>
                     </div>
                 </div>
-                <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
-                    <i data-feather="user"></i>
+
+                <!-- User Menu -->
+                <div class="relative" id="user-menu-container">
+                    <button type="button" class="border border-gray-900 flex text-sm rounded-full md:me-0 hover:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 w-9 h-9 bg-gray-700 items-center justify-center" id="user-menu-button">
+                        <span class="sr-only">Open user menu</span>
+                        <i data-feather="user"></i>
+                    </button>
+                    
+                    <div class="absolute right-0 mt-2 z-50 hidden w-56 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
+                    <div class="px-4 py-3">
+                        <span class="block text-sm text-gray-900 dark:text-white">Tomás Nogueira</span>
+                        <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">tomas.nogueira@sportX.com</span>
+                    </div>
+                    <ul class="py-2" aria-labelledby="user-menu-button">
+                        <li>
+                            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400"><i data-feather="home" class="mr-2"></i>Perfil</a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400"><i data-feather="settings" class="mr-2"></i>Definições</a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400"><i data-feather="bar-chart-2" class="mr-2"></i>Estatísticas</a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500"><i data-feather="log-out" class="mr-2"></i>Log out</a>
+                        </li>
+                    </ul>
+                </div>
                 </div>
             </div>
         </div>
@@ -349,16 +463,59 @@
 
         // Chamada inicial para ajustar a largura quando a página carrega
         adjustSearchWidth();
+        
+        // Lógica para o menu de utilizador (clicar para abrir, sair para fechar)
+        const userMenuContainer = document.getElementById('user-menu-container');
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userDropdown = document.getElementById('user-dropdown');
+
+        let isMenuPinned = false; // Variável para controlar se o menu está "fixo"
+
+        if (userMenuContainer && userMenuButton && userDropdown) {
+            // 1. Mostrar menu ao passar o rato por cima
+            userMenuContainer.addEventListener('mouseenter', () => {
+                userDropdown.classList.remove('hidden');
+            });
+
+            // 2. Esconder o menu ao sair com o rato, APENAS se não estiver fixo
+            userMenuContainer.addEventListener('mouseleave', () => {
+                if (!isMenuPinned) {
+                    userDropdown.classList.add('hidden');
+                }
+            });
+
+            // 3. Fixar/libertar o menu ao clicar no botão
+            userMenuButton.addEventListener('click', (event) => {
+                event.stopPropagation(); // Impede que o clique feche o menu imediatamente
+                isMenuPinned = !isMenuPinned; // Alterna o estado "fixo"
+                if (isMenuPinned) {
+                    userDropdown.classList.remove('hidden'); // Garante que está visível ao fixar
+                }
+            });
+
+            // 4. Fechar o menu se estiver fixo e o utilizador clicar fora ou fizer scroll
+            const closePinnedMenu = () => {
+                if (isMenuPinned) {
+                    isMenuPinned = false;
+                    userDropdown.classList.add('hidden');
+                }
+            };
+
+            document.addEventListener('click', closePinnedMenu);
+            window.addEventListener('scroll', closePinnedMenu);
+        }
         });
     </script>
 
     <!-- Hero Section -->
-    <section id="hero" class="py-16 px-6 bg-gradient-to-b from-gray-900 to-gray-800">
-        <div class="container mx-auto">
+    <section id="hero" class="relative py-16 px-6 bg-cover bg-center">
+        <%= image_tag "foto_baliza.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-20 z-0", alt: "Hero Background" %>
+        <!-- overlay to keep text readable -->
+        <div class="container mx-auto relative z-10">
             <div class="flex flex-col md:flex-row items-center">
                 <div class="md:w-1/2 mb-8 md:mb-0">
                     <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                        Eleva as Estatísticas <span class="text-blue-400"><br> Do Teu Clube</span>
+                        Eleva as Estatísticas <span style="background: linear-gradient(to right, red, orange); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;"><br> Do Teu Clube</span>
                     </h1>
                     <p class="text-xl text-gray-400 mb-8">
                         A plataforma completa para clubes de futebol e andebol gerirem jogadores, calendários e análises de desempenho.
@@ -367,13 +524,10 @@
                         <button class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-md font-medium">
                             Começa Já
                         </button>
-                        <button class="border border-gray-600 hover:bg-gray-800 px-6 py-3 rounded-md font-medium">
+                        <button class="border border-gray-800 bg-gray-600 hover:bg-gray-800 px-6 py-3 rounded-md font-medium">
                             Saiba Mais
                         </button>
                     </div>
-                </div>
-                <div class="ml-20 rounded-md flex items-center justify-center">
-                    <%= image_tag "foto_baliza.jpg", alt: "baliza", class: "opacity-40 transition-opacity duration-200" %>
                 </div>
             </div>
         </div>
@@ -600,7 +754,7 @@
                 <div class="flex items-center justify-center space-x-4">
                     <span>Siga-nos:</span>
                     <div class="flex items-center space-x-3">
-                        <a href="https://github.com/GoncaloSilva-99/Projeto_pap/tree/testes_tumatinhos">
+                        <a href="https://github.com/GoncaloSilva-99/Projeto_pap">
                             <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center group hover:bg-orange-200 transition-colors duration-150 cursor-pointer">
                                 <i data-feather="github" class="w-4 h-4 text-orange-200 group-hover:text-red-500 transition-colors duration-150"></i>
                             </span>
@@ -637,6 +791,3 @@
         </div>
     </footer>
 </body>
-
-
-
