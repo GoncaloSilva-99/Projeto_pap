@@ -16,9 +16,9 @@ class PlayerProfile < ApplicationRecord
 
   MIN_AGE = 4.years.ago.to_date
 
-  validates :position, inclusion: {in: ALL_POSITIONS}
-  validates :sport, inclusion: {in: SPORTS}
-  validates :dominant_foot_or_hand, inclusion: {in: DOMINANT}
-  validates_presence_of :name, :birth_date, :position, :bio
+  validates_presence_of :position, inclusion: {in: ALL_POSITIONS}
+  validates_presence_of :sport, inclusion: {in: SPORTS}
+  validates_presence_of :dominant_foot_or_hand, inclusion: {in: DOMINANT}
+  validates_presence_of :name, :birth_date, :position, :contact
 
 end

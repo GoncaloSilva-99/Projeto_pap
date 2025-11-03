@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :role, presence: true, inclusion: {in: ["User", "Player", "Coach", "Club", "Board", "Admin"]}
+  validates_presence_of :email, :password, :password_confirmation
 
   has_one :user_profile, dependent: :destroy
   accepts_nested_attributes_for :user_profile

@@ -132,7 +132,7 @@ transparent;
   }
   
   .wrap-delete button {
-      width: 150px;
+      width: 120px;
       height: 50px;
       cursor: pointer;
       display: flex;
@@ -195,4 +195,16 @@ transparent;
   .wrap-delete button:focus {
       outline: none;
   }
+
+/* Adiciona * vermelho aos labels obrigatórios */
+.required-label::after {
+  content: " *";
+  color: #f87171;
+}
+
+/* Muda a borda de inputs e selects obrigatórios ao passar o rato */
+input:required:hover,
+select:required:hover {
+  border-color: #f87171;
+}
 
