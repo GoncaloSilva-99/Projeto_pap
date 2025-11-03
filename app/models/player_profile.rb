@@ -10,12 +10,13 @@ class PlayerProfile < ApplicationRecord
     "Andebol" => ["Guarda-Redes", "Central", "Lateral Esquerdo", "Lateral Direito", "Ponta Esquerda", "Pivô", "Ponta Direita"]
   }
   DOMINANT = ["Direito", "Esquerdo"]
+  ALL_POSITIONS = ["Guarda-Redes", "Lateral Direito", "Lateral Esquerdo", "Central", "Médio Centro", "Médio Ofensivo", "Médio Defensivo", "Extremo Direito", "Extremo Esquerdo", "Ponta de lança", "Ponta Esquerda", "Pivô", "Ponta Direita"]
 
   REGEX_NUM_TELEMOVEL = /\A9\d{8}\z/
 
   MIN_AGE = 4.years.ago.to_date
 
-  validates :position, inclusion: {in: POSITIONS}
+  validates :position, inclusion: {in: ALL_POSITIONS}
   validates :sport, inclusion: {in: SPORTS}
   validates :dominant_foot_or_hand, inclusion: {in: DOMINANT}
   validates_presence_of :name, :birth_date, :position, :bio

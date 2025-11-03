@@ -83,7 +83,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def permitted_attributes
     [:email, :password, :password_confirmation, :current_password, :remember_me, :role,
       {user_profile_attributes: [:name, :bio]},
-      {player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact]},
+      {player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact, :sport, :dominant_foot_or_hand, :position, :secondary_position]},
       {coach_profile_attributes: [:name, :birth_date, :coach_type]},
       {club_profile_attributes: [:name]},
       {board_profile_attributes: [:name, :bio, :birth_date, :role]}
