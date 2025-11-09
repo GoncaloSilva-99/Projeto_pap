@@ -19,6 +19,6 @@ class PlayerProfile < ApplicationRecord
   validates_presence_of :position, inclusion: {in: ALL_POSITIONS}
   validates_presence_of :sport, inclusion: {in: SPORTS}
   validates_presence_of :dominant_foot_or_hand, inclusion: {in: DOMINANT}
-  validates_presence_of :name, :birth_date, :position, :contact
+  validates_presence_of :name, :birth_date, :contact
 
 end

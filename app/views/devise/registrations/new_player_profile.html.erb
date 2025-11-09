@@ -28,17 +28,24 @@
             </div>
     </div>
     
-        
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-4", id: "multiStepForm", novalidate: true }) do |f| %>
+        
         <% if resource.errors.any? %>
-            <div class="mb-4 text-red-400 text-sm">
-                <ul>
+        <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-stone-800 dark:bg-gray-800 dark:text-red-400" role="alert">
+            <svg class="shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            <span class="sr-only">Danger</span>
+            <div>
+                <span class="font-medium">Houve os seguintes erros:</span>
+                <ul class="mt-1.5 list-disc list-inside">
                     <% resource.errors.full_messages.each do |msg| %>
                     <li><%= msg %></li>
                     <% end %>
                 </ul>
             </div>
-        <% end %>
+        </div>
+    <% end %>
         
         <%= f.hidden_field :role,
             value: "Player" %>
@@ -105,7 +112,10 @@
                         </button>
                     </div>
                 </div>
-
+                <br>
+                    <div class="text-center text-xs text-red-400">
+                        * -> Campo Obrigatorio
+                    </div>
                 <div class="pt-4">
                     <button type="button" class="login-btn w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30 next-step" data-next="2">
                         Continuar
@@ -121,6 +131,7 @@
 
         <%= f.fields_for :player_profile do |pp| %>
             <div class="step-content hidden" data-step="2"> 
+                <!-- Desporto -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Desporto</label>
                     <%= pp.select :sport,
@@ -157,8 +168,8 @@
                     <label class="block text-sm font-medium text-gray-400 mb-1">Posição Secundária</label>
                     <%= pp.select :secondary_position,
                         [],
-                        {},
-                        { id: "secondary_position_select", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", required: true } %>
+                        { include_blank: true },
+                        { id: "secondary_position_select", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
                 </div>
                 <!-- Pé / Mão dominante -->
                 <div>
@@ -183,13 +194,16 @@
                         id: "player-contact",
                         class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
                         pattern: PlayerProfile::REGEX_NUM_TELEMOVEL,
-                        placeholder: "Ex. 999 999 999",
+                        placeholder: "Ex. 123123123",
                         maxlength: 9, 
                         required: true %> 
                 </div>
 
                 
-
+                <br>
+                    <div class="text-center text-xs text-red-400">
+                        * -> Campo Obrigatorio
+                    </div>
                 <div class="flex justify-between pt-4">
                     <button type="button" class="w-32 bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg prev-step" data-prev="1">
                         Voltar
@@ -246,12 +260,9 @@
 </div>
             </div>
             <br>
-            <div class="text-center text-xs text-red-400">
-                * -> Campo Obrigatorio
-            </div>
-            <br>
+
             <div class="text-center text-sm text-gray-400">
-                Already have an account? <a href="#" class="text-primary-500 hover:underline font-medium">Sign in</a>
+                Já tem uma conta? <%= link_to 'Entrar', new_user_session_path, class: "text-primary-500 hover:underline font-medium" %>
             </div>
             
 
@@ -334,35 +345,65 @@
                 "Andebol": ["Guarda-Redes", "Central", "Lateral Esquerdo", "Lateral Direito", "Ponta Esquerda", "Pivô", "Ponta Direita"]
             };
 
-            const updatePositions = () => {
-                const selectedSport = sportSelect.value;
+            const populateOptions = (selectEl, opts, preserveValue) => {
+                const prev = preserveValue ? selectEl.value : null;
+                selectEl.innerHTML = "";
 
-                // Limpar opções existentes
-                positionSelect.innerHTML = "";
-                secondaryPositionSelect.innerHTML = "";
+                // opção explícita para "Nenhuma posição secundária" (envia "" para o server)
+                if (selectEl === secondaryPositionSelect) {
+                const noneOpt = document.createElement("option");
+                noneOpt.value = "";
+                noneOpt.text = "Nenhuma posição secundária";
+                selectEl.appendChild(noneOpt);
+                }
 
-                if (positions[selectedSport]) {
-                positions[selectedSport].forEach(pos => {
-                    const option1 = document.createElement("option");
-                    option1.value = pos;
-                    option1.text = pos;
-                    positionSelect.appendChild(option1);
-
-                    const option2 = document.createElement("option");
-                    option2.value = pos;
-                    option2.text = pos;
-                    secondaryPositionSelect.appendChild(option2);
+                opts.forEach(pos => {
+                const o = document.createElement("option");
+                o.value = pos;
+                o.text = pos;
+                selectEl.appendChild(o);
                 });
+
+                // restaura seleção anterior (inclui caso seja "")
+                if (prev !== null) {
+                // se prev não existir entre as opções, ficará vazio como previsto
+                selectEl.value = prev;
                 }
             };
 
-            sportSelect.addEventListener("change", updatePositions);
+            const syncSecondary = () => {
+                const primary = positionSelect.value;
+                Array.from(secondaryPositionSelect.options).forEach(opt => {
+                // permite sempre a opção vazia/"Nenhuma posição secundária"
+                if (opt.value === "") {
+                    opt.disabled = false;
+                    return;
+                }
+                opt.disabled = (opt.value === primary);
+                });
+
+                // se o valor atual da secundária for igual à primária (ou for uma opção desativada),
+                // escolhe a primeira disponível (ou deixa como "")
+                if (secondaryPositionSelect.value === primary || Array.from(secondaryPositionSelect.options).find(o => o.selected && o.disabled)) {
+                const firstAvailable = Array.from(secondaryPositionSelect.options).find(o => !o.disabled);
+                secondaryPositionSelect.value = firstAvailable ? firstAvailable.value : "";
+                }
+            };
+
+            const updatePositions = () => {
+                const selectedSport = sportSelect ? sportSelect.value : null;
+                const opts = positions[selectedSport] || [];
+                populateOptions(positionSelect, opts, true);
+                populateOptions(secondaryPositionSelect, opts, true);
+                syncSecondary();
+            };
+
+            if (positionSelect) positionSelect.addEventListener("change", syncSecondary);
+            if (sportSelect) sportSelect.addEventListener("change", updatePositions);
 
             // Inicializar caso já haja valor
             updatePositions();
             });
-
-
         </script>
 
         <!-- Script para mostrar a foto de perfil quando é feito upload -->

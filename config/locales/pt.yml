@@ -1,0 +1,53 @@
+pt:
+  errors:
+    format: "%{attribute} %{message}"
+  activerecord:
+    models:
+      user: "Utilizador"
+      player_profile: "Perfil de Jogador"
+      admin_profile: "Perfil de Admin"
+      board_profile: "Perfil de Direção"
+      club_profile: "Perfil de Clube"
+      coach_profile: "Perfil de Treinador"
+      sport: "Desporto"
+      user_profile: "Perfil de Adepto"
+    attributes:
+      admin_profile:
+        name: "Nome"
+      board_profile:
+        name: "Nome"
+        bio: "Biografia"
+        birth_date: "Data de nascimento"
+        role: "Função"
+      club_profile:
+        name: "Nome"
+      coach_profile:
+        name: "Nome"
+        birth_date: "Data de nascimento"
+        coach_type: "Tipo de treinador"
+      sport:
+        name: "nome"
+      user_profile:
+      user:
+        email: "Email"
+        password: "Password"
+        password_confirmation: "Confirmação da Password"
+      player_profile:
+        name: "Nome"
+        birth_date: "Data de nascimento"
+        position: "Posição"
+        bio: "Biografia"
+        sport: "Desporto"
+        secondary_position: "Posição secundária"
+        dominant_foot_or_hand: "Pé / Mão predominante"
+        contact: "Contacto"
+
+    errors:
+      messages:
+        blank: "não pode ficar em branco"
+        invalid: "é inválido"
+        too_short: "é demasiado curto (mínimo de %{count} caracteres)"
+        too_long: "é demasiado longo (máximo de %{count} caracteres)"
+        taken: "já está em uso"
+        confirmation: "não coincide"
+        accepted: "tem de ser aceite"
