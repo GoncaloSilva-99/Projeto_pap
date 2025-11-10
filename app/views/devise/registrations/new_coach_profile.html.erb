@@ -6,7 +6,7 @@
                 <%= link_to root_path do %>
                     <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "mx-auto mb-4", height: 70, width: 70 %>
                 <% end %>
-                <p class="text-indigo-100 font-bold mt-2">Crie a sua conta de jogador</p>
+                <p class="text-indigo-100 font-bold mt-2">Crie a sua conta de treinador</p>
             </div>
             <!-- Steps -->
             <div class="flex justify-between items-center mt-6 mb-8 px-10 relative">
@@ -112,8 +112,7 @@
                         </button>
                     </div>
                 </div>
-                <br>
-                    <div class="text-center text-xs text-red-400">
+                    <div class="text-left text-xs text-red-400 py-2">
                         * -> Campo Obrigatorio
                     </div>
                 <div class="pt-4">
@@ -150,51 +149,39 @@
                 <!-- Data de nascimento -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Data de nascimento</label>
-                    <%= pp.date_field :birth_date,
+                    <%= cp.date_field :birth_date,
                         class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
-                        max: PlayerProfile::MIN_AGE,
+                        max: CoachProfile::MIN_AGE,
                         required: true %>
                 </div>
-                <!-- Posição -->
+                <!-- Tipo de Treinador -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1 required-label required-label">Posição</label>
-                    <%= pp.select :position,
-                        [],
-                        {},
-                        { id: "position_select", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", required: true } %>
+                    <label class="block text-sm font-medium text-gray-400 mb-1 required-label required-label">Tipo de Treinador</label>
+                    <%= cp.select :coach_type,
+                        CoachProfile::TYPE,
+                        { selected: CoachProfile::TYPE.first, include_blank:false},
+                        { class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
                 </div>
-                <!-- Posição Secundária -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1">Posição Secundária</label>
-                    <%= pp.select :secondary_position,
-                        [],
-                        { include_blank: true },
-                        { id: "secondary_position_select", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
-                </div>
-
                 <!-- Biografia -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1">Biografia</label>
-                    <%= pp.textarea :bio,
+                    <%= cp.textarea :bio,
                         class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
                         placeholder:"Escreve uma breve descrição sobre ti. A informação estará visível para todos no teu perfil" %>
                 </div>
                 <!-- Contacto -->
-                
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Contacto</label>
-                    <%= pp.text_field :contact,
-                        id: "player-contact",
+                    <%= cp.text_field :contact,
+                        id: "coach-contact",
                         class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
-                        pattern: PlayerProfile::REGEX_NUM_TELEMOVEL,
+                        pattern: CoachProfile::REGEX_NUM_TELEMOVEL,
                         placeholder: "Ex. 123123123",
                         maxlength: 9, 
                         required: true %> 
                 </div>
 
-                
-                <br>
-                    <div class="text-center text-xs text-red-400">
+                    <div class="text-left text-xs text-red-400 py-2">
                         * -> Campo Obrigatorio
                     </div>
                 <div class="flex justify-between pt-4">
@@ -238,7 +225,7 @@
                     </button>
                 </div>
 
-                <%= pp.file_field :profile_picture, id: "pp_profile_picture", class: "file-upload-input sr-only", accept: "image/*" %>
+                <%= cp.file_field :profile_picture, id: "pp_profile_picture", class: "file-upload-input sr-only", accept: "image/*" %>
                 </div>
 
 
@@ -325,79 +312,6 @@
             });
         </script>
 
-        <!-- Script para poder escolher as posições consoante o desporto -->
-
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-            const sportSelect = document.getElementById("sport_select");
-            const positionSelect = document.getElementById("position_select");
-            const secondaryPositionSelect = document.getElementById("secondary_position_select");
-
-            const positions = {
-                "Futebol": ["Guarda-Redes", "Lateral Direito", "Lateral Esquerdo", "Central", "Médio Centro", "Médio Ofensivo", "Médio Defensivo", "Extremo Direito", "Extremo Esquerdo", "Ponta de lança"],
-                "Andebol": ["Guarda-Redes", "Central", "Lateral Esquerdo", "Lateral Direito", "Ponta Esquerda", "Pivô", "Ponta Direita"]
-            };
-
-            const populateOptions = (selectEl, opts, preserveValue) => {
-                const prev = preserveValue ? selectEl.value : null;
-                selectEl.innerHTML = "";
-
-                // opção explícita para "Nenhuma posição secundária" (envia "" para o server)
-                if (selectEl === secondaryPositionSelect) {
-                const noneOpt = document.createElement("option");
-                noneOpt.value = "";
-                noneOpt.text = "Nenhuma posição secundária";
-                selectEl.appendChild(noneOpt);
-                }
-
-                opts.forEach(pos => {
-                const o = document.createElement("option");
-                o.value = pos;
-                o.text = pos;
-                selectEl.appendChild(o);
-                });
-
-                // restaura seleção anterior (inclui caso seja "")
-                if (prev !== null) {
-                // se prev não existir entre as opções, ficará vazio como previsto
-                selectEl.value = prev;
-                }
-            };
-
-            const syncSecondary = () => {
-                const primary = positionSelect.value;
-                Array.from(secondaryPositionSelect.options).forEach(opt => {
-                // permite sempre a opção vazia/"Nenhuma posição secundária"
-                if (opt.value === "") {
-                    opt.disabled = false;
-                    return;
-                }
-                opt.disabled = (opt.value === primary);
-                });
-
-                // se o valor atual da secundária for igual à primária (ou for uma opção desativada),
-                // escolhe a primeira disponível (ou deixa como "")
-                if (secondaryPositionSelect.value === primary || Array.from(secondaryPositionSelect.options).find(o => o.selected && o.disabled)) {
-                const firstAvailable = Array.from(secondaryPositionSelect.options).find(o => !o.disabled);
-                secondaryPositionSelect.value = firstAvailable ? firstAvailable.value : "";
-                }
-            };
-
-            const updatePositions = () => {
-                const selectedSport = sportSelect ? sportSelect.value : null;
-                const opts = positions[selectedSport] || [];
-                populateOptions(positionSelect, opts, true);
-                populateOptions(secondaryPositionSelect, opts, true);
-                syncSecondary();
-            };
-
-            if (positionSelect) positionSelect.addEventListener("change", syncSecondary);
-            if (sportSelect) sportSelect.addEventListener("change", updatePositions);
-
-            // Inicializar caso já haja valor
-            updatePositions();
-            });
-        </script>
 
         <!-- Script para mostrar a foto de perfil quando é feito upload -->
         <script>

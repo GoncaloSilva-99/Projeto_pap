@@ -25,6 +25,9 @@ pt:
         name: "Nome"
         birth_date: "Data de nascimento"
         coach_type: "Tipo de treinador"
+        bio: "Biografia"
+        sport: "Desporto"
+        contact: "Contacto"
       sport:
         name: "nome"
       user_profile:
