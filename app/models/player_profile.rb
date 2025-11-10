@@ -2,6 +2,7 @@ class PlayerProfile < ApplicationRecord
   belongs_to :user
   belongs_to :club_profile, optional: true
   has_one_attached :profile_picture
+  has_one_attached :banner
   
   
   SPORTS = ["Futebol", "Andebol"]
