@@ -112,7 +112,7 @@
 
                 <!-- Apps -->
                 <button type="button" data-dropdown-toggle="apps-dropdown" class="p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
-                    <span class="sr-only">View notifications</span>
+                    <span class="sr-only">View Apps</span>
                     <!-- Icon -->
                     <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
                         <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
@@ -497,7 +497,7 @@
     </script>
 
     <!-- Hero Section -->
-    <section id="hero" class="relative py-16 px-6 bg-cover bg-center">
+    <section id="hero" class="relative py-16 px-6 bg-cover bg-center" style="margin-top: 20px;">
         <%= image_tag "foto_baliza.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-20 z-0", alt: "Hero Background" %>
         <!-- overlay to keep text readable -->
         <div class="container mx-auto relative z-10">
@@ -662,8 +662,8 @@
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-gray-300">
-        <div class="container mx-auto py-12 px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 ml-20">
+        <div class="container mx-auto py-12 px-6 items-center">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 ml-10">
                 <!-- Brand -->
                 <div class="max-w-xs">
                     <a href="#inicio">
@@ -680,13 +680,13 @@
                     
                     <h4 class="text-white font-semibold mt-6 mb-3">Subscrever</h4>
                     <form class="flex items-center">
-                    <input type="email" placeholder="SportX@email.com" class="bg-gray-700 text-gray-200 px-3 py-2 rounded-l-md focus:outline-none w-full" />
+                    <input type="email" placeholder="SportX@email.com" class="bg-gray-700 text-gray-200 px-3 py-2 rounded-l-md focus:outline-none w-full" style="width: 170px;"/>
                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r-md text-white">Subscrever</button>
                     </form>
                 </div>
 
                 <!-- Contact / Company -->
-                <div class="md:ml-24">
+                <div class="md:ml-10">
                     <h4 class="text-white font-semibold mb-4">Contacto</h4>
                     <div class="text-gray-400 text-sm space-y-2">
                         <div style="margin-bottom: 17px;"><strong>SportX - Club Managment</strong></div>
@@ -712,7 +712,7 @@
                 </div>
 
                 <!-- Quick Links -->
-                <div style="margin-left: 150px;">
+                <div>
                     <h4 class="text-white font-semibold mb-4">Navegação</h4>
                     <ul class="space-y-2 text-gray-400">
                         <li>Início</li>
@@ -724,7 +724,7 @@
                 </div>
 
                 <!-- Recursos -->
-                <div style="margin-left: 70px;">
+                <div>
                     <h4 class="text-white font-semibold mb-4">Recursos</h4>
                     <ul class="space-y-2 text-gray-400">
                         <li>Documentação</li>
