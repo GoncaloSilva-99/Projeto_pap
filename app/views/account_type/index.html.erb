@@ -92,9 +92,7 @@
                         Acesso à loja oficial para adquirir produtos do clube
                     </li>
                 </ul>
-                <button class="mt-6 w-full bg-rose-600 hover:bg-rose-700 text-white py-2 px-4 rounded-lg transition">
-                    Escolher Adepto
-                </button>
+                <%= link_to "Escolher Adepto", new_user_profile_registration_path, class: "mt-6 w-full bg-rose-600 hover:bg-rose-700 text-white py-2 px-4 rounded-lg transition text-center" %>
             </div>
 
             <!-- Club Card -->
@@ -123,9 +121,7 @@
                         Loja online com gestão de produtos, stock e pagamentos integrados
                     </li>
                 </ul>
-                <button class="mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition">
-                    Escolher Clube
-                </button>
+                <%= link_to "Escolher Clube", new_club_profile_registration_path, class: "mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition text-center" %>
             </div>
         </div>
     </main>

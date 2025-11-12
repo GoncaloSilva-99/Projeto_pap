@@ -10,6 +10,6 @@ class CoachProfile < ApplicationRecord
 
   validates_presence_of :sport, inclusion: {in: SPORTS}
   validates_presence_of :coach_type, inclusion: {in: TYPE}
-  validates_presence_of :name, :birth_date, :contact
+  validates_presence_of :name, :birth_date
 
 end

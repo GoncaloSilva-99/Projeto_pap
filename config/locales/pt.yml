@@ -21,6 +21,9 @@ pt:
         role: "Função"
       club_profile:
         name: "Nome"
+        bio: "Biografia"
+        foundation_dates: "Data de fundação"
+        contact: "Contacto"
       coach_profile:
         name: "Nome"
         birth_date: "Data de nascimento"
@@ -31,6 +34,8 @@ pt:
       sport:
         name: "nome"
       user_profile:
+        name: "Nome"
+        bio: "Biografia"
       user:
         email: "Email"
         password: "Password"
