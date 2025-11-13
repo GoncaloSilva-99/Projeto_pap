@@ -193,62 +193,26 @@
                         <%= image_tag "default_banner.jpg",
                           id: "club_banner_preview",
                           alt: "Pré-visualização do banner do clube",
-                          class: "w-full h-full object-cover" %>
+                          class: "w-full h-full object-cover cursor-pointer" %>
+                        <%= cp.file_field :banner_picture, id: "club_banner_picture", class: "file-upload-input sr-only", accept: "image/*" %>
                       </div>
 
+
                       <!-- Foto de Perfil  -->
-                      <div class="absolute left-1/2 -bottom-14 transform -translate-x-1/2 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
+                      <div class="absolute top-20 left-8 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
                         <%= image_tag "default_pp.jpg",
                           id: "pp_profile_preview",
                           alt: "Pré-visualização da imagem de perfil",
-                          class: "w-full h-full object-cover" %>
+                          class: "w-full h-full object-cover cursor-pointer" %>
+                        <%= cp.file_field :profile_picture, id: "pp_profile_picture", class: "file-upload-input sr-only", accept: "image/*" %>
                       </div>
-                    </div>
+                  </div>
 
-                    <!-- Controlos da foto de perfil -->
-                    <div class="mt-20 flex items-center justify-center gap-3 w-full">
-
-                      <label for="pp_profile_picture" class="file-upload-label px-6 py-3 rounded-lg cursor-pointer select-none">
-                        Escolher foto de perfil
-                      </label>
-
-                      <span class="file-upload-filename text-sm truncate">Nenhum ficheiro selecionado</span>
-
-                      <button type="button" class="button-delete file-upload-remove hidden text-sm rounded px-2 py-1">
-                        Remover
-                      </button>
-                    </div>
-
-                    <%= cp.file_field :profile_picture, id: "pp_profile_picture", class: "file-upload-input sr-only", accept: "image/*" %>
-
-                    <!-- Controlos do banner -->
-                    <div class="mt-4 flex items-center justify-center gap-3 w-full">
-
-                      <label for="club_banner_picture" class="file-upload-label px-6 py-3 rounded-lg cursor-pointer select-none">
-                        Escolher banner
-                      </label>
-
-                      <span class="file-upload-filename-banner text-sm truncate">Nenhum ficheiro selecionado</span>
-                      
-                      <button type="button" class="button-delete file-upload-remove-banner hidden text-sm rounded px-2 py-1">
-                        Remover
-                      </button>
-                    </div>
-
-                    <%= cp.file_field :banner_picture, id: "club_banner_picture", class: "file-upload-input sr-only", accept: "image/*" %>
                   </div>
 
                   <!-- Documento de verificação -->
-                  <label class="block text-sm font-medium text-gray-400 mb-1 mt-8">Documento de Verificação (Ata, Certidão, etc.)</label>
-                  <div class="flex items-center p-4 mb-4 text-xs text-blue-800 border border-blue-300 rounded-lg bg-blue-300 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert">
-                      <svg class="shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                      </svg>
-                      <span class="sr-only">Info</span>
-                      <div>
-                        <span class="font-medium">Atenção:</span> apenas insira documentos que verifiquem que é dono do clube ou que tem permissão do mesmo para criar a conta (ex. Documento oficial da associação / Documento assinado pelo presidente a aprovar a criação do clube na plataforma).
-                      </div>
-                    </div>
+                  <br>
+                  <label class="block text-sm font-medium text-gray-400 mb-1 mt-8">Documento de Verificação (Ex. Documento oficial da associação)</label>
                   <div class="file-upload-wrapper flex flex-col items-center gap-4 w-full max-w-sm mx-auto" aria-live="polite">
                     <div class="file-upload-preview-doc w-full border border-dashed border-gray-500 rounded-lg p-4 text-center text-gray-300">
                       Nenhum documento carregado
@@ -480,6 +444,16 @@
       updateDocPreview(null);
     });
   }
+
+  document.getElementById("pp_profile_preview").addEventListener("click", function() {
+    document.getElementById("pp_profile_picture").click();
+  });
+
+  document.getElementById("club_banner_preview").addEventListener("click", function() {
+    document.getElementById("club_banner_picture").click();
+  });
+
+  
 </script>
 
         <!-- Script de mostrar password -->
