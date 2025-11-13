@@ -190,6 +190,37 @@
                 <span class="bg-red-500 px-2 py-1 rounded text-xs font-bold">NOTÍCIAS</span>
             </div>
             <div class="flex whitespace-nowrap news-scroll">
+                <!-- Primeira cópia -->
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/1" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">New tournament announced:</span>
+                    <span class="text-gray-400 ml-2">Regional Championship registration now open!</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/2" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">System Update:</span>
+                    <span class="text-gray-400 ml-2">New analytics dashboard now available</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/3" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">Training Tip:</span>
+                    <span class="text-gray-400 ml-2">Improve your endurance with these exercises</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/4" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">Player Spotlight:</span>
+                    <span class="text-gray-400 ml-2">Meet this month's rising star athlete</span>
+                </div>
+
+                <!-- Segunda cópia (para loop infinito contínuo) -->
                 <div class="flex items-center mr-16">
                     <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
                         <img src="http://static.photos/people/200x200/1" class="w-full h-full object-cover">
@@ -224,14 +255,14 @@
     
     <style>
         .news-scroll {
-            /* Garante que a animação funciona no news-scroll */
-            animation: scroll 15s linear infinite; 
+            animation: scroll 20s linear infinite;
         }
+
         @keyframes scroll {
             0% { transform: translateX(0); }
-            /* Se o conteúdo estiver DUPLICADO, -50% faz com que a primeira metade saia da vista e a segunda entre */
-            100% { transform: translateX(-50%); } 
+            100% { transform: translateX(-50%); }
         }
+
         .card-hover:hover {
             transform: translateY(-10px);
             transition: all 0.3s ease;
@@ -245,33 +276,28 @@
         }
 
         #search-bar.active {
-            max-width: 800px;
+            max-width: 300px;
             opacity: 1;
             padding-left: 0.75rem;
             padding-right: 0.75rem;
         }
 
-        /* margem gerida pelo posicionamento inline / script — não usar margin-top aqui */
         #news-ticker {
             margin-top: 0;
         }
 
-        /* container do ticker precisa de posição relativa para o gradiente de corte */
         #news-ticker .container {
             position: relative;
         }
 
-        /* garante que as notícias iniciem logo após o span LATEST */
         #news-ticker .news-scroll {
-            padding-left: 4rem; /* equivalente a pl-16 */
+            padding-left: 4rem;
         }
 
-        /* garante que o LATEST fique por cima do texto */
         #news-ticker .absolute.left-0 {
             z-index: 10;
         }
-        
-        /* area de corte / fade à esquerda para desaparecer no Latest */
+
         #news-ticker .container::before {
             content: "";
             position: absolute;
@@ -285,7 +311,6 @@
             pointer-events: none;
         }
 
-        /* area de corte / fade à direita para desaparecer debaixo do ícone user */
         #news-ticker .container::after {
             content: "";
             position: absolute;
@@ -293,34 +318,10 @@
             top: -7px;
             bottom: 0;
             height: 40px;
-            width: 119px; /* ajustar conforme necessário */
+            width: 119px;
             background-image: linear-gradient(to bottom, #111827 0%, #1f2937 100%);
             z-index: 10;
             pointer-events: none;
-        }
-
-        .news-scroll {
-            animation: scroll 30s linear infinite;
-        }
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .card-hover:hover {
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
-        }
-        #search-bar {
-            transition: all 0.3s ease;
-            max-width: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
-        #search-bar.active {
-            max-width: 300px;
-            opacity: 1;
-            padding-left: 0.75rem;
-            padding-right: 0.75rem;
         }
     </style>
 
@@ -499,14 +500,54 @@
             window.addEventListener('scroll', closePinnedMenu);
         }
 
+        // Calcula a duração da animação baseada na largura do conteúdo (velocidade consistente)
+        function calculateScrollDuration() {
+            const scrollContainer = document.querySelector('.news-scroll');
+            if (!scrollContainer) return;
+
+            // Velocidade em pixels por segundo (ajuste conforme necessário)
+            const PIXELS_PER_SECOND = 10;
+            
+            // Obtém a largura total do conteúdo
+            const totalWidth = scrollContainer.scrollWidth;
+            // A animação vai de 0 a -50%, então a distância é 50% da largura
+            const distanceToCover = totalWidth / 2;
+            
+            // Calcula a duração em segundos
+            const duration = distanceToCover / PIXELS_PER_SECOND;
+            
+            // Define a variável CSS
+            document.documentElement.style.setProperty('--scroll-duration', duration + 's');
+        }
+
+        // Calcula ao carregar
+        calculateScrollDuration();
+
+        // Recalcula ao redimensionar
+        window.addEventListener('resize', () => {
+            clearTimeout(window.__scrollDurationTimer);
+            window.__scrollDurationTimer = setTimeout(calculateScrollDuration, 120);
+        });
+
         // posiciona o ticker imediatamente abaixo do navbar (funciona em mobile e desktop)
         function positionTicker() {
             const nav = document.querySelector('nav');
             const ticker = document.getElementById('news-ticker');
+            const heroSection = document.getElementById('inicio');
+            
             if (!nav || !ticker) return;
+            
             const navRect = nav.getBoundingClientRect();
             // define top inline para o bottom do nav (px)
             ticker.style.top = navRect.bottom + 'px';
+            
+            // Calcula a altura total ocupada (navbar + ticker)
+            if (heroSection) {
+                const tickerRect = ticker.getBoundingClientRect();
+                const totalHeight = tickerRect.bottom;
+                // Aplica margin-top dinamicamente para evitar que o ticker tape o conteúdo
+                heroSection.style.marginTop = totalHeight + 'px';
+            }
         }
 
         // chama uma vez ao carregar
@@ -525,7 +566,7 @@
     </script>
 
     <!-- Hero Section -->
-    <section  id="inicio" class="relative py-16 px-6 bg-cover bg-center " style="margin-top: 60px;">
+    <section  id="inicio" class="relative py-16 px-6 bg-cover bg-center">
         <%= image_tag "foto_baliza.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-20 z-0", alt: "Hero Background" %>
         <!-- overlay to keep text readable -->
         <div class="container mx-auto relative z-10">
