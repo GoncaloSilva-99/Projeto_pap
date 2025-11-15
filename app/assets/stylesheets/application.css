@@ -208,3 +208,75 @@ select:required:hover {
   border-color: #f87171;
 }
 
+.feather-check {
+    width: 1rem !important;
+    height: 1rem !important;
+    min-width: 1rem !important;
+    min-height: 1rem !important;
+    max-width: 1rem !important;
+    max-height: 1rem !important;
+    vertical-align: middle;
+}
+
+
+.card-hover {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+.card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+}
+.card-hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+}
+.card-hover:hover::before {
+    left: 100%;
+}
+.player-bg:hover {
+    background-color: rgba(99, 102, 241, 0.05);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+.coach-bg:hover {
+    background-color: rgba(16, 185, 129, 0.05);
+    border-color: rgba(16, 185, 129, 0.3);
+}
+.fan-bg:hover {
+    background-color: rgba(244, 63, 94, 0.05);
+    border-color: rgba(244, 63, 94, 0.3);
+}
+.club-bg:hover {
+    background-color: rgba(139, 92, 246, 0.05);
+    border-color: rgba(139, 92, 246, 0.3);
+}
+
+.remove-profile-overlay {
+  pointer-events: none;
+  opacity: 0 !important;
+}
+
+/* Estado quando há imagem - botão fica disponível mas invisível até hover */
+.remove-profile-overlay-visible {
+  pointer-events: auto;
+  opacity: 0;
+}
+
+/* Quando hover no grupo (foto de perfil), mostrar o botão com background */
+.group:hover .remove-profile-overlay-visible {
+  opacity: 1;
+  background-color: rgba(239, 68, 68, 0.9);
+}
+
+.group:hover .remove-profile-overlay-visible:hover {
+  background-color: rgba(239, 68, 68, 1);
+}
+

@@ -22,8 +22,9 @@ pt:
       club_profile:
         name: "Nome"
         bio: "Biografia"
-        foundation_dates: "Data de fundação"
+        foundation_date: "Data de fundação"
         contact: "Contacto"
+        verification_document: "Documento de verificação"
       coach_profile:
         name: "Nome"
         birth_date: "Data de nascimento"

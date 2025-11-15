@@ -1,6 +1,7 @@
 <body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center p-4">
     <div class="max-w-md w-full">
-        <!-- Header -->
+<!--------------------------------------------------------------- Header ----------------------------------------------------------------------------->
+
         <div class="text-center mb-8">
             <div class="text-center mb-8 mt-8">
                 <%= link_to root_path do %>
@@ -44,6 +45,10 @@
                     <% end %>
                 </ul>
             </div>
+            <button type="button" class="ms-auto -mx-1.5 -my-1.5 rounded focus:ring-2 focus:ring-brand-medium hover:bg-brand-soft inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#alert-close" aria-label="Close" >
+                <span class="sr-only">Close</span>
+                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
+            </button>
         </div>
     <% end %>
         
@@ -135,7 +140,7 @@
                     <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome</label>
                     <%= cp.text_field :name,
                         class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
-                        placeholder:"Ex. Juvesvaldo Ribeiro",
+                        placeholder:"Ex. SportX FC",
                         required: true %>
                 </div>
                 <!-- Data de fundação -->
@@ -189,30 +194,41 @@
                     <div class="relative w-full max-w-2xl">
 
                       <!-- Banner -->
-                      <div class="w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                      <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
                         <%= image_tag "default_banner.jpg",
                           id: "club_banner_preview",
                           alt: "Pré-visualização do banner do clube",
                           class: "w-full h-full object-cover cursor-pointer" %>
                         <%= cp.file_field :banner_picture, id: "club_banner_picture", class: "file-upload-input sr-only", accept: "image/*" %>
+                        
+                        <button type="button" id="remove-banner-btn" class="hidden absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
                       </div>
 
 
                       <!-- Foto de Perfil  -->
-                      <div class="absolute top-20 left-8 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
+                      <div class="absolute top-20 left-8 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
                         <%= image_tag "default_pp.jpg",
                           id: "pp_profile_preview",
                           alt: "Pré-visualização da imagem de perfil",
                           class: "w-full h-full object-cover cursor-pointer" %>
                         <%= cp.file_field :profile_picture, id: "pp_profile_picture", class: "file-upload-input sr-only", accept: "image/*" %>
+                        
+                        <button type="button" id="remove-profile-btn" class="remove-profile-overlay absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
                       </div>
-                  </div>
-
+                    </div>
                   </div>
 
                   <!-- Documento de verificação -->
                   <br>
-                  <label class="block text-sm font-medium text-gray-400 mb-1 mt-8">Documento de Verificação (Ex. Documento oficial da associação)</label>
+                  <label class="block text-sm font-medium text-gray-400 mb-1 mt-8 required-label">Documento de Verificação (Ex. Documento oficial da associação)</label>
                   <div class="file-upload-wrapper flex flex-col items-center gap-4 w-full max-w-sm mx-auto" aria-live="polite">
                     <div class="file-upload-preview-doc w-full border border-dashed border-gray-500 rounded-lg p-4 text-center text-gray-300">
                       Nenhum documento carregado
@@ -231,7 +247,7 @@
                       </button>
                     </div>
 
-                    <%= cp.file_field :verification_document, id: "verification_document", class: "file-upload-input sr-only", accept: ".pdf,.jpg,.jpeg,.png" %>
+                    <%= cp.file_field :verification_document, id: "verification_document", class: "file-upload-input sr-only", accept: ".pdf,.jpg,.jpeg,.png", required: true %>
                   </div>
                   </div>
                   <br>
@@ -251,10 +267,10 @@
                     <button type="button" class="w-32 bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg prev-step" data-prev="2">
                         Voltar
                     </button>
-<% end %>
+              <% end %>
                     <%= f.submit "Criar Conta", class:"login-btn w-32 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30" %>
         
-</div>
+                </div>
             </div>
             <br>
 
@@ -332,129 +348,124 @@
         </script>
 
 
-        <!-- Script para mostrar a foto de perfil quando é feito upload -->
-<script>
-  // --- Função genérica para pré-visualização de imagens ---
-  function setupImagePreview(inputId, previewId, filenameSelector, removeBtnSelector) {
-    const fileInput = document.getElementById(inputId);
-    const previewImage = document.getElementById(previewId);
-    const filenameSpan = document.querySelector(filenameSelector);
-    const removeBtn = document.querySelector(removeBtnSelector);
-    let originalSrc = previewImage ? previewImage.src : '';
+        <!-- Script foto de perfil e banner -->
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+          const profileInput = document.getElementById('pp_profile_picture');
+          const profilePreview = document.getElementById('pp_profile_preview');
+          const removeProfileBtn = document.getElementById('remove-profile-btn');
+          const originalProfileSrc = profilePreview ? profilePreview.src : '';
+          let hasProfileImage = false;
 
-    if (!fileInput) return;
+          if (profileInput && profilePreview) {
+            profileInput.addEventListener('change', (e) => {
+              const file = e.target.files[0];
+              if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                  profilePreview.src = ev.target.result;
+                  hasProfileImage = true;
+                  removeProfileBtn.classList.remove('remove-profile-overlay');
+                  removeProfileBtn.classList.add('remove-profile-overlay-visible');
+                };
+                reader.readAsDataURL(file);
+              }
+            });
 
-    const updatePreview = (file) => {
-      if (!file) {
-        if (previewImage) previewImage.src = originalSrc;
-        if (filenameSpan) filenameSpan.textContent = 'Nenhum ficheiro selecionado';
-        if (removeBtn) removeBtn.classList.add('hidden');
-        return;
-      }
+            profilePreview.addEventListener('click', () => {
+              if (!hasProfileImage) {
+                profileInput.click();
+              }
+            });
 
-      if (!file.type.startsWith('image/')) {
-        alert('Por favor selecione um ficheiro de imagem (jpg, png, etc).');
-        fileInput.value = '';
-        updatePreview(null);
-        return;
-      }
+            if (removeProfileBtn) {
+              removeProfileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profileInput.value = '';
+                profilePreview.src = originalProfileSrc;
+                hasProfileImage = false;
+                removeProfileBtn.classList.remove('remove-profile-overlay-visible');
+                removeProfileBtn.classList.add('remove-profile-overlay');
+              });
+            }
+          }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (previewImage) previewImage.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+          const bannerInput = document.getElementById('club_banner_picture');
+          const bannerPreview = document.getElementById('club_banner_preview');
+          const removeBannerBtn = document.getElementById('remove-banner-btn');
+          const originalBannerSrc = bannerPreview ? bannerPreview.src : '';
 
-      if (filenameSpan) filenameSpan.textContent = file.name;
-      if (removeBtn) removeBtn.classList.remove('hidden');
-    };
+          if (bannerInput && bannerPreview) {
+            bannerInput.addEventListener('change', (e) => {
+              const file = e.target.files[0];
+              if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                  bannerPreview.src = ev.target.result;
+                  removeBannerBtn.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+              }
+            });
 
-    fileInput.addEventListener('change', (event) => {
-      const file = event.target.files && event.target.files[0] ? event.target.files[0] : null;
-      updatePreview(file);
-    });
+            bannerPreview.addEventListener('click', () => {
+              bannerInput.click();
+            });
 
-    if (removeBtn) {
-      removeBtn.addEventListener('click', () => {
-        fileInput.value = '';
-        updatePreview(null);
-      });
-    }
-  }
+            if (removeBannerBtn) {
+              removeBannerBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); 
+                bannerInput.value = '';
+                bannerPreview.src = originalBannerSrc;
+                removeBannerBtn.classList.add('hidden');
+              });
+            }
+          }
 
-  // --- Foto de perfil principal ---
-  setupImagePreview('pp_profile_picture', 'pp_profile_preview', '.file-upload-filename', '.file-upload-remove');
+          const docInput = document.getElementById('verification_document');
+          const docPreview = document.querySelector('.file-upload-preview-doc');
+          const docFilename = document.querySelector('.file-upload-filename-doc');
+          const docRemoveBtn = document.querySelector('.file-upload-remove-doc');
 
-  // --- Banner ---
-  setupImagePreview('club_banner_picture', 'club_banner_preview', '.file-upload-filename-banner', '.file-upload-remove-banner');
+          if (docInput) {
+            const updateDocPreview = (file) => {
+              if (!file) {
+                docPreview.innerHTML = 'Nenhum documento carregado';
+                docFilename.textContent = 'Nenhum ficheiro selecionado';
+                docRemoveBtn.classList.add('hidden');
+                return;
+              }
 
-  // Quando o banner muda, também atualiza a miniatura de perfil sobreposta
-  document.getElementById('pp_profile_picture')?.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        document.getElementById('pp_on_banner_preview').src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
+              const type = file.type;
+              if (type === 'application/pdf') {
+                docPreview.innerHTML = `<span class="text-red-500 font-medium">📄 ${file.name}</span>`;
+              } else if (type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                  docPreview.innerHTML = `<img src="${e.target.result}" alt="Pré-visualização do documento" class="max-h-64 mx-auto rounded-lg shadow-md"/>`;
+                };
+                reader.readAsDataURL(file);
+              } else {
+                alert('Tipo de ficheiro não é aceite. Use PDF ou imagem.');
+                docInput.value = '';
+                return;
+              }
 
-  // --- Documento de verificação (PDF ou imagem) ---
-  const docInput = document.getElementById('verification_document');
-  const docPreview = document.querySelector('.file-upload-preview-doc');
-  const docFilename = document.querySelector('.file-upload-filename-doc');
-  const docRemoveBtn = document.querySelector('.file-upload-remove-doc');
+              docFilename.textContent = file.name;
+              docRemoveBtn.classList.remove('hidden');
+            };
 
-  if (docInput) {
-    const updateDocPreview = (file) => {
-      if (!file) {
-        docPreview.innerHTML = 'Nenhum documento carregado';
-        docFilename.textContent = 'Nenhum ficheiro selecionado';
-        docRemoveBtn.classList.add('hidden');
-        return;
-      }
+            docInput.addEventListener('change', (e) => {
+              const file = e.target.files[0];
+              updateDocPreview(file);
+            });
 
-      const type = file.type;
-      if (type === 'application/pdf') {
-        docPreview.innerHTML = `<span class="text-red-500 font-medium">📄 ${file.name}</span>`;
-      } else if (type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          docPreview.innerHTML = `<img src="${e.target.result}" alt="Pré-visualização do documento" class="max-h-64 mx-auto rounded-lg shadow-md"/>`;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        alert('Tipo de ficheiro não suportado. Use PDF ou imagem.');
-        docInput.value = '';
-        return;
-      }
-
-      docFilename.textContent = file.name;
-      docRemoveBtn.classList.remove('hidden');
-    };
-
-    docInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      updateDocPreview(file);
-    });
-
-    docRemoveBtn.addEventListener('click', () => {
-      docInput.value = '';
-      updateDocPreview(null);
-    });
-  }
-
-  document.getElementById("pp_profile_preview").addEventListener("click", function() {
-    document.getElementById("pp_profile_picture").click();
-  });
-
-  document.getElementById("club_banner_preview").addEventListener("click", function() {
-    document.getElementById("club_banner_picture").click();
-  });
-
-  
-</script>
+            docRemoveBtn.addEventListener('click', () => {
+              docInput.value = '';
+              updateDocPreview(null);
+            });
+          }});
+        </script>
 
         <!-- Script de mostrar password -->
 
@@ -510,6 +521,25 @@
                     }
                 }
             }
+        </script>
+
+        <!-- Script para fechar a mensagem de erro -->
+
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.querySelector('[role="alert"]');
+            const closeBtn = document.querySelector('[data-dismiss-target="#alert-close"]');
+
+            if (closeBtn && alertBox) {
+              closeBtn.addEventListener('click', function() {
+                alertBox.style.opacity = '0';
+                alertBox.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => {
+                  alertBox.style.display = 'none';
+                }, 300);
+              });
+            }
+          });
         </script>
 
 <!--------------------------------------------------------------- CSS ----------------------------------------------------------------------------->        

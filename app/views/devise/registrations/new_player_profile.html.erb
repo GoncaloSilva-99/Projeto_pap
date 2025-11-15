@@ -31,21 +31,25 @@
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-4", id: "multiStepForm", novalidate: true }) do |f| %>
         
         <% if resource.errors.any? %>
-        <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-stone-800 dark:bg-gray-800 dark:text-red-400" role="alert">
-            <svg class="shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-            </svg>
-            <span class="sr-only">Danger</span>
-            <div>
-                <span class="font-medium">Houve os seguintes erros:</span>
-                <ul class="mt-1.5 list-disc list-inside">
-                    <% resource.errors.full_messages.each do |msg| %>
-                    <li><%= msg %></li>
-                    <% end %>
-                </ul>
+            <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+                <svg class="shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                </svg>
+                <span class="sr-only">Danger</span>
+                <div>
+                    <span class="font-medium">Houve os seguintes erros:</span>
+                    <ul class="mt-1.5 list-disc list-inside">
+                        <% resource.errors.full_messages.each do |msg| %>
+                        <li><%= msg %></li>
+                        <% end %>
+                    </ul>
+                </div>
+                <button type="button" class="ms-auto -mx-1.5 -my-1.5 rounded focus:ring-2 focus:ring-brand-medium hover:bg-brand-soft inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#alert-close" aria-label="Close" >
+                    <span class="sr-only">Close</span>
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
+                </button>
             </div>
-        </div>
-    <% end %>
+        <% end %>
         
         <%= f.hidden_field :role,
             value: "Player" %>
@@ -95,7 +99,12 @@
                 <!-- Confirmar Password -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Confirmar Password</label>
-                    <%= f.password_field :password_confirmation, autocomplete: "new-password", id: "password-confirmation", class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"••••••••" %>
+                    <%= f.password_field :password_confirmation,
+                        autocomplete: "new-password",
+                        id: "password-confirmation",
+                        class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                        placeholder:"••••••••" %>
+
                     <div class="relative"> 
                         <button type="button" id="toggle-password-confirmation" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-indigo-500">
                             <!-- Olho aberto -->
@@ -215,56 +224,69 @@
 <!--------------------------------------------------------------- Step 3 ----------------------------------------------------------------------------->
 
 
-            <div class="step-content hidden" data-step="3">
-                <!-- Foto de Perfil -->
-                <label class="block text-sm font-medium text-gray-400 mb-1">Foto de Perfil</label>
-                <div class="file-upload-wrapper flex flex-col items-center gap-4 w-full max-w-sm mx-auto" aria-live="polite">
-                <div class="file-upload-preview w-40 h-40 rounded-full overflow-hidden shadow-lg">
-                    <%= image_tag "default_pp.jpg",
-                    id: "pp_profile_preview",
-                    alt: "Pré-visualização da imagem de perfil",
-                    class: "w-full h-full object-cover" %>
 
-                </div>
+        <div class="step-content hidden" data-step="3">
+            <div class="file-upload-wrapper flex flex-col items-center gap-4 w-full max-w-2xl mx-auto" aria-live="polite">
+                <label class="block text-sm font-medium text-gray-400 mb-1 mt-6">Foto de perfil e banner</label>
+                <div class="relative w-full max-w-2xl">
 
-                <div class="flex items-center justify-center gap-3 w-full">
-                    <label for="pp_profile_picture" class="file-upload-label px-6 py-3 rounded-lg cursor-pointer select-none">
-                    Escolher ficheiro
-                    </label>
+                <!-- Banner -->
+                <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                    <%= image_tag "default_banner.jpg",
+                        id: "club_banner_preview",
+                        alt: "Pré-visualização do banner",
+                        class: "w-full h-full object-cover cursor-pointer" %>
 
-                    <span class="file-upload-filename text-sm truncate">
-                    Nenhum ficheiro selecionado
-                    </span>
-
-
-                    <button type="button" class="button-delete file-upload-remove hidden text-sm rounded px-2 py-1">
-                    Remover
-                    </button>
-                </div>
-
-                <%= pp.file_field :profile_picture, id: "pp_profile_picture", class: "file-upload-input sr-only", accept: "image/*" %>
-                </div>
-
-
-                <div class="flex justify-between pt-4">
+                    <%= pp.file_field :banner_picture,
+                        id: "club_banner_picture",
+                        class: "file-upload-input sr-only",
+                        accept: "image/*" %>
                     
-                    <button type="button" class="w-32 bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg prev-step" data-prev="2">
-                        Voltar
+                    <button type="button" id="remove-banner-btn" class="hidden absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
                     </button>
-<% end %>
-                    <%= f.submit "Criar Conta", class:"login-btn w-32 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30" %>
-        
-</div>
-            </div>
-            <br>
+                </div>
 
-            <div class="text-center text-sm text-gray-400">
-                <%= link_to "Escolher tipo de conta", choose_account_type_path, class: "text-primary-500 hover:underline font-medium" %>
-                <br>
-                Já tem uma conta? <%= link_to 'Entrar', new_user_session_path, class: "text-primary-500 hover:underline font-medium" %>
-            </div>
-            
+                <!-- Foto de Perfil -->
+                <div class="absolute top-20 left-8 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
+                    <%= image_tag "default_pp.jpg",
+                        id: "pp_profile_preview",
+                        alt: "Pré-visualização da imagem de perfil",
+                        class: "w-full h-full object-cover cursor-pointer" %>
 
+                    <%= pp.file_field :profile_picture,
+                        id: "pp_profile_picture",
+                        class: "file-upload-input sr-only",
+                        accept: "image/*" %>
+                    
+                    <button type="button" id="remove-profile-btn" class="absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    </button>
+                </div>
+                </div>
+            </div>
+            <br><br><br><br>
+            <div class="flex justify-between pt-4">
+                <button type="button" class="w-32 bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg prev-step" data-prev="2">
+                Voltar
+                </button>
+                <%= f.submit "Criar Conta",
+                    class:"login-btn w-32 bg-primary-500 hover:bg-primary-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30" %>
+            </div>
+        </div>
+    <% end %> 
+
+    <br>
+
+    <div class="text-center text-sm text-gray-400">
+        <%= link_to "Escolher tipo de conta", choose_account_type_path, class: "text-primary-500 hover:underline font-medium" %>
+        <br>
+        Já tem uma conta? <%= link_to 'Entrar', new_user_session_path, class: "text-primary-500 hover:underline font-medium" %>
+    </div>
 <% end %>
 
     
@@ -405,58 +427,79 @@
             });
         </script>
 
-        <!-- Script para mostrar a foto de perfil quando é feito upload -->
+        <!-- Script foto de perfil e banner -->
         <script>
-            const fileInput = document.getElementById('pp_profile_picture');
-            const previewImage = document.getElementById('pp_profile_preview');
-            const filenameSpan = document.querySelector('.file-upload-filename');
-            const wrapper = document.querySelector('.file-upload-wrapper');
-            const removeBtn = document.querySelector('.file-upload-remove');
-            let originalPreviewSrc = (previewImage && previewImage.src) ? previewImage.src : '';
+            document.addEventListener('DOMContentLoaded', function() {
+                const profileInput = document.getElementById('pp_profile_picture');
+                const profilePreview = document.getElementById('pp_profile_preview');
+                const removeProfileBtn = document.getElementById('remove-profile-btn');
+                const originalProfileSrc = profilePreview ? profilePreview.src : '';
+                let hasProfileImage = false;
 
-            if (fileInput) {
-            const updatePreview = (file) => {
-                if (!file) {
-                if (previewImage) previewImage.src = originalPreviewSrc;
-                if (filenameSpan) filenameSpan.textContent = 'Nenhum ficheiro selecionado';
-                if (removeBtn) removeBtn.classList.add('hidden');
-                if (wrapper) wrapper.classList.remove('has-file');
-                return;
-                }
+                if (profileInput && profilePreview && removeProfileBtn) {
+                // Inicializar: garantir que o botão está hidden
+                removeProfileBtn.classList.add('hidden');
 
-
-                if (!file.type.startsWith('image/')) {
-                alert('Por favor selecione um ficheiro de imagem (jpg, png, etc).');
-                fileInput.value = '';
-                updatePreview(null);
-                return;
-                }
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                if (previewImage) previewImage.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-
-                if (filenameSpan) filenameSpan.textContent = file.name;
-                if (removeBtn) removeBtn.classList.remove('hidden');
-                if (wrapper) wrapper.classList.add('has-file');
-            };
-
-            fileInput.addEventListener('change', (event) => {
-                const file = event.target.files && event.target.files[0] ? event.target.files[0] : null;
-                updatePreview(file);
-            });
-
-            if (removeBtn) {
-                removeBtn.addEventListener('click', () => {
-                fileInput.value = '';
-                updatePreview(null);
+                profileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        profilePreview.src = ev.target.result;
+                        hasProfileImage = true;
+                        removeProfileBtn.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                    }
                 });
-            }
 
-            }
+                profilePreview.addEventListener('click', () => {
+                    if (!hasProfileImage) {
+                    profileInput.click();
+                    }
+                });
 
+                removeProfileBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    profileInput.value = '';
+                    profilePreview.src = originalProfileSrc;
+                    hasProfileImage = false;
+                    removeProfileBtn.classList.add('hidden');
+                });
+                }
+
+                const bannerInput = document.getElementById('club_banner_picture');
+                const bannerPreview = document.getElementById('club_banner_preview');
+                const removeBannerBtn = document.getElementById('remove-banner-btn');
+                const originalBannerSrc = bannerPreview ? bannerPreview.src : '';
+
+                if (bannerInput && bannerPreview) {
+                bannerInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        bannerPreview.src = ev.target.result;
+                        removeBannerBtn.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                    }
+                });
+
+                bannerPreview.addEventListener('click', () => {
+                    bannerInput.click();
+                });
+
+                if (removeBannerBtn) {
+                    removeBannerBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    bannerInput.value = '';
+                    bannerPreview.src = originalBannerSrc;
+                    removeBannerBtn.classList.add('hidden');
+                    });
+                }
+                }
+            });
         </script>
 
         <!-- Script de mostrar password -->
@@ -513,6 +556,25 @@
                     }
                 }
             }
+        </script>
+
+        <!-- Script para fechar a mensagem de erro -->
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const alertBox = document.querySelector('[role="alert"]');
+                const closeBtn = document.querySelector('[data-dismiss-target="#alert-close"]');
+
+                if (closeBtn && alertBox) {
+                closeBtn.addEventListener('click', function() {
+                    alertBox.style.opacity = '0';
+                    alertBox.style.transition = 'opacity 0.3s ease';
+                    setTimeout(() => {
+                    alertBox.style.display = 'none';
+                    }, 300);
+                });
+                }
+            });
         </script>
 
 <!--------------------------------------------------------------- CSS ----------------------------------------------------------------------------->        
