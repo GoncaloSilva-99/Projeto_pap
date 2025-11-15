@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :role, presence: true, inclusion: {in: ["User", "Player", "Coach", "Club", "Board", "Admin"]}
+  validates_presence_of :email, :password, :password_confirmation
 
   has_one :user_profile, dependent: :destroy
   accepts_nested_attributes_for :user_profile
@@ -48,6 +49,7 @@ class User < ApplicationRecord
     role == "Admin"
   end
 
+  REGEX_EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   
 
 end

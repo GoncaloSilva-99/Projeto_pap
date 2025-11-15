@@ -1,34 +1,29 @@
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex justify-start justify-center p-4 bg-gray-900">
     <div class="auth-container rounded-xl p-8 sm:p-10 w-full max-w-md">
       <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-5" }) do |f| %>
         
-        <!-- Back link -->
-
-        <%= link_to root_path, class: "back-link flex items-center text-sm text-sky-100 mb-6" do %>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Voltar atrás
-        <% end %>
-        
-        <!-- Head do bloco -->
-
+        <!-- Header-->
+        <h1 class="text-white bold">CENTRAR TUDO COMO NO NEW_PLAYER_PROFILE</h1>
         <div class="text-center mb-8">
-            <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "mx-auto mb-4", height: 70, width: 70 %>
-            <p class="text-sky-50/70">Entre na sua conta para continuar</p>
+            <%= link_to root_path do %>
+                <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "mx-auto mb-4", height: 70, width: 70 %>
+            <% end %>
+            <p class="text-sky-50/70">Entrar na sua conta SportX</p>
         </div>
+
 
             <!-- Email -->
             <div>
                 <label for="email" class="block text-sm font-medium text-sky-100 mb-1">Email</label>
-                <%= f.email_field :email, autofocus: true, id:"email", class:"input-field w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500", placeholder:"email@gmail.com" %>
+                <%= f.email_field :email, autofocus: true, id:"email", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"email@gmail.com" %>
             </div>
             
             <!-- Password -->
 
             <div class="relative">
                 <label for="password" class="block text-sm font-medium text-sky-100 mb-1">Password</label>
-                <%= f.password_field :password, autocomplete: "current-password", id:"password", class:"input-field w-full px-4 py-3 pr-10 rounded-lg border border-gray-200 focus:outline-none focus:border-indigo-500", placeholder:"••••••••"  %>
+                
+                <%= f.password_field :password, autocomplete: "current-password", id:"password", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", placeholder:"••••••••"  %>
                 <button type="button" id="toggle-password" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-indigo-500">
                     <!-- Olho aberto -->
                     <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,16 +35,17 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95M6.634 6.634A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.956 9.956 0 01-4.293 5.032M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />
                     </svg>
+                    
                 </button>
             </div>
             
             <!-- Botão de entrar -->
 
-            <%= f.submit "Entrar", class:"auth-btn w-full py-3 px-4 rounded-lg text-white font-medium" %>
+            <%= f.submit "Entrar", class:"login-btn w-full py-3 px-4 rounded-lg text-white font-medium" %>
             
             <div class="divider text-sm "><p class="text-sky-50/70">ou</p></div>
             
-            <!-- OAuth -->
+            <!-- OAuth (a fazer para realmente funcionar) -->
 
             <div class="grid grid-cols-1 gap-3 text-sky-50/70 ">
                 <button type="button" class="w-full flex items-center justify-center py-2 px-4 border border-gray-200 rounded-lg bg-white text-black hover:bg-gray-300 transition">
@@ -66,73 +62,7 @@
     </div>
 </body>
 
-<style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #393E46;
-        }
-        
-        .auth-container {
-            background: #222831;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        
-        
-        .auth-btn {
-            transition: all 0.3s ease;
-            background-image: linear-gradient(to right, #4f46e5, #7c3aed);
-            cursor: pointer;
-        }
-        
-        .auth-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-        
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            color: #64748b;
-        }
-        
-        .divider::before,
-        .divider::after {
-            content: "";
-            flex: 1;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        
-        .divider::before {
-            margin-right: 1rem;
-        }
-        
-        .divider::after {
-            margin-left: 1rem;
-        }
-        
-        .back-link {
-            transition: all 0.2s ease;
-        }
-        
-        .back-link:hover {
-            color: #4f46e5;
-        }
-
-        button{
-            cursor: pointer;
-        }
-
-        #toggle-password {
-            top: 49px; 
-        }
-
-</style>
-
-<!-- Script de ver passe -->
+<!-- JS de mostrar password -->
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -154,6 +84,14 @@
     });
   });
 </script>
+
+<!-- CSS para alinhar botão de ver password -->
+
+<style>
+    #toggle-password {
+        top: 49px; 
+    }
+</style>
 
 
 

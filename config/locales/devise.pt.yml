@@ -1,0 +1,62 @@
+# Additional translations at https://github.com/heartcombo/devise/wiki/I18n
+
+en:
+  devise:
+    confirmations:
+      confirmed: "O seu email foi verificado com sucesso."
+      send_instructions: "Vai receber um email com as instruções de como verificar a sua conta. Este email pode demorar alguns minutos"
+    failure:
+      already_authenticated: "Já tem sessão iniciada!"
+      inactive: "A sua conta ainda não está verificada."
+      invalid: " {authentication_keys} ou password inválido."
+      locked: "A sua conta foi bloqueada."
+      last_attempt: "Tem apenas mais uma tentativa antes da sua conta ser bloqueada."
+      not_found_in_database: "{authentication_keys} ou password inválido."
+      timeout: "A sua sessão expirou."
+      unauthenticated: "Inicie sessão antes de continuar."
+      unconfirmed: "Tem de confirmar o seu email antes de continuar."
+    mailer:
+      confirmation_instructions:
+        subject: "Instruções para confirmar conta"
+      reset_password_instructions:
+        subject: "Instruções para redefinição de password"
+      unlock_instructions:
+        subject: "Instruções para desbloquear conta"
+      email_changed:
+        subject: "Email alterado"
+      password_change:
+        subject: "Palavra passe alterada"
+    omniauth_callbacks:
+      failure: "Não foi possível autentica-lo através do %{kind} porque \"%{reason}\"."
+      success: "Autenticado com sucesso pelo %{kind} "
+    passwords:
+      no_token: "Não pode acessar esta página a menos que venha pelo email de redefinição de password. Se veio, utilize todo o link que foi enviado"
+      send_instructions: "Vai receber um email com as instruções de como alterar a palavra passe. Este email pode demorar alguns minutos"
+      updated: "A sua password foi alterada com sucesso. Está agora logado"
+      updated_not_active: "A sua password foi alterada com sucesso"
+    registrations:
+      destroyed: "A sua conta foi apagada com sucesso!"
+      signed_up: "Bem vindo! A sua conta foi criada com sucesso."
+      signed_up_but_inactive: "A sua conta foi criada com sucesso. Ative a conta para poder entrar"
+      signed_up_but_unconfirmed: "A sua conta foi criada com sucesso! Siga as instruções do email que foi enviado para poder confirmar a sua conta. Este email poderá demorar alguns minutos"
+      update_needs_confirmation: "You updated your account successfully, but we need to verify your new email address. Please check your email and follow the confirmation link to confirm your new email address."
+      updated: "Your account has been updated successfully."
+      updated_but_not_signed_in: "Your account has been updated successfully, but since your password was changed, you need to sign in again."
+    sessions:
+      signed_in: "Signed in successfully."
+      signed_out: "Signed out successfully."
+      already_signed_out: "Signed out successfully."
+    unlocks:
+      send_instructions: "You will receive an email with instructions for how to unlock your account in a few minutes."
+      send_paranoid_instructions: "If your account exists, you will receive an email with instructions for how to unlock it in a few minutes."
+      unlocked: "Your account has been unlocked successfully. Please sign in to continue."
+  errors:
+    messages:
+      already_confirmed: "was already confirmed, please try signing in"
+      confirmation_period_expired: "needs to be confirmed within %{period}, please request a new one"
+      expired: "has expired, please request a new one"
+      not_found: "not found"
+      not_locked: "was not locked"
+      not_saved:
+        one: "1 erro impediu que %{resource} para ser guardado:"
+        other: "%{count} erros impediram que %{resource} fosse guardado:"

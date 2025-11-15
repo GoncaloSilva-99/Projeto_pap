@@ -3,3 +3,10 @@
 <% else %>
     <%= button_to "logout", destroy_user_session_path, method: :delete  %>
 <% end %>
+<br><br><br>
+<%= link_to "Criar conta jogador", new_player_profile_registration_path %>
+<br><br><br>
+<%= link_to "Escolher tipo de conta", choose_account_type_path %>
+
+<br><br><br>
+<%= link_to "Escolher Jogador", new_player_profile_registration_path, class: "mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition" %>

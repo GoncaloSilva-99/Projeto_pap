@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
@@ -37,23 +35,22 @@ class Users::RegistrationsController < Devise::RegistrationsController
     else
       clean_up_passwords resource
       set_minimum_password_length
-      case params[:role]
-        when "Player"
+        if resource.role == "Player"
           resource.build_player_profile
           render "devise/registrations/new_player_profile" and return
-        when "Club"
+        elsif resource.role =="Club"
           resource.build_club_profile
           render "devise/registrations/new_club_profile" and return
-        when "User"
+        elsif resource.role =="User"
           resource.build_user_profile
           render "devise/registrations/new_user_profile" and return
-        when "Board"
+        elsif resource.role == "Board"
           resource.build_board_profile
           render "devise/registrations/new_board_profile" and return
-        when "Coach"
+        elsif resource.role =="Coach"
           resource.build_coach_profile
           render "devise/registrations/new_coach_profile" and return
-      end
+        end
     end
   end
 
@@ -86,7 +83,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def permitted_attributes
     [:email, :password, :password_confirmation, :current_password, :remember_me, :role,
       {user_profile_attributes: [:name, :bio]},
-      {player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact]},
+      {player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact, :sport, :dominant_foot_or_hand, :position, :secondary_position]},
       {coach_profile_attributes: [:name, :birth_date, :coach_type]},
       {club_profile_attributes: [:name]},
       {board_profile_attributes: [:name, :bio, :birth_date, :role]}

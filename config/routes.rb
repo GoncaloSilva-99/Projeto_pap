@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   end
 
 
-
+  get "account_type/index", as: :choose_account_type
 
   get "home/index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

@@ -1,0 +1,143 @@
+
+
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+            <div class="text-center mb-8 mt-8">
+                <%= link_to root_path do %>
+                    <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "mx-auto mb-4", height: 70, width: 70 %>
+                <% end %>
+                <p class="text-indigo-100 text-2xl font-bold mt-2">Escolha o tipo de conta que pretende criar</p>
+            </div>
+
+    <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Player Card -->
+            <div class="card-hover player-bg bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col h-full">
+                <div class="flex items-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-indigo-500 flex items-center justify-center mr-4">
+                        <i data-feather="user" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold">Jogador</h2>
+                </div>
+                <p class="text-gray-400 flex-grow">
+                    Os jogadores têm acesso a um ambiente que centraliza tudo o que precisam: o calendário de treinos, o contacto com colegas e treinadores, e o acompanhamento do seu progresso desportivo dentro do clube.
+                
+                </p>
+                <ul class="space-y-2 text-sm text-indigo-300 mt-4">
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Marcar treinos de teste com equipas
+                    </li>
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Possibilidade de marcar ausências e justificar faltas
+                    </li>
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Perfil pessoal com estatísticas, histórico e dados de desempenho
+                    </li>
+                </ul>
+                <%= link_to "Escolher Jogador", new_player_profile_registration_path, class: "mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+            </div>
+
+            <!-- Coach Card -->
+            <div class="card-hover coach-bg bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col h-full">
+                <div class="flex items-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-green-500 flex items-center justify-center mr-4">
+                        <i data-feather="award" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold">Treinador</h2>
+                </div>
+                <p class="text-gray-400 flex-grow">
+                    Os treinadores têm um painel dedicado para planear, comunicar e acompanhar o desempenho da equipa. Podem organizar treinos, gerir presenças e criar estratégias adaptadas à sua equipa.
+                </p>
+                <ul class="space-y-2 text-sm text-green-300 mt-4">
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Concorrer a vagas para treinar um escalão
+                    </li>
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Gestão individual de jogadores com observações e notas de desempenho
+                    </li>
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Ferramenta para desenhar e guardar táticas personalizada
+                    </li>
+                </ul>
+                <%= link_to "Escolher Treinador", new_coach_profile_registration_path, class: "mt-6 w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+            </div>
+
+            <!-- Fan Card -->
+            <div class="card-hover fan-bg bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col h-full">
+                <div class="flex items-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-rose-500 flex items-center justify-center mr-4">
+                        <i data-feather="heart" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold">Adepto</h2>
+                </div>
+                <p class="text-gray-400 flex-grow">
+                    Os adeptos podem acompanhar o clube de perto, apoiar as equipas e participar ativamente na comunidade. Têm acesso a bilhetes, produtos oficiais e vantagens como sócios.
+                </p>
+                <ul class="space-y-2 text-sm text-rose-300 mt-4">
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Compra de bilhetes com geração automática de QR Code
+                    </li>
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Acesso a notícias, resultados e anúncios públicos do clube
+                    </li>
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Acesso à loja oficial para adquirir produtos do clube
+                    </li>
+                </ul>
+                <%= link_to "Escolher Adepto", new_user_profile_registration_path, class: "mt-6 w-full bg-rose-600 hover:bg-rose-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+            </div>
+
+            <!-- Club Card -->
+            <div class="card-hover club-bg bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col h-full">
+                <div class="flex items-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-purple-500 flex items-center justify-center mr-4">
+                        <i data-feather="users" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold">Clube</h2>
+                </div>
+                <p class="text-gray-400 flex-grow">
+                    Os clubes têm acesso a ferramentas completas para coordenar as escalões, gerir a parte financeira e garantir o bom funcionamento de toda a estrutura interna, desde treinos à experiência dos adeptos
+                
+                </p>
+                <ul class="space-y-2 text-sm text-purple-300 mt-4">
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Gestão de equipas, escalões e jogadores associados
+                    </li>
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Sistema de marcação e manutenção de infraestruturas
+                    </li>
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Loja online com gestão de produtos, stock e pagamentos integrados
+                    </li>
+                </ul>
+                <%= link_to "Escolher Clube", new_club_profile_registration_path, class: "mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+            </div>
+        </div>
+        <div class="py-20 px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+            <p>Já tem uma conta?
+            <%= link_to "Entrar", new_user_session_path, class: "text-indigo-400 hover:text-indigo-300" %>
+        </div>
+
+    </main>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    feather.replace();
+  });
+</script>
+</body>
+
+
+
