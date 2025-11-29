@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="dark">
   <head>
     <title><%= content_for(:title) || "Projeto Pap" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -33,8 +33,36 @@
     </style>
 
   </head>
-
-    <p class="notice"><%= notice %></p>
-    <p class="alert"><%= alert %></p>
+    <% if flash.any? %>
+      <div class="fixed top-4 right-4 z-50 space-y-3" id="flash-container">
+        <% flash.each do |type, message| %>
+          <% case type
+            when 'alert'
+              bg_color = 'bg-red-600'
+              icon = 'M12 8v4m0 4v.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+            when 'notice'
+              bg_color = 'bg-green-600'
+              icon = 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+            else
+              bg_color = 'bg-blue-600'
+              icon = 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+            end %>
+          
+          <div class="flex items-start gap-3 p-4 rounded-lg shadow-lg <%= bg_color %> text-white max-w-sm animate-slideIn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<%= icon %>" />
+            </svg>
+            <div class="flex-1">
+              <p class="font-medium text-white"><%= message %></p>
+            </div>
+            <button type="button" class="text-white/60 hover:text-white transition" onclick="this.parentElement.remove()">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
     <%= yield %>
 </html>

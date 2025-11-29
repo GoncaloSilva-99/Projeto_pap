@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :coach_teams
+  resources :player_teams
+  resources :club_teams
+  resources :club_sports
   resources :admin_profiles
   resources :board_profiles
   resources :player_profiles
@@ -9,28 +13,32 @@ Rails.application.routes.draw do
 
 
   devise_for :users, controllers: {
-    registrations: 'users/registrations',
-    sessions: 'users/sessions'
+    registrations: "users/registrations",
+    sessions: "users/sessions"
   }
 
   devise_scope :user do
     # SIGN UP
-    get "/user_profile/sign_up", to: "users/registrations#new", as: :new_user_profile_registration, defaults: {role: "User"}
+    get "/user_profile/sign_up", to: "users/registrations#new", as: :new_user_profile_registration, defaults: { role: "User" }
     post "/user_profile", to: "users/registrations#create"
 
-    get "/player_profile/sign_up", to: "users/registrations#new", as: :new_player_profile_registration, defaults: {role: "Player"}
+    get "/player_profile/sign_up", to: "users/registrations#new", as: :new_player_profile_registration, defaults: { role: "Player" }
     post "/player_profile", to: "users/registrations#create"
 
-    get "/club_profile/sign_up", to: "users/registrations#new", as: :new_club_profile_registration, defaults: {role: "Club"}
+    get "/club_profile/sign_up", to: "users/registrations#new", as: :new_club_profile_registration, defaults: { role: "Club" }
     post "/club_profile", to: "users/registrations#create"
 
-    get "/coach_profile/sign_up", to: "users/registrations#new", as: :new_coach_profile_registration, defaults: {role: "Coach"}
+    get "/coach_profile/sign_up", to: "users/registrations#new", as: :new_coach_profile_registration, defaults: { role: "Coach" }
     post "/coach_profile", to: "users/registrations#create"
 
-    get "/board_profile/sign_up", to: "users/registrations#new", as: :new_board_profile_registration, defaults: {role: "Board"}
+    get "/board_profile/sign_up", to: "users/registrations#new", as: :new_board_profile_registration, defaults: { role: "Board" }
     post "/board_profile", to: "users/registrations#create"
-
   end
+
+  # Dashboard
+
+  get "dashboard/club_dashboard", as: :club_dashboard
+  get "dashboard/club_teams", as: :club_teams_dashboard
 
 
   get "account_type/index", as: :choose_account_type

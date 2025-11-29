@@ -81,12 +81,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def permitted_attributes
-    [:email, :password, :password_confirmation, :current_password, :remember_me, :role,
-      {user_profile_attributes: [:name, :bio]},
-      {player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact, :sport, :dominant_foot_or_hand, :position, :secondary_position]},
-      {coach_profile_attributes: [:name, :birth_date, :coach_type]},
-      {club_profile_attributes: [:name]},
-      {board_profile_attributes: [:name, :bio, :birth_date, :role]}
+    [
+      :email, :password, :password_confirmation, :current_password, :remember_me, :role,
+      { user_profile_attributes: [:name, :bio] },
+      { player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact, :sport, :dominant_foot_or_hand, :secondary_position] },
+      { coach_profile_attributes: [:name, :birth_date, :coach_type] },
+      { club_profile_attributes: [:name] },
+      { club_profile_attributes: [:name, :foundation_date, :bio, :contact, :verification_document, :profile_picture, :banner_picture] },
+      { board_profile_attributes: [:name, :bio, :birth_date, :role] }
     ]
   end
 

@@ -1,0 +1,364 @@
+<body class="min-h-screen flex text-white bg-gray-900">
+<!---------------------------------------------------- NOME E LOGO DO CLUBE ---------------------------------------------------->
+    <div class="w-64 bg-slate-800 shadow-xl min-h-screen flex flex-col border-r border-slate-700">
+    <!-- Logo e nome do clube -->
+        <div class="p-6 border-b border-slate-700">
+            <div class="flex items-center justify-center mb-3">
+                
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% elsif (current_user.board? && current_user.board_profile.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-20 h-20 rounded-full border-1" %>
+                <% end %>
+
+                
+            </div>
+            <h1 class="text-lg font-bold text-center text-white"> <%= current_user.club_profile.name %> </h1>
+        </div>
+<!---------------------------------------------------- OPÇÕES DO SIDEBAR ---------------------------------------------------->
+        <nav class="flex-1 p-4 space-y-2">
+
+            <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-blue-400 rounded-xl border-l-4 border-blue-500 transition-all duration-300">
+                <i data-feather="home" class="sidebar-icon text-blue-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Dashboard</span>
+            </div>
+
+            <%= link_to club_teams_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-xl border-l-4 border-transparent hover:border-green-500 transition-all duration-300">
+                <i data-feather="users" class="sidebar-icon text-green-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Equipas</span>
+            </div>
+            <% end %>
+
+
+            <%= link_to root_path do %>
+            <div  class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 rounded-xl border-l-4 border-transparent hover:border-yellow-500 transition-all duration-300">
+                <i data-feather="dollar-sign" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Finanças</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-red-400 rounded-xl border-l-4 border-transparent hover:border-red-500 transition-all duration-300">
+                <i data-feather="heart" class="sidebar-icon text-red-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Adeptos</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-purple-400 rounded-xl border-l-4 border-transparent hover:border-purple-500 transition-all duration-300">
+                <i data-feather="user" class="sidebar-icon text-purple-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Público</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-xl border-l-4 border-transparent hover:border-orange-500 transition-all duration-300">
+                <i data-feather="map-pin" class="sidebar-icon text-orange-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Infraestruturas</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-400 rounded-xl border-l-4 border-transparent hover:border-rose-300 transition-all duration-300">
+                <i data-feather="clipboard" class="sidebar-icon text-rose-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Material</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-gray-400 rounded-xl border-l-4 border-transparent hover:border-gray-500 transition-all duration-300">
+                <i data-feather="settings" class="sidebar-icon text-gray-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Membros da Direção</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-900 rounded-xl border-l-4 border-transparent hover:border-rose-950 transition-all duration-300">
+                <i data-feather="arrow-left" class="sidebar-icon text-rose-900 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Página Inicial</span>
+            </div>
+            <% end %>
+        </nav>
+
+
+        <div class="p-4 border-t border-slate-700">
+            <div class="flex items-center space-x-3">
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% elsif (current_user.board? and current_user.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% end %>
+                <div class="flex-1">
+                    <% if current_user.club? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.club_profile.name %> </p>
+                    <% elsif current_user.board? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.board_profile.name %> </p>
+                    <% end %>
+                </div>
+                <i data-feather="log-out" class="text-slate-400 hover:text-red-400 cursor-pointer transition-colors"></i>
+            </div>
+        </div>
+</div>
+<!---------------------------------------------------- MAIN CONTENT ---------------------------------------------------->
+    <div class="flex-1 p-8 overflow-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold slide-in text-blue-400">ClubSync Dashboard</h1>
+                <p class="text-slate-400 mt-1">Real-time analytics and performance metrics</p>
+            </div>
+        </div>
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card rounded-xl shadow-lg p-6 border-l-4 border-blue-500 glow pulse">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-slate-400">Total Members</p>
+                        <p class="text-2xl font-bold text-white">1,247</p>
+                        <p class="text-xs text-green-400 mt-1">↑ 12% from last month</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-900/30 rounded-lg flex items-center justify-center">
+                        <i data-feather="users" class="text-blue-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card rounded-xl shadow-lg p-6 border-l-4 border-green-500 glow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-slate-400">Active Teams</p>
+                        <p class="text-2xl font-bold text-white">24</p>
+                        <p class="text-xs text-green-400 mt-1">↑ 3 new teams</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center">
+                        <i data-feather="activity" class="text-green-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card rounded-xl shadow-lg p-6 border-l-4 border-purple-500 glow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-slate-400">Monthly Revenue</p>
+                        <p class="text-2xl font-bold text-white">$45.2K</p>
+                        <p class="text-xs text-red-400 mt-1">↓ 2% from last month</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-900/30 rounded-lg flex items-center justify-center">
+                        <i data-feather="dollar-sign" class="text-purple-400"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card rounded-xl shadow-lg p-6 border-l-4 border-yellow-500 glow">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-slate-400">Upcoming Events</p>
+                        <p class="text-2xl font-bold text-white">8</p>
+                        <p class="text-xs text-blue-400 mt-1">This week</p>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                        <i data-feather="calendar" class="text-yellow-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Statistics Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Player Statistics -->
+            <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+                <h3 class="text-lg font-semibold text-white mb-4">Player Performance</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Average Goals/Game</span>
+                        <span class="text-white font-bold">2.4</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Training Attendance</span>
+                        <span class="text-green-400 font-bold">94%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Injury Rate</span>
+                        <span class="text-red-400 font-bold">8%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Player Satisfaction</span>
+                        <span class="text-yellow-400 font-bold">88%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fan & Supporters -->
+            <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+                <h3 class="text-lg font-semibold text-white mb-4">Fan Engagement</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Season Ticket Holders</span>
+                        <span class="text-white font-bold">4,287</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Social Media Followers</span>
+                        <span class="text-blue-400 font-bold">156K</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Match Attendance Rate</span>
+                        <span class="text-green-400 font-bold">92%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Merchandise Sales</span>
+                        <span class="text-purple-400 font-bold">$28.5K</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Metrics -->
+            <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+                <h3 class="text-lg font-semibold text-white mb-4">Financial Health</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Operating Profit</span>
+                        <span class="text-green-400 font-bold">$156K</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Sponsorship Revenue</span>
+                        <span class="text-blue-400 font-bold">$420K</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Player Salary Ratio</span>
+                        <span class="text-yellow-400 font-bold">62%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Cash Reserve</span>
+                        <span class="text-teal-400 font-bold">$1.2M</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Performance -->
+            <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+                <h3 class="text-lg font-semibold text-white mb-4">Team Stats</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Win Rate</span>
+                        <span class="text-green-400 font-bold">68%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Goals Scored</span>
+                        <span class="text-white font-bold">127</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Clean Sheets</span>
+                        <span class="text-blue-400 font-bold">18</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Yellow Cards</span>
+                        <span class="text-yellow-400 font-bold">45</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Youth Development -->
+            <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+                <h3 class="text-lg font-semibold text-white mb-4">Youth Academy</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Academy Players</span>
+                        <span class="text-white font-bold">89</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Graduation Rate</span>
+                        <span class="text-green-400 font-bold">23%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">First Team Debuts</span>
+                        <span class="text-blue-400 font-bold">7</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Scouting Network</span>
+                        <span class="text-purple-400 font-bold">15</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Facilities & Operations -->
+            <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+                <h3 class="text-lg font-semibold text-white mb-4">Facilities</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Stadium Capacity</span>
+                        <span class="text-white font-bold">25,000</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Training Grounds</span>
+                        <span class="text-green-400 font-bold">4</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Facility Utilization</span>
+                        <span class="text-blue-400 font-bold">87%</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-slate-400">Maintenance Cost</span>
+                        <span class="text-red-400 font-bold">$85K</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+    <script>
+        feather.replace();
+    </script>
+
+</body>
+
+
+
+<style>
+
+    h1 {
+        font-size: 16px;
+        margin-top: 0;
+    }
+
+    p {
+        color: rgb(107, 114, 128);
+        font-size: 15px;
+        margin-bottom: 10px;
+        margin-top: 5px;
+    }
+
+    .card {
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 16px;
+        border: 1px solid lightgray;
+        border-radius: 16px;
+    }
+
+    .card p:last-child {
+        margin-bottom: 0;
+    }
+
+    .sidebar-icon {
+        transition: all 0.3s ease;
+    }
+    
+    .sidebar-item:hover .sidebar-icon {
+        transform: translateX(5px);
+    }
+    
+    .stat-card {
+        background: rgba(30, 41, 59, 0.8);
+    }
+    
+    .glow {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+</style>
+
+
+
+

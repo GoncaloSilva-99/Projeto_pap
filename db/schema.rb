@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_12_151156) do
+ActiveRecord::Schema[8.0].define(version: 2025_11_21_135042) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,6 +76,25 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_12_151156) do
     t.index ["user_id"], name: "index_club_profiles_on_user_id"
   end
 
+  create_table "club_sports", force: :cascade do |t|
+    t.bigint "club_profiles_id", null: false
+    t.bigint "sports_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["club_profiles_id"], name: "index_club_sports_on_club_profiles_id"
+    t.index ["sports_id"], name: "index_club_sports_on_sports_id"
+  end
+
+  create_table "club_teams", force: :cascade do |t|
+    t.bigint "club_profiles_id", null: false
+    t.string "name"
+    t.bigint "sports_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["club_profiles_id"], name: "index_club_teams_on_club_profiles_id"
+    t.index ["sports_id"], name: "index_club_teams_on_sports_id"
+  end
+
   create_table "coach_profiles", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name"
@@ -89,6 +108,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_12_151156) do
     t.integer "contact"
     t.index ["club_profile_id"], name: "index_coach_profiles_on_club_profile_id"
     t.index ["user_id"], name: "index_coach_profiles_on_user_id"
+  end
+
+  create_table "coach_teams", force: :cascade do |t|
+    t.bigint "coach_profiles_id", null: false
+    t.bigint "club_teams_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["club_teams_id"], name: "index_coach_teams_on_club_teams_id"
+    t.index ["coach_profiles_id"], name: "index_coach_teams_on_coach_profiles_id"
   end
 
   create_table "player_profiles", force: :cascade do |t|
@@ -107,6 +135,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_12_151156) do
     t.string "dominant_foot_or_hand"
     t.index ["club_profile_id"], name: "index_player_profiles_on_club_profile_id"
     t.index ["user_id"], name: "index_player_profiles_on_user_id"
+  end
+
+  create_table "player_teams", force: :cascade do |t|
+    t.bigint "player_profiles_id", null: false
+    t.bigint "club_teams_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["club_teams_id"], name: "index_player_teams_on_club_teams_id"
+    t.index ["player_profiles_id"], name: "index_player_teams_on_player_profiles_id"
   end
 
   create_table "sports", force: :cascade do |t|
@@ -153,9 +190,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_12_151156) do
   add_foreign_key "board_profiles", "club_profiles"
   add_foreign_key "board_profiles", "users"
   add_foreign_key "club_profiles", "users"
+  add_foreign_key "club_sports", "club_profiles", column: "club_profiles_id"
+  add_foreign_key "club_sports", "sports", column: "sports_id"
+  add_foreign_key "club_teams", "club_profiles", column: "club_profiles_id"
+  add_foreign_key "club_teams", "sports", column: "sports_id"
   add_foreign_key "coach_profiles", "club_profiles"
   add_foreign_key "coach_profiles", "users"
+  add_foreign_key "coach_teams", "club_teams", column: "club_teams_id"
+  add_foreign_key "coach_teams", "coach_profiles", column: "coach_profiles_id"
   add_foreign_key "player_profiles", "club_profiles"
   add_foreign_key "player_profiles", "users"
+  add_foreign_key "player_teams", "club_teams", column: "club_teams_id"
+  add_foreign_key "player_teams", "player_profiles", column: "player_profiles_id"
   add_foreign_key "user_profiles", "users"
 end
