@@ -39,6 +39,7 @@ Rails.application.routes.draw do
 
   get "dashboard/club_dashboard", as: :club_dashboard
   get "dashboard/club_teams", as: :club_teams_dashboard
+  get "dashboard/club_board", as: :club_board_dashboard
 
 
   get "account_type/index", as: :choose_account_type

@@ -1,0 +1,294 @@
+
+<body class="min-h-screen flex text-white bg-gray-900">
+<!---------------------------------------------------- NOME E LOGO DO CLUBE ---------------------------------------------------->
+    <div class="w-64 bg-slate-800 shadow-xl min-h-screen flex flex-col border-r border-slate-700">
+
+        <div class="p-6 border-b border-slate-700">
+            <div class="flex items-center justify-center mb-3">
+                
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% elsif (current_user.board? && current_user.board_profile.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-20 h-20 rounded-full border-1" %>
+                <% end %>
+
+                
+            </div>
+            <h1 class="text-lg font-bold text-center text-white"> <%= current_user.club_profile.name %> </h1>
+        </div>
+<!---------------------------------------------------- OPÇÕES DO SIDEBAR ---------------------------------------------------->
+        <nav class="flex-1 p-4 space-y-2">
+
+            <%= link_to club_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 hover:bg-slate-700 text-slate-300 hover:text-blue-400 rounded-xl border-l-4 hover:border-blue-500 border-transparent transition-all duration-300">
+                <i data-feather="home" class="sidebar-icon text-blue-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Dashboard</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_teams_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-xl border-l-4 border-transparent hover:border-green-500 transition-all duration-300">
+                <i data-feather="users" class="sidebar-icon text-green-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Equipas</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div  class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 rounded-xl border-l-4 border-transparent hover:border-yellow-500 transition-all duration-300">
+                <i data-feather="dollar-sign" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Finanças</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-red-400 rounded-xl border-l-4 border-transparent hover:border-red-500 transition-all duration-300">
+                <i data-feather="heart" class="sidebar-icon text-red-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Adeptos</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-purple-400 rounded-xl border-l-4 border-transparent hover:border-purple-500 transition-all duration-300">
+                <i data-feather="user" class="sidebar-icon text-purple-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Público</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-xl border-l-4 border-transparent hover:border-orange-500 transition-all duration-300">
+                <i data-feather="map-pin" class="sidebar-icon text-orange-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Infraestruturas</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-400 rounded-xl border-l-4 border-transparent hover:border-rose-300 transition-all duration-300">
+                <i data-feather="clipboard" class="sidebar-icon text-rose-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Material</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_board_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-gray-400 rounded-xl border-l-4 border-gray-400 transition-all duration-300">
+                <i data-feather="settings" class="sidebar-icon text-gray-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Membros da Direção</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-900 rounded-xl border-l-4 border-transparent hover:border-rose-950 transition-all duration-300">
+                <i data-feather="arrow-left" class="sidebar-icon text-rose-900 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Página Inicial</span>
+            </div>
+            <% end %>
+        </nav>
+
+
+        <div class="p-4 border-t border-slate-700">
+            <div class="flex items-center space-x-3">
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% elsif (current_user.board? and current_user.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% end %>
+                <div class="flex-1">
+                    <% if current_user.club? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.club_profile.name %> </p>
+                    <% elsif current_user.board? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.board_profile.name %> </p>
+                    <% end %>
+                </div>
+                <%= button_to destroy_user_session_path, method: :delete do %>
+                    <i data-feather="log-out" class="text-slate-400 hover:text-red-400 cursor-pointer transition-colors"></i>
+                <% end %>
+            </div>
+        </div>
+</div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold  text-rose-600 slide-in">Membros da Direção</h1>
+                <p class="text-slate-400 mt-1">Gerencie e crie os membros da direção do seu clube! Estes membros têm acesso a ver e mudar coisas no dashboard do clube</p> 
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-indigo-400 flex items-center space-x-2">
+                <i data-feather="dribbble" class="w-6 h-6"></i>
+                <span>Membros ( 1 )</span>
+            </h3>
+
+            <div class="flex items-center gap-4">
+                <button data-modal-target="select-modal" data-modal-toggle="select-modal" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                    <i data-feather="plus" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="relative w-64">
+                <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                <input type="text" placeholder="Search members..." class="bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+            </div>
+            
+            <select class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                <option>Opções</option>
+                <option>Football</option>
+                <option>Basketball</option>
+                <option>Tennis</option>
+                <option>Swimming</option>
+                <option>Volleyball</option>
+            </select>
+        </div>
+
+        <!-- Board Members List -->
+        <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                <div class="space-y-4">
+                    <div class="bg-gray-800 rounded-xl p-6 border-l-4 border-indigo-400 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <%= image_tag "default_pp.jpg",
+                                    class: "w-16 h-16 rounded-full border-4 border-indigo-400" %>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-indigo-400">Membro da direção 1</h4>
+                                    <p class="text-gray-400 flex items-center space-x-1">
+                                        <span>Função • Idade</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+
+                                <button class="p-2 text-green-400 hover:bg-green-400/20 rounded-lg transition-all duration-200">
+                                    <i data-feather="edit" class="w-5 h-5"></i>
+                                </button>
+                                <button class="p-2 text-red-400 hover:bg-red-400/20 rounded-lg transition-all duration-200">
+                                    <i data-feather="trash-2" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <br>
+        <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                <div class="space-y-4">
+                    <div class="bg-gray-800 rounded-xl p-6 border-l-4 border-indigo-400 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <%= image_tag "default_pp.jpg",
+                                    class: "w-16 h-16 rounded-full border-4 border-indigo-400" %>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-indigo-400">Membro da direção 1</h4>
+                                    <p class="text-gray-400 flex items-center space-x-1">
+                                        <span>Função • Idade</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+
+                                <button class="p-2 text-green-400 hover:bg-green-400/20 rounded-lg transition-all duration-200">
+                                    <i data-feather="edit" class="w-5 h-5"></i>
+                                </button>
+                                <button class="p-2 text-red-400 hover:bg-red-400/20 rounded-lg transition-all duration-200">
+                                    <i data-feather="trash-2" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <br>
+        <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                <div class="space-y-4">
+                    <div class="bg-gray-800 rounded-xl p-6 border-l-4 border-indigo-400 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <%= image_tag "default_pp.jpg",
+                                    class: "w-16 h-16 rounded-full border-4 border-indigo-400" %>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-indigo-400">Membro da direção 1</h4>
+                                    <p class="text-gray-400 flex items-center space-x-1">
+                                        <span>Função • Idade</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+
+                                <button class="p-2 text-green-400 hover:bg-green-400/20 rounded-lg transition-all duration-200">
+                                    <i data-feather="edit" class="w-5 h-5"></i>
+                                </button>
+                                <button class="p-2 text-red-400 hover:bg-red-400/20 rounded-lg transition-all duration-200">
+                                    <i data-feather="trash-2" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <br>
+        <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
+                <div class="space-y-4">
+                    <div class="bg-gray-800 rounded-xl p-6 border-l-4 border-indigo-400 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <%= image_tag "default_pp.jpg",
+                                    class: "w-16 h-16 rounded-full border-4 border-indigo-400" %>
+                                <div>
+                                    <h4 class="text-lg font-semibold text-indigo-400">Membro da direção 1</h4>
+                                    <p class="text-gray-400 flex items-center space-x-1">
+                                        <span>Função • Idade</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+
+                                <button class="p-2 text-green-400 hover:bg-green-400/20 rounded-lg transition-all duration-200">
+                                    <i data-feather="edit" class="w-5 h-5"></i>
+                                </button>
+                                <button class="p-2 text-red-400 hover:bg-red-400/20 rounded-lg transition-all duration-200">
+                                    <i data-feather="trash-2" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <br>
+        <!-- Pagination -->
+        <div class="flex justify-between items-center mt-6 text-sm">
+            <div class="text-gray-400">
+                Showing <span class="text-white">1</span> to <span class="text-white">4</span> of <span class="text-white">12</span> entries
+            </div>
+            <div class="flex space-x-2">
+                <button class="px-3 py-1 rounded-lg border border-gray-700 text-gray-400 hover:bg-gray-800 transition-colors">
+                    Previous
+                </button>
+                <button class="px-3 py-1 rounded-lg bg-primary-500 text-white">
+                    1
+                </button>
+                <button class="px-3 py-1 rounded-lg border border-gray-700 text-gray-400 hover:bg-gray-800 transition-colors">
+                    2
+                </button>
+                <button class="px-3 py-1 rounded-lg border border-gray-700 text-gray-400 hover:bg-gray-800 transition-colors">
+                    3
+                </button>
+                <button class="px-3 py-1 rounded-lg border border-gray-700 text-gray-400 hover:bg-gray-800 transition-colors">
+                    Next
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        feather.replace();
+    </script>
+
+</body>
