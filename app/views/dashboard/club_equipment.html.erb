@@ -1,0 +1,319 @@
+<body class="min-h-screen flex text-white bg-gray-900">
+<!---------------------------------------------------- NOME E LOGO DO CLUBE ---------------------------------------------------->
+    <div class="w-64 bg-slate-800 shadow-xl min-h-screen flex flex-col border-r border-slate-700">
+    <!-- Logo e nome do clube -->
+        <div class="p-6 border-b border-slate-700">
+            <div class="flex items-center justify-center mb-3">
+                
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% elsif (current_user.board? && current_user.board_profile.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-20 h-20 rounded-full border-1" %>
+                <% end %>
+
+                
+            </div>
+            <h1 class="text-lg font-bold text-center text-white"> <%= current_user.club_profile.name %> </h1>
+        </div>
+<!---------------------------------------------------- OPÇÕES DO SIDEBAR ---------------------------------------------------->
+        <nav class="flex-1 p-4 space-y-2">
+            
+            <%= link_to club_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-blue-400 rounded-xl border-l-4 border-blue-500 transition-all duration-300">
+                <i data-feather="home" class="sidebar-icon text-blue-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Dashboard</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_teams_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-xl border-l-4 border-transparent hover:border-green-500 transition-all duration-300">
+                <i data-feather="users" class="sidebar-icon text-green-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Equipas</span>
+            </div>
+            <% end %>
+
+
+            <%= link_to root_path do %>
+            <div  class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 rounded-xl border-l-4 border-transparent hover:border-yellow-500 transition-all duration-300">
+                <i data-feather="dollar-sign" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Finanças</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-red-400 rounded-xl border-l-4 border-transparent hover:border-red-500 transition-all duration-300">
+                <i data-feather="heart" class="sidebar-icon text-red-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Adeptos</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-purple-400 rounded-xl border-l-4 border-transparent hover:border-purple-500 transition-all duration-300">
+                <i data-feather="user" class="sidebar-icon text-purple-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Público</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-xl border-l-4 border-transparent hover:border-orange-500 transition-all duration-300">
+                <i data-feather="map-pin" class="sidebar-icon text-orange-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Infraestruturas</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-400 rounded-xl border-l-4 border-transparent hover:border-rose-300 transition-all duration-300">
+                <i data-feather="clipboard" class="sidebar-icon text-rose-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Material</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_board_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-900 rounded-xl border-l-4 border-transparent hover:border-rose-950 transition-all duration-300">
+                <i data-feather="settings" class="sidebar-icon text-rose-900 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Membros da Direção</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-gray-400 rounded-xl border-l-4 border-transparent hover:border-gray-400 transition-all duration-300">
+                <i data-feather="arrow-left" class="sidebar-icon text-gray-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Página Inicial</span>
+            </div>
+            <% end %>
+        </nav>
+
+        <div class="p-4 border-t border-slate-700">
+            <div class="flex items-center space-x-3">
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% elsif (current_user.board? and current_user.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% end %>
+                <div class="flex-1">
+                    <% if current_user.club? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.club_profile.name %> </p>
+                    <% elsif current_user.board? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.board_profile.name %> </p>
+                    <% end %>
+                </div>
+                <i data-feather="log-out" class="text-slate-400 hover:text-red-400 cursor-pointer transition-colors"></i>
+            </div>
+        </div>
+</div>
+
+<!---------------------------------------------------- MAIN CONTENT ---------------------------------------------------->
+    <div class="flex-1 p-8">
+
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold  text-rose-400 slide-in">Materiais</h1>
+                    <p class="text-slate-400 mt-1">Controle stocks, registe adições e remoções de materiais, organize por equipa ou modalidade e acompanhe tudo de forma simples</p> 
+                </div>
+            </div>
+
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-indigo-400 flex items-center space-x-2">
+                <i data-feather="clipboard" class="w-6 h-6"></i>
+                <% if current_user.club? %>
+                    <span>Materiais ( <%= current_user.club_profile.board_profiles.count  %> )</span>
+                <% elsif current_user.board? %>
+                    <span>Materiais ( <%= current_user.board_profile.club_profile.board_profiles.count  %> )</span>
+                <% end %>
+            </h3>
+
+            <div class="flex items-center gap-4">
+                <button data-modal-target="select-modal" data-modal-toggle="select-modal" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                    <i data-feather="plus" class="w-4 h-4"></i>
+                </button>
+            </div>
+            
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="flex  items-center mb-6">
+            <div class="relative w-64">
+                <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                <input type="text" placeholder="Search members..." class="bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+            </div>
+            
+            <select class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                <option>Opções</option>
+                <option>Football</option>
+                <option>Basketball</option>
+                <option>Tennis</option>
+                <option>Swimming</option>
+                <option>Volleyball</option>
+            </select>
+        </div>
+
+            <!-- Equipment Cards -->
+            <div class="flex flex-wrap justify-center gap-6">
+                <!-- Card 1 -->
+                <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/10">
+                    <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                        <img src="http://static.photos/sport/640x360/1" alt="Basketballs" class="w-full h-full object-cover">
+                        <div class="absolute top-2 right-2 flex space-x-1">
+                            <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
+                                <i data-feather="edit" class="w-4 h-4"></i>
+                            </button>
+                            <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                <i data-feather="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg">Basketballs (Set of 5)</h3>
+                                <p class="text-gray-400 text-sm">Sports Equipment</p>
+                            </div>
+                            <span class="bg-green-900/30 text-green-400 px-2 py-1 rounded-full text-xs">Available</span>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+                            <div>
+                                <p class="text-xs text-gray-400">Quantity</p>
+                                <p class="font-medium">5</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400">Last Used</p>
+                                <p class="font-medium">2 days ago</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400">Condition</p>
+                                <p class="font-medium text-green-400">Good</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/10">
+                    <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                        <img src="http://static.photos/sport/640x360/1" alt="Basketballs" class="w-full h-full object-cover">
+                        <div class="absolute top-2 right-2 flex space-x-1">
+                            <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
+                                <i data-feather="edit" class="w-4 h-4"></i>
+                            </button>
+                            <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                <i data-feather="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg">Basketballs (Set of 5)</h3>
+                                <p class="text-gray-400 text-sm">Sports Equipment</p>
+                            </div>
+                            <span class="bg-green-900/30 text-green-400 px-2 py-1 rounded-full text-xs">Available</span>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+                            <div>
+                                <p class="text-xs text-gray-400">Quantity</p>
+                                <p class="font-medium">5</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400">Last Used</p>
+                                <p class="font-medium">2 days ago</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400">Condition</p>
+                                <p class="font-medium text-green-400">Good</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/10">
+                    <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                        <img src="http://static.photos/sport/640x360/1" alt="Basketballs" class="w-full h-full object-cover">
+                        <div class="absolute top-2 right-2 flex space-x-1">
+                            <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
+                                <i data-feather="edit" class="w-4 h-4"></i>
+                            </button>
+                            <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                <i data-feather="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg">Basketballs (Set of 5)</h3>
+                                <p class="text-gray-400 text-sm">Sports Equipment</p>
+                            </div>
+                            <span class="bg-green-900/30 text-green-400 px-2 py-1 rounded-full text-xs">Available</span>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
+                            <div>
+                                <p class="text-xs text-gray-400">Quantity</p>
+                                <p class="font-medium">5</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400">Last Used</p>
+                                <p class="font-medium">2 days ago</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-400">Condition</p>
+                                <p class="font-medium text-green-400">Good</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pagination -->
+            <div class="mt-8 flex justify-between items-center">
+                <div class="text-sm text-gray-400">
+                    Showing <span class="font-medium text-white">1</span> to <span class="font-medium text-white">4</span> of <span class="font-medium text-white">24</span> items
+                </div>
+                <div class="flex space-x-1">
+                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
+                        <i data-feather="chevron-left" class="w-4 h-4"></i>
+                    </button>
+                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary/90 transition">1</button>
+                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">2</button>
+                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">3</button>
+                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            
+        </div>
+    </div>
+
+<script>
+    feather.replace();
+</script>
+
+<script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                colors: {
+                    primary: '#6366f1',
+                    secondary: '#8b5cf6',
+                },
+                animation: {
+                    'float': 'float 3s ease-in-out infinite',
+                    'glow': 'glow 2s ease-in-out infinite alternate',
+                },
+                keyframes: {
+                    float: {
+                        '0%, 100%': { transform: 'translateY(0)' },
+                        '50%': { transform: 'translateY(-5px)' },
+                    },
+                    glow: {
+                        '0%': { boxShadow: '0 0 5px rgba(99, 102, 241, 0.5)' },
+                        '100%': { boxShadow: '0 0 15px rgba(99, 102, 241, 0.8)' },
+                    }
+                }
+            }
+        }
+    }
+</script>
+</body>
