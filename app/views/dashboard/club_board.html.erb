@@ -71,15 +71,18 @@
             <% end %>
 
             <%= link_to club_board_dashboard_path do %>
-            <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-gray-400 rounded-xl border-l-4 border-gray-400 transition-all duration-300">
-                <i data-feather="settings" class="sidebar-icon text-gray-400 w-5 h-5 mr-3"></i>
+
+            <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-rose-700 rounded-xl border-l-4 border-rose-900 transition-all duration-300">
+                <i data-feather="settings" class="sidebar-icon text-rose-900 w-5 h-5 mr-3"></i>
                 <span class="font-medium">Membros da Direção</span>
             </div>
+            
             <% end %>
 
             <%= link_to root_path do %>
-            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-900 rounded-xl border-l-4 border-transparent hover:border-rose-950 transition-all duration-300">
-                <i data-feather="arrow-left" class="sidebar-icon text-rose-900 w-5 h-5 mr-3"></i>
+
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-gray-400 rounded-xl border-l-4 border-transparent hover:border-gray-400 transition-all duration-300">
+                <i data-feather="arrow-left" class="sidebar-icon text-gray-400 w-5 h-5 mr-3"></i>
                 <span class="font-medium">Página Inicial</span>
             </div>
             <% end %>
@@ -121,7 +124,11 @@
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold text-indigo-400 flex items-center space-x-2">
                 <i data-feather="dribbble" class="w-6 h-6"></i>
-                <span>Membros ( 1 )</span>
+                <% if current_user.club? %>
+                    <span>Membros ( <%= current_user.club_profile.board_profiles.count  %> )</span>
+                <% elsif current_user.board? %>
+                    <span>Membros ( <%= current_user.board_profile.club_profile.board_profiles.count  %> )</span>
+                <% end %>
             </h3>
 
             <div class="flex items-center gap-4">
@@ -150,6 +157,7 @@
         </div>
 
         <!-- Board Members List -->
+    <div class="space-y-3"> 
         <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
                 <div class="space-y-4">
                     <div class="bg-gray-800 rounded-xl p-6 border-l-4 border-indigo-400 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
@@ -177,7 +185,6 @@
                     </div>
                 </div>
         </div>
-        <br>
         <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
                 <div class="space-y-4">
                     <div class="bg-gray-800 rounded-xl p-6 border-l-4 border-indigo-400 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
@@ -205,7 +212,6 @@
                     </div>
                 </div>
         </div>
-        <br>
         <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
                 <div class="space-y-4">
                     <div class="bg-gray-800 rounded-xl p-6 border-l-4 border-indigo-400 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
@@ -233,7 +239,6 @@
                     </div>
                 </div>
         </div>
-        <br>
         <div class="bg-gray-800 rounded-xl border border-gray-700 overflow-hidden">
                 <div class="space-y-4">
                     <div class="bg-gray-800 rounded-xl p-6 border-l-4 border-indigo-400 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
@@ -261,6 +266,7 @@
                     </div>
                 </div>
         </div>
+    </div>
         <br>
         <!-- Pagination -->
         <div class="flex justify-between items-center mt-6 text-sm">
