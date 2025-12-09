@@ -25,7 +25,7 @@ class ClubSportsController < ApplicationController
 
     respond_to do |format|
       if @club_sport.save
-        format.html { redirect_to @club_sport, notice: "Club sport was successfully created." }
+        format.html { redirect_to club_teams_dashboard_path, notice: "Desporto Criado com sucesso!" }
         format.json { render :show, status: :created, location: @club_sport }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -52,7 +52,7 @@ class ClubSportsController < ApplicationController
     @club_sport.destroy!
 
     respond_to do |format|
-      format.html { redirect_to club_sports_path, notice: "Club sport was successfully destroyed.", status: :see_other }
+      format.html { redirect_to club_teams_dashboard_path, notice: "Desporto apagado com sucesso", status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -65,6 +65,6 @@ class ClubSportsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_sport_params
-      params.expect(club_sport: [ :club_profiles_id, :sports_id ])
+      params.expect(club_sport: [ :club_profile_id, :sport_id ])
     end
 end

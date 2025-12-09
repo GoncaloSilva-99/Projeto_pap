@@ -1,4 +1,5 @@
 class ClubSport < ApplicationRecord
-  belongs_to :club_profiles
-  belongs_to :sports
+  belongs_to :club_profile
+  belongs_to :sport
+
 end
