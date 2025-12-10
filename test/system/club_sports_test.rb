@@ -14,8 +14,8 @@ class ClubSportsTest < ApplicationSystemTestCase
     visit club_sports_url
     click_on "New club sport"
 
-    fill_in "Club profiles", with: @club_sport.club_profiles_id
-    fill_in "Sports", with: @club_sport.sports_id
+    fill_in "Club profiles", with: @club_sport.club_profile_id
+    fill_in "Sports", with: @club_sport.sport_id
     click_on "Create Club sport"
 
     assert_text "Club sport was successfully created"
@@ -26,8 +26,8 @@ class ClubSportsTest < ApplicationSystemTestCase
     visit club_sport_url(@club_sport)
     click_on "Edit this club sport", match: :first
 
-    fill_in "Club profiles", with: @club_sport.club_profiles_id
-    fill_in "Sports", with: @club_sport.sports_id
+    fill_in "Club profiles", with: @club_sport.club_profile_id
+    fill_in "Sports", with: @club_sport.sport_id
     click_on "Update Club sport"
 
     assert_text "Club sport was successfully updated"
