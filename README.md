@@ -63,11 +63,22 @@ Depois fazes o seguinte comando para entrar na consola do psql e colocar palavra
 	ALTER USER postgres WITH PASSWORD 'tua_senha_aqui';
 	\q
 
+Depois de meter passe, alteramos permissões
+
+	psql --version (vamos necessitar dos primeiros numeros (inteiro))
+	cd /etc/postgresql/versão psql em inteiro/main/
+	sudo nano pg_hba.conf
+
+Depois disto vamos à linha do postgres e mudamos de peer para trust, depois CTRL+0 ENTER CTRL+X para guardar
+para finalizar, fazemos:
+
+	sudo service postgresql restart
+
+
 Tendo isto feito, basta criares a base de dados e correr as migrations:
 
 	rails db:create
 	rails db:migrate
-
 
 
 Ótimo, tens aí o projeto base
@@ -95,6 +106,27 @@ Simples, tá feito
 --------------------------------------------------- IMPORTANTE ---------------------------------------------------
 
 Sempre antes de começares a trabalhar no projeto, faz git pull, posso ter mexido em alguma coisa sem te avisar e assim escusas de tar a mexer num projeto antigo (sem as alterações)
+
+--------------------------------------------------- CRIAR BRANCH ---------------------------------------------------
+
+Uma branch é basicamente um repositorio adicional do projeto, vamos imaginar que estou a fazer testes e quero continuar a fazer testes amanhã, ao invés de dar push a um código instavel que está em fase de testes, faço uma nova branch e consigo guardar as alterações sem mudar o código principal, basta fazer
+
+	git checkout -b nome-branch
+	git add .
+	git commit -m "Descrição das alterações"
+	git push -u origin nome-branch
+
+Para passar isto para outro computador:
+
+	git fetch origin (atualiza o github com as novas branches)
+	git branch -a (mostra as branches disponiveis)
+	git checkout -b nome-branch-local origin/nome-branch
+
+Para alternar entre branches:
+
+	git checkout nome-branch (main é a principal)
+	
+Para juntar o código da branch ao código principal, faz-se um pull request no github
 
 --------------------------------------------------- PROXIMOS ---------------------------------------------------
 
