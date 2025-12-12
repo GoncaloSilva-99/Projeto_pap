@@ -34,6 +34,57 @@
             </div>
             <% end %>
 
+            <div class="space-y-2 ml-10 mt-2">
+                <% if (current_user.club? and !current_user.club_profile.has_no_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_no_sports?) %>
+                    <% selected_sport = params[:sport] %>
+                    <% if (current_user.club? and current_user.club_profile.has_football?) or (current_user.board? and current_user.board_profile.club_profile.has_football?) %>
+                        <% if (current_user.club? and current_user.club_profile.has_both_sports?) or (current_user.board? and current_user.board_profile.club_profile.has_both_sports?) %>
+                            <% if selected_sport == nil %>
+                                <% selected_sport = "football" %>
+                            <% end %>
+                        <% else %>
+                            <% selected_sport = "football" %>
+                        <% end %>
+
+                    <%= link_to url_for(params.permit!.to_h.merge(sport: 'football')), method: :get, class: ["block"].join(' ') do %>
+                        <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
+                            <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
+                            <span class="text-sm">Futebol</span>
+                        </div>
+                    <% end %>
+                <% end %>
+
+                <% if (current_user.club? and current_user.club_profile.has_handball?) or (current_user.board? and current_user.board_profile.club_profile.has_handball?) %>
+                    <% if (current_user.club? and current_user.club_profile.has_both_sports?) or (current_user.board? and current_user.board_profile.club_profile.has_both_sports?) %>
+                        <% if selected_sport == nil %>
+                            <% selected_sport = "handball" %>
+                        <% end %>
+                    <% else %>
+                        <% selected_sport = "handball" %>
+                    <% end %>
+
+                    <%= link_to url_for(params.permit!.to_h.merge(sport: 'handball')), method: :get, class: ["block"].join(' ') do %>
+                        <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
+                            <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
+                            <span class="text-sm">Futebol</span>
+                        </div>
+                    <% end %>
+
+                <% end %>
+                    <button data-modal-target="select-modal-remove" data-modal-toggle="select-modal-remove" class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
+                        <i data-feather="x" class="w-4 h-4 mr-2 text-green-400"></i>
+                        <span class="text-sm">Remover Desporto</span>
+                    </button>
+                <% end %>
+                <% if (current_user.club? and !current_user.club_profile.has_both_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_both_sports?) %>
+                        <button data-modal-target="select-modal" data-modal-toggle="select-modal" class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
+                            <i data-feather="plus" class="w-4 h-4 mr-2 text-green-400"></i>
+                            <span class="text-sm">Adicionar Desporto</span>
+                        </button>
+                <% end %>
+
+            </div>
+
             <%= link_to root_path do %>
             <div  class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 rounded-xl border-l-4 border-transparent hover:border-yellow-500 transition-all duration-300">
                 <i data-feather="dollar-sign" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
@@ -62,7 +113,7 @@
             </div>
             <% end %>
 
-            <%= link_to root_path do %>
+            <%= link_to club_equipment_dashboard_path do %>
             <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-400 rounded-xl border-l-4 border-transparent hover:border-rose-300 transition-all duration-300">
                 <i data-feather="clipboard" class="sidebar-icon text-rose-400 w-5 h-5 mr-3"></i>
                 <span class="font-medium">Material</span>
@@ -120,72 +171,7 @@
 <!-------------------------------------------------------------------------------- DESPORTOS ------------------------------------------------------------------------->
 
             <div class="mb-12">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-orange-400 flex items-center space-x-2">
-                        <i data-feather="dribbble" class="w-6 h-6"></i>
-                        <span>Desportos</span>
-                    </h3>
-
-                    <div class="flex items-center gap-4">
-                        <% if (current_user.club? and !current_user.club_profile.has_both_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_both_sports?) %>
-                            <button data-modal-target="select-modal" data-modal-toggle="select-modal" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
-                                <i data-feather="plus" class="w-4 h-4"></i>
-                            </button>
-                        <% end %>
-                        <% if (current_user.club? and !current_user.club_profile.has_no_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_no_sports?) %>
-                            <button data-modal-target="select-modal-remove" data-modal-toggle="select-modal-remove" class="bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
-                                <i data-feather="x" class="w-4 h-4"></i>
-                            </button>
-                        <% end %>
-                    </div>
-                    
-                </div>
-            <% if (current_user.club? and !current_user.club_profile.has_no_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_no_sports?) %>
-                <div class="bg-gray-800 rounded-xl p-1 mb-8 transition-all duration-300">
-                    <div class="flex">
-                    <% selected_sport = params[:sport] %>
-
-                    <% if (current_user.club? and current_user.club_profile.has_football?) or (current_user.board? and current_user.board_profile.club_profile.has_football?) %>
-
-                        <% if (current_user.club? and current_user.club_profile.has_both_sports?) or (current_user.board? and current_user.board_profile.club_profile.has_both_sports?) %>
-                            <% if selected_sport == nil %>
-                                <% selected_sport = "football" %>
-                            <% end %>
-                        <% else %>
-                            <% selected_sport = "football" %>
-                        <% end %>
-
-                        <%= link_to url_for(params.permit!.to_h.merge(sport: 'football')), method: :get, class: [
-                                "flex-1 py-3 px-6 rounded-lg font-medium transition-all duration-300 transform shadow-lg flex items-center justify-center space-x-2",
-                                (selected_sport == 'football' ? "bg-amber-500 text-white hover:scale-[1.01]" : "text-gray-400 hover:text-gray-200 hover:bg-gray-700/50")
-                            ].join(' ') do %>
-                            <span>Futebol</span>
-                        <% end %>
-
-                    <% end %>
-
-                    <% if (current_user.club? and current_user.club_profile.has_handball?) or (current_user.board? and current_user.board_profile.club_profile.has_handball?) %>
-
-                        <% if (current_user.club? and current_user.club_profile.has_both_sports?) or (current_user.board? and current_user.board_profile.club_profile.has_both_sports?) %>
-                            <% if selected_sport == nil %>
-                                <% selected_sport = "handball" %>
-                            <% end %>
-                        <% else %>
-                            <% selected_sport = "handball" %>
-                        <% end %>
-
-                        <%= link_to url_for(params.permit!.to_h.merge(sport: 'handball')), method: :get, class: [
-                                "flex-1 py-3 px-6 rounded-lg font-medium transition-all duration-300 flex items-center justify-center space-x-2",
-                                (selected_sport == 'handball' ? "bg-amber-500 text-white hover:scale-[1.01] shadow-lg" : "text-gray-400 hover:text-gray-200 hover:bg-gray-700/50")
-                            ].join(' ') do %>
-                            <span>Andebol</span>
-                        <% end %>
-
-                    <% end %>
-                    </div>
-                </div>
-
-                <% else %>
+                <% if (current_user.club? and current_user.club_profile.has_no_sports?) or (current_user.board? and current_user.board_profile.club_profile.has_no_sports?) %>
                     <br> <br>
                     <div class="flex justify-center items-center mb-8">
                         <div class="flex flex-col items-start">
@@ -201,6 +187,7 @@
         
             <div class="mb-8">
                 <div class="flex items-center justify-between mb-6">
+                    <% if (current_user.club? and !current_user.club_profile.has_no_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_no_sports?) %>
                     <h2 class="text-xl font-bold text-indigo-300 flex items-center space-x-2">
                         <i data-feather="list" class="w-6 h-6"></i>
                         <span>Equipas</span>
@@ -215,6 +202,7 @@
                             </button>
                         <% end %>
                     </div>
+                    <% end %>
                 </div>
             <% if (current_user.club? and current_user.club_profile.has_teams?) or (current_user.board? and current_user.board_profile.club_profile.has_teams?) %>
                 <div>
@@ -325,12 +313,14 @@
                 </div>
             </div>
         <% else %>
+            <% if (current_user.club? and !current_user.club_profile.has_no_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_no_sports?) %>
             <br> <br>
             <div class="flex justify-center items-center mb-8">
                 <div class="flex flex-col items-start">
                     <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem nenhuma equipa neste desporto!</h1>
                 </div>
             </div>
+            <% end %>
         <% end %>
 
 <!-------------------------------------------------------------------------------- MODALS ------------------------------------------------------------------------->    

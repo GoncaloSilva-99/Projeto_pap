@@ -21,7 +21,7 @@
         <nav class="flex-1 p-4 space-y-2">
             
             <%= link_to club_dashboard_path do %>
-            <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-blue-400 rounded-xl border-l-4 border-blue-500 transition-all duration-300">
+            <div class="sidebar-item flex items-center px-4 py-3 hover:bg-slate-700 text-slate-300 hover:text-blue-400 rounded-xl border-l-4 hover:border-blue-500 border-transparent transition-all duration-300">
                 <i data-feather="home" class="sidebar-icon text-blue-400 w-5 h-5 mr-3"></i>
                 <span class="font-medium">Dashboard</span>
             </div>
@@ -63,8 +63,8 @@
             </div>
             <% end %>
 
-            <%= link_to root_path do %>
-            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-400 rounded-xl border-l-4 border-transparent hover:border-rose-300 transition-all duration-300">
+            <%= link_to club_equipment_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-rose-400 rounded-xl border-l-4 border-rose-300 transition-all duration-300">
                 <i data-feather="clipboard" class="sidebar-icon text-rose-400 w-5 h-5 mr-3"></i>
                 <span class="font-medium">Material</span>
             </div>
@@ -134,8 +134,8 @@
             
         </div>
 
-        <!-- Search and Filter -->
-        <div class="flex  items-center mb-6">
+<!---------------------------------------------------- PESQUISAS ---------------------------------------------------->
+        <div class="flex  items-center mb-6 gap-x-4">
             <div class="relative w-64">
                 <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
                 <input type="text" placeholder="Search members..." class="bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
@@ -151,10 +151,10 @@
             </select>
         </div>
 
-            <!-- Equipment Cards -->
-            <div class="flex flex-wrap justify-center gap-6">
+<!---------------------------------------------------- MATERIAIS ---------------------------------------------------->
+            <div class="grid grid-cols-4 justify-center gap-6">
                 <!-- Card 1 -->
-                <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/10">
+                <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
                     <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
                         <img src="http://static.photos/sport/640x360/1" alt="Basketballs" class="w-full h-full object-cover">
                         <div class="absolute top-2 right-2 flex space-x-1">
@@ -191,9 +191,10 @@
                     </div>
                 </div>
 
-                <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/10">
-                    <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
-                        <img src="http://static.photos/sport/640x360/1" alt="Basketballs" class="w-full h-full object-cover">
+
+                <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
+                    <div class="relative h-40 bg-gray-900 flex items-center justify-center">
+                        <i data-feather="box" class="w-16 h-16 text-gray-300"></i>
                         <div class="absolute top-2 right-2 flex space-x-1">
                             <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
                                 <i data-feather="edit" class="w-4 h-4"></i>
@@ -228,42 +229,6 @@
                     </div>
                 </div>
 
-                <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/10">
-                    <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
-                        <img src="http://static.photos/sport/640x360/1" alt="Basketballs" class="w-full h-full object-cover">
-                        <div class="absolute top-2 right-2 flex space-x-1">
-                            <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
-                                <i data-feather="edit" class="w-4 h-4"></i>
-                            </button>
-                            <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
-                                <i data-feather="trash-2" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-bold text-lg">Basketballs (Set of 5)</h3>
-                                <p class="text-gray-400 text-sm">Sports Equipment</p>
-                            </div>
-                            <span class="bg-green-900/30 text-green-400 px-2 py-1 rounded-full text-xs">Available</span>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
-                            <div>
-                                <p class="text-xs text-gray-400">Quantity</p>
-                                <p class="font-medium">5</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400">Last Used</p>
-                                <p class="font-medium">2 days ago</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400">Condition</p>
-                                <p class="font-medium text-green-400">Good</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
             <!-- Pagination -->
             <div class="mt-8 flex justify-between items-center">
