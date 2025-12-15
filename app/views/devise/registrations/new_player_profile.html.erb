@@ -155,6 +155,13 @@
                         placeholder:"Ex. Juvesvaldo Ribeiro",
                         required: true %>
                 </div>
+
+                <% if user_signed_in? and current_user.club? %>
+                    <%= pp.hidden_field :club_profile_id, value: current_user.club_profile.id %>
+                <% elsif user_signed_in? and current_user.board? %>
+                    <%= pp.hidden_field :club_profile_id, value: current_user.board_profile.club_profile.id %>
+                <% end %>
+
                 <!-- Data de nascimento -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Data de nascimento</label>

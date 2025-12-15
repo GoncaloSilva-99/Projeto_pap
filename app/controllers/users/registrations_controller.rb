@@ -1,5 +1,7 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_sign_up_params, only: [:create]
+  skip_before_action :require_no_authentication, only: [:new, :create]
+  before_action :dont_allow_any_account_to_create_while_logged
   # before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
@@ -32,9 +34,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
       set_flash_message! :notice, :signed_up
       if (user_signed_in? and current_user.club?) or (user_signed_in? and current_user.board?)
          respond_with resource, location: club_teams_dashboard_path
+      else
+        sign_up(resource_name, resource)
+        respond_with resource, location: after_sign_up_path_for(resource)
       end
-      sign_up(resource_name, resource)
-      respond_with resource, location: after_sign_up_path_for(resource)
     else
       clean_up_passwords resource
       set_minimum_password_length
@@ -87,9 +90,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
     [
       :email, :password, :password_confirmation, :current_password, :remember_me, :role,
       { user_profile_attributes: [:name, :bio] },
-      { player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact, :sport, :dominant_foot_or_hand, :secondary_position] },
+      { player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact, :sport, :dominant_foot_or_hand, :secondary_position, :club_profile_id] },
       { coach_profile_attributes: [:name, :birth_date, :coach_type] },
-      { club_profile_attributes: [:name] },
       { club_profile_attributes: [:name, :foundation_date, :bio, :contact, :verification_document, :profile_picture, :banner_picture] },
       { board_profile_attributes: [:name, :bio, :birth_date, :role] }
     ]
@@ -103,25 +105,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
     devise_parameter_sanitizer.sanitize(:sign_up){|user| user.permit(permitted_attributes)}
   end
 
+  def dont_allow_any_account_to_create_while_logged
+    if !current_user.club? and !current_user.board?
+      redirect_to root_path, notice: "Já tem sessão iniciada!"
+    end
+  end
+
   
 
-  # If you have extra params to permit, append them to the sanitizer.
-  # def configure_sign_up_params
-  #   devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute])
-  # end
-
-  # If you have extra params to permit, append them to the sanitizer.
-  # def configure_account_update_params
-  #   devise_parameter_sanitizer.permit(:account_update, keys: [:attribute])
-  # end
-
-  # The path used after sign up.
-  # def after_sign_up_path_for(resource)
-  #   super(resource)
-  # end
-
-  # The path used after sign up for inactive accounts.
-  # def after_inactive_sign_up_path_for(resource)
-  #   super(resource)
-  # end
 end
