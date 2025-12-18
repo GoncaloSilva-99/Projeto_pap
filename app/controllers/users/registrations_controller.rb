@@ -88,7 +88,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       { player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact, :sport, :dominant_foot_or_hand, :secondary_position, :club_profile_id] },
       { coach_profile_attributes: [:name, :birth_date, :coach_type] },
       { club_profile_attributes: [:name, :foundation_date, :bio, :contact, :verification_document, :profile_picture, :banner_picture] },
-      { board_profile_attributes: [:name, :bio, :birth_date, :role] }
+      { board_profile_attributes: [:name, :bio, :birth_date, :contact, :club_profile_id] }
     ]
   end
 
@@ -101,7 +101,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def dont_allow_any_account_to_create_while_logged
-    if !current_user.club? and !current_user.board?
+    if user_signed_in? and !current_user.club? and !current_user.board?
       redirect_to root_path, notice: "Já tem sessão iniciada!"
     end
   end

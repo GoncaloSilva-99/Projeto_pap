@@ -247,7 +247,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-yellow-300 flex items-center space-x-2">
                     <i data-feather="award" class="w-6 h-6"></i>
-                        <span>Equipa Técnica ( Ainda a fazer )</span>
+                        <span>Equipa Técnica ( <%= CoachTeam.where(club_team_id: selected_team).count %> )</span>
                     </h3>
                     <div class="flex items-center gap-4">
                         <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">

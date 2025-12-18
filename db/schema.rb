@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_11_29_194302) do
+ActiveRecord::Schema[8.0].define(version: 2025_12_18_142955) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,9 +56,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_29_194302) do
     t.text "bio"
     t.date "birth_date"
     t.bigint "club_profile_id", null: false
-    t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "contact"
     t.index ["club_profile_id"], name: "index_board_profiles_on_club_profile_id"
     t.index ["user_id"], name: "index_board_profiles_on_user_id"
   end

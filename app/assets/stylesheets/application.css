@@ -259,6 +259,11 @@ select:required:hover {
     border-color: rgba(139, 92, 246, 0.3);
 }
 
+.board-bg:hover {
+    background-color: rgba(246, 218, 92, 0.05);
+    border-color: rgba(216, 200, 52, 0.3);
+}
+
 .remove-profile-overlay {
   pointer-events: none;
   opacity: 0 !important;
