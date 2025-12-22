@@ -41,7 +41,11 @@
                         Perfil pessoal com estatísticas, histórico e dados de desempenho
                     </li>
                 </ul>
-                <%= link_to "Escolher Jogador", new_player_profile_registration_path, class: "mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+                <% if (user_signed_in? and current_user.club? and current_user.club_profile.has_no_sports?) or (user_signed_in? and current_user.board? and current_user.board_profile.club_profile.has_no_sports?) %>
+                    <button  class="mt-6 w-full bg-indigo-400 text-white py-2 px-4 rounded-lg transition text-center disabled" > Precisa de uma equipa primeiro! </button>
+                <% else %>
+                    <%= link_to "Escolher Jogador", new_player_profile_registration_path, class: "mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+                <% end %>
             </div>
 
             <!-- Coach Card -->
@@ -69,7 +73,12 @@
                         Ferramenta para desenhar e guardar táticas personalizada
                     </li>
                 </ul>
-                <%= link_to "Escolher Treinador", new_coach_profile_registration_path, class: "mt-6 w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+                <% if (user_signed_in? and current_user.club? and current_user.club_profile.has_no_sports?) or (user_signed_in? and current_user.board? and current_user.board_profile.club_profile.has_no_sports?) %>
+                    <button  class="mt-6 w-full bg-green-500  text-white py-2 px-4 rounded-lg transition text-center disabled" > Precisa de uma equipa primeiro! </button>
+                <% else %>
+                    <%= link_to "Escolher Treinador", new_coach_profile_registration_path, class: "mt-6 w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+                <% end %>
+                
             </div>
 
             <!-- Board Card -->

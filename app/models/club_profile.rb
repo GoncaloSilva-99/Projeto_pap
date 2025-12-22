@@ -32,11 +32,15 @@ class ClubProfile < ApplicationRecord
   end
 
   def has_football_teams?
-    club_teams.exists(sport_id: 2)
+    club_teams.exists?(sport_id: 2)
   end
 
   def has_handball_teams?
-    club_teams.exists(sport_id: 2)
+    club_teams.exists?(sport_id: 3)
+  end
+
+  def has_teams_in_both?
+    has_handball_teams? and has_football_teams?
   end
 
 end

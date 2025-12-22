@@ -220,13 +220,21 @@
                     </div>
                     <% end %>
                 </div>
-            <% if (current_user.club? and current_user.club_profile.has_teams?) or (current_user.board? and current_user.board_profile.club_profile.has_teams?) %>
+            <% if (current_user.club? and (selected_sport == 'football' and current_user.club_profile&.has_football_teams?) or (selected_sport == 'handball' and current_user.club_profile&.has_handball_teams?) ) or (current_user.board? and (selected_sport == 'football' and current_user.board_profile&.club_profile&.has_football_teams?) or (selected_sport == 'handball' and current_user.board_profile&.club_profile&.has_handball_teams?)) %>
                 <div class="flex items-center mb-6 gap-x-4">
                     <% selected_sport == 'football' ? sport_id = 2 : sport_id = 3 %>
-                    <% selected_team = params[:team] ? params[:team] : nil %>
                     <% current_user.club? ? teams=current_user.club_profile.club_teams.where(sport_id: sport_id) : teams=current_user.board_profile.club_profile.club_teams.where(sport_id: sport_id) %>
+                    <% if params[:team] and teams.exists?(params[:team]) %>
+                        <% selected_team = params[:team] %>
+                    <% elsif teams.any? %>
+                        <% selected_team = teams.first.id %>
+                    <% else %>
+                        <% selected_team = nil %>
+                    <% end %>
+
+                
+                
                     <select id="team-select" class="w-full md:w-64 bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200" onchange="window.location.href = '?sport=<%= selected_sport %>&team=' + this.value">
-                        <option value="">Selecionar Equipa...</option>
                         <% teams.each do |team|  %>
                             <option value="<%= team.id %>" <%= 'selected' if selected_team == team.id.to_s %>> <%= team.name %> </option>
                         <% end %>
@@ -259,59 +267,82 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-4 justify-center gap-6">
+                
 
-                <div class="bg-gray-800 border-l-4 border-yellow-500 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
-                    <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
-                        <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
-                            <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
-                        </div>
-                        <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
-                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
-                        </div>
-                        <div class="absolute top-2 right-2 flex space-x-1">
-                            <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
-                                <i data-feather="edit" class="w-4 h-4"></i>
-                            </button>
-                            <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
-                                <i data-feather="trash-2" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-4 pt-14 pb-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-bold text-lg">Nome do treinador</h3>
-                                <p class="text-gray-400 text-sm">Função • Idade</p>
+
+             <% if CoachTeam.where(club_team_id: selected_team).any? %>
+                    <div class="grid grid-cols-4 justify-center gap-6">
+                    <% coach_team = CoachTeam.where(club_team_id: selected_team).includes(:coach_profile) %>
+                    <% coach_team.each do |pt| %>
+                        <% coach = pt.coach_profile %>
+                        <%= link_to coach_profile_path(coach) do %>
+                            <div class="bg-gray-800 border-l-4 border-yellow-500 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
+                                <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                                    <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                                        <% if coach.banner_picture.attached? %>
+                                            <%= image_tag url_for(coach.banner_picture), class: "w-full h-full object-cover" %>
+                                        <% else %>
+                                            <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                        <% end %>
+                                    </div>
+                                    <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
+                                        <% if coach.profile_picture.attached? %>
+                                            <% image_tag url_for(coach.profile_picture), class: "w-full h-full object-cover " %>
+                                        <% else %>
+                                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
+                                        <% end %>
+                                    </div>
+                                    <div class="absolute top-2 right-2 flex space-x-1">
+                                        <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
+                                            <i data-feather="edit" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                            <i data-feather="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="p-4 pt-14 pb-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-bold text-lg"> <%= coach.name %> </h3>
+                                            <p class="text-gray-400 text-sm"> <%= coach.coach_type %> • <%= ((Date.today - coach.birth_date).to_i / 365.25).floor  %> anos</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            </div>
+                        <% end %>
+                    <% end %>
+
+                    <div class="mt-8 flex justify-between items-center">
+                        <div class="text-sm text-gray-400">
+                            Showing <span class="font-medium text-white">1</span> to <span class="font-medium text-white">4</span> of <span class="font-medium text-white">24</span> items
+                        </div>
+                        <div class="flex space-x-1">
+                            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
+                                <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            </button>
+                            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-500/90 transition">1</button>
+                            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">2</button>
+                            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">3</button>
+                            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
+                                <i data-feather="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    
+                    </div>
+                    </div>
+
+                <% else %>
+                    <div class="flex justify-center items-center mb-8">
+                        <div class="flex flex-col items-start">
+                            <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem Equipa Técnica neste desporto!</h1>
                         </div>
                     </div>
-                </div>
-                </div>
+                <% end %>
                 
-                <!-- Pagination -->
-
-                <div class="mt-8 flex justify-between items-center">
-                    <div class="text-sm text-gray-400">
-                        Showing <span class="font-medium text-white">1</span> to <span class="font-medium text-white">4</span> of <span class="font-medium text-white">24</span> items
-                    </div>
-                    <div class="flex space-x-1">
-                        <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
-                            <i data-feather="chevron-left" class="w-4 h-4"></i>
-                        </button>
-                        <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-500/90 transition">1</button>
-                        <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">2</button>
-                        <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">3</button>
-                        <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
-                            <i data-feather="chevron-right" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                
-                </div>
-
             </div>
-    
-            <br>
+
 
 <!-------------------------------------------------------------------------------- JOGADORES ------------------------------------------------------------------------->
 
@@ -323,7 +354,7 @@
                     </h3>
 
                     <div class="flex items-center gap-4">
-                        <%= link_to new_player_profile_registration_path do %>
+                        <%= link_to new_player_profile_registration_path(selected_sport: selected_sport, selected_team: selected_team ) do %>
                             <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
                                 <i data-feather="user-plus" class="w-4 h-4"></i>
                             </button>
@@ -334,57 +365,81 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-4 justify-center gap-6">
-
-                <div class="bg-gray-800 border-l-4 border-secondary-300 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
-                    <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
-                        <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
-                            <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
-                        </div>
-                        <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
-                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
-                        </div>
-                        <div class="absolute top-2 right-2 flex space-x-1">
-                            <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
-                                <i data-feather="edit" class="w-4 h-4"></i>
-                            </button>
-                            <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
-                                <i data-feather="trash-2" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-4 pt-14 pb-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-bold text-lg">Nome do Jogador</h3>
-                                <p class="text-gray-400 text-sm">Posição 1 / Posição 2 • Idade</p>
+                
+                <% if PlayerTeam.where(club_team_id: selected_team).any? %>
+                    <div class="grid grid-cols-4 justify-center gap-6">
+                    <% player_team = PlayerTeam.where(club_team_id: selected_team).includes(:player_profile) %>
+                    <% player_team.each do |pt| %>
+                        <% player = pt.player_profile %>
+                        <%= link_to player_profile_path(player) do %>
+                            <div class="bg-gray-800 border-l-4 border-secondary-300 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
+                                <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                                    <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                                        <% if player.banner_picture.attached? %>
+                                            <%= image_tag url_for(player.banner_picture), class: "w-full h-full object-cover" %>
+                                        <% else %>
+                                            <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                        <% end %>
+                                    </div>
+                                    <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
+                                        <% if player.profile_picture.attached? %>
+                                            <% image_tag url_for(player.profile_picture), class: "w-full h-full object-cover " %>
+                                        <% else %>
+                                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
+                                        <% end %>
+                                    </div>
+                                    <div class="absolute top-2 right-2 flex space-x-1">
+                                        <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
+                                            <i data-feather="edit" class="w-4 h-4"></i>
+                                        </button>
+                                        <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                            <i data-feather="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="p-4 pt-14 pb-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-bold text-lg"> <%= player.name %> </h3>
+                                            <p class="text-gray-400 text-sm"> <%= player.position %>  <%= " | " + player.secondary_position if player.secondary_position.present? %> • <%= ((Date.today - player.birth_date).to_i / 365.25).floor  %> anos</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            </div>
+                        <% end %>
+                    <% end %>
+
+                    <div class="mt-8 flex justify-between items-center">
+                        <div class="text-sm text-gray-400">
+                            Showing <span class="font-medium text-white">1</span> to <span class="font-medium text-white">4</span> of <span class="font-medium text-white">24</span> items
+                        </div>
+                        <div class="flex space-x-1">
+                            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
+                                <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            </button>
+                            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-500/90 transition">1</button>
+                            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">2</button>
+                            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">3</button>
+                            <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
+                                <i data-feather="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    
+                    </div>
+                    </div>
+
+                <% else %>
+                    <div class="flex justify-center items-center mb-8">
+                        <div class="flex flex-col items-start">
+                            <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem jogadores neste desporto!</h1>
                         </div>
                     </div>
-                </div>
-                </div>
+                <% end %>
                 
-                <!-- Pagination -->
-
-                <div class="mt-8 flex justify-between items-center">
-                    <div class="text-sm text-gray-400">
-                        Showing <span class="font-medium text-white">1</span> to <span class="font-medium text-white">4</span> of <span class="font-medium text-white">24</span> items
-                    </div>
-                    <div class="flex space-x-1">
-                        <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
-                            <i data-feather="chevron-left" class="w-4 h-4"></i>
-                        </button>
-                        <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-600 text-white hover:bg-blue-500/90 transition">1</button>
-                        <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">2</button>
-                        <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">3</button>
-                        <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
-                            <i data-feather="chevron-right" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                
-                </div>
-                </div>
             </div>
+
+
         <% else %>
             <% if (current_user.club? and !current_user.club_profile.has_no_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_no_sports?) %>
             <br> <br>

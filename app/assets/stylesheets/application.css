@@ -223,7 +223,6 @@ select:required:hover {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    cursor: pointer;
 }
 .card-hover:hover {
     transform: translateY(-8px);
@@ -283,5 +282,9 @@ select:required:hover {
 
 .group:hover .remove-profile-overlay-visible:hover {
   background-color: rgba(239, 68, 68, 1);
+}
+
+.disabled{
+  cursor: not-allowed;
 }
 

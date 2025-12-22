@@ -34,26 +34,45 @@
     
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "space-y-4", id: "multiStepForm", novalidate: true }) do |f| %>
         
-        <% if resource.errors.any? %>
-            <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
-                <svg class="shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                </svg>
-                <span class="sr-only">Danger</span>
-                <div>
-                    <span class="font-medium">Houve os seguintes erros:</span>
-                    <ul class="mt-1.5 list-disc list-inside">
-                        <% resource.errors.full_messages.each do |msg| %>
-                        <li><%= msg %></li>
-                        <% end %>
-                    </ul>
-                </div>
-                <button type="button" class="ms-auto -mx-1.5 -my-1.5 rounded focus:ring-2 focus:ring-brand-medium hover:bg-brand-soft inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#alert-close" aria-label="Close" >
-                    <span class="sr-only">Close</span>
-                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
-                </button>
-            </div>
-        <% end %>
+
+    <% if resource.errors.any? %> 
+        <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert" id="alert-close"> 
+            <svg class="shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20"> 
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/> 
+            </svg> 
+            <span class="sr-only">Danger</span> 
+            <div> 
+                <span class="font-medium">Houve os seguintes erros:</span> 
+                <ul class="mt-1.5 list-disc list-inside"> 
+                <% resource.errors.full_messages.each do |msg| %> 
+                    <li><%= msg %></li> 
+                <% end %> 
+                </ul> 
+            </div> 
+            <button type="button" class="ms-auto -mx-1.5 -my-1.5 rounded focus:ring-2 focus:ring-brand-medium hover:bg-brand-soft inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#alert-close" aria-label="Close" > 
+                <span class="sr-only">Close</span> 
+                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                </svg> 
+            </button> 
+        </div>
+
+        <script>
+            const closeBtn = document.querySelector('[data-dismiss-target="#alert-close"]');
+            const alertBox = document.getElementById('alert-close');
+
+            if (closeBtn && alertBox) {
+                closeBtn.addEventListener('click', function() {
+                    alertBox.style.opacity = '0';
+                    alertBox.style.transition = 'opacity 0.3s ease';
+                    setTimeout(() => {
+                        alertBox.style.display = 'none';
+                    }, 300);
+                });
+            }
+        </script>
+         
+    <% end %>
         
         <%= f.hidden_field :role,
             value: "Player" %>
@@ -142,15 +161,108 @@
 
 
         <%= f.fields_for :player_profile do |pp| %>
+        
             <div class="step-content hidden" data-step="2"> 
-                <!-- Desporto -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Desporto</label>
-                    <%= pp.select :sport,
-                        PlayerProfile::SPORTS,
-                        {selected: PlayerProfile::SPORTS.first, include_blank: false},
-                        { id: "sport_select", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
-                </div>
+                <% sport = params[:selected_sport] %>
+                <% team = params[:selected_team] %>
+
+                <!-- Desporto e equipa -->
+
+                <% if user_signed_in? and (current_user.club? or current_user.board?) %>
+                    <%= pp.fields_for :player_teams do |pt| %>
+                        
+                        <% if sport != nil and team!= nil %>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Desporto</label>
+                                <%= pp.hidden_field :sport, value: sport, id: "sport_select" %>
+                                <select disabled class="w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent">
+                                    <option value=""> <%= sport=='football' ? "Futebol" : "Andebol"  %> </option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1">Equipa</label>
+                                <%= pt.hidden_field :club_team_id, value: team %>
+                                <select disabled class="w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent">
+                                    <option value=""> <%= ClubTeam.find(team).name  %> </option>
+                                </select>
+                            </div>
+                            
+
+                        <% else %>
+
+                            <% if (user_signed_in? and current_user.club? and current_user.club_profile.has_teams_in_both?) or (user_signed_in? and current_user.board? and current_user.board_profile.club_profile.has_teams_in_both?) %>
+                                <div data-controller="sports" >
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Desporto</label>
+                                        <%= pp.select :sport,
+                                            [["Futebol", "football"], ["Andebol", "handball"]],
+                                            {selected: "football", include_blank: false},
+                                            { id: "sport_select", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", data: {action: "change->sports#change"} } %>
+                                    </div>
+
+                                    <% all_club_teams = current_user.club? ? current_user.club_profile.club_teams : current_user.board_profile.club_profile.club_teams %>
+                                    <div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Equipa</label>
+                                                <%= pt.select :club_team_id,
+                                                [],
+                                                { prompt: "Escolher equipa..." },
+                                                {
+                                                id: "team_select",
+                                                class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white",
+                                                data: { "sports-target": "teamSelect" }
+                                                } %>
+                                            </div>
+                                    </div>
+                                </div>
+
+                            <% elsif (user_signed_in? and current_user.club? and current_user.club_profile.has_football_teams?) or (user_signed_in? and current_user.board? and current_user.board_profile.club_profile.has_football_teams?) %>
+                                
+                                <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Desporto</label>
+                                <%= pp.hidden_field :sport, value: 'football', id: "sport_select" %>
+                                <select disabled class="w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent">
+                                    <option value=""> Futebol </option>
+                                </select>
+
+                                <% all_club_teams = current_user.club? ? current_user.club_profile.club_teams.where(sport_id: 2) : current_user.board_profile.club_profile.club_teams.where(sport_id: 2) %>
+                                <div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Equipa</label>
+                                        <%= pt.collection_select :club_team_id, all_club_teams, :id, :name, { prompt: "Escolher equipa..." }, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" %>
+                                    </div>
+                                </div>
+
+                            <% elsif (user_signed_in? and current_user.club? and current_user.club_profile.has_handball_teams?) or (user_signed_in? and current_user.board? and current_user.board_profile.club_profile.has_handball_teams?) %>
+                                
+                                <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Desporto</label>
+                                <%= pp.hidden_field :sport, value: 'handball', id: "sport_select" %>
+                                <select disabled class="w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent">
+                                    <option value=""> Andebol </option>
+                                </select>
+
+                                <% all_club_teams = current_user.club? ? current_user.club_profile.club_teams.where(sport_id: 3) : current_user.board_profile.club_profile.club_teams.where(sport_id: 3) %>
+                                <div>
+                                    <div data-controller="sports">
+                                        <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Equipa</label>
+                                        <%= pt.collection_select :club_team_id, all_club_teams, :id, :name, { prompt: "Escolher equipa..." }, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" %>
+                                    </div>
+                                </div>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                <% else %>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Desporto</label>
+                        <%= pp.select :sport,
+                            [["Futebol", "football"], ["Andebol", "handball"]],
+                            {selected: "football", include_blank: false},
+                            { id: "sport_select", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", data: {action: "change->sports#change"} } %>
+                    </div>
+                <% end %>
+
+
                 <!-- Nome -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome</label>
@@ -217,6 +329,7 @@
                         maxlength: 9, 
                         required: true %> 
                 </div>
+
                 
                     <div class="text-left text-xs text-red-400 py-2">
                         * -> Campo Obrigatorio
@@ -290,6 +403,7 @@
             </div>
         </div>
     <% end %> 
+<% end %>
 
     <br>
 
@@ -300,7 +414,7 @@
             Já tem uma conta? <%= link_to 'Entrar', new_user_session_path, class: "text-primary-500 hover:underline font-medium" %>
         <% end %>
     </div>
-<% end %>
+
 
     
 <!--------------------------------------------------------------- Scripts ----------------------------------------------------------------------------->
@@ -375,8 +489,8 @@
             const secondaryPositionSelect = document.getElementById("secondary_position_select");
 
             const positions = {
-                "Futebol": ["Guarda-Redes", "Lateral Direito", "Lateral Esquerdo", "Central", "Médio Centro", "Médio Ofensivo", "Médio Defensivo", "Extremo Direito", "Extremo Esquerdo", "Ponta de lança"],
-                "Andebol": ["Guarda-Redes", "Central", "Lateral Esquerdo", "Lateral Direito", "Ponta Esquerda", "Pivô", "Ponta Direita"]
+                football: ["Guarda-Redes", "Lateral Direito", "Lateral Esquerdo", "Central", "Médio Centro", "Médio Ofensivo", "Médio Defensivo", "Extremo Direito", "Extremo Esquerdo", "Ponta de lança"],
+                handball: ["Guarda-Redes", "Central", "Lateral Esquerdo", "Lateral Direito", "Ponta Esquerda", "Pivô", "Ponta Direita"]
             };
 
             const populateOptions = (selectEl, opts, preserveValue) => {
@@ -569,25 +683,6 @@
                     }
                 }
             }
-        </script>
-
-        <!-- Script para fechar a mensagem de erro -->
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const alertBox = document.querySelector('[role="alert"]');
-                const closeBtn = document.querySelector('[data-dismiss-target="#alert-close"]');
-
-                if (closeBtn && alertBox) {
-                closeBtn.addEventListener('click', function() {
-                    alertBox.style.opacity = '0';
-                    alertBox.style.transition = 'opacity 0.3s ease';
-                    setTimeout(() => {
-                    alertBox.style.display = 'none';
-                    }, 300);
-                });
-                }
-            });
         </script>
 
 <!--------------------------------------------------------------- CSS ----------------------------------------------------------------------------->        

@@ -1,9 +1,12 @@
 class CoachProfile < ApplicationRecord
   belongs_to :user
+  has_many :coach_teams
   belongs_to :club_profile, optional: true
   has_one_attached :profile_picture
+  has_one_attached :banner_picture
+  accepts_nested_attributes_for :coach_teams
 
-  SPORTS = ["Futebol", "Andebol"]
+  SPORTS = ["football", "handball"]
   MIN_AGE = 16.years.ago.to_date
   REGEX_NUM_TELEMOVEL = /\A9\d{8}\z/
   TYPE = ["Treinador Principal", "Treinador Adjunto", "Preparador Físico", "Treinador de bolas paradas", "Treinador de Guarda Redes"]

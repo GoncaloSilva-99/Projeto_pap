@@ -1,4 +1,4 @@
 class CoachTeam < ApplicationRecord
-  belongs_to :coach_profiles
-  belongs_to :club_teams
+  belongs_to :coach_profile
+  belongs_to :club_team
 end
