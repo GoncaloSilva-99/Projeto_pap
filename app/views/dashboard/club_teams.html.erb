@@ -241,10 +241,15 @@
                     </select>
                     
 
-                    <div class="relative w-64">
-                        <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
-                        <input type="text" placeholder="Search members..." class="bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                    </div>
+                    <%= search_form_for @q, url: request.path, method: :get, html: { class: "relative w-64" } do |f| %>
+                        <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none z-10"></i>
+                        <%= f.search_field :name_cont,
+                            placeholder: "Pesquisar membros...",
+                            class: "bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
+                            oninput: "this.form.requestSubmit()" %>
+                        <%= hidden_field_tag :sport, params[:sport] %>
+                        <%= hidden_field_tag :team, params[:team] %>
+                    <% end %>
                 </div>
                 
             </div>
@@ -258,9 +263,11 @@
                         <span>Equipa Técnica ( <%= CoachTeam.where(club_team_id: selected_team).count %> )</span>
                     </h3>
                     <div class="flex items-center gap-4">
-                        <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
-                            <i data-feather="user-plus" class="w-4 h-4"></i>
-                        </button>
+                        <%= link_to new_coach_profile_registration_path(selected_sport: selected_sport, selected_team: selected_team ) do %>
+                            <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                                <i data-feather="user-plus" class="w-4 h-4"></i>
+                            </button>
+                        <% end %>
                         <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
                             <i data-feather="mail" class="w-4 h-4"></i>
                         </button>
@@ -270,10 +277,9 @@
                 
 
 
-             <% if CoachTeam.where(club_team_id: selected_team).any? %>
+             <% if @coach_results.any? %>
                     <div class="grid grid-cols-4 justify-center gap-6">
-                    <% coach_team = CoachTeam.where(club_team_id: selected_team).includes(:coach_profile) %>
-                    <% coach_team.each do |pt| %>
+                    <% @coach_results.each do |pt| %>
                         <% coach = pt.coach_profile %>
                         <%= link_to coach_profile_path(coach) do %>
                             <div class="bg-gray-800 border-l-4 border-yellow-500 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
@@ -287,7 +293,7 @@
                                     </div>
                                     <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
                                         <% if coach.profile_picture.attached? %>
-                                            <% image_tag url_for(coach.profile_picture), class: "w-full h-full object-cover " %>
+                                            <%= image_tag url_for(coach.profile_picture), class: "w-full h-full object-cover " %>
                                         <% else %>
                                             <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
                                         <% end %>
@@ -350,7 +356,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-secondary-300 flex items-center space-x-2">
                         <i data-feather="users" class="w-6 h-6"></i>
-                        <span>Jogadores ( <%= PlayerTeam.where(club_team_id: selected_team).count %> )</span>
+                        <span>Jogadores ( <%= @num_player_results %> )</span>
                     </h3>
 
                     <div class="flex items-center gap-4">
@@ -366,10 +372,9 @@
                 </div>
 
                 
-                <% if PlayerTeam.where(club_team_id: selected_team).any? %>
+                <% if @player_results.any? %>
                     <div class="grid grid-cols-4 justify-center gap-6">
-                    <% player_team = PlayerTeam.where(club_team_id: selected_team).includes(:player_profile) %>
-                    <% player_team.each do |pt| %>
+                    <% @player_results.each do |pt| %>
                         <% player = pt.player_profile %>
                         <%= link_to player_profile_path(player) do %>
                             <div class="bg-gray-800 border-l-4 border-secondary-300 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
@@ -383,7 +388,7 @@
                                     </div>
                                     <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
                                         <% if player.profile_picture.attached? %>
-                                            <% image_tag url_for(player.profile_picture), class: "w-full h-full object-cover " %>
+                                            <%= image_tag url_for(player.profile_picture), class: "w-full h-full object-cover " %>
                                         <% else %>
                                             <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
                                         <% end %>

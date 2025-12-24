@@ -25,4 +25,12 @@ class PlayerProfile < ApplicationRecord
   validates_presence_of :dominant_foot_or_hand, inclusion: {in: DOMINANT}
   validates_presence_of :name, :birth_date
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["id", "name", "position", "secondary_position"]
+  end
+  
+  def self.ransackable_associations(auth_object = nil)
+    ["player_teams", "user"]
+  end
+
 end

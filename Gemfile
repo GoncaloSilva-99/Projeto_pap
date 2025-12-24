@@ -43,6 +43,7 @@ gem "thruster", require: false
 gem "tailwindcss-rails"
 gem "devise", "~> 4.9"
 gem 'requestjs-rails'
+gem 'ransack'
 
 
 group :development, :test do
