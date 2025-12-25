@@ -15,12 +15,8 @@ class CoachProfile < ApplicationRecord
   validates_presence_of :coach_type, inclusion: {in: TYPE}
   validates_presence_of :name, :birth_date
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["id", "name", "coach_type", "birth_date"]
-  end
+  include PgSearch::Model
   
-  def self.ransackable_associations(auth_object = nil)
-    ["coach_teams", "user"]
-  end
+  pg_search_scope :search_by_name, against: :name, using: { tsearch: {prefix: true} }
 
 end

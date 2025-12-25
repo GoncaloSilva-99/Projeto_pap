@@ -1,7 +1,8 @@
 class DashboardController < ApplicationController
   before_action :authenticate_user!
   before_action :check_if_club_or_board
-  before_action :setup_ransack
+  before_action :club_teams, only: [:club_teams]
+  before_action :setup_search_teams, only: [:club_teams]
 
   protected
 
@@ -11,19 +12,38 @@ class DashboardController < ApplicationController
     end
   end
 
-  def setup_ransack
+  def club_teams
+    if params[:team].blank?
+      selected_sport = params[:sport] || 'football'
+      sport_id = selected_sport == 'football' ? 2 : 3
+      
+      teams = if current_user.club?
+        current_user.club_profile.club_teams.where(sport_id: sport_id)
+      else
+        current_user.board_profile.club_profile.club_teams.where(sport_id: sport_id)
+      end
+      
+      if teams.any?
+        redirect_to club_teams_dashboard_path(sport: selected_sport, team: teams.first.id)
+        return
+      end
+    end
+  end
+
+  def setup_search_teams
     @selected_team = params[:team]
 
-    @q = PlayerTeam.ransack(params[:q])
+    @query = params[:query]
 
-    @q_players = PlayerTeam.where(club_team_id: @selected_team).joins(:player_profile).ransack(params[:q])
-    @player_results = @q_players.result(distinct: true)
-    @num_player_results = @player_results.count
-
-    @q_coaches = CoachTeam.where(club_team_id: @selected_team).joins(:coach_profile).ransack(params[:q])
-    @coach_results = @q_coaches.result(distinct: true)
-    @num_coach_results = @coach_results.count
-
+    if @query.present?
+      @player_results = PlayerProfile.search_by_name(@query).joins(:player_teams).where(player_teams: { club_team_id: @selected_team })
+      @coach_results = CoachProfile.search_by_name(@query).joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team })
+    else
+      @player_results = PlayerProfile.joins(:player_teams).where(player_teams: { club_team_id: @selected_team })
+      @coach_results = CoachProfile.joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team })
+    end
   end
+
+
 
 end

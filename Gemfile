@@ -43,7 +43,7 @@ gem "thruster", require: false
 gem "tailwindcss-rails"
 gem "devise", "~> 4.9"
 gem 'requestjs-rails'
-gem 'ransack'
+gem 'pg_search'
 
 
 group :development, :test do

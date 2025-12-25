@@ -232,35 +232,46 @@
                         <% selected_team = nil %>
                     <% end %>
 
-                
-                
                     <select id="team-select" class="w-full md:w-64 bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200" onchange="window.location.href = '?sport=<%= selected_sport %>&team=' + this.value">
                         <% teams.each do |team|  %>
                             <option value="<%= team.id %>" <%= 'selected' if selected_team == team.id.to_s %>> <%= team.name %> </option>
                         <% end %>
                     </select>
-                    
 
-                    <%= search_form_for @q, url: request.path, method: :get, html: { class: "relative w-64" } do |f| %>
-                        <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none z-10"></i>
-                        <%= f.search_field :name_cont,
-                            placeholder: "Pesquisar membros...",
-                            class: "bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
-                            oninput: "this.form.requestSubmit()" %>
-                        <%= hidden_field_tag :sport, params[:sport] %>
-                        <%= hidden_field_tag :team, params[:team] %>
-                    <% end %>
+                    <div class="relative">
+                        <%= form_with url: club_teams_dashboard_path, method: :get, local: true, id: "search-form" do %>
+                            <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none z-10"></i>
+                            <%= text_field_tag :query,
+                                params[:query],
+                                placeholder: "Pesquisar membros...",
+                                class: "bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-10 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
+                                oninput: "clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(() => this.form.requestSubmit(), 1000); toggleClearButton(this)",
+                                id: "search-input" %>
+                            <%= hidden_field_tag :sport, params[:sport] %>
+                            <%= hidden_field_tag :team, params[:team] %>
+                            <button type="button" id="clear-search" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition <%= 'hidden' unless params[:query].present? %>" onclick="clearSearch()">
+                                <i data-feather="x" class="w-4 h-4 text-red-400"></i>
+                            </button>
+                        <% end %>
+                    </div>
+
                 </div>
-                
             </div>
 
 <!-------------------------------------------------------------------------------- EQUIPA TÉCNICA ------------------------------------------------------------------------->
 
             <div>
+            <% if (!@coach_results&.any? and !@player_results&.any? and params[:query].present?) %>
+                <div class="flex justify-center items-center mb-8">
+                    <div class="flex flex-col items-start">
+                        <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Pesquisa não retornou nada</h1>
+                    </div>
+                </div>
+            <% elsif (params[:query].present? and @coach_results.any?) or (!params[:query].present?) %>
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-yellow-300 flex items-center space-x-2">
                     <i data-feather="award" class="w-6 h-6"></i>
-                        <span>Equipa Técnica ( <%= CoachTeam.where(club_team_id: selected_team).count %> )</span>
+                        <span>Equipa Técnica ( <%= @coach_results&.any? ? @coach_results.count : "0" %> )</span>
                     </h3>
                     <div class="flex items-center gap-4">
                         <%= link_to new_coach_profile_registration_path(selected_sport: selected_sport, selected_team: selected_team ) do %>
@@ -273,14 +284,11 @@
                         </button>
                     </div>
                 </div>
+            <% end %>
 
-                
-
-
-             <% if @coach_results.any? %>
+             <% if @coach_results&.any? %>
                     <div class="grid grid-cols-4 justify-center gap-6">
-                    <% @coach_results.each do |pt| %>
-                        <% coach = pt.coach_profile %>
+                    <% @coach_results.each do |coach| %>
                         <%= link_to coach_profile_path(coach) do %>
                             <div class="bg-gray-800 border-l-4 border-yellow-500 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
                                 <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
@@ -320,6 +328,7 @@
                         <% end %>
                     <% end %>
 
+                <% if @coach_results&.count > 4 %>
                     <div class="mt-8 flex justify-between items-center">
                         <div class="text-sm text-gray-400">
                             Showing <span class="font-medium text-white">1</span> to <span class="font-medium text-white">4</span> of <span class="font-medium text-white">24</span> items
@@ -337,12 +346,13 @@
                         </div>
                     
                     </div>
+                <% end %>
                     </div>
 
-                <% else %>
+                <% elsif !@coach_results&.any? and !params[:query].present? %>
                     <div class="flex justify-center items-center mb-8">
                         <div class="flex flex-col items-start">
-                            <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem Equipa Técnica neste desporto!</h1>
+                            <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem Equipa Técnica nesta equipa!</h1>
                         </div>
                     </div>
                 <% end %>
@@ -353,29 +363,29 @@
 <!-------------------------------------------------------------------------------- JOGADORES ------------------------------------------------------------------------->
 
             <div class="mb-12">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-secondary-300 flex items-center space-x-2">
-                        <i data-feather="users" class="w-6 h-6"></i>
-                        <span>Jogadores ( <%= @num_player_results %> )</span>
-                    </h3>
+                <% if (params[:query].present? and @player_results.any? ) or (!params[:query].present?) %>
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-secondary-300 flex items-center space-x-2">
+                            <i data-feather="users" class="w-6 h-6"></i>
+                            <span>Jogadores ( <%= @player_results&.any? ? @player_results.count : "0" %> )</span>
+                        </h3>
 
-                    <div class="flex items-center gap-4">
-                        <%= link_to new_player_profile_registration_path(selected_sport: selected_sport, selected_team: selected_team ) do %>
-                            <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
-                                <i data-feather="user-plus" class="w-4 h-4"></i>
+                        <div class="flex items-center gap-4">
+                            <%= link_to new_player_profile_registration_path(selected_sport: selected_sport, selected_team: selected_team ) do %>
+                                <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                                    <i data-feather="user-plus" class="w-4 h-4"></i>
+                                </button>
+                            <% end %>
+                            <button class="bg-secondary-400 hover:bg-secondary-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                                <i data-feather="mail" class="w-4 h-4"></i>
                             </button>
-                        <% end %>
-                        <button class="bg-secondary-400 hover:bg-secondary-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
-                            <i data-feather="mail" class="w-4 h-4"></i>
-                        </button>
+                        </div>
                     </div>
-                </div>
+                <% end %>
 
-                
-                <% if @player_results.any? %>
+                <% if @player_results&.any? %>
                     <div class="grid grid-cols-4 justify-center gap-6">
-                    <% @player_results.each do |pt| %>
-                        <% player = pt.player_profile %>
+                    <% @player_results.each do |player| %>
                         <%= link_to player_profile_path(player) do %>
                             <div class="bg-gray-800 border-l-4 border-secondary-300 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
                                 <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
@@ -415,6 +425,7 @@
                         <% end %>
                     <% end %>
 
+                <% if @player_results&.count > 4 %>
                     <div class="mt-8 flex justify-between items-center">
                         <div class="text-sm text-gray-400">
                             Showing <span class="font-medium text-white">1</span> to <span class="font-medium text-white">4</span> of <span class="font-medium text-white">24</span> items
@@ -430,14 +441,14 @@
                                 <i data-feather="chevron-right" class="w-4 h-4"></i>
                             </button>
                         </div>
-                    
                     </div>
+                <% end %>
                     </div>
 
-                <% else %>
+                <% elsif !@player_results&.any? and !params[:query].present? %>
                     <div class="flex justify-center items-center mb-8">
                         <div class="flex flex-col items-start">
-                            <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem jogadores neste desporto!</h1>
+                            <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem Jogadores nesta equipa!</h1>
                         </div>
                     </div>
                 <% end %>
@@ -981,6 +992,28 @@
                     });
                 });
             });
+        </script>
+
+        <!-- Script de limpar o form -->
+        <script>
+            function toggleClearButton(input) {
+                const clearBtn = document.getElementById('clear-search');
+                if (input.value.length > 0) {
+                    clearBtn.classList.remove('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                }
+                feather.replace();
+            }
+
+            function clearSearch() {
+                const input = document.getElementById('search-input');
+                const form = document.getElementById('search-form');
+                input.value = '';
+                document.getElementById('clear-search').classList.add('hidden');
+                form.requestSubmit();
+            }
+
         </script>
 
 <style>
