@@ -13,16 +13,16 @@ class DashboardController < ApplicationController
   end
 
   def club_teams
-    if params[:team].blank?
-      selected_sport = params[:sport] || 'football'
-      sport_id = selected_sport == 'football' ? 2 : 3
-      
-      if current_user.club?
-        teams = current_user.club_profile.club_teams.where(sport_id: sport_id)
-      else
-        teams = current_user.board_profile.club_profile.club_teams.where(sport_id: sport_id)
-      end
-      
+    selected_sport = params[:sport] || 'football'
+    sport_id = selected_sport == 'football' ? 2 : 3
+    
+    if current_user.club?
+      teams = current_user.club_profile.club_teams.where(sport_id: sport_id)
+    else
+      teams = current_user.board_profile.club_profile.club_teams.where(sport_id: sport_id)
+    end
+
+    if params[:team].blank? || !teams.exists?(params[:team])
       if teams.any?
         redirect_to club_teams_dashboard_path(sport: selected_sport, team: teams.first.id)
         return
