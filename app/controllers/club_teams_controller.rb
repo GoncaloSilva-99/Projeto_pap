@@ -38,7 +38,7 @@ class ClubTeamsController < ApplicationController
   def update
     respond_to do |format|
       if @club_team.update(club_team_params)
-        format.html { redirect_to @club_team, notice: "Club team was successfully updated.", status: :see_other }
+        format.html { redirect_to club_teams_dashboard_path, notice: "Nome da equipa mudado com sucesso!" }
         format.json { render :show, status: :ok, location: @club_team }
       else
         format.html { render :edit, status: :unprocessable_entity }

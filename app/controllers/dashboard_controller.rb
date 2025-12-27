@@ -17,10 +17,10 @@ class DashboardController < ApplicationController
       selected_sport = params[:sport] || 'football'
       sport_id = selected_sport == 'football' ? 2 : 3
       
-      teams = if current_user.club?
-        current_user.club_profile.club_teams.where(sport_id: sport_id)
+      if current_user.club?
+        teams = current_user.club_profile.club_teams.where(sport_id: sport_id)
       else
-        current_user.board_profile.club_profile.club_teams.where(sport_id: sport_id)
+        teams = current_user.board_profile.club_profile.club_teams.where(sport_id: sport_id)
       end
       
       if teams.any?

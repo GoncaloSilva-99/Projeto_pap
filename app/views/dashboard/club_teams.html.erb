@@ -244,7 +244,7 @@
 
                     <div class="relative">
                         <%= form_with url: club_teams_dashboard_path, method: :get, local: true, id: "search-form" do %>
-                            <i data-feather="search" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-5 pointer-events-none z-10"></i>
+                            <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-5 pointer-events-none z-10"></i>
                             <%= text_field_tag :query,
                                 params[:query],
                                 placeholder: "Pesquisar membros...",
@@ -611,7 +611,7 @@
         <div class="relative p-4 w-full max-w-md max-h-full">
             <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
                 <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-green-900">
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-blue-900">
                     <i data-feather="edit-3" class="w-6 h-6 text-white"></i>
                     <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Mudar Nome da Equipa </h3>
                     <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-rename-team">
@@ -623,11 +623,11 @@
                 <!-- Modal body -->
                 <div class="p-4 md:p-5">
                     <ul class="space-y-4 mb-4">
-                    <%= form_with(url: edit_club_team_path(selected_team), method: :get, scope: :club_team, local: true) do |form| %>
+                    <%= form_with(url: club_team_path(selected_team), method: :patch, scope: :club_team, local: true) do |form| %>
                         <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome da Equipa</label>
                         <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" , placeholder: "Ex: Sub 17 A", required: true, autofocus: true %>
                         <br> <br>
-                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gradient-to-r from-emerald-900 to-emerald-800 hover:from-emerald-800 hover:to-emerald-500">
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-500">
                            <i data-feather="check" class="w-4 h-4"></i>
                            <span>Mudar nome da equipa</span>
                         </button>
@@ -685,6 +685,7 @@
 <% end %> 
 
 <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER DESPORTO ------------------------------------------------------------------------->   
+
 <div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
   <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
     <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
@@ -705,15 +706,10 @@
   </div>
 </div>
 
-<!-------------------------------------------------------------------------------- MODAL REMOVER EQUIPA ------------------------------------------------------------------------->   
 
 <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER EQUIPA ------------------------------------------------------------------------->
 
-<!-------------------------------------------------------------------------------- MODAL REMOVER JOGADOR ------------------------------------------------------------------------->   
-
 <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER JOGADOR ------------------------------------------------------------------------->
-
-<!-------------------------------------------------------------------------------- MODAL REMOVER ET ------------------------------------------------------------------------->   
 
 <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER ET ------------------------------------------------------------------------->    
 
