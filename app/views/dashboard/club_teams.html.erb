@@ -238,9 +238,13 @@
                         <% end %>
                     </select>
 
+                    <button data-modal-target="modal-rename-team" data-modal-toggle="modal-rename-team" class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-3 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                        <i data-feather="edit-3" class="w-4 h-4"></i>
+                    </button>
+
                     <div class="relative">
                         <%= form_with url: club_teams_dashboard_path, method: :get, local: true, id: "search-form" do %>
-                            <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none z-10"></i>
+                            <i data-feather="search" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-5 pointer-events-none z-10"></i>
                             <%= text_field_tag :query,
                                 params[:query],
                                 placeholder: "Pesquisar membros...",
@@ -601,6 +605,41 @@
 
 <% end %> 
 
+<!-------------------------------------------------------------------------------- MODAL EDITAR EQUIPA ------------------------------------------------------------------------->   
+
+    <div id="modal-rename-team" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-green-900">
+                    <i data-feather="edit-3" class="w-6 h-6 text-white"></i>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Mudar Nome da Equipa </h3>
+                    <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-rename-team">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-4 md:p-5">
+                    <ul class="space-y-4 mb-4">
+                    <%= form_with(url: edit_club_team_path(selected_team), method: :get, scope: :club_team, local: true) do |form| %>
+                        <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome da Equipa</label>
+                        <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" , placeholder: "Ex: Sub 17 A", required: true, autofocus: true %>
+                        <br> <br>
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gradient-to-r from-emerald-900 to-emerald-800 hover:from-emerald-800 hover:to-emerald-500">
+                           <i data-feather="check" class="w-4 h-4"></i>
+                           <span>Mudar nome da equipa</span>
+                        </button>
+                    <% end %> 
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 
 <!-------------------------------------------------------------------------------- MODAL REMOVER DESPORTO ------------------------------------------------------------------------->   
@@ -624,13 +663,13 @@
                     <p>Escolha o desporto que pretende remover</p>
                     <ul class="space-y-4 mb-4">
                     <% current_user.club_profile.club_sports.each do |cs| %>
-                        <%= button_to cs, method: :delete, data: { sport_name: cs.sport.name == 'Football' ? 'Futebol' : 'Andebol'}, class: "delete-sport-btn w-full bg-gray-700 hover:bg-red-950 rounded-xl p-6 border-l-4 border-red-800 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left group" do %>
+                        <%= button_to cs, method: :delete, data: { sport_name: cs.sport.name == 'football' ? 'Futebol' : 'Andebol'}, class: "delete-sport-btn w-full bg-gray-700 hover:bg-red-950 rounded-xl p-6 border-l-4 border-red-800 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left group" do %>
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-4">
                                     <i data-feather="minus-circle" class="w-4 h-4 text-red-400 group-hover:text-white transition-colors"></i>
                                     <div>
                                     <h4 class="text-lg font-semibold text-red-400 group-hover:text-white transition-colors">
-                                        <%= cs.sport.name == "Football" ? "Futebol" : "Andebol" %>
+                                        <%= cs.sport.name == "football" ? "Futebol" : "Andebol" %>
                                     </h4>
                                     </div>
                                 </div>
