@@ -310,7 +310,7 @@
             <% if (!@coach_results&.any? and !@player_results&.any? and params[:query].present?) %>
                 <div class="flex justify-center items-center mb-8">
                     <div class="flex flex-col items-start">
-                        <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Pesquisa não retornou nada</h1>
+                        <h1 class="text-2xl text-neutral-400 slide-in mx-auto"> A pesquisa "<%= params[:query] %>" não retornou qualquer membro nesta equipa</h1>
                     </div>
                 </div>
             <% elsif (params[:query].present? and @coach_results.any?) or (!params[:query].present?) %>
@@ -332,11 +332,20 @@
                 </div>
             <% end %>
 
-             <% if @coach_results&.any? %>
-                    <div class="grid grid-cols-4 justify-center gap-6">
+            <% if @coach_results&.any? %>
+                <div class="grid grid-cols-4 justify-center gap-6">
                     <% @coach_results.each do |coach| %>
-                        <%= link_to coach_profile_path(coach) do %>
-                            <div class="bg-gray-800 border-l-4 border-yellow-500 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
+                    <% coach_team = CoachTeam.find_by(coach_profile_id: coach.id, club_team_id: selected_team) %>
+                        <div class="bg-gray-800 border-l-4 border-yellow-500 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 relative">
+                            <div class="absolute top-2 right-2 flex space-x-1 z-10">
+                                <%= button_to edit_coach_profile_path(coach), method: :get,  class: "bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition" do %>
+                                    <i data-feather="edit" class="w-4 h-4"></i>
+                                <% end %>
+                                <button data-modal-target="modal-remover-et" data-modal-toggle="modal-remover-et" class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                    <i data-feather="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <%= link_to coach_profile_path(coach) do %>
                                 <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
                                     <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
                                         <% if coach.banner_picture.attached? %>
@@ -352,14 +361,6 @@
                                             <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
                                         <% end %>
                                     </div>
-                                    <div class="absolute top-2 right-2 flex space-x-1">
-                                        <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
-                                            <i data-feather="edit" class="w-4 h-4"></i>
-                                        </button>
-                                        <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
-                                            <i data-feather="trash-2" class="w-4 h-4"></i>
-                                        </button>
-                                    </div>
                                 </div>
                                 <div class="p-4 pt-14 pb-4">
                                     <div class="flex justify-between items-start">
@@ -369,9 +370,30 @@
                                         </div>
                                     </div>
                                 </div>
+                            <% end %>
+                        </div>
+                        <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER ET ------------------------------------------------------------------------->
+
+                        <div id="modal-remover-et" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                                <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                    <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                                <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende remover <b><%= coach.name %></b> da equipa <b><%= ClubTeam.find(selected_team).name %></b>  </p>
+                                <div class="flex gap-3">
+                                    <button data-modal-hide="modal-remover-et" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                        Cancelar
+                                    </button>
+                                    <%= button_to coach_team_path(coach_team), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                        Remover Treinador
+                                    <% end %>
+                                </div>
                             </div>
-                            </div>
-                        <% end %>
+                        </div>
+
                     <% end %>
 
                 <% if @coach_results&.count > 4 %>
@@ -404,7 +426,7 @@
                 <% end %>
                 
             </div>
-
+            <br>
 
 <!-------------------------------------------------------------------------------- JOGADORES ------------------------------------------------------------------------->
 
@@ -432,8 +454,17 @@
                 <% if @player_results&.any? %>
                     <div class="grid grid-cols-4 justify-center gap-6">
                     <% @player_results.each do |player| %>
-                        <%= link_to player_profile_path(player) do %>
-                            <div class="bg-gray-800 border-l-4 border-secondary-300 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
+                    <% player_team = PlayerTeam.find_by(player_profile_id: player.id, club_team_id: selected_team) %>
+                        <div class="bg-gray-800 border-l-4 border-secondary-300 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 relative">
+                            <div class="absolute top-2 right-2 flex space-x-1 z-10">
+                                <%= button_to edit_player_profile_path(player), method: :get,  class: "bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition" do %>
+                                    <i data-feather="edit" class="w-4 h-4"></i>
+                                <% end %>
+                                <button data-modal-target="modal-remover-jogador" data-modal-toggle="modal-remover-jogador" class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                    <i data-feather="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <%= link_to player_profile_path(player) do %>
                                 <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
                                     <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
                                         <% if player.banner_picture.attached? %>
@@ -449,14 +480,6 @@
                                             <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
                                         <% end %>
                                     </div>
-                                    <div class="absolute top-2 right-2 flex space-x-1">
-                                        <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
-                                            <i data-feather="edit" class="w-4 h-4"></i>
-                                        </button>
-                                        <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
-                                            <i data-feather="trash-2" class="w-4 h-4"></i>
-                                        </button>
-                                    </div>
                                 </div>
                                 <div class="p-4 pt-14 pb-4">
                                     <div class="flex justify-between items-start">
@@ -466,9 +489,31 @@
                                         </div>
                                     </div>
                                 </div>
+                            <% end %>
+                        </div>
+                    
+                        <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER JOGADOR ------------------------------------------------------------------------->
+
+                        <div id="modal-remover-jogador" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                                <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                    <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                                <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende remover <b><%= player.name %></b> da equipa <b><%= ClubTeam.find(selected_team).name %></b>  </p>
+                                <div class="flex gap-3">
+                                    <button data-modal-hide="modal-remover-jogador" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                        Cancelar
+                                    </button>
+                                    <%= button_to player_team_path(player_team), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                        Remover Jogador
+                                    <% end %>
+                                </div>
                             </div>
-                            </div>
-                        <% end %>
+                        </div>
+
                     <% end %>
 
                 <% if @player_results&.count > 4 %>
@@ -512,8 +557,7 @@
             </div>
             <% end %>
         <% end %>
-
-<!-------------------------------------------------------------------------------- MODALS ------------------------------------------------------------------------->    
+  
 
 <!-------------------------------------------------------------------------------- MODAL ADICIONAR EQUIPA ------------------------------------------------------------------------->   
 
@@ -605,46 +649,46 @@
 
 
     <div id="modal-remover-desporto" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
-        <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
-            <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-            </svg>
-        </div>
-
-        <% if (selected_sport == 'football' and ((current_user.club? and current_user.club_profile.has_football_teams?) or (current_user.board? and current_user.board_profile.club_profile.has_football_teams?))) or (selected_sport == 'handball' and ((current_user.club? and current_user.club_profile.has_handball_teams?) or (current_user.board? and current_user.board_profile.club_profile.has_handball_teams?)))  %>
-            
-            <h3 class="text-xl font-semibold text-white text-center mb-2">Desporto não pode ser apagado!</h3>
-            <p class="text-gray-300 text-center mb-6"> Apague todas as equipas de <%= selected_sport == 'football' ? "Futebol" : "Andebol" %> para poder apagar o desporto </p>
-            <div class="flex gap-3">
-            <button data-modal-hide="modal-remover-desporto" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
-                Cancelar
-            </button>
+        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
             </div>
-        <% else %>
-            <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
-            <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar <%= selected_sport == 'football' ? "Futebol" : "Andebol" %>? Esta ação é irreversível</p>
-            <div class="flex gap-3">
-            <button data-modal-hide="modal-remover-desporto" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
-                Cancelar
-            </button>
-            <% club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile %>
-            <% if selected_sport == 'football' %>
-                <% football_sport = club_profile.club_sports.find_by(sport_id: 2) %>
-                <%= button_to club_sport_path(football_sport), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
-                    Apagar Desporto
+
+            <% if (selected_sport == 'football' and ((current_user.club? and current_user.club_profile.has_football_teams?) or (current_user.board? and current_user.board_profile.club_profile.has_football_teams?))) or (selected_sport == 'handball' and ((current_user.club? and current_user.club_profile.has_handball_teams?) or (current_user.board? and current_user.board_profile.club_profile.has_handball_teams?)))  %>
+                
+                <h3 class="text-xl font-semibold text-white text-center mb-2">Desporto não pode ser apagado!</h3>
+                <p class="text-gray-300 text-center mb-6"> Apague todas as equipas de <%= selected_sport == 'football' ? "Futebol" : "Andebol" %> para poder apagar o desporto </p>
+                <div class="flex gap-3">
+                <button data-modal-hide="modal-remover-desporto" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                    Cancelar
+                </button>
+                </div>
+            <% else %>
+                <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar <%= selected_sport == 'football' ? "Futebol" : "Andebol" %>? Esta ação é irreversível</p>
+                <div class="flex gap-3">
+                <button data-modal-hide="modal-remover-desporto" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                    Cancelar
+                </button>
+                <% club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile %>
+                <% if selected_sport == 'football' %>
+                    <% football_sport = club_profile.club_sports.find_by(sport_id: 2) %>
+                    <%= button_to club_sport_path(football_sport), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                        Apagar Desporto
+                    <% end %>
+                <% elsif selected_sport == 'handball' %>
+                    <% handball_sport = club_profile.club_sports.find_by(sport_id: 3) %>
+                    <%= button_to club_sport_path(handball_sport), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                        Apagar Desporto
+                    <% end %>
                 <% end %>
-            <% elsif selected_sport == 'handball' %>
-                <% handball_sport = club_profile.club_sports.find_by(sport_id: 3) %>
-                <%= button_to club_sport_path(handball_sport), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
-                    Apagar Desporto
-                <% end %>
+
+                </div>
             <% end %>
 
-            </div>
-        <% end %>
-
-    </div>
+        </div>
     </div>
 
 
@@ -684,7 +728,6 @@
     </div>
 <% end %>
 
-<!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER JOGADOR ------------------------------------------------------------------------->
 
 <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER ET ------------------------------------------------------------------------->    
 

@@ -52,7 +52,7 @@ class CoachTeamsController < ApplicationController
     @coach_team.destroy!
 
     respond_to do |format|
-      format.html { redirect_to coach_teams_path, notice: "Coach team was successfully destroyed.", status: :see_other }
+      format.html { redirect_to club_teams_dashboard_path, notice: "Treinador removido da equipa com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end
