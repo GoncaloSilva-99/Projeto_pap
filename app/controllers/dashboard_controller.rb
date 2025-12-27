@@ -42,6 +42,9 @@ class DashboardController < ApplicationController
       @player_results = PlayerProfile.joins(:player_teams).where(player_teams: { club_team_id: @selected_team })
       @coach_results = CoachProfile.joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team })
     end
+
+    @base_num_players = PlayerProfile.joins(:player_teams).where(player_teams: { club_team_id: @selected_team }).count
+    @base_num_coaches = CoachProfile.joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team }).count
   end
 
 
