@@ -46,59 +46,76 @@
                             <% selected_sport = "football" %>
                         <% end %>
 
-                    <%= link_to club_teams_dashboard_path(sport: 'football'), class: ["block"].join(' ') do %>
-                        <% if selected_sport == 'football' %>
-                            <div class="flex items-center px-1 py-2 bg-slate-700 text-green-400 rounded-lg transition-all duration-200">
-                                <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
-                                <span class="text-sm">Futebol</span>
-                            </div>
-                        <% else %>
-                            <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
-                                <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
-                                <span class="text-sm">Futebol</span>
-                            </div>
-                        <% end %>
-                        
+                        <div class="flex items-center justify-between">
+                            <%= link_to club_teams_dashboard_path(sport: 'football'), class: "flex-1" do %>
+                                <% if selected_sport == 'football' %>
+                                    <div class="flex items-center px-1 py-2 bg-slate-700 text-green-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
+                                        <span class="text-sm">Futebol</span>
+                                    </div>
+                                <% else %>
+                                    <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
+                                        <span class="text-sm">Futebol</span>
+                                    </div>
+                                <% end %>
+                            <% end %>
+                            
+                            <% if selected_sport == 'football' %>
+                                <% club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile %>
+                                <% football_sport = club_profile.club_sports.find_by(sport_id: 2) %>
+                                <% if football_sport %>
+                                    <%= button_to club_sport_path(football_sport), method: :delete, data: { sport_name: "Futebol" }, class: "delete-sport-btn ml-2 p-1 text-red-600 hover:text-white hover:bg-red-600 rounded transition-all duration-200 bg-slate-700 py-2 px-2 rounded-lg" do %>
+                                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                                    <% end %>
+                                <% end %>
+                            <% end %>
+                        </div>
                     <% end %>
-                <% end %>
 
-                <% if (current_user.club? and current_user.club_profile.has_handball?) or (current_user.board? and current_user.board_profile.club_profile.has_handball?) %>
-                    <% if (current_user.club? and current_user.club_profile.has_both_sports?) or (current_user.board? and current_user.board_profile.club_profile.has_both_sports?) %>
-                        <% if selected_sport == nil %>
+                    <% if (current_user.club? and current_user.club_profile.has_handball?) or (current_user.board? and current_user.board_profile.club_profile.has_handball?) %>
+                        <% if (current_user.club? and current_user.club_profile.has_both_sports?) or (current_user.board? and current_user.board_profile.club_profile.has_both_sports?) %>
+                            <% if selected_sport == nil %>
+                                <% selected_sport = "handball" %>
+                            <% end %>
+                        <% else %>
                             <% selected_sport = "handball" %>
                         <% end %>
-                    <% else %>
-                        <% selected_sport = "handball" %>
-                    <% end %>
 
-                    <%= link_to club_teams_dashboard_path(sport: 'handball'), class: ["block"].join(' ') do %>
-                        <% if selected_sport == 'handball' %>
-                            <div class="flex items-center px-1 py-2 bg-slate-700 text-green-400 rounded-lg transition-all duration-200">
-                                <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
-                                <span class="text-sm">Andebol</span>
-                            </div>
-                        <% else %>
-                            <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
-                                <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
-                                <span class="text-sm">Andebol</span>
-                            </div>
-                        <% end %>
-                        
+                        <div class="flex items-center justify-between ">
+                            <%= link_to club_teams_dashboard_path(sport: 'handball'), class: "flex-1" do %>
+                                <% if selected_sport == 'handball' %>
+                                    <div class="flex items-center px-1 py-2 bg-slate-700 text-green-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
+                                        <span class="text-sm">Andebol</span>
+                                    </div>
+                                <% else %>
+                                    <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
+                                        <span class="text-sm">Andebol</span>
+                                    </div>
+                                <% end %>
+                            <% end %>
+                            
+                            <% if selected_sport == 'handball' %>
+                                <% club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile %>
+                                <% handball_sport = club_profile.club_sports.find_by(sport_id: 3) %>
+                                <% if handball_sport %>
+                                    <%= button_to club_sport_path(handball_sport), method: :delete, data: { sport_name: "Andebol" }, class: "delete-sport-btn ml-2 p-1 text-red-600 hover:text-white hover:bg-red-600 rounded transition-all duration-200 bg-slate-700 py-2 px-2 rounded-lg " do %>
+                                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                                    <% end %>
+                                <% end %>
+                            <% end %>
+                        </div>
                     <% end %>
-
                 <% end %>
-                    <button data-modal-target="select-modal-remove" data-modal-toggle="select-modal-remove" class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-red-400 rounded-lg transition-all duration-200">
-                        <i data-feather="x" class="w-4 h-4 mr-2 text-red-400"></i>
-                        <span class="text-sm">Remover Desporto</span>
+                
+                <% if (current_user.club? and !current_user.club_profile.has_both_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_both_sports?) %>
+                    <button data-modal-target="select-modal" data-modal-toggle="select-modal" class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
+                        <i data-feather="plus" class="w-4 h-4 mr-2 text-green-400"></i>
+                        <span class="text-sm">Adicionar Desporto</span>
                     </button>
                 <% end %>
-                <% if (current_user.club? and !current_user.club_profile.has_both_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_both_sports?) %>
-                        <button data-modal-target="select-modal" data-modal-toggle="select-modal" class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
-                            <i data-feather="plus" class="w-4 h-4 mr-2 text-green-400"></i>
-                            <span class="text-sm">Adicionar Desporto</span>
-                        </button>
-                <% end %>
-
             </div>
 
             <%= link_to root_path do %>
@@ -625,7 +642,7 @@
                     <ul class="space-y-4 mb-4">
                     <%= form_with(url: club_team_path(selected_team), method: :patch, scope: :club_team, local: true) do |form| %>
                         <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome da Equipa</label>
-                        <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" , placeholder: "Ex: Sub 17 A", required: true, autofocus: true %>
+                        <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" , placeholder: "Ex: Sub 17 A", required: true, autofocus: true, value: ClubTeam.find(selected_team).name %>
                         <br> <br>
                         <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-500">
                            <i data-feather="check" class="w-4 h-4"></i>
@@ -642,67 +659,47 @@
 
 
 
-<!-------------------------------------------------------------------------------- MODAL REMOVER DESPORTO ------------------------------------------------------------------------->   
 
-<% if (current_user.club? and !current_user.club_profile.has_no_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_no_sports?) %>
-    <div id="select-modal-remove" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div class="relative p-4 w-full max-w-md max-h-full">
-            <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-red-800">
-                    <i data-feather="trash" class="w-6 h-6 text-white"></i>
-                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Remover Desporto </h3>
-                    <button type="button" class="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="select-modal-remove">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                    </button>
-                </div>
-                <!-- Modal body -->
-                <div class="p-4 md:p-5">
-                    <p>Escolha o desporto que pretende remover</p>
-                    <ul class="space-y-4 mb-4">
-                    <% current_user.club_profile.club_sports.each do |cs| %>
-                        <%= button_to cs, method: :delete, data: { sport_name: cs.sport.name == 'football' ? 'Futebol' : 'Andebol'}, class: "delete-sport-btn w-full bg-gray-700 hover:bg-red-950 rounded-xl p-6 border-l-4 border-red-800 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] text-left group" do %>
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-4">
-                                    <i data-feather="minus-circle" class="w-4 h-4 text-red-400 group-hover:text-white transition-colors"></i>
-                                    <div>
-                                    <h4 class="text-lg font-semibold text-red-400 group-hover:text-white transition-colors">
-                                        <%= cs.sport.name == "football" ? "Futebol" : "Andebol" %>
-                                    </h4>
-                                    </div>
-                                </div>
-                            </div>
-                        <% end %>
-                    <% end %>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-<% end %> 
 
 <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER DESPORTO ------------------------------------------------------------------------->   
 
 <div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
   <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
-    <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
-      <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-      </svg>
-    </div>
-    <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
-    <p id="confirmMessage" class="text-gray-300 text-center mb-6"></p>
-    <div class="flex gap-3">
-      <button id="cancelBtn" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
-        Cancelar
-      </button>
-      <button id="confirmBtn" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium">
-        Apagar
-      </button>
-    </div>
+
+    <% if (selected_sport == 'football' and ((current_user.club? and current_user.club_profile.has_football_teams?) or (current_user.board? and current_user.board_profile.club_profile.has_football_teams?))) or (selected_sport == 'handball' and ((current_user.club? and current_user.club_profile.has_handball_teams?) or (current_user.board? and current_user.board_profile.club_profile.has_handball_teams?)))  %>
+        <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-white text-center mb-2">Desporto não pode ser apagado!</h3>
+        <p class="text-gray-300 text-center mb-6"> Apague todas as equipas de <%= selected_sport == 'football' ? "Futebol" : "Andebol" %> para poder apagar o desporto </p>
+        <div class="flex gap-3">
+        <button id="cancelBtn" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+            Cancelar
+        </button>
+        <button id="confirmBtn" hidden>
+            Apagar Desporto
+        </button>
+        </div>
+    <% else %>
+        <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+        <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar <%= selected_sport == 'football' ? "Futebol" : "Andebol" %>? Esta ação é irreversível</p>
+        <div class="flex gap-3">
+        <button id="cancelBtn" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+            Cancelar
+        </button>
+        <button id="confirmBtn" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium">
+            Apagar Desporto
+        </button>
+        </div>
+    <% end %>
+
   </div>
 </div>
 
@@ -728,13 +725,11 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('confirmModal');
-    const confirmMessage = document.getElementById('confirmMessage');
     const cancelBtn = document.getElementById('cancelBtn');
     const confirmBtn = document.getElementById('confirmBtn');
     let currentForm = null;
     
-    function showModal(message) {
-      confirmMessage.textContent = message;
+    function showModal() {
       modal.classList.remove('hidden');
       setTimeout(() => {
         modal.style.opacity = '1';
@@ -749,8 +744,7 @@
         currentForm = null;
       }, 200);
     }
-    
-    // Adiciona evento a todos os formulários de delete
+
     document.querySelectorAll('.delete-sport-btn').forEach(button => {
       const form = button.closest('form');
       
@@ -759,8 +753,8 @@
         event.stopPropagation();
         
         currentForm = form;
-        const sportName = button.dataset.sportName || 'este item';
-        showModal(`Tem a certeza que deseja remover ${sportName}?`);
+
+        showModal();
       });
     });
     
@@ -785,271 +779,28 @@
 
 <!-------------------------------------------------------------------------------- SCRIPT CONFIRMAÇÃO REMOVER ET -------------------------------------------------------------------------> 
 
-        <!-- Script para passar os steps -->
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-            const steps = Array.from(document.querySelectorAll('.step'));
-            const stepContents = Array.from(document.querySelectorAll('.step-content'));
-            const progressLine = document.querySelector('.progress-line');
+<!-- Script de limpar o form de pesquisa -->
+<script>
+    function toggleClearButton(input) {
+        const clearBtn = document.getElementById('clear-search');
+        if (input.value.length > 0) {
+            clearBtn.classList.remove('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
+        }
+        feather.replace();
+    }
 
-            function showStep(stepNum) {
-                // mostrar conteúdo
-                stepContents.forEach(el => el.classList.add('hidden'));
-                const content = document.querySelector(`.step-content[data-step="${stepNum}"]`);
-                if (content) content.classList.remove('hidden');
+    function clearSearch() {
+        const input = document.getElementById('search-input');
+        const form = document.getElementById('search-form');
+        input.value = '';
+        document.getElementById('clear-search').classList.add('hidden');
+        form.requestSubmit();
+    }
 
-                // atualizar indicadores
-                steps.forEach(s => {
-                const n = parseInt(s.dataset.step, 10);
-                const circle = s.querySelector('div');
-                if (n <= stepNum) {
-                    s.classList.add('active');
-                    if (circle) {
-                    circle.classList.remove('bg-gray-700','text-gray-400');
-                    circle.classList.add('bg-primary-500','text-white');
-                    }
-                } else {
-                    s.classList.remove('active');
-                    if (circle) {
-                    circle.classList.add('bg-gray-700','text-gray-400');
-                    circle.classList.remove('bg-primary-500','text-white');
-                    }
-                }
-                });
-
-                // atualizar linha de progresso
-                const totalSteps = steps.length;
-                const completed = Math.max(0, stepNum - 1);
-                const percent = (completed / (totalSteps - 1)) * 100;
-                if (progressLine) progressLine.style.width = `${percent}%`;
-            }
-
-            // inicializar
-            showStep(1);
-
-            // next / prev handlers 
-            document.querySelectorAll('.next-step').forEach(btn => {
-                btn.addEventListener('click', () => {
-                const next = parseInt(btn.dataset.next, 10);
-                if (!isNaN(next)) showStep(next);
-                });
-            });
-
-            document.querySelectorAll('.prev-step').forEach(btn => {
-                btn.addEventListener('click', () => {
-                const prev = parseInt(btn.dataset.prev, 10);
-                if (!isNaN(prev)) showStep(prev);
-                });
-            });
-            });
-        </script>
-
-        <!-- Script para poder escolher as posições consoante o desporto -->
-
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-            const sportSelect = document.getElementById("sport_select");
-            const positionSelect = document.getElementById("position_select");
-            const secondaryPositionSelect = document.getElementById("secondary_position_select");
-
-            const positions = {
-                "Futebol": ["Guarda-Redes", "Lateral Direito", "Lateral Esquerdo", "Central", "Médio Centro", "Médio Ofensivo", "Médio Defensivo", "Extremo Direito", "Extremo Esquerdo", "Ponta de lança"],
-                "Andebol": ["Guarda-Redes", "Central", "Lateral Esquerdo", "Lateral Direito", "Ponta Esquerda", "Pivô", "Ponta Direita"]
-            };
-
-            const populateOptions = (selectEl, opts, preserveValue) => {
-                const prev = preserveValue ? selectEl.value : null;
-                selectEl.innerHTML = "";
-
-                // opção explícita para "Nenhuma posição secundária" (envia "" para o server)
-                if (selectEl === secondaryPositionSelect) {
-                const noneOpt = document.createElement("option");
-                noneOpt.value = "";
-                noneOpt.text = "Nenhuma posição secundária";
-                selectEl.appendChild(noneOpt);
-                }
-
-                opts.forEach(pos => {
-                const o = document.createElement("option");
-                o.value = pos;
-                o.text = pos;
-                selectEl.appendChild(o);
-                });
-
-                // restaura seleção anterior (inclui caso seja "")
-                if (prev !== null) {
-                // se prev não existir entre as opções, ficará vazio como previsto
-                selectEl.value = prev;
-                }
-            };
-
-            const syncSecondary = () => {
-                const primary = positionSelect.value;
-                Array.from(secondaryPositionSelect.options).forEach(opt => {
-                // permite sempre a opção vazia/"Nenhuma posição secundária"
-                if (opt.value === "") {
-                    opt.disabled = false;
-                    return;
-                }
-                opt.disabled = (opt.value === primary);
-                });
-
-                // se o valor atual da secundária for igual à primária (ou for uma opção desativada),
-                // escolhe a primeira disponível (ou deixa como "")
-                if (secondaryPositionSelect.value === primary || Array.from(secondaryPositionSelect.options).find(o => o.selected && o.disabled)) {
-                const firstAvailable = Array.from(secondaryPositionSelect.options).find(o => !o.disabled);
-                secondaryPositionSelect.value = firstAvailable ? firstAvailable.value : "";
-                }
-            };
-
-            const updatePositions = () => {
-                const selectedSport = sportSelect ? sportSelect.value : null;
-                const opts = positions[selectedSport] || [];
-                populateOptions(positionSelect, opts, true);
-                populateOptions(secondaryPositionSelect, opts, true);
-                syncSecondary();
-            };
-
-            if (positionSelect) positionSelect.addEventListener("change", syncSecondary);
-            if (sportSelect) sportSelect.addEventListener("change", updatePositions);
-
-            // Inicializar caso já haja valor
-            updatePositions();
-            });
-        </script>
-
-        <!-- Script foto de perfil e banner -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const profileInput = document.getElementById('pp_profile_picture');
-                const profilePreview = document.getElementById('pp_profile_preview');
-                const removeProfileBtn = document.getElementById('remove-profile-btn');
-                const originalProfileSrc = profilePreview ? profilePreview.src : '';
-                let hasProfileImage = false;
-
-                if (profileInput && profilePreview && removeProfileBtn) {
-                // Inicializar: garantir que o botão está hidden
-                removeProfileBtn.classList.add('hidden');
-
-                profileInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        profilePreview.src = ev.target.result;
-                        hasProfileImage = true;
-                        removeProfileBtn.classList.remove('hidden');
-                    };
-                    reader.readAsDataURL(file);
-                    }
-                });
-
-                profilePreview.addEventListener('click', () => {
-                    if (!hasProfileImage) {
-                    profileInput.click();
-                    }
-                });
-
-                removeProfileBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    profileInput.value = '';
-                    profilePreview.src = originalProfileSrc;
-                    hasProfileImage = false;
-                    removeProfileBtn.classList.add('hidden');
-                });
-                }
-
-                const bannerInput = document.getElementById('club_banner_picture');
-                const bannerPreview = document.getElementById('club_banner_preview');
-                const removeBannerBtn = document.getElementById('remove-banner-btn');
-                const originalBannerSrc = bannerPreview ? bannerPreview.src : '';
-
-                if (bannerInput && bannerPreview) {
-                bannerInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        bannerPreview.src = ev.target.result;
-                        removeBannerBtn.classList.remove('hidden');
-                    };
-                    reader.readAsDataURL(file);
-                    }
-                });
-
-                bannerPreview.addEventListener('click', () => {
-                    bannerInput.click();
-                });
-
-                if (removeBannerBtn) {
-                    removeBannerBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    bannerInput.value = '';
-                    bannerPreview.src = originalBannerSrc;
-                    removeBannerBtn.classList.add('hidden');
-                    });
-                }
-                }
-            });
-        </script>
-
-        <!-- Script de mostrar password -->
-
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const toggleButtons = [
-                    {
-                        input: document.getElementById("password"),
-                        button: document.getElementById("toggle-password"),
-                        eyeOpen: document.getElementById("eye-open-password"),
-                        eyeClosed: document.getElementById("eye-closed-password")
-                    },
-                    {
-                        input: document.getElementById("password-confirmation"),
-                        button: document.getElementById("toggle-password-confirmation"),
-                        eyeOpen: document.getElementById("eye-open-password-confirmation"),
-                        eyeClosed: document.getElementById("eye-closed-password-confirmation")
-                    }
-                ];
-
-                toggleButtons.forEach(({input, button, eyeOpen, eyeClosed}) => {
-                    button.addEventListener("click", function() {
-                        if (input.type === "password") {
-                            input.type = "text";
-                            eyeOpen.classList.add("hidden");
-                            eyeClosed.classList.remove("hidden");
-                        } else {
-                            input.type = "password";
-                            eyeOpen.classList.remove("hidden");
-                            eyeClosed.classList.add("hidden");
-                        }
-                    });
-                });
-            });
-        </script>
-
-        <!-- Script de limpar o form -->
-        <script>
-            function toggleClearButton(input) {
-                const clearBtn = document.getElementById('clear-search');
-                if (input.value.length > 0) {
-                    clearBtn.classList.remove('hidden');
-                } else {
-                    clearBtn.classList.add('hidden');
-                }
-                feather.replace();
-            }
-
-            function clearSearch() {
-                const input = document.getElementById('search-input');
-                const form = document.getElementById('search-form');
-                input.value = '';
-                document.getElementById('clear-search').classList.add('hidden');
-                form.requestSubmit();
-            }
-
-        </script>
+</script>
 
 <style>
 
