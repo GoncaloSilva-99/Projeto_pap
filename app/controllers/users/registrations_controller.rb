@@ -34,8 +34,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
     if resource.save
       set_flash_message! :notice, :signed_up
-      if (user_signed_in? and current_user.club?) or (user_signed_in? and current_user.board?)
+      if (user_signed_in? and current_user.club?) or (user_signed_in? and current_user.board?) and resource.board_profile.nil?
          respond_with resource, location: club_teams_dashboard_path
+      elsif !resource.board_profile.nil?
+        respond_with resource, location: club_board_dashboard_path
       else
         sign_up(resource_name, resource)
         respond_with resource, location: after_sign_up_path_for(resource)

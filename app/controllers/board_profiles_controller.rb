@@ -25,7 +25,7 @@ class BoardProfilesController < ApplicationController
 
     respond_to do |format|
       if @board_profile.save
-        format.html { redirect_to @board_profile, notice: "Board profile was successfully created." }
+        format.html { redirect_to club_board_dashboard_path, notice: "Conta de direção criada com sucesso!" }
         format.json { render :show, status: :created, location: @board_profile }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +38,7 @@ class BoardProfilesController < ApplicationController
   def update
     respond_to do |format|
       if @board_profile.update(board_profile_params)
-        format.html { redirect_to @board_profile, notice: "Board profile was successfully updated.", status: :see_other }
+        format.html { redirect_to club_board_dashboard_path, notice: "Perfil atualizado com sucesso!", status: :see_other }
         format.json { render :show, status: :ok, location: @board_profile }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -50,9 +50,8 @@ class BoardProfilesController < ApplicationController
   # DELETE /board_profiles/1 or /board_profiles/1.json
   def destroy
     @board_profile.destroy!
-
     respond_to do |format|
-      format.html { redirect_to board_profiles_path, notice: "Board profile was successfully destroyed.", status: :see_other }
+      format.html { redirect_to club_board_dashboard_path, notice: "Membro da direção apagado com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end

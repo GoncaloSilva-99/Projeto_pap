@@ -3,6 +3,7 @@ class DashboardController < ApplicationController
   before_action :check_if_club_or_board
   before_action :club_teams, only: [:club_teams]
   before_action :setup_search_teams, only: [:club_teams]
+  before_action :setup_search_board, only: [:club_board]
 
   protected
 
@@ -48,6 +49,18 @@ class DashboardController < ApplicationController
 
     @base_num_players = PlayerProfile.joins(:player_teams).where(player_teams: { club_team_id: @selected_team }).count
     @base_num_coaches = CoachProfile.joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team }).count
+  end
+
+  def setup_search_board
+    @query = params[:query]
+    club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
+    if @query.present?
+      board_query = BoardProfile.search_by_name(@query).where(club_profile_id: club_id )
+    else
+      board_query = BoardProfile.where(club_profile_id: club_id)
+    end
+
+    @board_results = board_query.page(params[:board_page]).per(4)
   end
 
 
