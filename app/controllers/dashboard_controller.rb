@@ -36,12 +36,15 @@ class DashboardController < ApplicationController
     @query = params[:query]
 
     if @query.present?
-      @player_results = PlayerProfile.search_by_name(@query).joins(:player_teams).where(player_teams: { club_team_id: @selected_team })
-      @coach_results = CoachProfile.search_by_name(@query).joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team })
+      player_query = PlayerProfile.search_by_name(@query).joins(:player_teams).where(player_teams: { club_team_id: @selected_team })
+      coach_query = CoachProfile.search_by_name(@query).joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team })
     else
-      @player_results = PlayerProfile.joins(:player_teams).where(player_teams: { club_team_id: @selected_team })
-      @coach_results = CoachProfile.joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team })
+      player_query = PlayerProfile.joins(:player_teams).where(player_teams: { club_team_id: @selected_team })
+      coach_query = CoachProfile.joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team })
     end
+
+    @player_results = player_query.page(params[:player_page]).per(4)
+    @coach_results = coach_query.page(params[:coach_page]).per(4)
 
     @base_num_players = PlayerProfile.joins(:player_teams).where(player_teams: { club_team_id: @selected_team }).count
     @base_num_coaches = CoachProfile.joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team }).count

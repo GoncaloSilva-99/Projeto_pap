@@ -44,6 +44,7 @@ gem "tailwindcss-rails"
 gem "devise", "~> 4.9"
 gem 'requestjs-rails'
 gem 'pg_search'
+gem 'kaminari'
 
 
 group :development, :test do
