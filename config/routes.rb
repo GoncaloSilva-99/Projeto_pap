@@ -5,8 +5,18 @@ Rails.application.routes.draw do
   resources :club_sports
   resources :admin_profiles
   resources :board_profiles
-  resources :player_profiles
-  resources :coach_profiles
+  resources :coach_profiles do
+    member do
+      patch :remove_from_club
+    end
+  end
+
+  resources :player_profiles do
+    member do
+      patch :remove_from_club
+    end
+  end
+
   resources :club_profiles
   resources :user_profiles
   resources :sports

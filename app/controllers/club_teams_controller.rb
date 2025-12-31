@@ -21,11 +21,12 @@ class ClubTeamsController < ApplicationController
 
   # POST /club_teams or /club_teams.json
   def create
+    @sport = params[:sport]
     @club_team = ClubTeam.new(club_team_params)
 
     respond_to do |format|
       if @club_team.save
-        format.html { redirect_to club_teams_dashboard_path, notice: "Equipa criada com sucesso!" }
+        format.html { redirect_to club_teams_dashboard_path(sport: @sport, team: @club_team.id), notice: "Equipa criada com sucesso!" }
         format.json { render :show, status: :created, location: @club_team }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -36,9 +37,10 @@ class ClubTeamsController < ApplicationController
 
   # PATCH/PUT /club_teams/1 or /club_teams/1.json
   def update
+    @sport = params[:sport]
     respond_to do |format|
       if @club_team.update(club_team_params)
-        format.html { redirect_to club_teams_dashboard_path, notice: "Nome da equipa mudado com sucesso!" }
+        format.html { redirect_to club_teams_dashboard_path(sport: @sport, team: @club_team.id), notice: "Nome da equipa mudado com sucesso!" }
         format.json { render :show, status: :ok, location: @club_team }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -49,10 +51,11 @@ class ClubTeamsController < ApplicationController
 
   # DELETE /club_teams/1 or /club_teams/1.json
   def destroy
+    @sport = params[:sport]
     @club_team.destroy!
 
     respond_to do |format|
-      format.html { redirect_to club_teams_dashboard_path, notice: "Equipa apagada com sucesso", status: :see_other }
+      format.html { redirect_to club_teams_dashboard_path(sport: @sport), notice: "Equipa apagada com sucesso", status: :see_other }
       format.json { head :no_content }
     end
   end

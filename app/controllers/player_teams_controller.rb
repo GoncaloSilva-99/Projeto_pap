@@ -25,7 +25,7 @@ class PlayerTeamsController < ApplicationController
 
     respond_to do |format|
       if @player_team.save
-        format.html { redirect_to @player_team, notice: "Player team was successfully created." }
+        format.html { redirect_to club_teams_dashboard_path, notice: "Jogador adicionado à equipa com sucesso!" }
         format.json { render :show, status: :created, location: @player_team }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -65,6 +65,6 @@ class PlayerTeamsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def player_team_params
-      params.expect(player_team: [ :player_profiles_id, :club_teams_id ])
+      params.require(:player_team).permit(:player_profile_id, :club_team_id)
     end
 end

@@ -25,7 +25,7 @@ class CoachTeamsController < ApplicationController
 
     respond_to do |format|
       if @coach_team.save
-        format.html { redirect_to @coach_team, notice: "Coach team was successfully created." }
+        format.html { redirect_to club_teams_dashboard_path, notice: "Treinador adicionado à equipa com sucesso!" }
         format.json { render :show, status: :created, location: @coach_team }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -65,6 +65,6 @@ class CoachTeamsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def coach_team_params
-      params.expect(coach_team: [ :coach_profiles_id, :club_teams_id ])
+      params.require(:coach_team).permit(:coach_profile_id, :club_team_id)
     end
 end

@@ -14,34 +14,62 @@ class DashboardController < ApplicationController
   end
 
   def club_teams
-    selected_sport = params[:sport] || 'football'
-    sport_id = selected_sport == 'football' ? 2 : 3
-    
-    if current_user.club?
-      teams = current_user.club_profile.club_teams.where(sport_id: sport_id)
-    else
-      teams = current_user.board_profile.club_profile.club_teams.where(sport_id: sport_id)
+
+    club = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
+    if params[:sport].blank?
+      if club.has_football?
+        redirect_to club_teams_dashboard_path(sport: 'football') and return
+      elsif club.has_handball?
+        redirect_to club_teams_dashboard_path(sport: 'handball') and return
+      end
     end
 
-    if params[:team].blank? || !teams.exists?(params[:team])
+    @selected_sport = params[:sport]
+    @sport_id = @selected_sport == 'football' ? 2 : 3
+
+   
+    if current_user.club?
+      teams = current_user.club_profile.club_teams.where(sport_id: @sport_id)
+    else
+      teams = current_user.board_profile.club_profile.club_teams.where(sport_id: @sport_id)
+    end
+
+    if params[:team].blank? || (!teams.exists?(params[:team]) && params[:team] != 'others')
       if teams.any?
-        redirect_to club_teams_dashboard_path(sport: selected_sport, team: teams.first.id)
+        redirect_to club_teams_dashboard_path(sport: @selected_sport, team: teams.first.id)
         return
       end
     end
   end
 
   def setup_search_teams
-    @selected_team = params[:team]
-
+    @selected_team = params[:team].to_s
+    @selected_sport = params[:sport]
+    club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
     @query = params[:query]
 
     if @query.present?
-      player_query = PlayerProfile.search_by_name(@query).joins(:player_teams).where(player_teams: { club_team_id: @selected_team })
-      coach_query = CoachProfile.search_by_name(@query).joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team })
+        if @selected_team == 'others' and @selected_sport == 'football'
+          player_query = PlayerProfile.search_by_name(@query).where(club_profile_id: club_id, sport: 'football').left_joins(:player_teams).where(player_teams: { id: nil })
+          coach_query = CoachProfile.search_by_name(@query).where(club_profile_id: club_id, sport: 'football').left_joins(:coach_teams).where(coach_teams: { id: nil })
+        elsif @selected_team == 'others' and @selected_sport == 'handball'
+          player_query = PlayerProfile.search_by_name(@query).where(club_profile_id: club_id, sport: 'handball').left_joins(:player_teams).where(player_teams: { id: nil })
+          coach_query = CoachProfile.search_by_name(@query).where(club_profile_id: club_id, sport: 'handball').left_joins(:coach_teams).where(coach_teams: { id: nil })
+        else
+          player_query = PlayerProfile.search_by_name(@query).joins(:player_teams).where(player_teams: { club_team_id: @selected_team })
+          coach_query = CoachProfile.search_by_name(@query).joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team })
+        end
     else
-      player_query = PlayerProfile.joins(:player_teams).where(player_teams: { club_team_id: @selected_team })
-      coach_query = CoachProfile.joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team })
+      if @selected_team == 'others' and @selected_sport == 'football'
+        player_query = PlayerProfile.where(club_profile_id: club_id, sport: 'football').left_joins(:player_teams).where(player_teams: { id: nil })
+        coach_query = CoachProfile.where(club_profile_id: club_id, sport: 'football').left_joins(:coach_teams).where(coach_teams: { id: nil })
+      elsif @selected_team == 'others' and @selected_sport == 'handball'
+        player_query = PlayerProfile.where(club_profile_id: club_id, sport: 'handball').left_joins(:player_teams).where(player_teams: { id: nil })
+        coach_query = CoachProfile.where(club_profile_id: club_id, sport: 'handball').left_joins(:coach_teams).where(coach_teams: { id: nil })
+      else
+        player_query = PlayerProfile.joins(:player_teams).where(player_teams: { club_team_id: @selected_team })
+        coach_query = CoachProfile.joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team })
+      end
     end
 
     @player_results = player_query.page(params[:player_page]).per(4)
@@ -49,6 +77,11 @@ class DashboardController < ApplicationController
 
     @base_num_players = PlayerProfile.joins(:player_teams).where(player_teams: { club_team_id: @selected_team }).count
     @base_num_coaches = CoachProfile.joins(:coach_teams).where(coach_teams: { club_team_id: @selected_team }).count
+    @base_football_players_wo_team = PlayerProfile.where(club_profile_id: club_id, sport: 'football').left_joins(:player_teams).where(player_teams: { id: nil }).count
+    @base_handball_players_wo_team = PlayerProfile.where(club_profile_id: club_id, sport: 'handball').left_joins(:player_teams).where(player_teams: { id: nil }).count
+    @base_football_coaches_wo_team = CoachProfile.where(club_profile_id: club_id, sport: 'football').left_joins(:coach_teams).where(coach_teams: { id: nil }).count
+    @base_handball_coaches_wo_team = CoachProfile.where(club_profile_id: club_id, sport: 'handball').left_joins(:coach_teams).where(coach_teams: { id: nil }).count
+
   end
 
   def setup_search_board
@@ -61,6 +94,7 @@ class DashboardController < ApplicationController
     end
 
     @board_results = board_query.page(params[:board_page]).per(4)
+    @base_num_board = BoardProfile.where(club_profile_id: club_id).count
   end
 
 
