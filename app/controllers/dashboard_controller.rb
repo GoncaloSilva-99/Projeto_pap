@@ -4,8 +4,30 @@ class DashboardController < ApplicationController
   before_action :club_teams, only: [:club_teams]
   before_action :setup_search_teams, only: [:club_teams]
   before_action :setup_search_board, only: [:club_board]
+  before_action :sport, only: [:club_infrastructures]
+  before_action :infrastructures, only: [:club_infrastructures]
 
   protected
+
+  def infrastructures
+    @selected_sport = params[:sport]
+    club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
+    sport_id = @selected_sport == 'football' ? 2 : 3
+    club_ct_query = ClubTrainingCenter.where(club_profile_id: club_id, sport_id: sport_id)
+    @club_ct_results = club_ct_query.page(params[:club_ct_page]).per(4)
+  end
+
+  def sport
+    club = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
+    if params[:sport].blank?
+      if club.has_football?
+        redirect_to club_infrastructures_dashboard_path(sport: 'football') and return
+      elsif club.has_handball?
+        redirect_to club_infrastructures_dashboard_path(sport: 'handball') and return
+      end
+    end
+    @selected_sport = params[:sport]
+  end
 
   def check_if_club_or_board
     if user_signed_in? and !current_user.club? and !current_user.board?

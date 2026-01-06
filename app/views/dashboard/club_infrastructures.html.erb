@@ -1,0 +1,447 @@
+
+<body class="min-h-screen flex text-white bg-gray-900">
+    <!-------------------------------------------------------------------------------- NOME E LOGO DO CLUBE ------------------------------------------------------------------------->
+    <div class="w-64 bg-slate-800 shadow-xl min-h-screen flex flex-col border-r border-slate-700">
+        <!-- Logo e nome do clube -->
+        <div class="p-6 border-b border-slate-700">
+            <div class="flex items-center justify-center mb-3">
+                
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% elsif (current_user.board? && current_user.board_profile.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-20 h-20 rounded-full border-1" %>
+                <% end %>
+
+                
+            </div>
+            <h1 class="text-lg font-bold text-center text-white"> <%= current_user.club_profile.name %> </h1>
+        </div>
+<!-------------------------------------------------------------------------------- SIDEBAR ------------------------------------------------------------------------->
+        <nav class="flex-1 p-4 space-y-2">
+
+            <%= link_to club_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 hover:bg-slate-700 text-slate-300 hover:text-blue-400 rounded-xl border-l-4 hover:border-blue-500 border-transparent transition-all duration-300">
+                <i data-feather="home" class="sidebar-icon text-blue-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Dashboard</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_teams_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-xl border-l-4 border-transparent hover:border-green-500 transition-all duration-300">
+                <i data-feather="users" class="sidebar-icon text-green-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Equipas</span>
+            </div>
+            <% end %>
+
+
+            <%= link_to root_path do %>
+            <div  class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 rounded-xl border-l-4 border-transparent hover:border-yellow-500 transition-all duration-300">
+                <i data-feather="dollar-sign" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Finanças</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-red-400 rounded-xl border-l-4 border-transparent hover:border-red-500 transition-all duration-300">
+                <i data-feather="heart" class="sidebar-icon text-red-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Adeptos</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-purple-400 rounded-xl border-l-4 border-transparent hover:border-purple-500 transition-all duration-300">
+                <i data-feather="user" class="sidebar-icon text-purple-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Público</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_infrastructures_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3  bg-slate-700 text-orange-400 rounded-xl border-l-4 border-orange-500 transition-all duration-300">
+                <i data-feather="map-pin" class="sidebar-icon text-orange-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Infraestruturas</span>
+            </div>
+            <% end %>
+            
+
+            <div class="space-y-2 ml-10 mt-2">
+                <% if (current_user.club? and !current_user.club_profile.has_no_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_no_sports?) %>
+                    <% if (current_user.club? and current_user.club_profile.has_football?) or (current_user.board? and current_user.board_profile.club_profile.has_football?) %>
+                        <div class="flex flex-col">
+                            <%= link_to club_infrastructures_dashboard_path(sport: 'football'), class: "flex-1" do %>
+                                <% if @selected_sport == 'football' %>
+                                    <div class="flex items-center px-1 py-2 bg-slate-700 text-orange-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-orange-400"></i>
+                                        <span class="text-sm">Futebol</span>
+                                    </div>
+                                <% else %>
+                                    <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-orange-400"></i>
+                                        <span class="text-sm">Futebol</span>
+                                    </div>
+                                <% end %>
+                            <% end %>
+                            <% if @selected_sport == 'football' %>
+                                <button data-modal-target="modal-add-ct" data-modal-toggle="modal-add-ct">
+                                    <div class="flex items-center ml-8 py-4 text-slate-400 hover:text-orange-400 transition-all duration-200">
+                                        <i data-feather="plus" class="w-3 h-3 mr-2"></i>
+                                        <span class="text-xs">Criar centro de treinos</span>
+                                    </div>
+                                </button>
+                            <% end %>
+                        </div>
+                    <% end %>
+
+                    <% if (current_user.club? and current_user.club_profile.has_handball?) or (current_user.board? and current_user.board_profile.club_profile.has_handball?) %>
+                        <% if (current_user.club? and current_user.club_profile.has_both_sports?) or (current_user.board? and current_user.board_profile.club_profile.has_both_sports?) %>
+                            <% if @selected_sport == nil %>
+                                <% @selected_sport = "handball" %>
+                            <% end %>
+                        <% else %>
+                            <% @selected_sport = "handball" %>
+                        <% end %>
+
+                        <div class="flex flex-col ">
+                            <%= link_to club_infrastructures_dashboard_path(sport: 'handball'), class: "flex-1" do %>
+                                <% if @selected_sport == 'handball' %>
+                                    <div class="flex items-center px-1 py-2 bg-slate-700 text-orange-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-orange-400"></i>
+                                        <span class="text-sm">Andebol</span>
+                                    </div> 
+                                <% else %>
+                                    <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-orange-400"></i>
+                                        <span class="text-sm">Andebol</span>
+                                    </div>
+                                <% end %>
+                            <% end %>
+                            <% if @selected_sport == 'handball' %>
+                                <button data-modal-target="modal-add-ct" data-modal-toggle="modal-add-ct">
+                                    <div class="flex items-center ml-8 py-4 text-slate-400 hover:text-orange-400 transition-all duration-200">
+                                        <i data-feather="plus" class="w-3 h-3 mr-2"></i>
+                                        <span class="text-xs">Criar centro de treinos</span>
+                                    </div>
+                                </button>
+                            <% end %>
+                        </div>
+                    <% end %>
+                <% end %>
+            </div>
+
+            <%= link_to club_equipment_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-400 rounded-xl border-l-4 border-transparent hover:border-rose-300 transition-all duration-300">
+                <i data-feather="clipboard" class="sidebar-icon text-rose-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Material</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_board_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-900 rounded-xl border-l-4 border-transparent hover:border-rose-950 transition-all duration-300">
+                <i data-feather="settings" class="sidebar-icon text-rose-900 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Membros da Direção</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-gray-400 rounded-xl border-l-4 border-transparent hover:border-gray-400 transition-all duration-300">
+                <i data-feather="arrow-left" class="sidebar-icon text-gray-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Página Inicial</span>
+            </div>
+            <% end %>
+        </nav>
+
+
+        <div class="p-4 border-t border-slate-700">
+            <div class="flex items-center space-x-3">
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% elsif (current_user.board? and current_user.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% end %>
+                <div class="flex-1">
+                    <% if current_user.club? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.club_profile.name %> </p>
+                    <% elsif current_user.board? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.board_profile.name %> </p>
+                    <% end %>
+                </div>
+                <%= button_to destroy_user_session_path, method: :delete do %>
+                    <i data-feather="log-out" class="text-slate-400 hover:text-red-400 cursor-pointer transition-colors"></i>
+                <% end %>
+            </div>
+        </div>
+</div>
+
+<!----------------------------------------------------------------- MAIN CONTENT ----------------------------------------------------------------->
+<div class="flex-1 p-8">
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-orange-400 slide-in">Infraestruturas</h1>
+            <p class="text-slate-400 mt-1">Tenha acesso às diferentes infraestruturas do seu clube</p> 
+        </div>
+    </div>
+    <% if @selected_sport %>
+<!-------------------------------------------------------------------------------- CT's ------------------------------------------------------------------------->
+        <% if @club_ct_results %>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <% @club_ct_results.each do |ct| %>
+                    <div class="bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
+                        <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                            <% if ct.ct_picture.attached? %>
+                                <%= image_tag url_for(ct.ct_picture), class: "w-full h-full object-cover" %>
+                            <% else %>
+                                <%= image_tag "default_ct.png", class: "w-full h-full object-cover" %>
+                            <% end %>
+                            
+                            <div class="absolute top-2 right-2 flex gap-2">
+                                <button data-modal-target="modal-editar-ct-<%= ct.id %>" data-modal-toggle="modal-editar-ct-<%= ct.id %>" class="bg-gray-900 hover:bg-blue-600 text-blue-600 hover:text-white p-1.5 rounded-full transition shadow-lg">
+                                    <i data-feather="edit" class="w-4 h-4"></i>
+                                </button>
+                                <button data-modal-target="modal-apagar-ct-<%= ct.id %>" data-modal-toggle="modal-apagar-ct-<%= ct.id %>" class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg">
+                                    <i data-feather="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-4">
+                            <h3 class="text-center font-medium text-yellow-500"> <%= ct.name %> </h3>
+                        </div>
+                    </div>
+
+                    <!-------------------------------------------------------------------------------- MODAL APAGAR CT ------------------------------------------------------------------------->   
+
+                    <div id="modal-apagar-ct-<%= ct.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                            <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar o centro de treinos "<b><%= ct.name %></b>"?  </p>
+                            <div class="flex gap-3">
+                                <button data-modal-hide="modal-apagar-ct-<%= ct.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                    Cancelar
+                                </button>
+                                <%= button_to club_training_center_path(ct), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                    Apagar CT
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-------------------------------------------------------------------------------- MODAL EDITAR CT ------------------------------------------------------------------------->
+                    
+                    <div id="modal-editar-ct-<%= ct.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                        <div class="relative p-4 w-full max-w-md max-h-full">
+                            <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                                <!-- Modal header -->
+                                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-blue-900">
+                                    <i data-feather="edit-3" class="w-6 h-6 text-white"></i>
+                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Editar CT </h3>
+                                    <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-editar-ct-<%= ct.id %>">
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="p-4 md:p-5">
+                                    <ul class="space-y-4 mb-4">
+                                    <%= form_with(url: club_training_center_path(ct), method: :patch, scope: :club_training_center, local: true) do |form| %>
+                                        <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome</label>
+                                        <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" , placeholder: "CT SportX", required: true, autofocus: true, value: ct.name %>
+                                        <br> <br>
+                                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-500">
+                                        <i data-feather="check" class="w-4 h-4"></i>
+                                        <span>Editar CT</span>
+                                        </button>
+                                    <% end %> 
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                <% end %>
+            </div>
+        <% end %>
+
+        <% if @club_ct_results.total_pages > 1 %>
+            <div class="mt-8 flex justify-end">
+                <div class="flex flex-col items-end gap-3">               
+
+                <div class="flex items-center gap-2">
+                    <% if @club_ct_results.prev_page %>
+                    <%= link_to club_infrastructures_dashboard_path(sport: params[:sport], club_ct_page: @club_ct_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                        <i data-feather="chevron-left" class="w-4 h-4"></i>
+                        <span>Anterior</span>
+                    <% end %>
+                    <% else %>
+                    <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                        <i data-feather="chevron-left" class="w-4 h-4"></i>
+                        <span>Anterior</span>
+                    </div>
+                    <% end %>
+
+                    <div class="flex items-center gap-1">
+                    <% (1..@club_ct_results.total_pages).each do |page| %>
+                        <% if page == @club_ct_results.current_page %>
+                        <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-orange-400 text-white font-bold border-2 border-orange-400 shadow-lg">
+                            <%= page %>
+                        </div>
+                        <% else %>
+                        <%= link_to page, club_infrastructures_dashboard_path(sport: params[:sport], club_ct_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                        <% end %>
+                    <% end %>
+                    </div>
+
+                    <% if @club_ct_results.next_page %>
+                    <%= link_to club_infrastructures_dashboard_path(sport: params[:sport], club_ct_page: @club_ct_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                        <span>Seguinte</span>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                    <% end %>
+                    <% else %>
+                    <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                        <span>Seguinte</span>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                    </div>
+                    <% end %>
+                </div>
+                </div>
+            </div>
+        <% end %>
+        
+    <% else %>
+        <div class="flex justify-center items-center mb-9 py-2">
+            <div class="flex flex-col items-start">
+                <h1 class="text-2xl text-neutral-400 slide-in mx-auto">O clube ainda não tem nenhum desporto!</h1>
+                <h1 class="text-2xl text-neutral-400 slide-in">Adicione um desporto na secção "<%= link_to "Equipas", club_teams_dashboard_path, class: "hover:underline bold text-green-400 hover:text-green-500" %>" para começar a gerir as suas infraestruturas </h1>
+            </div>
+        </div>
+    <% end %>
+</div>
+
+
+
+<!-------------------------------------------------------------------------------- MODAL ADICIONAR CT ------------------------------------------------------------------------->   
+
+    <div id="modal-add-ct" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-green-900">
+                    <i data-feather="plus" class="w-6 h-6 text-white"></i>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Adicionar Centro de Treinos </h3>
+                    <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-add-ct">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-4 md:p-5">
+                    <ul class="space-y-4 mb-4">
+                    <%= form_with(url: club_training_centers_path, method: :post, scope: :club_training_center, local: true) do |form| %>
+                        <% if current_user.club? %>
+                            <%= form.hidden_field :club_profile_id, value: current_user.club_profile.id %>
+                        <% elsif current_user.board? %>
+                            <%= form.hidden_field :club_profile_id, value: current_user.board_profile.club_profile.id %>
+                        <% end %>
+
+                        <label class="block text-sm font-medium text-gray-400 mb-1">Foto do CT</label>
+
+                        <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                            <%= image_tag "placeholder.jpg",
+                                id: "ct-picture-preview",
+                                alt: "Pré-visualização do banner",
+                                class: "w-full h-full object-cover cursor-pointer" %>
+
+                            <%= form.file_field :ct_picture,
+                                id: "ct-picture",
+                                class: "file-upload-input sr-only",
+                                accept: "image/*" %>
+                            
+                            <button type="button" id="remove-ct-picture-btn" class="hidden absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            </button>
+                        </div>
+
+                        <br>
+                        
+                        <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome do CT</label>
+                        
+                        <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" ,placeholder: "Ex: Centro de Treinos SportX", required: true, autofocus: true %>
+
+                        <% if @selected_sport == 'football' %>
+                            <%= form.hidden_field :sport_id, value: 2 %>
+                        <% elsif @selected_sport == 'handball' %>
+                            <%= form.hidden_field :sport_id, value: 3 %>
+                        <% end %>
+                        <br> <br>
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gradient-to-r from-emerald-900 to-emerald-800 hover:from-emerald-800 hover:to-emerald-500">
+                           <i data-feather="check" class="w-4 h-4"></i>
+                           <span>Criar CT</span>
+                        </button>
+                    <% end %> 
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!-------------------------------------------------------------------------------- SCRIPTS ------------------------------------------------------------------------->   
+
+    <script>
+        feather.replace()
+    </script>
+
+    <!-- Script ver e remover foto do ct -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const CtPicInput = document.getElementById('ct-picture');
+            const CtPicPreview = document.getElementById('ct-picture-preview');
+            const RemoveCtPicBtn = document.getElementById('remove-ct-picture-btn');
+            const originalBannerSrc = CtPicPreview ? CtPicPreview.src : '';
+
+            if (CtPicInput && CtPicPreview) {
+            CtPicInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    CtPicPreview.src = ev.target.result;
+                    RemoveCtPicBtn.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+                }
+            });
+
+            CtPicPreview.addEventListener('click', () => {
+                CtPicInput.click();
+            });
+
+            if (RemoveCtPicBtn) {
+                RemoveCtPicBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                CtPicInput.value = '';
+                CtPicPreview.src = originalBannerSrc;
+                RemoveCtPicBtn.classList.add('hidden');
+                });
+            }
+            }
+        });
+    </script>
+
+</body>

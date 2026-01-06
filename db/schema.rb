@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_18_142955) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_02_212750) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -93,6 +93,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_18_142955) do
     t.datetime "updated_at", null: false
     t.index ["club_profile_id"], name: "index_club_teams_on_club_profile_id"
     t.index ["sport_id"], name: "index_club_teams_on_sport_id"
+  end
+
+  create_table "club_training_centers", force: :cascade do |t|
+    t.bigint "club_profile_id", null: false
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "sport_id", null: false
+    t.index ["club_profile_id"], name: "index_club_training_centers_on_club_profile_id"
+    t.index ["sport_id"], name: "index_club_training_centers_on_sport_id"
   end
 
   create_table "coach_profiles", force: :cascade do |t|
@@ -194,6 +204,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_18_142955) do
   add_foreign_key "club_sports", "sports"
   add_foreign_key "club_teams", "club_profiles"
   add_foreign_key "club_teams", "sports"
+  add_foreign_key "club_training_centers", "club_profiles"
+  add_foreign_key "club_training_centers", "sports"
   add_foreign_key "coach_profiles", "club_profiles"
   add_foreign_key "coach_profiles", "users"
   add_foreign_key "coach_teams", "club_teams"

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :club_training_centers
   resources :coach_teams
   resources :player_teams
   resources :club_teams
@@ -55,6 +56,7 @@ Rails.application.routes.draw do
   get "dashboard/club_teams", as: :club_teams_dashboard
   get "dashboard/club_board", as: :club_board_dashboard
   get "dashboard/club_equipment", as: :club_equipment_dashboard
+  get "dashboard/club_infrastructures", as: :club_infrastructures_dashboard
   
 
   post "dashboard/create_sport", to: "dashboard#create_sport", as: :create_club_sport
