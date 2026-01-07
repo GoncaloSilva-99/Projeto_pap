@@ -201,19 +201,36 @@
                         <i data-feather="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
-                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: ct.id) do %>
-                    <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
-                        <% if ct.ct_picture.attached? %>
-                            <%= image_tag url_for(ct.ct_picture), class: "w-full h-full object-cover" %>
-                        <% else %>
-                            <%= image_tag "default_ct.png", class: "w-full h-full object-cover" %>
-                        <% end %>
-                    </div>
+                <% if ct.id != @selected_ct %>
+                    <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: ct.id) do %>
+                        <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                            <% if ct.ct_picture.attached? %>
+                                <%= image_tag url_for(ct.ct_picture), class: "w-full h-full object-cover" %>
+                            <% else %>
+                                <%= image_tag "default_ct.png", class: "w-full h-full object-cover" %>
+                            <% end %>
+                        </div>
 
-                    <div class="p-4">
-                        <h3 class="text-center font-medium text-yellow-500"> <%= ct.name %> </h3>
-                    </div>
+                        <div class="p-4">
+                            <h3 class="text-center font-medium text-yellow-500"> <%= ct.name %> </h3>
+                        </div>
+                    <% end %>
+                <% else %>
+                    <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport) do %>
+                        <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                            <% if ct.ct_picture.attached? %>
+                                <%= image_tag url_for(ct.ct_picture), class: "w-full h-full object-cover" %>
+                            <% else %>
+                                <%= image_tag "default_ct.png", class: "w-full h-full object-cover" %>
+                            <% end %>
+                        </div>
+
+                        <div class="p-4">
+                            <h3 class="text-center font-medium text-yellow-500"> <%= ct.name %> </h3>
+                        </div>
+                    <% end %>
                 <% end %>
+                    
             </div>
                     <!-------------------------------------------------------------------------------- MODAL APAGAR CT ------------------------------------------------------------------------->   
 
