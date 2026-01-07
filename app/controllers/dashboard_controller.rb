@@ -10,6 +10,7 @@ class DashboardController < ApplicationController
   protected
 
   def infrastructures
+    @selected_ct = params[:ct].to_i
     @selected_sport = params[:sport]
     club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
     sport_id = @selected_sport == 'football' ? 2 : 3
