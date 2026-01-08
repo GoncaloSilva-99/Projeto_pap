@@ -116,6 +116,13 @@ class DashboardController < ApplicationController
     @base_football_coaches_wo_team = CoachProfile.where(club_profile_id: club_id, sport: 'football').left_joins(:coach_teams).where(coach_teams: { id: nil }).count
     @base_handball_coaches_wo_team = CoachProfile.where(club_profile_id: club_id, sport: 'handball').left_joins(:coach_teams).where(coach_teams: { id: nil }).count
 
+    @sport_id = @selected_sport == 'football' ? 2 : 3
+    club_ct_query = ClubTrainingCenter.where(club_profile_id: club_id, sport_id: @sport_id)
+    club_pitches_query = ClubPitches.where(club_profile_id: club_id, sport_id: @sport_id)
+    club_locker_rooms_query = ClubLockerRooms.where(club_profile_id: club_id, sport_id: @sport_id)
+    @base_num_club_ct = club_ct_query.count
+    @base_num_club_pitches = club_pitches_query.count
+    @base_num_club_locker_rooms = club_locker_rooms_query.count
   end
 
   def setup_search_board
