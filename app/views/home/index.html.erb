@@ -1,17 +1,991 @@
-<% if !user_signed_in? %>
-    <%= link_to "Login", new_user_session_path  %>
-<% else %>
-    <%= button_to "logout", destroy_user_session_path, method: :delete  %>
-<% end %>
-<br><br><br>
-<%= link_to "Criar conta jogador", new_player_profile_registration_path %>
-<br><br><br>
-<%= link_to "Escolher tipo de conta", choose_account_type_path %>
 
-<br><br><br>
+<body class="bg-gray-900 text-gray-100 min-h-screen" style="flex-wrap: wrap;">
 
+    <!-- Navbar -->
+    <nav class="bg-gray-800 py-4 px-6 shadow-lg fixed w-full z-30 top-0 start-0" style="--nav-height:64px;"">
+        <div class="container mx-auto flex items-center justify-between flex-wrap">
+            <!-- Logo and Search -->
+            <div class="flex items-center space-x-6">
+                <div class="flex items-center" >
+                    <div class=" w-8 h-8 rounded-md flex items-center justify-center">
+                        <a href="#inicio"><%= image_tag "logo_sem_texto.png", alt: "Logo", class: "rounded-full" %></a>
+                    </div>
+                    <span class="ml-2 font-bold text-xl">SportX</span>
+                </div>
+                <div class="relative flex items-center">
+                    <button id="search-button" class="p-2 rounded-full hover:bg-gray-700">
+                        <i data-feather="search"></i>
+                    </button>
+                    <input type="text" id="search-bar" placeholder="Search..." 
+                           class="bg-gray-700 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
 
-<%= link_to "Dashboard clube", club_dashboard_path %>
+            <!-- Center Links -->
+            <div id="nav-links" class="w-full md:w-auto flex justify-center space-x-6 mt-4 md:mt-0 md:order-none order-3 nav-links-overlap">
+                <a href="#inicio" class="hover:text-orange-400 transition">Início</a>
+                <%= link_to "Dashboard", club_dashboard_path, class:"hover:text-orange-400 transition" %>
+                <a href="#" class="hover:text-orange-400 transition">Agenda</a>
+                <a href="#" class="hover:text-orange-400 transition">Análises</a>
+            </div>
 
-<%= link_to "infraestruturas", club_infrastructures_dashboard_path %>
+            <!-- Right Side -->
+            <div class="flex items-center space-x-4 right-overlap">
+                    
+                <!-- Notifications -->
+                <button type="button" data-dropdown-toggle="notification-dropdown" class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900  dark:text-gray-400 dark:hover:text-white  focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
+                    <span class="sr-only">View notifications</span>
+                    <!-- Bell icon -->
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 20"><path d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z"/></svg>
+                </button>
+                <!-- Notifications menu -->
+                <div class="rounded-lg hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none" id="notification-dropdown">
+                    <div class="p-2">
+                        <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
+                            <div class="flex-shrink-0">
+                                <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="Bonnie Green avatar">
+                                <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white bg-primary-700 dark:border-gray-700">
+                                    <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
+                                </div>
+                            </div>
+                            <div class="pl-3 w-full">
+                                <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400">New message from <span class="font-semibold text-gray-900 dark:text-white">Bonnie Green</span>: "Hey, what's up? All set for the presentation?"</div>
+                                <div class="text-xs font-medium text-primary-700 dark:text-primary-400">a few moments ago</div>
+                            </div>
+                        </a>
+                        <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
+                            <div class="flex-shrink-0">
+                                <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png" alt="Jese Leos avatar">
+                                <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-red-500 rounded-full border border-white dark:border-gray-700">
+                                    <svg class="text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24"><path fill="currentColor" d="M12 20.962q-3.013-.895-5.007-3.651Q5 14.554 5 11.1V5.692l7-2.615l7 2.615V11.1q0 3.454-1.993 6.21q-1.994 2.757-5.007 3.652Z"/></svg>
+                                </div>
+                            </div>
+                            <div class="pl-3 w-full">
+                                <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Jese leos</span> and <span class="font-medium text-gray-900 dark:text-white">5 others</span> started following you.</div>
+                                <div class="text-xs font-medium text-primary-700 dark:text-primary-400">10 minutes ago</div>
+                            </div>
+                        </a>
+                        <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
+                            <div class="flex-shrink-0">
+                                <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png" alt="Joseph McFall avatar">
+                                <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white dark:border-gray-700">
+                                    <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
+                                </div>
+                                </div>
+                            <div class="pl-3 w-full">
+                                <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Joseph Mcfall</span> and <span class="font-medium text-gray-900 dark:text-white">141 others</span> love your story. See it and view more stories.</div>
+                                <div class="text-xs font-medium text-primary-700 dark:text-primary-400">44 minutes ago</div>
+                            </div>
+                        </a>
+                        <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
+                            <div class="flex-shrink-0">
+                                <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png" alt="Roberta Casas image">
+                                <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white dark:border-gray-700">
+                                    <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
+                                </div>
+                            </div>
+                            <div class="pl-3 w-full">
+                                <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Leslie Livingston</span> mentioned you in a comment: <span class="font-medium text-primary-700 dark:text-primary-500">@bonnie.green</span> what do you say?</div>
+                                <div class="text-xs font-medium text-primary-700 dark:text-primary-400">1 hour ago</div>
+                            </div>
+                        </a>
+                        <a href="#" class="flex py-3 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
+                            <div class="flex-shrink-0">
+                                <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png" alt="Robert image">
+                                <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white dark:border-gray-700">
+                                    <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
+                                </div>
+                            </div>
+                            <div class="pl-3 w-full">
+                                <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Robert Brown</span> posted a new video: Glassmorphism - learn how to implement the new design trend.</div>
+                                <div class="text-xs font-medium text-primary-700 dark:text-primary-400">3 hours ago</div>
+                            </div>
+                        </a>
+                        <a href="#" class="block py-2 rounded-lg text-base font-medium text-center text-gray-900 bg-gray-500 hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600 dark:text-white dark:hover:underline mt-1.5">
+                            <div class="inline-flex items-center ">
+                                <svg aria-hidden="true" class="mr-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>
+                                Ver Todas
+                            </div>
+                        </a>
+                    </div>
+                </div> 
 
+                <!-- Apps -->
+                <button type="button" data-dropdown-toggle="apps-dropdown" class="p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
+                    <span class="sr-only">View Apps</span>
+                    <!-- Icon -->
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                        <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
+                    </svg>              
+                </button>
+                <!-- Dropdown menu -->
+                <div class="rounded-lg hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600" id="apps-dropdown">
+                    <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        Apps
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 p-4">
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="shield" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Clube</div>
+                        </a>
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="users" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Equipa</div>
+                        </a>
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="briefcase" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Carreira</div>
+                        </a>
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="calendar" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Agenda</div>
+                        </a>
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="message-square" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Menssagens</div>
+                        </a>
+                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <i data-feather="heart" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Favoritos</div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- User Menu -->
+                <div class="relative" id="user-menu-container">
+                    <button type="button" class="border border-gray-900 flex text-sm rounded-full md:me-0 hover:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 w-9 h-9 bg-gray-700 items-center justify-center" id="user-menu-button">
+                        <span class="sr-only">Open user menu</span>
+                        <i data-feather="user"></i>
+                    </button>
+                    <% if user_signed_in? %>
+                        <div class="absolute right-0 mt-2 z-50 hidden w-56 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
+                        <div class="px-4 py-3">
+                            <span class="block text-sm text-gray-900 dark:text-white">Tomás Nogueira</span>
+                            <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">tomas.nogueira@sportX.com</span>
+                        </div>
+                        <ul class="py-2" aria-labelledby="user-menu-button">
+                            <li>
+                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400"><i data-feather="home" class="mr-2"></i>Perfil</a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400"><i data-feather="settings" class="mr-2"></i>Definições</a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400"><i data-feather="bar-chart-2" class="mr-2"></i>Estatísticas</a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500"><i data-feather="log-out" class="mr-2"></i>Log out</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <% else %>
+                        <div class="absolute right-0 mt-2 z-50 hidden w-48 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600 md:w-56" id="user-dropdown">
+                            <ul class="py-2" aria-labelledby="user-menu-button">
+                                <li>
+                                <%= link_to new_user_session_path, class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="log-in" class="mr-2"></i>
+                                    <span>Login</span>
+                                <% end %>
+                                </li>
+                            </ul>
+                        </div>
+                    <% end %>
+                    
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- News Ticker -->
+    <div class="py-2 px-6 overflow-hidden bg-gradient-to-b from-gray-900 to-gray-800 fixed w-full z-20 top-0 start-0" style="margin-bottom: -17px;" id="news-ticker">
+        <div class="container mx-auto relative">
+            <div class="absolute left-0 top-0 bottom-0 flex items-center z-10">
+                <span class="bg-red-500 px-2 py-1 rounded text-xs font-bold">NOTÍCIAS</span>
+            </div>
+            <div class="flex whitespace-nowrap news-scroll">
+                <!-- Primeira cópia -->
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/1" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">New tournament announced:</span>
+                    <span class="text-gray-400 ml-2">Regional Championship registration now open!</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/2" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">System Update:</span>
+                    <span class="text-gray-400 ml-2">New analytics dashboard now available</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/3" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">Training Tip:</span>
+                    <span class="text-gray-400 ml-2">Improve your endurance with these exercises</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/4" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">Player Spotlight:</span>
+                    <span class="text-gray-400 ml-2">Meet this month's rising star athlete</span>
+                </div>
+
+                <!-- Segunda cópia (para loop infinito contínuo) -->
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/1" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">New tournament announced:</span>
+                    <span class="text-gray-400 ml-2">Regional Championship registration now open!</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/2" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">System Update:</span>
+                    <span class="text-gray-400 ml-2">New analytics dashboard now available</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/3" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">Training Tip:</span>
+                    <span class="text-gray-400 ml-2">Improve your endurance with these exercises</span>
+                </div>
+                <div class="flex items-center mr-16">
+                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
+                        <img src="http://static.photos/people/200x200/4" class="w-full h-full object-cover">
+                    </div>
+                    <span class="font-medium">Player Spotlight:</span>
+                    <span class="text-gray-400 ml-2">Meet this month's rising star athlete</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .news-scroll {
+            animation: scroll 20s linear infinite;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .card-hover:hover {
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        #search-bar {
+            transition: all 0.3s ease;
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+
+        #search-bar.active {
+            max-width: none;
+            opacity: 1;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+
+        /* Mobile: behave like desktop (expand over nav) but never overflow viewport */
+        @media (max-width: 640px) {
+            /* On mobile keep the search inline/relative (not pinned),
+               allow it to grow like desktop but constrained by JS/CSS */
+            #search-bar.active {
+                position: relative;
+                left: auto;
+                right: auto;
+                width: auto;
+                max-width: calc(100vw - 56px); /* leave room for logo/padding */
+                box-sizing: border-box;
+                z-index: 60;
+                background-color: rgba(55,65,81,0.98);
+                height: 36px;
+                padding: 0.5rem 0.75rem;
+                display: inline-block;
+            }
+        }
+
+        /* Desktop: searchbar expande sobre os links de navegação */
+        @media (min-width: 641px) {
+             #search-bar.active {
+                 position: absolute;
+                 left: 56px;
+                 right: 24px;
+                 max-width: none;
+                 width: calc(100% - 80px);
+                 box-sizing: border-box;
+                 z-index: 60;
+                 background-color: rgba(55,65,81,0.98);
+             }
+         }
+
+        /* Mobile & Desktop: hide right-side buttons when search is active */
+        .right-overlap.hidden-by-search {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity .18s ease, visibility .18s;
+        }
+
+         /* Desktop: esconde os links de navegação quando searchbar está activa */
+         @media (min-width: 641px) {
+             .nav-links-overlap {
+                 transition: opacity .18s ease, visibility .18s;
+             }
+
+             .nav-links-overlap.hidden-by-search {
+                 opacity: 0;
+                 visibility: hidden;
+                 pointer-events: none;
+                 position: absolute;
+                 width: 0;
+                 height: 0;
+                 overflow: hidden;
+              }
+          }
+
+        #news-ticker {
+            margin-top: 0;
+        }
+
+        #news-ticker .container {
+            position: relative;
+        }
+
+        #news-ticker .news-scroll {
+            padding-left: 4rem;
+        }
+
+        #news-ticker .absolute.left-0 {
+            z-index: 10;
+        }
+
+        #news-ticker .container::before {
+            content: "";
+            position: absolute;
+            left: -210px;
+            top: -7px;
+            bottom: 0;
+            height: 40px;
+            width: 260px;
+            background-image: linear-gradient(to bottom, #111827 0%, #1f2937 100%);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #news-ticker .container::after {
+            content: "";
+            position: absolute;
+            right: -100px;
+            top: -7px;
+            bottom: 0;
+            height: 40px;
+            width: 119px;
+            background-image: linear-gradient(to bottom, #111827 0%, #1f2937 100%);
+            z-index: 10;
+            pointer-events: none;
+        }
+    </style>
+
+    <script>
+        // Espera que o DOM(Document Object Model — representação em memória da página HTML/XML que o browser cria)
+        // esteja totalmente carregado antes de executar a função
+        document.addEventListener('DOMContentLoaded', () => {
+        // Se a biblioteca feather estiver disponível, substitui os ícones <i> pelo SVG correspondente
+        if (typeof feather !== 'undefined') feather.replace();
+
+        // Obtém o botão que activa a pesquisa pelo id
+        const searchButton = document.getElementById('search-button');
+        // Obtém o campo de input da pesquisa pelo id
+        const searchBar = document.getElementById('search-bar');
+        // Obtém o container do nav para cálculos de layout
+        const navContainer = document.querySelector('nav .container');
+        // Se não existir a searchBar ou o navContainer, sai da função (não prossegue)
+        if (!searchBar || !navContainer) return;
+
+        // Seletor do grupo de elementos do lado direito do nav (usado para calcular espaço)
+        const rightSideSelector = '.right-overlap';
+         // Função que devolve o elemento do lado direito dentro do nav
+         function getRightSideEl() { return navContainer.querySelector(rightSideSelector); }
+
+        // Cria um elemento canvas(área bitmap onde se pode desenhar dinamicamente com JavaScript)
+        // para medir a largura do texto
+        const canvas = document.createElement('canvas');
+        // Obtém o contexto 2D do canvas para medir texto
+        const ctx = canvas.getContext('2d');
+
+        // Função que mede a largura em pixels de um texto dado usando o canvas
+        function measureTextWidth(text) {
+            // Obtém os estilos computados do input para usar a mesma fonte na medição
+            const style = window.getComputedStyle(searchBar);
+            // Define a fonte do contexto (usa style.font se existir, senão composição de tamanho e família)
+            ctx.font = style.font || `${style.fontSize} ${style.fontFamily}`;
+            // Mede a largura do texto (ou string vazia) e arredonda para cima
+            return Math.ceil(ctx.measureText(text || '').width);
+        }
+
+        // Função utilitária que converte "NNpx" para número (float)
+        function parsePx(v) { return v ? parseFloat(v.replace('px','')) : 0; }
+
+        // Função que ajusta dinamicamente a largura da barra de pesquisa
+        function adjustSearchWidth() {
+            // Se a barra de pesquisa não tiver a classe 'active', remove a largura inline e sai
+            if (!searchBar.classList.contains('active')) {
+                searchBar.style.width = '';
+                searchBar.style.maxWidth = '';
+                searchBar.style.right = '';
+                return;
+            }
+
+            // Largura mínima quando activa em px (mais pequena em mobile)
+            const MIN_ACTIVE = window.innerWidth <= 640 ? 200 : 300;
+
+            // Rect do input para cálculos de posição
+            const inputRect = searchBar.getBoundingClientRect();
+            // Elemento do lado direito (botões) — pode ser null
+            const rightEl = getRightSideEl();
+
+            // Texto actual (valor do input ou placeholder)
+            const text = searchBar.value || searchBar.placeholder || '';
+            // Largura do texto medida via canvas
+            const textWidth = measureTextWidth(text);
+
+            // Inclui paddings horizontais e um buffer extra para o caret/espacamento
+            const cs = window.getComputedStyle(searchBar);
+            const paddingLR = parsePx(cs.paddingLeft) + parsePx(cs.paddingRight);
+            const extraBuffer = 24; // espaço extra para caret e folga
+            const contentWidth = textWidth + paddingLR + extraBuffer;
+
+            // Determina margem direita de segurança
+            const MARGIN_RIGHT = 12; // px (mais apertado — JS controla o resto)
+
+            // Calcula espaço disponível até à borda direita do nav/viewport (prioritário)
+            const viewportRight = window.innerWidth;
+            const navRect = navContainer ? navContainer.getBoundingClientRect() : { right: viewportRight };
+            // usa o mínimo entre o viewport e a borda do nav para evitar overflow
+            let availableViewport = Math.max(0, Math.min(viewportRight, navRect.right) - inputRect.left - MARGIN_RIGHT);
+
+            // Se existir o elemento do lado direito e ele estiver visível dentro do nav, use-o como limite adicional
+            if (rightEl && rightEl.offsetParent !== null) {
+                try {
+                    const rightRect = rightEl.getBoundingClientRect();
+                    // espaço até ao início do lado direito (mantém pequena folga)
+                    const calc = Math.max(40, rightRect.left - inputRect.left - 8);
+                    availableViewport = Math.min(availableViewport, calc);
+                } catch (e) {
+                    // fallback silencioso
+                }
+            }
+
+            // Proteção CSS inline: garante que o input nunca excede o limite calculado
+            searchBar.style.maxWidth = availableViewport + 'px';
+            // Em mobile (relativo) não forçamos `right` inline — deixa o fluxo natural
+            if (window.innerWidth > 640) {
+                searchBar.style.right = MARGIN_RIGHT + 'px';
+            } else {
+                searchBar.style.right = '';
+            }
+
+            // Ajusta o mínimo para caber caso a viewport seja muito estreita
+            const effectiveMin = Math.min(MIN_ACTIVE, Math.max(0, availableViewport));
+
+            // Calcula a largura desejada respeitando mínimo, conteúdo e o limite do viewport
+            const desired = Math.min(Math.max(effectiveMin, contentWidth), availableViewport);
+            // Aplica a largura calculada ao input
+            searchBar.style.width = desired + 'px';
+        }
+
+        // Se o botão de pesquisa existir, adiciona o listener de clique
+        if (searchButton) {
+            let isToggglingSearch = false; // Flag para evitar conflito entre eventos
+
+            searchButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                isToggglingSearch = true;
+                const nowActive = searchBar.classList.toggle('active');
+                const rightEl = getRightSideEl();
+                const navLinksEl = document.querySelector('.nav-links-overlap');
+
+                // Em mobile: esconde o lado direito (notificações, apps, user menu)
+                if (window.innerWidth <= 640 && rightEl) {
+                    if (nowActive) {
+                        rightEl.classList.add('hidden-by-search');
+                    } else {
+                        rightEl.classList.remove('hidden-by-search');
+                    }
+                 }
+
+                 // Em desktop: esconde os links de navegação
+                 if (window.innerWidth > 640 && navLinksEl) {
+                    if (nowActive) {
+                        navLinksEl.classList.add('hidden-by-search');
+                    } else {
+                        navLinksEl.classList.remove('hidden-by-search');
+                    }
+                 }
+
+                  // Ajusta largura dinamicamente (mobile e desktop) e foca
+                  setTimeout(() => { searchBar.focus(); adjustSearchWidth(); }, 0);
+                  if (!nowActive) {
+                      searchBar.style.width = '';
+                     // Reaparecer elementos após 400ms
+                     if (rightEl) rightEl.classList.remove('hidden-by-search');
+                      if (navLinksEl) {
+                          setTimeout(() => {
+                              navLinksEl.classList.remove('hidden-by-search');
+                          }, 400);
+                      }
+                   }
+               });
+
+              // Fecha ao clicar fora
+              document.addEventListener('click', (ev) => {
+                  if (isToggglingSearch) return; // Ignora o clique se estamos a fazer toggle
+                  if (!searchBar.classList.contains('active')) return;
+                  if (ev.target === searchBar || ev.target === searchButton || searchBar.contains(ev.target)) return;
+                  searchBar.classList.remove('active');
+                  const rightEl = getRightSideEl();
+                  const navLinksEl = document.querySelector('.nav-links-overlap');
+                 // Remove hidden-by-search de ambos em mobile e desktop
+                 if (rightEl) rightEl.classList.remove('hidden-by-search');
+                  if (navLinksEl) {
+                      setTimeout(() => {
+                          navLinksEl.classList.remove('hidden-by-search');
+                      }, 400);
+                  }
+                  searchBar.style.width = '';
+              });
+         }
+
+        // IIFE que gere eventos de input e resize sem poluir o escopo global
+        (function() {
+            // Guarda o comprimento anterior do valor do input para detecção de mudanças
+            let prevLen = searchBar.value ? searchBar.value.length : 0;
+
+            // Ao alterar o conteúdo do input
+            searchBar.addEventListener('input', () => {
+            // Obtém o novo comprimento do texto
+            const len = searchBar.value.length;
+            // Se o comprimento não mudou, não faz nada
+            if (len === prevLen) return;
+            // Recalcula a largura com base no texto actual (assim backspace também reduz)
+            adjustSearchWidth();
+            // Actualiza o comprimento anterior
+            prevLen = len;
+            });
+
+            // Ao clicar no botão de pesquisa, sincroniza prevLen após o reflow
+            if (searchButton) {
+            searchButton.addEventListener('click', () => {
+                setTimeout(() => {
+                prevLen = searchBar.classList.contains('active') ? (searchBar.value ? searchBar.value.length : 0) : 0;
+                }, 0);
+            });
+            }
+
+            // Ao redimensionar a janela, debounce e recalcula a largura
+            window.addEventListener('resize', () => {
+            clearTimeout(window.__searchResizeTimer);
+            window.__searchResizeTimer = setTimeout(adjustSearchWidth, 120);
+            });
+        })();
+
+        // Chamada inicial para ajustar a largura quando a página carrega
+        adjustSearchWidth();
+        
+        // Lógica para o menu de utilizador (clicar para abrir, sair para fechar)
+        const userMenuContainer = document.getElementById('user-menu-container');
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userDropdown = document.getElementById('user-dropdown');
+
+        let isMenuPinned = false; // Variável para controlar se o menu está "fixo"
+
+        if (userMenuContainer && userMenuButton && userDropdown) {
+            // 1. Mostrar menu ao passar o rato por cima
+            userMenuContainer.addEventListener('mouseenter', () => {
+                userDropdown.classList.remove('hidden');
+            });
+
+            // 2. Esconder o menu ao sair com o rato, APENAS se não estiver fixo
+            userMenuContainer.addEventListener('mouseleave', () => {
+                if (!isMenuPinned) {
+                    userDropdown.classList.add('hidden');
+                }
+            });
+
+            // 3. Fixar/libertar o menu ao clicar no botão
+            userMenuButton.addEventListener('click', (event) => {
+                event.stopPropagation(); // Impede que o clique feche o menu imediatamente
+                isMenuPinned = !isMenuPinned; // Alterna o estado "fixo"
+                if (isMenuPinned) {
+                    userDropdown.classList.remove('hidden'); // Garante que está visível ao fixar
+                }
+            });
+
+            // 4. Fechar o menu se estiver fixo e o utilizador clicar fora ou fizer scroll
+            const closePinnedMenu = () => {
+                if (isMenuPinned) {
+                    isMenuPinned = false;
+                    userDropdown.classList.add('hidden');
+                }
+            };
+
+            document.addEventListener('click', closePinnedMenu);
+            window.addEventListener('scroll', closePinnedMenu);
+        }
+
+        // Calcula a duração da animação baseada na largura do conteúdo (velocidade consistente)
+        function calculateScrollDuration() {
+            const scrollContainer = document.querySelector('.news-scroll');
+            if (!scrollContainer) return;
+
+            // Velocidade em pixels por segundo (ajuste conforme necessário)
+            const PIXELS_PER_SECOND = 10;
+            
+            // Obtém a largura total do conteúdo
+            const totalWidth = scrollContainer.scrollWidth;
+            // A animação vai de 0 a -50%, então a distância é 50% da largura
+            const distanceToCover = totalWidth / 2;
+            
+            // Calcula a duração em segundos
+            const duration = distanceToCover / PIXELS_PER_SECOND;
+            
+            // Define a variável CSS
+            document.documentElement.style.setProperty('--scroll-duration', duration + 's');
+        }
+
+        // Calcula ao carregar
+        calculateScrollDuration();
+
+        // Recalcula ao redimensionar
+        window.addEventListener('resize', () => {
+            clearTimeout(window.__scrollDurationTimer);
+            window.__scrollDurationTimer = setTimeout(calculateScrollDuration, 120);
+        });
+
+        // posiciona o ticker imediatamente abaixo do navbar (funciona em mobile e desktop)
+        function positionTicker() {
+            const nav = document.querySelector('nav');
+            const ticker = document.getElementById('news-ticker');
+            const heroSection = document.getElementById('inicio');
+            
+            if (!nav || !ticker) return;
+            
+            const navRect = nav.getBoundingClientRect();
+            // define top inline para o bottom do nav (px)
+            ticker.style.top = navRect.bottom + 'px';
+            
+            // Calcula a altura total ocupada (navbar + ticker)
+            if (heroSection) {
+                const tickerRect = ticker.getBoundingClientRect();
+                const totalHeight = tickerRect.bottom;
+                // Aplica margin-top dinamicamente para evitar que o ticker tape o conteúdo
+                heroSection.style.marginTop = totalHeight + 'px';
+            }
+        }
+
+        // chama uma vez ao carregar
+        positionTicker();
+
+        // reajusta no resize com debounce simples
+        let _tickerResizeTimer = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(_tickerResizeTimer);
+            _tickerResizeTimer = setTimeout(positionTicker, 120);
+        });
+
+        
+
+        });
+    </script>
+
+    <!-- Hero Section -->
+    <section  id="inicio" class="relative py-16 px-6 bg-cover bg-center">
+        <%= image_tag "default_banner.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-20 z-0", alt: "Hero Background" %>
+        <!-- overlay to keep text readable -->
+        <div class="container mx-auto relative z-10">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                        Eleva as Estatísticas <span style="background: linear-gradient(to right, red, orange); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;"><br> Do Teu Clube</span>
+                    </h1>
+                    <p class="text-xl text-gray-400 mb-8">
+                        A plataforma completa para clubes de futebol e andebol gerirem jogadores, calendários e análises de desempenho.
+                    </p>
+                    <div class="flex space-x-4">
+                        <button class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-md font-medium">
+                            Começa Já
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Stats Section -->
+    <section class="py-16 px-6 bg-gray-800">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-12 text-center">Estatísticas Da Plataforma</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-700 p-8 rounded-xl text-center">
+                    <div class="text-5xl font-bold text-blue-400 mb-2">1,250+</div>
+                    <div class="text-xl mb-4">Jogadores Ativos</div>
+                    <div class="text-gray-400">Monitoramento Diário do Desempenho Individual</div>
+                </div>
+                <div class="bg-gray-700 p-8 rounded-xl text-center">
+                    <div class="text-5xl font-bold text-blue-400 mb-2">86</div>
+                    <div class="text-xl mb-4">Clubes Ativos</div>
+                    <div class="text-gray-400">Desde os Amadores aos Profissionais</div>
+                </div>
+                <div class="bg-gray-700 p-8 rounded-xl text-center">
+                    <div class="text-5xl font-bold text-blue-400 mb-2">5,000+</div>
+                    <div class="text-xl mb-4">Jogos Agendados</div>
+                    <div class="text-gray-400">Lembretes Automáticos e Monitoramento</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Profiles -->
+    <section class="py-16 px-6 bg-gray-900">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold mb-4">Perfis Populares</h2>
+            <p class="text-gray-400 mb-12">Descubre os clubes e jogadores mais ativos/vistos na nossa plataforma</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Profile 1 -->
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card-hover transition-transform duration-300">
+                    <div class="h-40 bg-gradient-to-r from-blue-500 to-purple-600 relative">
+                        <%= image_tag "default_banner.jpg", alt: "fcporto", class: "w-full h-full object-cover"  %>
+                        <div class="absolute -bottom-12 left-6">
+                            <div class="w-24 h-24 rounded-full border-4 border-gray-800 overflow-hidden">
+                                <%= image_tag "default_banner.jpg", alt: "fcporto", class: "w-full h-full object-cover"  %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-16 px-6 pb-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold">FC Porto</h3>
+                            <span class="bg-green-500 text-xs px-2 py-1 rounded-full">Futebol</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Clube da primeira divisão portuguesa com 29 jogadores ativos e 9 treinadores, 1 principal e 8 adjuntos</p>
+                        <div class="flex justify-between text-sm">
+                            <div>
+                                <div class="text-gray-400">Jogos</div>
+                                <div class="font-medium">12</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Jogadores</div>
+                                <div class="font-medium">29</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Avaliação</div>
+                                <div class="flex items-center">
+                                    <span>4.9</span>
+                                    <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-yellow-400 mr-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile 2 -->
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card-hover transition-transform duration-300">
+                    <div class="h-40 bg-gradient-to-r from-orange-500 to-red-600 relative">
+                        <%= image_tag "default_banner.jpg", alt: "fcporto", class: "w-full h-full object-cover"  %>
+                        <div class="absolute -bottom-12 left-6">
+                            <div class="w-24 h-24 rounded-full border-4 border-gray-800 overflow-hidden">
+                                <%= image_tag "default_pp.jpg", alt: "gidsel", class: "w-full h-full object-cover"  %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-16 px-6 pb-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold">Mathias Gidsel</h3>
+                            <span class="bg-orange-600 text-xs px-2 py-1 rounded-full">Andebol</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Lateral Direito/Central de nacionalidade dinamarquesa de 26 anos, esquerdino com 1,9m e uma média de 9.11 golos e 12.3 assistências por jogo</p>
+                        <div class="flex justify-between text-sm">
+                            <div>
+                                <div class="text-gray-400">Jogos</div>
+                                <div class="font-medium">18</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Golos</div>
+                                <div class="font-medium">163</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Avaliação</div>
+                                <div class="flex items-center">
+                                    <span>5</span>
+                                    <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-yellow-400 mr-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile 3 -->
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg card-hover transition-transform duration-300">
+                    <div class="h-40 bg-gradient-to-r from-green-500 to-teal-600 relative">
+                        <%= image_tag "default_banner.jpg", alt: "fcporto", class: "w-full h-full object-cover"  %>
+                        <div class="absolute -bottom-12 left-6">
+                            <div class="w-24 h-24 rounded-full border-4 border-gray-800 overflow-hidden">
+                                <%= image_tag "default_pp.jpg", alt: "pogba", class: "w-full h-full object-cover"  %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pt-16 px-6 pb-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold">Paul Pogba</h3>
+                            <span class="bg-green-500 text-xs px-2 py-1 rounded-full">Futebol</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Médio(Centro) de nacionalidade francesa de 32 anos, destro com 1,91m e uma média de 0.33 golos e 0.70 assistências por jogo</p>
+                        <div class="flex justify-between text-sm">
+                            <div>
+                                <div class="text-gray-400">Jogos</div>
+                                <div class="font-medium">27</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Golos</div>
+                                <div class="font-medium">7</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-400">Avaliação</div>
+                                <div class="flex items-center">
+                                    <span>3.8</span>
+                                    <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-yellow-400 mr-1"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300">
+        <div class="container mx-auto py-12 px-6 items-center">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 ml-10">
+                <!-- Brand -->
+                <div class="max-w-xs">
+                    <a href="#inicio">
+                        <div class="flex items-center mb-4" >
+                            <div class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
+                                <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "w-full h-full object-cover" %>
+                            </div>
+                            <span class="ml-3 text-white font-bold text-lg">SportX</span>
+                        </div>
+                    </a>
+                        <p class="text-gray-400 mb-4">
+                        A plataforma definitiva para a gestão e análise de clubes, jogadores e desempenho.
+                        </p>
+                    
+                    <h4 class="text-white font-semibold mt-6 mb-3">Subscrever</h4>
+                    <form class="flex items-center">
+                    <input type="email" placeholder="SportX@email.com" class="bg-gray-700 text-gray-200 px-3 py-2 rounded-l-md focus:outline-none w-full" style="width: 170px;"/>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r-md text-white">Subscrever</button>
+                    </form>
+                </div>
+
+                <!-- Contact / Company -->
+                <div class="md:ml-10">
+                    <h4 class="text-white font-semibold mb-4">Contacto</h4>
+                    <div class="text-gray-400 text-sm space-y-2">
+                        <div style="margin-bottom: 17px;"><strong>SportX - Club Managment</strong></div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                                <i data-feather="map-pin" class="w-4 h-4 text-blue-500 group-hover:text-red-500 transition-colors duration-150"></i>
+                            </span>
+                            <div>Av. dos Clubes, 4470-123 Maia</div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                                <i data-feather="phone" class="w-4 h-4 text-blue-500 group-hover:text-red-500 transition-colors duration-150"></i>
+                            </span>
+                            <div>+351 912 345 678 </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                                <i data-feather="mail" class="w-4 h-4 text-blue-500 group-hover:text-red-500 transition-colors duration-150"></i>
+                            </span>
+                            <div>suporte@sportx.manage</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Navegação</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Início</li>
+                        <li>Clubes</li>
+                        <li>Jogadores</li>
+                        <li>Agenda</li>
+                        <li>Análises</li>
+                    </ul>
+                </div>
+
+                <!-- Recursos -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Recursos</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li>Documentação</li>
+                        <li>Suporte</li>
+                        <li>API</li>
+                    </ul>
+                </div>
+
+                
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-6 text-gray-350 text-sm font-bold">
+                <div class="flex items-center justify-center space-x-4">
+                    <span>Siga-nos:</span>
+                    <div class="flex items-center space-x-3">
+                        <a href="https://github.com/GoncaloSilva-99/Projeto_pap">
+                            <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center group hover:bg-orange-200 transition-colors duration-150 cursor-pointer">
+                                <i data-feather="github" class="w-4 h-4 text-orange-200 group-hover:text-red-500 transition-colors duration-150"></i>
+                            </span>
+                        </a>
+                        <a href="https://www.instagram.com/goncalosilva.99/?utm_source=ig_web_button_share_sheet">
+                            <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center group hover:bg-orange-200 transition-colors duration-150 cursor-pointer">
+                                <i data-feather="instagram" class="w-4 h-4 text-orange-200 group-hover:text-red-500 transition-colors duration-150"></i>
+                            </span>
+                        </a>
+                        <a href="https://www.facebook.com/rubyonrailstogo/">
+                            <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center group hover:bg-orange-200 transition-colors duration-150 cursor-pointer">
+                                <i data-feather="facebook" class="w-4 h-4 text-orange-200 group-hover:text-red-500 transition-colors duration-150"></i>
+                            </span>
+                        </a>
+                        <a href="https://x.com/rails">
+                            <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center group hover:bg-orange-200 transition-colors duration-150 cursor-pointer">
+                                <i data-feather="twitter" class="w-4 h-4 text-orange-200 group-hover:text-red-500 transition-colors duration-150"></i>
+                            </span>
+                        </a>
+                        <a href="https://www.youtube.com/c/C%C3%ADntiaBlox">
+                            <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center group hover:bg-orange-200 transition-colors duration-150 cursor-pointer">
+                                <i data-feather="youtube" class="w-4 h-4 text-orange-200 group-hover:text-red-500 transition-colors duration-150"></i>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">
+                <div class="mb-2">© 2025 SportX - Club Managment. Todos os direitos reservados.</div>
+                <div>Desenvolvido por Tomás Nogueira e Gonçalo silva • <a href="https://www.portugal.gov.pt/pt/gc22/politica-de-privacidade">Política de Privacidade</a> • <a href="https://workspace.google.com/intl/pt-PT/terms/service-terms/">Termos de Utilização</a></div>
+            </div>
+        </div>
+    </footer>
+</body>
