@@ -186,8 +186,8 @@
     <% if @selected_sport %>
 <!-------------------------------------------------------------------------------- CT's ------------------------------------------------------------------------->
         <% if @club_ct_results %>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <% @club_ct_results.each do |ct| %>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <% @club_ct_results.each do |ct| %>
             <% if ct.id == @selected_ct %>
                  <div class="relative bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl overflow-hidden shadow-xl shadow-yellow-500/30 transition-all duration-300 -translate-y-1 ring-2 ring-yellow-500">
             <% else %>
@@ -337,6 +337,430 @@
                 </div>
             </div>
         <% end %>
+
+<!-------------------------------------------------------------------------------- CAMPOS ------------------------------------------------------------------------->
+
+        <div class="mt-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-yellow-300 flex items-center space-x-2">
+                    <i class="fa-solid fa-warehouse"></i>
+                    <span>Campos ( <%= @club_pitches_results&.any? ? @club_pitches_results.total_count : "0" %> )</span>
+                </h3>
+                <div class="flex items-center gap-4">
+                        <%= link_to new_coach_profile_registration_path(selected_sport: @selected_sport, selected_team: @selected_team ) do %>
+                            <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                                <i class="fa-regular fa-plus w-4 h-4"></i>
+                            </button>
+                        <% end %>
+                </div>
+            </div>
+
+                <% if @club_pitches_results %>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <% @club_pitches_results.each do |cp| %>
+                <% if cp.id == @selected_pitch %>
+                    <div class="relative bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl overflow-hidden shadow-xl shadow-yellow-500/30 transition-all duration-300 -translate-y-1 ring-2 ring-yellow-500">
+                <% else %>
+                    <div class="relative bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
+                <% end %> 
+                    <div class="absolute top-2 right-2 flex gap-2 z-10">
+                        <% if @selected_ct %>
+                            <button data-modal-target="modal-adicionar-campo-a-ct-<%= cp.id %>" data-modal-toggle="modal-adicionar-campo-a-ct-<%= cp.id %>" class="bg-gray-900/80 hover:bg-blue-600 text-blue-600 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                                <i data-feather="plus" class="w-4 h-4"></i>
+                            </button>
+                        <% end %>
+                        <button data-modal-target="modal-editar-campo-<%= cp.id %>" data-modal-toggle="modal-editar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-blue-600 text-blue-600 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                            <i data-feather="edit" class="w-4 h-4"></i>
+                        </button>
+                        <button data-modal-target="modal-apagar-campo-<%= cp.id %>" data-modal-toggle="modal-apagar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                            <i data-feather="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <% if cp.id != @selected_pitch %>
+                        <% if @selected_ct %>
+                            <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, pitch: cp.id) do %>
+                                <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                                    <% if cp.pitch_picture.attached? %>
+                                        <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
+                                    <% else %>
+                                        <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                    <% end %>
+                                </div>
+
+                                <div class="p-4">
+                                    <h3 class="text-center font-medium text-yellow-500"> <%= cp.name %> </h3>
+                                </div>
+                            <% end %>
+                        <% else %>
+                            <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: cp.id) do %>
+                                <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                                    <% if cp.pitch_picture.attached? %>
+                                        <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
+                                    <% else %>
+                                        <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                    <% end %>
+                                </div>
+
+                                <div class="p-4">
+                                    <h3 class="text-center font-medium text-yellow-500"> <%= cp.name %> </h3>
+                                </div>
+                            <% end %>
+                        <% end %>
+                    <% else %>
+                        <% if @selected_ct %>
+                            <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_cp) do %>
+                                <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                                    <% if cp.pitch_picture.attached? %>
+                                        <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
+                                    <% else %>
+                                        <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                    <% end %>
+                                </div>
+
+                                <div class="p-4">
+                                    <h3 class="text-center font-medium text-yellow-500"> <%= cp.name %> </h3>
+                                </div>
+                            <% end %>
+                        <% else %>
+                            <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport) do %>
+                                <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                                    <% if cp.pitch_picture.attached? %>
+                                        <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
+                                    <% else %>
+                                        <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                    <% end %>
+                                </div>
+
+                                <div class="p-4">
+                                    <h3 class="text-center font-medium text-yellow-500"> <%= cp.name %> </h3>
+                                </div>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                        
+                </div>
+                        <!-------------------------------------------------------------------------------- MODAL APAGAR CAMPO ------------------------------------------------------------------------->   
+
+                        <div id="modal-apagar-campo-<%= cp.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                                <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                    <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                                <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar o campo "<b><%= cp.name %></b>"?  </p>
+                                <div class="flex gap-3">
+                                    <button data-modal-hide="modal-apagar-campo-<%= cp.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                        Cancelar
+                                    </button>
+                                    <%= button_to club_pitch_path(cp), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                        Apagar Campo
+                                    <% end %>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-------------------------------------------------------------------------------- MODAL EDITAR CAMPO ------------------------------------------------------------------------->
+                        
+                        <div id="modal-editar-ct-<%= ct.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                            <div class="relative p-4 w-full max-w-md max-h-full">
+                                <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                                    <!-- Modal header -->
+                                    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-blue-900">
+                                        <i data-feather="edit-3" class="w-6 h-6 text-white"></i>
+                                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Editar Campo </h3>
+                                        <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-editar-ct-<%= ct.id %>">
+                                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <!-- Modal body -->
+                                    <div class="p-4 md:p-5">
+                                        <ul class="space-y-4 mb-4">
+                                        <%= form_with(url: club_pitch_path(cp), method: :patch, scope: :club_pitch, local: true) do |form| %>
+                                            <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome</label>
+                                            <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" , placeholder: "Campo SportX", required: true, autofocus: true, value: cp.name %>
+                                            <br> <br>
+                                            <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-500">
+                                            <i data-feather="check" class="w-4 h-4"></i>
+                                            <span>Editar Campo</span>
+                                            </button>
+                                        <% end %> 
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                    <% end %>
+                </div>
+            <% end %>
+
+            <% if @club_pitches_results.total_pages > 1 %>
+                <div class="mt-8 flex justify-end">
+                    <div class="flex flex-col items-end gap-3">               
+
+                    <div class="flex items-center gap-2">
+                        <% if @club_pitches_results.prev_page %>
+                            <% if @selected_ct and @selected_pitch %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, pitch: @selected_pitch, club_pitches_page: @club_pitches_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                                    <i data-feather="chevron-left" class="w-4 h-4"></i>
+                                    <span>Anterior</span>
+                                <% end %>
+                            <% elsif @selected_ct and !@selected_pitch %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, club_pitches_page: @club_pitches_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                                    <i data-feather="chevron-left" class="w-4 h-4"></i>
+                                    <span>Anterior</span>
+                                <% end %>
+                            <% elsif !@selected_ct and @selected_pitch %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, club_pitches_page: @club_pitches_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                                    <i data-feather="chevron-left" class="w-4 h-4"></i>
+                                    <span>Anterior</span>
+                                <% end %>
+                            <% else %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, club_pitches_page: @club_pitches_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                                    <i data-feather="chevron-left" class="w-4 h-4"></i>
+                                    <span>Anterior</span>
+                                <% end %>
+                            <% end %>
+                        <% else %>
+                            <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                                <i data-feather="chevron-left" class="w-4 h-4"></i>
+                                <span>Anterior</span>
+                            </div>
+                        <% end %>
+
+                        <div class="flex items-center gap-1">
+                        <% (1..@club_pitches_results.total_pages).each do |page| %>
+                            <% if page == @club_pitches_results.current_page %>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-orange-400 text-white font-bold border-2 border-orange-400 shadow-lg">
+                                <%= page %>
+                            </div>
+                            <% else %>
+                                <% if @selected_ct and @selected_pitch %>
+                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, pitch: @selected_pitch, club_pitches_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                                <% elsif @selected_ct and !@selected_pitch %>
+                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, club_pitches_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                                <% elsif !@selected_ct and @selected_pitch %>
+                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, club_pitches_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                                <% else %>
+                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, club_pitches_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                                <% end %>
+                            <% end %>
+                        <% end %>
+                        </div>
+
+                        <% if @club_pitches_results.next_page %>
+                            <% if @selected_ct and @selected_pitch %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, pitch: @selected_pitch, club_pitches_page: @club_pitches_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                                    <span>Seguinte</span>
+                                    <i data-feather="chevron-right" class="w-4 h-4"></i>
+                                <% end %>
+                            <% elsif @selected_ct and !@selected_pitch %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, club_pitches_page: @club_pitches_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                                    <span>Seguinte</span>
+                                    <i data-feather="chevron-right" class="w-4 h-4"></i>
+                                <% end %>
+                            <% elsif !@selected_ct and @selected_pitch %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, club_pitches_page: @club_pitches_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                                    <span>Seguinte</span>
+                                    <i data-feather="chevron-right" class="w-4 h-4"></i>
+                                <% end %>
+                            <% else %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, club_pitches_page: @club_pitches_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                                    <span>Seguinte</span>
+                                    <i data-feather="chevron-right" class="w-4 h-4"></i>
+                                <% end %>
+                            <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                        <% end %>
+                    </div>
+                    </div>
+                </div>
+            <% end %>
+        </div>
+
+<!-------------------------------------------------------------------------------- BALNEÁRIOS ------------------------------------------------------------------------->
+
+        <div class="mt-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-yellow-300 flex items-center space-x-2">
+                    <i class="fa-solid fa-shower"></i>
+                    <span>Balneários ( <%= @coach_results&.any? ? @coach_results.total_count : "0" %> )</span>
+                </h3>
+                <div class="flex items-center gap-4">
+                    <% if @selected_team != 'others' %>
+                        <%= link_to new_coach_profile_registration_path(selected_sport: @selected_sport, selected_team: @selected_team ) do %>
+                            <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                                <i data-feather="user-plus" class="w-4 h-4"></i>
+                            </button>
+                        <% end %>
+                    <% end %>
+                </div>
+            </div>
+
+            <% if @club_ct_results %>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <% @club_ct_results.each do |ct| %>
+                <% if ct.id == @selected_ct %>
+                    <div class="relative bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl overflow-hidden shadow-xl shadow-yellow-500/30 transition-all duration-300 -translate-y-1 ring-2 ring-yellow-500">
+                <% else %>
+                    <div class="relative bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
+                <% end %> 
+                <div class="absolute top-2 right-2 flex gap-2 z-10">
+                    <button data-modal-target="modal-editar-ct-<%= ct.id %>" data-modal-toggle="modal-editar-ct-<%= ct.id %>" class="bg-gray-900/80 hover:bg-blue-600 text-blue-600 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                        <i data-feather="edit" class="w-4 h-4"></i>
+                    </button>
+                    <button data-modal-target="modal-apagar-ct-<%= ct.id %>" data-modal-toggle="modal-apagar-ct-<%= ct.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <% if ct.id != @selected_ct %>
+                    <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: ct.id) do %>
+                        <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                            <% if ct.ct_picture.attached? %>
+                                <%= image_tag url_for(ct.ct_picture), class: "w-full h-full object-cover" %>
+                            <% else %>
+                                <%= image_tag "default_ct.png", class: "w-full h-full object-cover" %>
+                            <% end %>
+                        </div>
+
+                        <div class="p-4">
+                            <h3 class="text-center font-medium text-yellow-500"> <%= ct.name %> </h3>
+                        </div>
+                    <% end %>
+                <% else %>
+                    <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport) do %>
+                        <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                            <% if ct.ct_picture.attached? %>
+                                <%= image_tag url_for(ct.ct_picture), class: "w-full h-full object-cover" %>
+                            <% else %>
+                                <%= image_tag "default_ct.png", class: "w-full h-full object-cover" %>
+                            <% end %>
+                        </div>
+
+                        <div class="p-4">
+                            <h3 class="text-center font-medium text-yellow-500"> <%= ct.name %> </h3>
+                        </div>
+                    <% end %>
+                <% end %>
+                    
+            </div>
+                    <!-------------------------------------------------------------------------------- MODAL APAGAR CT ------------------------------------------------------------------------->   
+
+                    <div id="modal-apagar-ct-<%= ct.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                            <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar o centro de treinos "<b><%= ct.name %></b>"?  </p>
+                            <div class="flex gap-3">
+                                <button data-modal-hide="modal-apagar-ct-<%= ct.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                    Cancelar
+                                </button>
+                                <%= button_to club_training_center_path(ct), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                    Apagar CT
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-------------------------------------------------------------------------------- MODAL EDITAR CT ------------------------------------------------------------------------->
+                    
+                    <div id="modal-editar-ct-<%= ct.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                        <div class="relative p-4 w-full max-w-md max-h-full">
+                            <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                                <!-- Modal header -->
+                                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-blue-900">
+                                    <i data-feather="edit-3" class="w-6 h-6 text-white"></i>
+                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Editar CT </h3>
+                                    <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-editar-ct-<%= ct.id %>">
+                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="p-4 md:p-5">
+                                    <ul class="space-y-4 mb-4">
+                                    <%= form_with(url: club_training_center_path(ct), method: :patch, scope: :club_training_center, local: true) do |form| %>
+                                        <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome</label>
+                                        <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" , placeholder: "CT SportX", required: true, autofocus: true, value: ct.name %>
+                                        <br> <br>
+                                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-500">
+                                        <i data-feather="check" class="w-4 h-4"></i>
+                                        <span>Editar CT</span>
+                                        </button>
+                                    <% end %> 
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                <% end %>
+            </div>
+        <% end %>
+
+        <% if @club_ct_results.total_pages > 1 %>
+            <div class="mt-8 flex justify-end">
+                <div class="flex flex-col items-end gap-3">               
+
+                <div class="flex items-center gap-2">
+                    <% if @club_ct_results.prev_page %>
+                    <%= link_to club_infrastructures_dashboard_path(sport: params[:sport], club_ct_page: @club_ct_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                        <i data-feather="chevron-left" class="w-4 h-4"></i>
+                        <span>Anterior</span>
+                    <% end %>
+                    <% else %>
+                    <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                        <i data-feather="chevron-left" class="w-4 h-4"></i>
+                        <span>Anterior</span>
+                    </div>
+                    <% end %>
+
+                    <div class="flex items-center gap-1">
+                    <% (1..@club_ct_results.total_pages).each do |page| %>
+                        <% if page == @club_ct_results.current_page %>
+                        <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-orange-400 text-white font-bold border-2 border-orange-400 shadow-lg">
+                            <%= page %>
+                        </div>
+                        <% else %>
+                        <%= link_to page, club_infrastructures_dashboard_path(sport: params[:sport], club_ct_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                        <% end %>
+                    <% end %>
+                    </div>
+
+                    <% if @club_ct_results.next_page %>
+                    <%= link_to club_infrastructures_dashboard_path(sport: params[:sport], club_ct_page: @club_ct_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                        <span>Seguinte</span>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                    <% end %>
+                    <% else %>
+                    <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                        <span>Seguinte</span>
+                        <i data-feather="chevron-right" class="w-4 h-4"></i>
+                    </div>
+                    <% end %>
+                </div>
+                </div>
+            </div>
+        <% end %>
+            
+        </div>
         
     <% else %>
         <div class="flex justify-center items-center mb-9 py-2">
@@ -348,8 +772,7 @@
     <% end %>
 </div>
 
-
-
+    
 <!-------------------------------------------------------------------------------- MODAL ADICIONAR CT ------------------------------------------------------------------------->   
 
     <div id="modal-add-ct" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -376,6 +799,76 @@
                         <% end %>
 
                         <label class="block text-sm font-medium text-gray-400 mb-1">Foto do CT</label>
+
+                        <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                            <%= image_tag "placeholder.jpg",
+                                id: "ct-picture-preview",
+                                alt: "Pré-visualização do banner",
+                                class: "w-full h-full object-cover cursor-pointer" %>
+
+                            <%= form.file_field :ct_picture,
+                                id: "ct-picture",
+                                class: "file-upload-input sr-only",
+                                accept: "image/*" %>
+                            
+                            <button type="button" id="remove-ct-picture-btn" class="hidden absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            </button>
+                        </div>
+
+                        <br>
+                        
+                        <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome do CT</label>
+                        
+                        <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" ,placeholder: "Ex: Centro de Treinos SportX", required: true, autofocus: true %>
+
+                        <% if @selected_sport == 'football' %>
+                            <%= form.hidden_field :sport_id, value: 2 %>
+                        <% elsif @selected_sport == 'handball' %>
+                            <%= form.hidden_field :sport_id, value: 3 %>
+                        <% end %>
+                        <br> <br>
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gradient-to-r from-emerald-900 to-emerald-800 hover:from-emerald-800 hover:to-emerald-500">
+                           <i data-feather="check" class="w-4 h-4"></i>
+                           <span>Criar CT</span>
+                        </button>
+                    <% end %> 
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<!-------------------------------------------------------------------------------- MODAL ADICIONAR CAMPO ------------------------------------------------------------------------->   
+
+    <div id="modal-add-campo" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-green-900">
+                    <i data-feather="plus" class="w-6 h-6 text-white"></i>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Adicionar Campo </h3>
+                    <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-add-campo">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-4 md:p-5">
+                    <ul class="space-y-4 mb-4">
+                    <%= form_with(url: club_pitches_path, method: :post, scope: :club_pitch, local: true) do |form| %>
+                        <% if current_user.club? %>
+                            <%= form.hidden_field :club_profile_id, value: current_user.club_profile.id %>
+                        <% elsif current_user.board? %>
+                            <%= form.hidden_field :club_profile_id, value: current_user.board_profile.club_profile.id %>
+                        <% end %>
+
+                        <label class="block text-sm font-medium text-gray-400 mb-1">Foto do Campo</label>
 
                         <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
                             <%= image_tag "placeholder.jpg",

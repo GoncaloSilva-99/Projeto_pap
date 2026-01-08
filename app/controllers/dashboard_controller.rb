@@ -12,10 +12,21 @@ class DashboardController < ApplicationController
   def infrastructures
     @selected_ct = params[:ct].to_i
     @selected_sport = params[:sport]
+    @selected_pitch = params[:pitch].to_i
+    @selected_locker_room = params[:locker_room].to_i
     club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
     sport_id = @selected_sport == 'football' ? 2 : 3
     club_ct_query = ClubTrainingCenter.where(club_profile_id: club_id, sport_id: sport_id)
     @club_ct_results = club_ct_query.page(params[:club_ct_page]).per(4)
+    if @selected_ct
+      club_pitches_query = ClubPitches.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct)
+      club_locker_rooms_query = ClubLockerRooms.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct)
+    else
+      club_pitches_query = ClubPitches.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: nil)
+      club_locker_rooms_query = ClubLockerRooms.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: nil)
+    end
+    @club_pitches_results = club_pitches_query.page(params[:club_pitches_page]).per(4)
+    @club_locker_rooms_results = club_locker_rooms_query.page(params[:club_locker_rooms_page]).per(4)
   end
 
   def sport

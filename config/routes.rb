@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :club_locker_rooms
+  resources :club_pitches
   resources :club_training_centers
   resources :coach_teams
   resources :player_teams
