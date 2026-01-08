@@ -65,6 +65,6 @@ class ClubPitchesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_pitch_params
-      params.expect(club_pitch: [ :club_profiles_id, :club_training_centers_id, :sports_id, :name ])
+      params.expect(club_pitch: [ :club_profile_id, :club_training_center_id, :sport_id, :name, :pitch_picture ])
     end
 end
