@@ -3,7 +3,7 @@ class ClubPitchesController < ApplicationController
 
   def remove_from_ct
     @sport = params[:sport]
-    @club_pitch = ClubPitch.find(params[:pitch])
+    @club_pitch = ClubPitch.find(params[:id])
     @club_pitch.update(club_training_center_id: nil)
     respond_to do |format|
       format.html { redirect_to club_infrastructures_dashboard_path(sport: @sport), notice: "Campo removido do CT com sucesso!", status: :see_other }
@@ -13,8 +13,8 @@ class ClubPitchesController < ApplicationController
 
   def add_to_ct
     @sport = params[:sport]
-    @club_pitch = ClubPitch.find(params[:pitch])
-    @club_ct = params[:ct]
+    @club_pitch = ClubPitch.find(params[:id])
+    @club_ct = params[:club_pitch][:club_training_center_id]
     @club_pitch.update(club_training_center_id: @club_ct)
     respond_to do |format|
       format.html { redirect_to club_infrastructures_dashboard_path(sport: @sport), notice: "Campo adicionado ao CT com sucesso!", status: :see_other }

@@ -27,7 +27,9 @@ class DashboardController < ApplicationController
     end
     @club_pitches_results = club_pitches_query.page(params[:club_pitches_page]).per(4)
     @club_locker_rooms_results = club_locker_rooms_query.page(params[:club_locker_rooms_page]).per(4)
-    @base_num_club_ct = club_ct_query = ClubTrainingCenter.where(club_profile_id: club_id, sport_id: @sport_id).count
+    @base_num_club_ct = ClubTrainingCenter.where(club_profile_id: club_id, sport_id: sport_id).count
+    @base_num_pitches_in_ct = club_pitches_query = ClubPitch.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct).count
+    @base_num_locker_rooms_in_ct = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct).count
   end
 
   def sport
