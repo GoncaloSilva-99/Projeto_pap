@@ -20,6 +20,13 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :club_pitches do
+    member do
+      patch :remove_from_ct
+      patch :add_to_ct
+    end
+  end
+
   resources :club_profiles
   resources :user_profiles
   resources :sports

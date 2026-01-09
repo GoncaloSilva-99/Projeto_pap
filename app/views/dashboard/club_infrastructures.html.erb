@@ -194,7 +194,7 @@
                 <div class="relative bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
             <% end %> 
                 <div class="absolute top-2 right-2 flex gap-2 z-10">
-                    <button data-modal-target="modal-editar-ct-<%= ct.id %>" data-modal-toggle="modal-editar-ct-<%= ct.id %>" class="bg-gray-900/80 hover:bg-blue-600 text-blue-600 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                    <button data-modal-target="modal-editar-ct-<%= ct.id %>" data-modal-toggle="modal-editar-ct-<%= ct.id %>" class="bg-gray-900/80 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
                         <i data-feather="edit" class="w-4 h-4"></i>
                     </button>
                     <button data-modal-target="modal-apagar-ct-<%= ct.id %>" data-modal-toggle="modal-apagar-ct-<%= ct.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
@@ -347,11 +347,9 @@
                     <span>Campos ( <%= @club_pitches_results&.any? ? @club_pitches_results.total_count : "0" %> )</span>
                 </h3>
                 <div class="flex items-center gap-4">
-                        <%= link_to new_coach_profile_registration_path(selected_sport: @selected_sport, selected_team: @selected_team ) do %>
-                            <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
-                                <i class="fa-regular fa-plus w-4 h-4"></i>
-                            </button>
-                        <% end %>
+                        <button data-modal-target="modal-add-campo" data-modal-toggle="modal-add-campo" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                            <i class="fa-regular fa-plus w-4 h-4"></i>
+                        </button>
                 </div>
             </div>
 
@@ -364,12 +362,12 @@
                     <div class="relative bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
                 <% end %> 
                     <div class="absolute top-2 right-2 flex gap-2 z-10">
-                        <% if @selected_ct %>
+                        <% if !@selected_ct and @base_num_club_ct != 0 %>
                             <button data-modal-target="modal-adicionar-campo-a-ct-<%= cp.id %>" data-modal-toggle="modal-adicionar-campo-a-ct-<%= cp.id %>" class="bg-gray-900/80 hover:bg-blue-600 text-blue-600 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
                                 <i data-feather="plus" class="w-4 h-4"></i>
                             </button>
                         <% end %>
-                        <button data-modal-target="modal-editar-campo-<%= cp.id %>" data-modal-toggle="modal-editar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-blue-600 text-blue-600 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                        <button data-modal-target="modal-editar-campo-<%= cp.id %>" data-modal-toggle="modal-editar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
                             <i data-feather="edit" class="w-4 h-4"></i>
                         </button>
                         <button data-modal-target="modal-apagar-campo-<%= cp.id %>" data-modal-toggle="modal-apagar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
@@ -463,14 +461,14 @@
 
                         <!-------------------------------------------------------------------------------- MODAL EDITAR CAMPO ------------------------------------------------------------------------->
                         
-                        <div id="modal-editar-ct-<%= ct.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                        <div id="modal-editar-campo-<%= cp.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                             <div class="relative p-4 w-full max-w-md max-h-full">
                                 <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
                                     <!-- Modal header -->
                                     <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-blue-900">
                                         <i data-feather="edit-3" class="w-6 h-6 text-white"></i>
                                         <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Editar Campo </h3>
-                                        <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-editar-ct-<%= ct.id %>">
+                                        <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-editar-campo-<%= cp.id %>">
                                             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                                             </svg>
@@ -495,6 +493,42 @@
                             </div>
                         </div>
                         
+                        <!-------------------------------------------------------------------------------- MODAL ADICIONAR CAMPO A CT ------------------------------------------------------------------------->
+
+                        <div id="modal-adicionar-campo-a-ct-<%= cp.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                <div class="relative p-4 w-full max-w-md max-h-full">
+                                    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                                        <!-- Modal header -->
+                                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-green-900">
+                                            <i data-feather="plus" class="w-6 h-6 text-white"></i>
+                                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Adicionar a CT </h3>
+                                            <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-adicionar-campo-a-ct-<%= cp.id %>">
+                                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <!-- Modal body -->
+                                        <div class="p-4 md:p-5">
+                                            <ul class="space-y-4 mb-4">
+                                            <%= form_with(url: club_pitches_path, method: :post, scope: :club_pitch, local: true) do |form| %>
+                                                <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Centro de Treino</label>
+
+                                                <% current_user.club? ? cts = ClubTrainingCenter.where(club_profile_id: current_user.club_profile.id, sport: @selected_sport) : ClubTrainingCenter.where(club_profile_id: current_user.board_profile.club_profile.id, sport: @selected_sport) %>
+                                                <%= form.hidden_field :club_pitch_id, value: cp.id %>
+                                                <%= form.select :club_training_center_id, cts.collect { |c| [c.name, c.id] }, { selected: cts.first }, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700"%>
+                                                <br> <br>
+                                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gradient-to-r from-emerald-900 to-emerald-800 hover:from-emerald-800 hover:to-emerald-500">
+                                                <i data-feather="check" class="w-4 h-4"></i>
+                                                <span>Adicionar à equipa</span>
+                                                </button>
+                                            <% end %> 
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                     <% end %>
                 </div>
@@ -724,7 +758,7 @@
                         
                         <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome do Campo</label>
                         
-                        <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" ,placeholder: "Ex: Centro de Treinos SportX", required: true, autofocus: true %>
+                        <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" ,placeholder: "Ex: Campo de jogos 2 SportX", required: true, autofocus: true %>
 
                         <% if @selected_sport == 'football' %>
                             <%= form.hidden_field :sport_id, value: 2 %>
@@ -795,34 +829,34 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             
-            const CtPicInput = document.getElementById('pitch-picture');
-            const CtPicPreview = document.getElementById('pitch-picture-preview');
-            const RemoveCtPicBtn = document.getElementById('remove-pitch-picture-btn');
-            const originalBannerSrc = CtPicPreview ? CtPicPreview.src : '';
+            const PitchPicInput = document.getElementById('pitch-picture');
+            const PitchPicPreview = document.getElementById('pitch-picture-preview');
+            const RemovePitchPicBtn = document.getElementById('remove-pitch-picture-btn');
+            const originalPitchSrc = PitchPicPreview ? PitchPicPreview.src : '';
 
-            if (CtPicInput && CtPicPreview) {
-            CtPicInput.addEventListener('change', (e) => {
+            if (PitchPicInput && PitchPicPreview) {
+            PitchPicInput.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    CtPicPreview.src = ev.target.result;
-                    RemoveCtPicBtn.classList.remove('hidden');
+                    PitchPicPreview.src = ev.target.result;
+                    RemovePitchPicBtn.classList.remove('hidden');
                 };
                 reader.readAsDataURL(file);
                 }
             });
 
-            CtPicPreview.addEventListener('click', () => {
-                CtPicInput.click();
+            PitchPicPreview.addEventListener('click', () => {
+                PitchPicInput.click();
             });
 
-            if (RemoveCtPicBtn) {
-                RemoveCtPicBtn.addEventListener('click', (e) => {
+            if (RemovePitchPicBtn) {
+                RemovePitchPicBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                CtPicInput.value = '';
-                CtPicPreview.src = originalBannerSrc;
-                RemoveCtPicBtn.classList.add('hidden');
+                PitchPicInput.value = '';
+                PitchPicPreview.src = originalPitchSrc;
+                RemovePitchPicBtn.classList.add('hidden');
                 });
             }
             }

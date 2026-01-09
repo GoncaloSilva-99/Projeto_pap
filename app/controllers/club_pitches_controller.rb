@@ -1,6 +1,27 @@
 class ClubPitchesController < ApplicationController
   before_action :set_club_pitch, only: %i[ show edit update destroy ]
 
+  def remove_from_ct
+    @sport = params[:sport]
+    @club_pitch = ClubPitch.find(params[:pitch])
+    @club_pitch.update(club_training_center_id: nil)
+    respond_to do |format|
+      format.html { redirect_to club_infrastructures_dashboard_path(sport: @sport), notice: "Campo removido do CT com sucesso!", status: :see_other }
+      format.json { head :no_content }
+    end
+  end
+
+  def add_to_ct
+    @sport = params[:sport]
+    @club_pitch = ClubPitch.find(params[:pitch])
+    @club_ct = params[:ct]
+    @club_pitch.update(club_training_center_id: @club_ct)
+    respond_to do |format|
+      format.html { redirect_to club_infrastructures_dashboard_path(sport: @sport), notice: "Campo adicionado ao CT com sucesso!", status: :see_other }
+      format.json { head :no_content }
+    end
+  end
+
   # GET /club_pitches or /club_pitches.json
   def index
     @club_pitches = ClubPitch.all
@@ -25,7 +46,7 @@ class ClubPitchesController < ApplicationController
 
     respond_to do |format|
       if @club_pitch.save
-        format.html { redirect_to @club_pitch, notice: "Club pitch was successfully created." }
+        format.html { redirect_to club_infrastructures_dashboard_path, notice: "Campo criado com sucesso!" }
         format.json { render :show, status: :created, location: @club_pitch }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +59,7 @@ class ClubPitchesController < ApplicationController
   def update
     respond_to do |format|
       if @club_pitch.update(club_pitch_params)
-        format.html { redirect_to @club_pitch, notice: "Club pitch was successfully updated.", status: :see_other }
+        format.html { redirect_to club_infrastructures_dashboard_path, notice: "Campo atualizado com sucesso!", status: :see_other }
         format.json { render :show, status: :ok, location: @club_pitch }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -52,7 +73,7 @@ class ClubPitchesController < ApplicationController
     @club_pitch.destroy!
 
     respond_to do |format|
-      format.html { redirect_to club_pitches_path, notice: "Club pitch was successfully destroyed.", status: :see_other }
+      format.html { redirect_to club_infrastructures_dashboard_path, notice: "Campo apagado com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end
