@@ -232,8 +232,14 @@
                 <% end %>
                     
             </div>
-                    <!-------------------------------------------------------------------------------- MODAL APAGAR CT ------------------------------------------------------------------------->   
-                <% if @base_num_pitches_in_ct == 0 and @base_num_locker_rooms_in_ct == 0 %>
+                <!-------------------------------------------------------------------------------- MODAL APAGAR CT ------------------------------------------------------------------------->   
+                <%
+                    sport_id = @selected_sport == 'football' ? 2 : 3
+                    club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
+                    num_pitches_this_ct = ClubPitch.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: ct.id ).count
+                    num_locker_rooms_this_ct = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: ct.id).count
+                %>
+                <% if num_pitches_this_ct == 0 and num_locker_rooms_this_ct == 0 %>
                     <div id="modal-apagar-ct-<%= ct.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                         <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
                             <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
@@ -676,6 +682,21 @@
             </div>
         </div>
     <% end %>
+
+    <% if !@club_pitches_results.any? and @selected_ct %>
+        <div class="flex justify-center items-center mb-8">
+            <div class="flex flex-col items-start">
+                <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem nenhum campo neste CT</h1>
+            </div>
+        </div>
+    <% elsif !@club_pitches_results.any? and !@selected_ct %>
+        <div class="flex justify-center items-center mb-8">
+            <div class="flex flex-col items-start">
+                <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem nenhum campo geral criado</h1>
+            </div>
+        </div>
+    <% end %>
+
 </div>
 
     
