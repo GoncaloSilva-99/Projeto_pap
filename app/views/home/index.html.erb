@@ -1,4 +1,4 @@
-
+﻿
 <body class="bg-gray-900 text-gray-100 min-h-screen" style="flex-wrap: wrap;">
 
     <!-- Navbar -->
@@ -196,81 +196,7 @@
         </div>
     </nav>
 
-    <!-- News Ticker -->
-    <div class="py-2 px-6 overflow-hidden bg-gradient-to-b from-gray-900 to-gray-800 fixed w-full z-20 top-0 start-0" style="margin-bottom: -17px;" id="news-ticker">
-        <div class="container mx-auto relative">
-            <div class="absolute left-0 top-0 bottom-0 flex items-center z-10">
-                <span class="bg-red-500 px-2 py-1 rounded text-xs font-bold">NOTÍCIAS</span>
-            </div>
-            <div class="flex whitespace-nowrap news-scroll">
-                <!-- Primeira cópia -->
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/1" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">New tournament announced:</span>
-                    <span class="text-gray-400 ml-2">Regional Championship registration now open!</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/2" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">System Update:</span>
-                    <span class="text-gray-400 ml-2">New analytics dashboard now available</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/3" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">Training Tip:</span>
-                    <span class="text-gray-400 ml-2">Improve your endurance with these exercises</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/4" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">Player Spotlight:</span>
-                    <span class="text-gray-400 ml-2">Meet this month's rising star athlete</span>
-                </div>
-
-                <!-- Segunda cópia (para loop infinito contínuo) -->
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/1" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">New tournament announced:</span>
-                    <span class="text-gray-400 ml-2">Regional Championship registration now open!</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/2" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">System Update:</span>
-                    <span class="text-gray-400 ml-2">New analytics dashboard now available</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/3" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">Training Tip:</span>
-                    <span class="text-gray-400 ml-2">Improve your endurance with these exercises</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/4" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">Player Spotlight:</span>
-                    <span class="text-gray-400 ml-2">Meet this month's rising star athlete</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <style>
-        .news-scroll {
-            animation: scroll 20s linear infinite;
-        }
-
         @keyframes scroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
@@ -337,7 +263,7 @@
         }
 
          /* Desktop: esconde os links de navegação quando searchbar está activa */
-         @media (min-width: 641px) {
+        @media (min-width: 641px) {
              .nav-links-overlap {
                  transition: opacity .18s ease, visibility .18s;
              }
@@ -351,48 +277,6 @@
                  height: 0;
                  overflow: hidden;
               }
-          }
-
-        #news-ticker {
-            margin-top: 0;
-        }
-
-        #news-ticker .container {
-            position: relative;
-        }
-
-        #news-ticker .news-scroll {
-            padding-left: 4rem;
-        }
-
-        #news-ticker .absolute.left-0 {
-            z-index: 10;
-        }
-
-        #news-ticker .container::before {
-            content: "";
-            position: absolute;
-            left: -210px;
-            top: -7px;
-            bottom: 0;
-            height: 40px;
-            width: 260px;
-            background-image: linear-gradient(to bottom, #111827 0%, #1f2937 100%);
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        #news-ticker .container::after {
-            content: "";
-            position: absolute;
-            right: -100px;
-            top: -7px;
-            bottom: 0;
-            height: 40px;
-            width: 119px;
-            background-image: linear-gradient(to bottom, #111827 0%, #1f2937 100%);
-            z-index: 10;
-            pointer-events: none;
         }
     </style>
 
@@ -642,68 +526,6 @@
             document.addEventListener('click', closePinnedMenu);
             window.addEventListener('scroll', closePinnedMenu);
         }
-
-        // Calcula a duração da animação baseada na largura do conteúdo (velocidade consistente)
-        function calculateScrollDuration() {
-            const scrollContainer = document.querySelector('.news-scroll');
-            if (!scrollContainer) return;
-
-            // Velocidade em pixels por segundo (ajuste conforme necessário)
-            const PIXELS_PER_SECOND = 10;
-            
-            // Obtém a largura total do conteúdo
-            const totalWidth = scrollContainer.scrollWidth;
-            // A animação vai de 0 a -50%, então a distância é 50% da largura
-            const distanceToCover = totalWidth / 2;
-            
-            // Calcula a duração em segundos
-            const duration = distanceToCover / PIXELS_PER_SECOND;
-            
-            // Define a variável CSS
-            document.documentElement.style.setProperty('--scroll-duration', duration + 's');
-        }
-
-        // Calcula ao carregar
-        calculateScrollDuration();
-
-        // Recalcula ao redimensionar
-        window.addEventListener('resize', () => {
-            clearTimeout(window.__scrollDurationTimer);
-            window.__scrollDurationTimer = setTimeout(calculateScrollDuration, 120);
-        });
-
-        // posiciona o ticker imediatamente abaixo do navbar (funciona em mobile e desktop)
-        function positionTicker() {
-            const nav = document.querySelector('nav');
-            const ticker = document.getElementById('news-ticker');
-            const heroSection = document.getElementById('inicio');
-            
-            if (!nav || !ticker) return;
-            
-            const navRect = nav.getBoundingClientRect();
-            // define top inline para o bottom do nav (px)
-            ticker.style.top = navRect.bottom + 'px';
-            
-            // Calcula a altura total ocupada (navbar + ticker)
-            if (heroSection) {
-                const tickerRect = ticker.getBoundingClientRect();
-                const totalHeight = tickerRect.bottom;
-                // Aplica margin-top dinamicamente para evitar que o ticker tape o conteúdo
-                heroSection.style.marginTop = totalHeight + 'px';
-            }
-        }
-
-        // chama uma vez ao carregar
-        positionTicker();
-
-        // reajusta no resize com debounce simples
-        let _tickerResizeTimer = null;
-        window.addEventListener('resize', () => {
-            clearTimeout(_tickerResizeTimer);
-            _tickerResizeTimer = setTimeout(positionTicker, 120);
-        });
-
-        
 
         });
     </script>
@@ -989,3 +811,7 @@
         </div>
     </footer>
 </body>
+
+
+
+
