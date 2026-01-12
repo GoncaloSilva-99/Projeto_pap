@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :club_locker_rooms
   resources :club_training_centers
   resources :coach_teams
   resources :player_teams
@@ -20,6 +19,13 @@ Rails.application.routes.draw do
   end
 
   resources :club_pitches do
+    member do
+      patch :remove_from_ct
+      patch :add_to_ct
+    end
+  end
+
+  resources :club_locker_rooms do
     member do
       patch :remove_from_ct
       patch :add_to_ct

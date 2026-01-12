@@ -1,6 +1,27 @@
 class ClubLockerRoomsController < ApplicationController
   before_action :set_club_locker_room, only: %i[ show edit update destroy ]
 
+  def remove_from_ct
+    @sport = params[:sport]
+    @club_locker_room = ClubLockerRoom.find(params[:id])
+    @club_locker_room.update(club_training_center_id: nil)
+    respond_to do |format|
+      format.html { redirect_to club_infrastructures_dashboard_path(sport: @sport), notice: "Balneário removido do CT com sucesso!", status: :see_other }
+      format.json { head :no_content }
+    end
+  end
+
+  def add_to_ct
+    @sport = params[:sport]
+    @club_locker_room = ClubLockerRoom.find(params[:id])
+    @club_ct = params[:club_locker_room][:club_training_center_id]
+    @club_locker_room.update(club_training_center_id: @club_ct)
+    respond_to do |format|
+      format.html { redirect_to club_infrastructures_dashboard_path(sport: @sport), notice: "Balneário adicionado ao CT com sucesso!", status: :see_other }
+      format.json { head :no_content }
+    end
+  end
+
   # GET /club_locker_rooms or /club_locker_rooms.json
   def index
     @club_locker_rooms = ClubLockerRoom.all
@@ -25,7 +46,7 @@ class ClubLockerRoomsController < ApplicationController
 
     respond_to do |format|
       if @club_locker_room.save
-        format.html { redirect_to @club_locker_room, notice: "Club locker room was successfully created." }
+        format.html { redirect_to club_infrastructures_dashboard_path, notice: "Balneário criado com sucesso!" }
         format.json { render :show, status: :created, location: @club_locker_room }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +59,7 @@ class ClubLockerRoomsController < ApplicationController
   def update
     respond_to do |format|
       if @club_locker_room.update(club_locker_room_params)
-        format.html { redirect_to @club_locker_room, notice: "Club locker room was successfully updated.", status: :see_other }
+        format.html { redirect_to club_infrastructures_dashboard_path, notice: "Balneário atualizado com sucesso!", status: :see_other }
         format.json { render :show, status: :ok, location: @club_locker_room }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -52,7 +73,7 @@ class ClubLockerRoomsController < ApplicationController
     @club_locker_room.destroy!
 
     respond_to do |format|
-      format.html { redirect_to club_locker_rooms_path, notice: "Club locker room was successfully destroyed.", status: :see_other }
+      format.html { redirect_to club_infrastructures_dashboard_path, notice: "Balneário apagado com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -65,6 +86,6 @@ class ClubLockerRoomsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_locker_room_params
-      params.expect(club_locker_room: [ :club_profile_id, :club_training_center_id, :sport_id, :name ])
+      params.expect(club_locker_room: [ :club_profile_id, :club_training_center_id, :sport_id, :name, :locker_room_picture ])
     end
 end
