@@ -28,6 +28,35 @@ class DashboardController < ApplicationController
     @club_pitches_results = club_pitches_query.page(params[:club_pitches_page]).per(4)
     @club_locker_rooms_results = club_locker_rooms_query.page(params[:club_locker_rooms_page]).per(4)
     @base_num_club_ct = ClubTrainingCenter.where(club_profile_id: club_id, sport_id: sport_id).count
+
+
+    if @selected_pitch
+      @selected_team = params[:team]
+      @start_date = params[:start_date] ? Date.parse(params[:start_date]) : Date.today.beginning_of_week
+      @end_date = @start_date.end_of_week
+      
+      @weekly_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: false, club_team_id: @selected_team ).where("start_time >= ? AND start_time <= ?", @start_date, @end_date.end_of_day).order(:start_time)
+      @recurring_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: true, club_team_id: @selected_team)
+      
+
+      @all_trainings = @weekly_trainings.to_a
+      @recurring_trainings.each do |recurring|
+        (@start_date..@end_date).each do |date|
+          if date.wday == recurring.weekday
+            virtual_training = recurring.dup
+            virtual_training.start_time = date.to_time.change(hour: recurring.start_time.hour, min: recurring.start_time.min)
+            virtual_training.end_time = date.to_time.change(hour: recurring.end_time.hour, min: recurring.end_time.min)
+            @all_trainings << virtual_training
+          end
+        end
+      end
+      
+      @available_locker_rooms = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct || nil)
+      @available_teams = ClubTeam.where(club_profile_id: club_id, sport_id: sport_id)
+      @time_slots = (6..22).flat_map { |h| [[h, 0], [h, 30]] }
+    end
+
+
   end
 
   def sport
