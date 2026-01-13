@@ -46,7 +46,14 @@ class ClubLockerRoomsController < ApplicationController
 
     respond_to do |format|
       if @club_locker_room.save
-        format.html { redirect_to club_infrastructures_dashboard_path, notice: "Balneário criado com sucesso!" }
+        @selected_sport = params[:sport]
+        if params[:ct].present?
+            @selected_ct = params[:ct]
+            format.html { redirect_to club_infrastructures_dashboard_path(ct: @selected_ct, sport: @selected_sport), notice: "Balneário criado com sucesso!" }
+        else
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Balneário criado com sucesso!" }
+        end
+        
         format.json { render :show, status: :created, location: @club_locker_room }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -59,7 +66,13 @@ class ClubLockerRoomsController < ApplicationController
   def update
     respond_to do |format|
       if @club_locker_room.update(club_locker_room_params)
-        format.html { redirect_to club_infrastructures_dashboard_path, notice: "Balneário atualizado com sucesso!", status: :see_other }
+        @selected_sport = params[:sport]
+        if params[:ct].present?
+          @selected_ct = params[:ct]
+          format.html { redirect_to club_infrastructures_dashboard_path(ct: @selected_ct, sport: @selected_sport), notice: "Balneário atualizado com sucesso!", status: :see_other }
+        else
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Balneário atualizado com sucesso!", status: :see_other }
+        end
         format.json { render :show, status: :ok, location: @club_locker_room }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -71,9 +84,14 @@ class ClubLockerRoomsController < ApplicationController
   # DELETE /club_locker_rooms/1 or /club_locker_rooms/1.json
   def destroy
     @club_locker_room.destroy!
-
     respond_to do |format|
-      format.html { redirect_to club_infrastructures_dashboard_path, notice: "Balneário apagado com sucesso!", status: :see_other }
+      @selected_sport = params[:sport]
+      if params[:ct].present?
+        @selected_ct = params[:ct]
+        format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct), notice: "Balneário apagado com sucesso!", status: :see_other }
+      else
+        format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Balneário apagado com sucesso!", status: :see_other }
+      end
       format.json { head :no_content }
     end
   end
@@ -81,11 +99,11 @@ class ClubLockerRoomsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_club_locker_room
-      @club_locker_room = ClubLockerRoom.find(params.expect(:id))
+      @club_locker_room = ClubLockerRoom.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def club_locker_room_params
-      params.expect(club_locker_room: [ :club_profile_id, :club_training_center_id, :sport_id, :name, :locker_room_picture ])
+      params.require(:club_locker_room).permit(:club_profile_id, :club_training_center_id, :sport_id, :name, :locker_room_picture)
     end
 end

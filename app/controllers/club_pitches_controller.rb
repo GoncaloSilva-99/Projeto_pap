@@ -17,7 +17,7 @@ class ClubPitchesController < ApplicationController
     @club_ct = params[:club_pitch][:club_training_center_id]
     @club_pitch.update(club_training_center_id: @club_ct)
     respond_to do |format|
-      format.html { redirect_to club_infrastructures_dashboard_path(sport: @sport), notice: "Campo adicionado ao CT com sucesso!", status: :see_other }
+      format.html { redirect_to club_infrastructures_dashboard_path(sport: @sport, ct: @club_ct), notice: "Campo adicionado ao CT com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -46,7 +46,13 @@ class ClubPitchesController < ApplicationController
 
     respond_to do |format|
       if @club_pitch.save
-        format.html { redirect_to club_infrastructures_dashboard_path, notice: "Campo criado com sucesso!" }
+        @selected_sport = params[:sport]
+        if params[:ct].present?
+          @selected_ct = params[:ct]
+          format.html { redirect_to club_infrastructures_dashboard_path(ct: @selected_ct, sport: @selected_sport), notice: "Campo criado com sucesso!"}
+        else
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Campo criado com sucesso!" }
+        end
         format.json { render :show, status: :created, location: @club_pitch }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -59,7 +65,13 @@ class ClubPitchesController < ApplicationController
   def update
     respond_to do |format|
       if @club_pitch.update(club_pitch_params)
-        format.html { redirect_to club_infrastructures_dashboard_path, notice: "Campo atualizado com sucesso!", status: :see_other }
+        @selected_sport = params[:sport]
+        if params[:ct].present?
+          @selected_ct = params[:ct]
+          format.html { redirect_to club_infrastructures_dashboard_path(ct: @selected_ct, sport: @selected_sport), notice: "Campo atualizado com sucesso!", status: :see_other }
+        else
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Campo atualizado com sucesso!", status: :see_other }
+        end
         format.json { render :show, status: :ok, location: @club_pitch }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -71,9 +83,14 @@ class ClubPitchesController < ApplicationController
   # DELETE /club_pitches/1 or /club_pitches/1.json
   def destroy
     @club_pitch.destroy!
-
     respond_to do |format|
-      format.html { redirect_to club_infrastructures_dashboard_path, notice: "Campo apagado com sucesso!", status: :see_other }
+      @selected_sport = params[:sport]
+      if params[:ct].present?
+        @selected_ct = params[:ct]
+        format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct), notice: "Campo apagado com sucesso!", status: :see_other }
+      else
+        format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Campo apagado com sucesso!", status: :see_other }
+      end
       format.json { head :no_content }
     end
   end
@@ -81,11 +98,11 @@ class ClubPitchesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_club_pitch
-      @club_pitch = ClubPitch.find(params.expect(:id))
+      @club_pitch = ClubPitch.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def club_pitch_params
-      params.expect(club_pitch: [ :club_profile_id, :club_training_center_id, :sport_id, :name, :pitch_picture ])
+      params.require(:club_pitch).permit(:club_profile_id, :club_training_center_id, :sport_id, :name, :pitch_picture)
     end
 end

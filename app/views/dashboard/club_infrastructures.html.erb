@@ -481,7 +481,7 @@
                                     <button data-modal-hide="modal-apagar-campo-<%= cp.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
                                         Cancelar
                                     </button>
-                                    <%= button_to club_pitch_path(cp), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                    <%= button_to club_pitch_path(cp, sport: @selected_sport, ct: @selected_ct), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
                                         Apagar Campo
                                     <% end %>
                                 </div>
@@ -506,7 +506,7 @@
                                     <!-- Modal body -->
                                     <div class="p-4 md:p-5">
                                         <ul class="space-y-4 mb-4">
-                                        <%= form_with(url: club_pitch_path(cp), method: :patch, scope: :club_pitch, local: true) do |form| %>
+                                        <%= form_with(url: club_pitch_path(cp, sport: @selected_sport, ct: @selected_ct), method: :patch, scope: :club_pitch, local: true) do |form| %>
                                             <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome</label>
                                             <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" , placeholder: "Campo SportX", required: true, autofocus: true, value: cp.name %>
                                             <br> <br>
@@ -690,8 +690,8 @@
 
         <div class="mt-8">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="text-xl font-bold text-yellow-300 flex items-center space-x-2">
-                    <i class="fa-solid fa-warehouse"></i>
+                <h3 class="text-xl font-bold text-rose-400 flex items-center space-x-2">
+                    <i class="fa-solid fa-door-closed"></i>
                     <span>Balneários ( <%= @club_locker_rooms_results&.any? ? @club_locker_rooms_results.total_count : "0" %> )</span>
                 </h3>
                 <div class="flex items-center gap-4">
@@ -739,7 +739,7 @@
                                 </div>
 
                                 <div class="p-4">
-                                    <h3 class="text-center font-medium text-yellow-500"> <%= clr.name %> </h3>
+                                    <h3 class="text-center font-medium text-rose-400"> <%= clr.name %> </h3>
                                 </div>
                             <% end %>
                         <% else %>
@@ -753,7 +753,7 @@
                                 </div>
 
                                 <div class="p-4">
-                                    <h3 class="text-center font-medium text-yellow-500"> <%= clr.name %> </h3>
+                                    <h3 class="text-center font-medium text-rose-400"> <%= clr.name %> </h3>
                                 </div>
                             <% end %>
                         <% end %>
@@ -769,7 +769,7 @@
                                 </div>
 
                                 <div class="p-4">
-                                    <h3 class="text-center font-medium text-yellow-500"> <%= clr.name %> </h3>
+                                    <h3 class="text-center font-medium text-rose-400"> <%= clr.name %> </h3>
                                 </div>
                             <% end %>
                         <% else %>
@@ -783,7 +783,7 @@
                                 </div>
 
                                 <div class="p-4">
-                                    <h3 class="text-center font-medium text-yellow-500"> <%= clr.name %> </h3>
+                                    <h3 class="text-center font-medium text-rose-400"> <%= clr.name %> </h3>
                                 </div>
                             <% end %>
                         <% end %>
@@ -805,14 +805,14 @@
                                     <button data-modal-hide="modal-apagar-balneario-<%= clr.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
                                         Cancelar
                                     </button>
-                                    <%= button_to club_locker_room_path(clr), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                    <%= button_to club_locker_room_path(clr, ct: @selected_ct, sport: @selected_sport), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
                                         Apagar balneario
                                     <% end %>
                                 </div>
                             </div>
                         </div>
 
-                        <!-------------------------------------------------------------------------------- MODAL EDITAR balneario ------------------------------------------------------------------------->
+                        <!-------------------------------------------------------------------------------- MODAL EDITAR BALNEARIO ------------------------------------------------------------------------->
                         
                         <div id="modal-editar-balneario-<%= clr.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                             <div class="relative p-4 w-full max-w-md max-h-full">
@@ -830,7 +830,7 @@
                                     <!-- Modal body -->
                                     <div class="p-4 md:p-5">
                                         <ul class="space-y-4 mb-4">
-                                        <%= form_with(url: club_locker_room_path(clr), method: :patch, scope: :club_locker_room, local: true) do |form| %>
+                                        <%= form_with(url: club_locker_room_path(clr, sport: @selected_sport, ct: @selected_ct), method: :patch, scope: :club_locker_room, local: true) do |form| %>
                                             <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome</label>
                                             <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" , placeholder: "Balneário SportX", required: true, autofocus: true, value: clr.name %>
                                             <br> <br>
@@ -882,7 +882,7 @@
                                 </div>
                             </div>
 
-                        <!-------------------------------------------------------------------------------- MODAL REMOVER balneario DO CT ------------------------------------------------------------------------->
+                        <!-------------------------------------------------------------------------------- MODAL REMOVER BALNEARIO DO CT ------------------------------------------------------------------------->
 
                         <div id="modal-remover-balneario-do-ct-<%= clr.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                             <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
@@ -908,29 +908,29 @@
                 </div>
             <% end %>
 
-            <% if @club_pitches_results.total_pages > 1 %>
+            <% if @club_locker_rooms_results.total_pages > 1 %>
                 <div class="mt-8 flex justify-end">
                     <div class="flex flex-col items-end gap-3">               
 
                     <div class="flex items-center gap-2">
-                        <% if @club_pitches_results.prev_page %>
-                            <% if @selected_ct and @selected_pitch %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, pitch: @selected_pitch, club_pitches_page: @club_pitches_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                        <% if @club_locker_rooms_results.prev_page %>
+                            <% if @selected_ct and @selected_locker_room %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, locker_room: @selected_locker_room, club_locker_rooms_page: @club_locker_rooms_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
                                     <i data-feather="chevron-left" class="w-4 h-4"></i>
                                     <span>Anterior</span>
                                 <% end %>
-                            <% elsif @selected_ct and !@selected_pitch %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, club_pitches_page: @club_pitches_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <% elsif @selected_ct and !@selected_locker_room %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, club_locker_rooms_page: @club_locker_rooms_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
                                     <i data-feather="chevron-left" class="w-4 h-4"></i>
                                     <span>Anterior</span>
                                 <% end %>
-                            <% elsif !@selected_ct and @selected_pitch %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, club_pitches_page: @club_pitches_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <% elsif !@selected_ct and @selected_locker_room %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, locker_room: @selected_locker_room, club_locker_rooms_page: @club_locker_rooms_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
                                     <i data-feather="chevron-left" class="w-4 h-4"></i>
                                     <span>Anterior</span>
                                 <% end %>
                             <% else %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, club_pitches_page: @club_pitches_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, club_locker_rooms_page: @club_locker_rooms_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
                                     <i data-feather="chevron-left" class="w-4 h-4"></i>
                                     <span>Anterior</span>
                                 <% end %>
@@ -943,43 +943,43 @@
                         <% end %>
 
                         <div class="flex items-center gap-1">
-                        <% (1..@club_pitches_results.total_pages).each do |page| %>
-                            <% if page == @club_pitches_results.current_page %>
-                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-orange-400 text-white font-bold border-2 border-orange-400 shadow-lg">
+                        <% (1..@club_locker_rooms_results.total_pages).each do |page| %>
+                            <% if page == @club_locker_rooms_results.current_page %>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-rose-400 text-white font-bold border-2 border-rose-400 shadow-lg">
                                 <%= page %>
                             </div>
                             <% else %>
-                                <% if @selected_ct and @selected_pitch %>
-                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, pitch: @selected_pitch, club_pitches_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
-                                <% elsif @selected_ct and !@selected_pitch %>
-                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, club_pitches_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
-                                <% elsif !@selected_ct and @selected_pitch %>
-                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, club_pitches_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                                <% if @selected_ct and @selected_locker_room %>
+                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, locker_room: @selected_locker_room , club_locker_rooms_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                                <% elsif @selected_ct and !@selected_locker_room %>
+                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, club_locker_rooms_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                                <% elsif !@selected_ct and @selected_locker_room %>
+                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, locker_room: @selected_locker_room, club_locker_rooms_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
                                 <% else %>
-                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, club_pitches_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                                    <%= link_to page, club_infrastructures_dashboard_path(sport: @selected_sport, club_locker_rooms_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
                                 <% end %>
                             <% end %>
                         <% end %>
                         </div>
 
-                        <% if @club_pitches_results.next_page %>
-                            <% if @selected_ct and @selected_pitch %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, pitch: @selected_pitch, club_pitches_page: @club_pitches_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                        <% if @club_locker_rooms_results.next_page %>
+                            <% if @selected_ct and @selected_locker_room %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, locker_room: @selected_locker_room, club_locker_rooms_page: @club_locker_rooms_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
                                     <span>Seguinte</span>
                                     <i data-feather="chevron-right" class="w-4 h-4"></i>
                                 <% end %>
-                            <% elsif @selected_ct and !@selected_pitch %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, club_pitches_page: @club_pitches_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <% elsif @selected_ct and !@selected_locker_room %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, club_locker_rooms_page: @club_locker_rooms_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
                                     <span>Seguinte</span>
                                     <i data-feather="chevron-right" class="w-4 h-4"></i>
                                 <% end %>
-                            <% elsif !@selected_ct and @selected_pitch %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, club_pitches_page: @club_pitches_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <% elsif !@selected_ct and @selected_locker_room %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, locker_room: @selected_locker_room, club_locker_rooms_page: @club_locker_rooms_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
                                     <span>Seguinte</span>
                                     <i data-feather="chevron-right" class="w-4 h-4"></i>
                                 <% end %>
                             <% else %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, club_pitches_page: @club_pitches_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, club_locker_rooms_page: @club_locker_rooms_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
                                     <span>Seguinte</span>
                                     <i data-feather="chevron-right" class="w-4 h-4"></i>
                                 <% end %>
