@@ -287,252 +287,276 @@
     </style>
 
     <script>
-        // Espera que o DOM(Document Object Model — representação em memória da página HTML/XML que o browser cria)
-        // esteja totalmente carregado antes de executar a função
+        // Este evento é acionado quando o DOM (a página HTML) está completamente carregado
         document.addEventListener('DOMContentLoaded', () => {
-        // Se a biblioteca feather estiver disponível, substitui os ícones <i> pelo SVG correspondente
-        if (typeof feather !== 'undefined') feather.replace();
+            // Se a biblioteca Feather.js está disponível, converte os ícones em SVG
+            // Os ícones com data-feather="nome" são substituídos por imagens SVG
+            if (typeof feather !== 'undefined') feather.replace();
 
-        // Obtém o botão que activa a pesquisa pelo id
-        const searchButton = document.getElementById('search-button');
-        // Obtém o campo de input da pesquisa pelo id
-        const searchBar = document.getElementById('search-bar');
-        // Obtém o container do nav para cálculos de layout
-        const navContainer = document.querySelector('nav .container');
-        // Se não existir a searchBar ou o navContainer, sai da função (não prossegue)
-        if (!searchBar || !navContainer) return;
+            // Obtém o botão de pesquisa pelo seu id
+            const searchButton = document.getElementById('search-button');
+            // Obtém o input da barra de pesquisa
+            const searchBar = document.getElementById('search-bar');
+            // Obtém o container do navbar
+            const navContainer = document.querySelector('nav .container');
+            // Se algum destes elementos não existir, sai da função (return)
+            // Isto previne erros caso a página não tenha os elementos necessários
+            if (!searchBar || !navContainer) return;
 
-        // Seletor do grupo de elementos do lado direito do nav (usado para calcular espaço)
-        const rightSideSelector = '.right-overlap';
-         // Função que devolve o elemento do lado direito dentro do nav
-         function getRightSideEl() { return navContainer.querySelector(rightSideSelector); }
+            // Função que retorna o elemento ".right-overlap" (o lado direito da navbar)
+            // As setas => indicam uma função arrow
+            const getRightSideEl = () => navContainer.querySelector('.right-overlap');
+            // Função que retorna o elemento ".nav-links-overlap" (os botões de navegação do meio)
+            const getNavLinksEl = () => document.querySelector('.nav-links-overlap');
+            // Função que recebe uma string como "24px" e retorna apenas o número (24)
+            // Replace substitui "px" por nada, e parseFloat converte a string em número
+            const parsePx = v => v ? parseFloat(v.replace('px','')) : 0;
 
-        // Cria um elemento canvas(área bitmap onde se pode desenhar dinamicamente com JavaScript)
-        // para medir a largura do texto
-        const canvas = document.createElement('canvas');
-        // Obtém o contexto 2D do canvas para medir texto
-        const ctx = canvas.getContext('2d');
-
-        // Função que mede a largura em pixels de um texto dado usando o canvas
-        function measureTextWidth(text) {
-            // Obtém os estilos computados do input para usar a mesma fonte na medição
-            const style = window.getComputedStyle(searchBar);
-            // Define a fonte do contexto (usa style.font se existir, senão composição de tamanho e família)
-            ctx.font = style.font || `${style.fontSize} ${style.fontFamily}`;
-            // Mede a largura do texto (ou string vazia) e arredonda para cima
-            return Math.ceil(ctx.measureText(text || '').width);
-        }
-
-        // Função utilitária que converte "NNpx" para número (float)
-        function parsePx(v) { return v ? parseFloat(v.replace('px','')) : 0; }
-
-        // Função que ajusta dinamicamente a largura da barra de pesquisa
-        function adjustSearchWidth() {
-            // Se a barra de pesquisa não tiver a classe 'active', remove a largura inline e sai
-            if (!searchBar.classList.contains('active')) {
-                searchBar.style.width = '';
-                searchBar.style.maxWidth = '';
-                searchBar.style.right = '';
-                return;
-            }
-
-            // Largura mínima quando activa em px (mais pequena em mobile)
-            const MIN_ACTIVE = window.innerWidth <= 640 ? 200 : 300;
-
-            // Rect do input para cálculos de posição
-            const inputRect = searchBar.getBoundingClientRect();
-            // Elemento do lado direito (botões) — pode ser null
-            const rightEl = getRightSideEl();
-
-            // Texto actual (valor do input ou placeholder)
-            const text = searchBar.value || searchBar.placeholder || '';
-            // Largura do texto medida via canvas
-            const textWidth = measureTextWidth(text);
-
-            // Inclui paddings horizontais e um buffer extra para o caret/espacamento
-            const cs = window.getComputedStyle(searchBar);
-            const paddingLR = parsePx(cs.paddingLeft) + parsePx(cs.paddingRight);
-            const extraBuffer = 24; // espaço extra para caret e folga
-            const contentWidth = textWidth + paddingLR + extraBuffer;
-
-            // Determina margem direita de segurança
-            const MARGIN_RIGHT = 12; // px (mais apertado — JS controla o resto)
-
-            // Calcula espaço disponível até à borda direita do nav/viewport (prioritário)
-            const viewportRight = window.innerWidth;
-            const navRect = navContainer ? navContainer.getBoundingClientRect() : { right: viewportRight };
-            // usa o mínimo entre o viewport e a borda do nav para evitar overflow
-            let availableViewport = Math.max(0, Math.min(viewportRight, navRect.right) - inputRect.left - MARGIN_RIGHT);
-
-            // Se existir o elemento do lado direito e ele estiver visível dentro do nav, use-o como limite adicional
-            if (rightEl && rightEl.offsetParent !== null) {
-                try {
-                    const rightRect = rightEl.getBoundingClientRect();
-                    // espaço até ao início do lado direito (mantém pequena folga)
-                    const calc = Math.max(40, rightRect.left - inputRect.left - 8);
-                    availableViewport = Math.min(availableViewport, calc);
-                } catch (e) {
-                    // fallback silencioso
-                }
-            }
-
-            // Proteção CSS inline: garante que o input nunca excede o limite calculado
-            searchBar.style.maxWidth = availableViewport + 'px';
-            // Em mobile (relativo) não forçamos `right` inline — deixa o fluxo natural
-            if (window.innerWidth > 640) {
-                searchBar.style.right = MARGIN_RIGHT + 'px';
-            } else {
-                searchBar.style.right = '';
-            }
-
-            // Ajusta o mínimo para caber caso a viewport seja muito estreita
-            const effectiveMin = Math.min(MIN_ACTIVE, Math.max(0, availableViewport));
-
-            // Calcula a largura desejada respeitando mínimo, conteúdo e o limite do viewport
-            const desired = Math.min(Math.max(effectiveMin, contentWidth), availableViewport);
-            // Aplica a largura calculada ao input
-            searchBar.style.width = desired + 'px';
-        }
-
-        // Se o botão de pesquisa existir, adiciona o listener de clique
-        if (searchButton) {
-            let isToggglingSearch = false; // Flag para evitar conflito entre eventos
-
-            searchButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                isToggglingSearch = true;
-                const nowActive = searchBar.classList.toggle('active');
-                const rightEl = getRightSideEl();
-                const navLinksEl = document.querySelector('.nav-links-overlap');
-
-                // Em mobile: esconde o lado direito (notificações, apps, user menu)
-                if (window.innerWidth <= 640 && rightEl) {
-                    if (nowActive) {
-                        rightEl.classList.add('hidden-by-search');
-                    } else {
-                        rightEl.classList.remove('hidden-by-search');
-                    }
-                 }
-
-                 // Em desktop: esconde os links de navegação
-                 if (window.innerWidth > 640 && navLinksEl) {
-                    if (nowActive) {
-                        navLinksEl.classList.add('hidden-by-search');
-                    } else {
-                        navLinksEl.classList.remove('hidden-by-search');
-                    }
-                 }
-
-                  // Ajusta largura dinamicamente (mobile e desktop) e foca
-                  setTimeout(() => { searchBar.focus(); adjustSearchWidth(); }, 0);
-                  if (!nowActive) {
-                      searchBar.style.width = '';
-                     // Reaparecer elementos após 400ms
-                     if (rightEl) rightEl.classList.remove('hidden-by-search');
-                      if (navLinksEl) {
-                          setTimeout(() => {
-                              navLinksEl.classList.remove('hidden-by-search');
-                          }, 400);
-                      }
-                   }
-               });
-
-              // Fecha ao clicar fora
-              document.addEventListener('click', (ev) => {
-                  if (isToggglingSearch) return; // Ignora o clique se estamos a fazer toggle
-                  if (!searchBar.classList.contains('active')) return;
-                  if (ev.target === searchBar || ev.target === searchButton || searchBar.contains(ev.target)) return;
-                  searchBar.classList.remove('active');
-                  const rightEl = getRightSideEl();
-                  const navLinksEl = document.querySelector('.nav-links-overlap');
-                 // Remove hidden-by-search de ambos em mobile e desktop
-                 if (rightEl) rightEl.classList.remove('hidden-by-search');
-                  if (navLinksEl) {
-                      setTimeout(() => {
-                          navLinksEl.classList.remove('hidden-by-search');
-                      }, 400);
-                  }
-                  searchBar.style.width = '';
-              });
-         }
-
-        // IIFE que gere eventos de input e resize sem poluir o escopo global
-        (function() {
-            // Guarda o comprimento anterior do valor do input para detecção de mudanças
-            let prevLen = searchBar.value ? searchBar.value.length : 0;
-
-            // Ao alterar o conteúdo do input
-            searchBar.addEventListener('input', () => {
-            // Obtém o novo comprimento do texto
-            const len = searchBar.value.length;
-            // Se o comprimento não mudou, não faz nada
-            if (len === prevLen) return;
-            // Recalcula a largura com base no texto actual (assim backspace também reduz)
-            adjustSearchWidth();
-            // Actualiza o comprimento anterior
-            prevLen = len;
-            });
-
-            // Ao clicar no botão de pesquisa, sincroniza prevLen após o reflow
-            if (searchButton) {
-            searchButton.addEventListener('click', () => {
-                setTimeout(() => {
-                prevLen = searchBar.classList.contains('active') ? (searchBar.value ? searchBar.value.length : 0) : 0;
-                }, 0);
-            });
-            }
-
-            // Ao redimensionar a janela, debounce e recalcula a largura
-            window.addEventListener('resize', () => {
-            clearTimeout(window.__searchResizeTimer);
-            window.__searchResizeTimer = setTimeout(adjustSearchWidth, 120);
-            });
-        })();
-
-        // Chamada inicial para ajustar a largura quando a página carrega
-        adjustSearchWidth();
-        
-        // Lógica para o menu de utilizador (clicar para abrir, sair para fechar)
-        const userMenuContainer = document.getElementById('user-menu-container');
-        const userMenuButton = document.getElementById('user-menu-button');
-        const userDropdown = document.getElementById('user-dropdown');
-
-        let isMenuPinned = false; // Variável para controlar se o menu está "fixo"
-
-        if (userMenuContainer && userMenuButton && userDropdown) {
-            // 1. Mostrar menu ao passar o rato por cima
-            userMenuContainer.addEventListener('mouseenter', () => {
-                userDropdown.classList.remove('hidden');
-            });
-
-            // 2. Esconder o menu ao sair com o rato, APENAS se não estiver fixo
-            userMenuContainer.addEventListener('mouseleave', () => {
-                if (!isMenuPinned) {
-                    userDropdown.classList.add('hidden');
-                }
-            });
-
-            // 3. Fixar/libertar o menu ao clicar no botão
-            userMenuButton.addEventListener('click', (event) => {
-                event.stopPropagation(); // Impede que o clique feche o menu imediatamente
-                isMenuPinned = !isMenuPinned; // Alterna o estado "fixo"
-                if (isMenuPinned) {
-                    userDropdown.classList.remove('hidden'); // Garante que está visível ao fixar
-                }
-            });
-
-            // 4. Fechar o menu se estiver fixo e o utilizador clicar fora ou fizer scroll
-            const closePinnedMenu = () => {
-                if (isMenuPinned) {
-                    isMenuPinned = false;
-                    userDropdown.classList.add('hidden');
-                }
+            // Cria um elemento canvas que será usado para medir texto
+            // Canvas é uma área onde podemos desenhar e fazer cálculos de pixels
+            const canvas = document.createElement('canvas');
+            // Obtém o contexto 2D do canvas (a forma de desenhar)
+            const ctx = canvas.getContext('2d');
+            // Função que mede a largura em pixels de um texto
+            const measureTextWidth = text => {
+                // Obtém os estilos CSS da barra de pesquisa (cor, tamanho da fonte, etc)
+                const style = window.getComputedStyle(searchBar);
+                // Define a fonte no canvas com o tamanho e tipo de letra corretos
+                // Se a propriedade 'font' não existir, cria manualmente a string
+                ctx.font = style.font || `${style.fontSize} ${style.fontFamily}`;
+                // Mede a largura do texto e arredonda para cima (Math.ceil)
+                // O resultado é em pixels
+                return Math.ceil(ctx.measureText(text || '').width);
             };
 
-            document.addEventListener('click', closePinnedMenu);
-            window.addEventListener('scroll', closePinnedMenu);
-        }
+            // Função que ajusta a largura da barra de pesquisa dinamicamente
+            // Esta função é chamada sempre que precisa calcular o tamanho
+            const adjustSearchWidth = () => {
+                // Se a barra de pesquisa não tem a classe 'active' (não está aberta)
+                if (!searchBar.classList.contains('active')) {
+                    // Remove os estilos de largura, largura máxima e posição
+                    // Isto retorna a barra ao estado inicial
+                    searchBar.style.width = '';
+                    searchBar.style.maxWidth = '';
+                    searchBar.style.right = '';
+                    // Sai da função (não há mais nada a fazer)
+                    return;
+                }
 
+                // Define o tamanho mínimo da barra quando está aberta
+                // Em telemóveis (≤640px) o mínimo é 200px, em desktop é 300px
+                const MIN_ACTIVE = window.innerWidth <= 640 ? 200 : 300;
+                // Obtém a posição e tamanho do elemento searchBar na tela
+                const inputRect = searchBar.getBoundingClientRect();
+                // Obtém o elemento do lado direito (os botões de notificações, etc)
+                const rightEl = getRightSideEl();
+                // Obtém o texto que está no input ou usa o placeholder se estiver vazio
+                const text = searchBar.value || searchBar.placeholder || '';
+                // Mede a largura do texto em pixels
+                const textWidth = measureTextWidth(text);
+                // Obtém os estilos CSS da barra de pesquisa
+                const cs = window.getComputedStyle(searchBar);
+                // Calcula o espaço ocupado pela margem esquerda e direita
+                const paddingLR = parsePx(cs.paddingLeft) + parsePx(cs.paddingRight);
+                // Calcula a largura total necessária: texto + margens + espaço extra (24px)
+                const contentWidth = textWidth + paddingLR + 24;
+                // Define um espaço mínimo entre o input e o lado direito (em pixels)
+                const MARGIN_RIGHT = 12;
+
+                // Obtém a largura total da viewport
+                const viewportRight = window.innerWidth;
+                // Obtém a posição do container da navegação
+                const navRect = navContainer.getBoundingClientRect();
+                // Calcula o espaço disponível para a barra de pesquisa
+                // É o espaço desde o input até ao fim da navbar, menos uma margem
+                let availableViewport = Math.max(0, Math.min(viewportRight, navRect.right) - inputRect.left - MARGIN_RIGHT);
+
+                // Se o elemento do lado direito existe e é visível
+                if (rightEl && rightEl.offsetParent !== null) {
+                    // Tenta calcular quanto espaço há até aos botões do lado direito
+                    try {
+                        // Obtém a posição do lado direito
+                        const rightRect = rightEl.getBoundingClientRect();
+                        // Recalcula o espaço disponível (não pode ir além dos botões)
+                        availableViewport = Math.min(availableViewport, Math.max(40, rightRect.left - inputRect.left - 8));
+                    } catch (e) {
+                        // Se houver um erro, ignora (o availableViewport mantém o valor anterior)
+                    }
+                }
+
+                // Define a largura máxima que a barra de pesquisa pode ter
+                searchBar.style.maxWidth = availableViewport + 'px';
+                // Se estamos em desktop, define a distância do lado direito
+                searchBar.style.right = window.innerWidth > 640 ? MARGIN_RIGHT + 'px' : '';
+                // Calcula o tamanho mínimo efetivo (não pode ser maior que o espaço disponível)
+                const effectiveMin = Math.min(MIN_ACTIVE, Math.max(0, availableViewport));
+                // Calcula a largura desejada (a maior entre o mínimo e o tamanho do conteúdo)
+                const desired = Math.min(Math.max(effectiveMin, contentWidth), availableViewport);
+                // Define a largura final da barra de pesquisa
+                searchBar.style.width = desired + 'px';
+            };
+
+            // Função que mostra ou esconde elementos quando a pesquisa está ativa
+            const toggleSearchElements = (show) => {
+                // Obtém o elemento do lado direito
+                const rightEl = getRightSideEl();
+                // Obtém os links de navegação do meio
+                const navLinksEl = getNavLinksEl();
+                // Se estamos em telemóvel (≤640px) e existe o elemento do lado direito
+                if (window.innerWidth <= 640 && rightEl) 
+                    // Adiciona ou remove a classe 'hidden-by-search' baseado em 'show'
+                    rightEl.classList.toggle('hidden-by-search', show);
+                // Se estamos em desktop (>640px) e existem os links de navegação
+                if (window.innerWidth > 640 && navLinksEl) 
+                    // Adiciona ou remove a classe 'hidden-by-search' dos links
+                    navLinksEl.classList.toggle('hidden-by-search', show);
+            };
+
+            // Handler (tratador) do clique no botão de pesquisa
+            if (searchButton) {
+                // Variável que controla se estamos a fazer a animação de abertura/fecho
+                // Isto evita que os cliques sejam registados enquanto a animação está a correr
+                let isTogglingSearch = false;
+                // Quando o utilizador clica no botão de pesquisa
+                searchButton.addEventListener('click', (e) => {
+                    // Para a propagação do evento (impede que outros listeners sejam chamados)
+                    e.stopPropagation();
+                    // Marca que estamos a fazer toggle (abertura/fecho)
+                    isTogglingSearch = true;
+                    // Alterna a classe 'active' na barra de pesquisa (adiciona se não tiver, remove se tiver)
+                    const nowActive = searchBar.classList.toggle('active');
+                    // Se agora está ativa (foi aberta)
+                    if (nowActive) toggleSearchElements(true); // Esconde apenas ao abrir
+                    // Usa setTimeout com 0ms para executar depois que a animação CSS começou
+                    setTimeout(() => { 
+                        // Coloca o cursor dentro da barra de pesquisa (focus)
+                        searchBar.focus(); 
+                        // Ajusta a largura da barra ao novo conteúdo
+                        adjustSearchWidth(); 
+                        // Marca que já terminou a animação (permite novos cliques)
+                        isTogglingSearch = false;
+                    }, 0);
+                    // Se agora está inativa (foi fechada)
+                    if (!nowActive) {
+                        // Limpa o texto que estava no input
+                        searchBar.value = '';
+                        // Remove a largura em pixels (volta ao CSS)
+                        searchBar.style.width = '';
+                        // Obtém o elemento do lado direito
+                        const rightEl = getRightSideEl();
+                        // Obtém os links de navegação
+                        const navLinksEl = getNavLinksEl();
+                        // Se o elemento do lado direito existe, remove a classe que o escondia
+                        if (rightEl) rightEl.classList.remove('hidden-by-search');
+                        // Se os links de navegação existem, remove a classe que os escondia após 200ms
+                        if (navLinksEl) setTimeout(() => navLinksEl.classList.remove('hidden-by-search'), 200);
+                    }
+                });
+
+                // Handler para quando o utilizador clica fora da barra de pesquisa
+                document.addEventListener('click', (ev) => {
+                    // Se estamos a fazer toggle, ignora este clique
+                    if (isTogglingSearch) return;
+                    // Se a barra de pesquisa não está ativa, ignora (não há nada a fazer)
+                    if (!searchBar.classList.contains('active')) return;
+                    // Se clicou no input, no botão ou dentro do input, ignora (não quer fechar)
+                    if (ev.target === searchBar || ev.target === searchButton || searchBar.contains(ev.target)) return;
+                    // Se chegou aqui, o utilizador clicou fora, então fecha a barra
+                    // Remove a classe 'active' da barra de pesquisa
+                    searchBar.classList.remove('active');
+                    // Limpa o texto que estava no input
+                    searchBar.value = '';
+                    // Reajusta a largura da barra (reseta os estilos)
+                    adjustSearchWidth();
+                    // Obtém o elemento do lado direito
+                    const rightEl = getRightSideEl();
+                    // Obtém os links de navegação
+                    const navLinksEl = getNavLinksEl();
+                    // Remove a classe que escondia o elemento do lado direito
+                    if (rightEl) rightEl.classList.remove('hidden-by-search');
+                    // Remove a classe que escondia os links após 200ms (com animação de fade)
+                    if (navLinksEl) setTimeout(() => navLinksEl.classList.remove('hidden-by-search'), 200);
+                });
+            }
+
+            // Handler para quando o utilizador escreve no input de pesquisa
+            // Guarda o comprimento anterior do texto
+            let prevLen = searchBar.value ? searchBar.value.length : 0;
+            // Quando o utilizador escreve algo no input
+            searchBar.addEventListener('input', () => {
+                // Obtém o novo comprimento do texto
+                const len = searchBar.value.length;
+                // Se o comprimento mudou (cresceu ou diminuiu)
+                if (len !== prevLen) { 
+                    // Reajusta a largura da barra de pesquisa
+                    adjustSearchWidth(); 
+                    // Atualiza o comprimento anterior
+                    prevLen = len; 
+                }
+            });
+
+            // Handler para quando a janela do navegador é redimensionada
+            // Isto garante que o layout fica correto em diferentes tamanhos
+            window.addEventListener('resize', () => {
+                // Limpa o timer anterior (se existisse um)
+                clearTimeout(window.__searchResizeTimer);
+                // Cria um novo timer que espera 120ms antes de reajustar
+                // Isto evita chamar adjustSearchWidth muitas vezes durante o redimensionamento
+                window.__searchResizeTimer = setTimeout(adjustSearchWidth, 120);
+            });
+
+            // Faz um ajuste inicial da largura da barra (quando a página carrega)
+            adjustSearchWidth();
+
+            // Handler para o menu do utilizador (o botão com o ícone de utilizador)
+            // Obtém o container do menu do utilizador
+            const userMenuContainer = document.getElementById('user-menu-container');
+            // Obtém o botão do menu do utilizador
+            const userMenuButton = document.getElementById('user-menu-button');
+            // Obtém o dropdown (menu) do utilizador
+            const userDropdown = document.getElementById('user-dropdown');
+            // Variável que controla se o menu está "fixado" (aberto permanentemente)
+            let isMenuPinned = false;
+
+            // Se todos os elementos do menu existem
+            if (userMenuContainer && userMenuButton && userDropdown) {
+                // Quando o rato entra no container do menu
+                userMenuContainer.addEventListener('mouseenter', () => 
+                    // Remove a classe 'hidden' (mostra o menu)
+                    userDropdown.classList.remove('hidden'));
+                // Quando o rato sai do container do menu
+                userMenuContainer.addEventListener('mouseleave', () => {
+                    // Se o menu não está fixado
+                    if (!isMenuPinned) 
+                        // Adiciona a classe 'hidden' (esconde o menu)
+                        userDropdown.classList.add('hidden');
+                });
+                // Quando o utilizador clica no botão do menu
+                userMenuButton.addEventListener('click', (event) => {
+                    // Para a propagação do evento
+                    event.stopPropagation();
+                    // Alterna o estado do menu (fixado/não-fixado)
+                    isMenuPinned = !isMenuPinned;
+                    // Se agora está fixado
+                    if (isMenuPinned) 
+                        // Mostra o menu
+                        userDropdown.classList.remove('hidden');
+                });
+                // Função que fecha o menu se estiver fixado
+                const closePinnedMenu = () => {
+                    // Se o menu está fixado
+                    if (isMenuPinned) {
+                        // Marca que deixou de estar fixado
+                        isMenuPinned = false;
+                        // Esconde o menu
+                        userDropdown.classList.add('hidden');
+                    }
+                };
+                // Quando o utilizador clica em qualquer lugar da página
+                document.addEventListener('click', closePinnedMenu);
+                // Quando o utilizador faz scroll na página
+                window.addEventListener('scroll', closePinnedMenu);
+            }
         });
     </script>
 
