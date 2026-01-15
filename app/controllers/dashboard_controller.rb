@@ -35,8 +35,8 @@ class DashboardController < ApplicationController
       @start_date = params[:start_date] ? Date.parse(params[:start_date]) : Date.today.beginning_of_week
       @end_date = @start_date.end_of_week
       
-      @weekly_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: false, club_team_id: @selected_team ).where("start_time >= ? AND start_time <= ?", @start_date, @end_date.end_of_day).order(:start_time)
-      @recurring_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: true, club_team_id: @selected_team)
+      @weekly_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: false ).where("start_time >= ? AND start_time <= ?", @start_date, @end_date.end_of_day).order(:start_time)
+      @recurring_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: true)
       
 
       @all_trainings = @weekly_trainings.to_a

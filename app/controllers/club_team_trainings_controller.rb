@@ -23,7 +23,7 @@ class ClubTeamTrainingsController < ApplicationController
   def create
     @club_team_training = ClubTeamTraining.new(club_team_training_params)
 
-    if has_conflict?(@training)
+    if has_conflict?(@club_team_training)
       @selected_sport = params[:sport]
       @selected_pitch = params[:pitch]
       if params[:ct].present?
@@ -35,8 +35,8 @@ class ClubTeamTrainingsController < ApplicationController
       return
     end
 
-    if @training.recurring
-      @training.weekday = @training.start_time.wday
+    if @club_team_training.recurring
+      @club_team_training.weekday = @club_team_training.start_time.wday
     end
 
     respond_to do |format|
@@ -86,5 +86,48 @@ class ClubTeamTrainingsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def club_team_training_params
       params.require(:club_team_training).permit(:club_pitch_id, :club_locker_room_id, :club_team_id,:start_time, :end_time, :recurring)
+    end
+
+    def has_conflict?(training)
+      pitch_conflicts = ClubTeamTraining.where(club_pitch_id: training.club_pitch_id)
+      locker_conflicts = ClubTeamTraining.where(club_locker_room_id: training.club_locker_room_id)
+      
+      if training.recurring
+        [pitch_conflicts, locker_conflicts].each do |conflicts|
+          conflicts.each do |existing|
+            if existing.recurring && existing.weekday == training.start_time.wday
+              if times_overlap?(training, existing)
+                return true
+              end
+            end
+          end
+        end
+      else
+
+        [pitch_conflicts, locker_conflicts].each do |conflicts|
+          conflicts.each do |existing|
+            if existing.recurring
+              if existing.weekday == training.start_time.wday && times_overlap?(training, existing)
+                return true
+              end
+            else
+              if existing.start_time.to_date == training.start_time.to_date && times_overlap?(training, existing)
+                return true
+              end
+            end
+          end
+        end
+      end
+      
+      false
+    end
+    
+    def times_overlap?(training1, training2)
+      t1_start = training1.start_time.hour * 60 + training1.start_time.min
+      t1_end = training1.end_time.hour * 60 + training1.end_time.min
+      t2_start = training2.start_time.hour * 60 + training2.start_time.min
+      t2_end = training2.end_time.hour * 60 + training2.end_time.min
+      
+      t1_start < t2_end && t2_start < t1_end
     end
 end

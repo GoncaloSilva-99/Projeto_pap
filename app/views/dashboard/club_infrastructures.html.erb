@@ -584,6 +584,137 @@
                 </div>
             <% end %>
 
+            <!-------------------------------------------------------------------------------- CALENDÁRIO DE TREINOS ------------------------------------------------------------------------->
+
+                <% if @selected_pitch %>
+                <div class="mt-12 bg-gray-800 rounded-xl p-6">
+                    <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-green-400"> Calendário de Treinos - <%= ClubPitch.find(@selected_pitch).name %> </h2>
+                    <button onclick="document.getElementById('calendar-table').classList.toggle('hidden')" class="mb-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+                        ▼ Mostrar/Ocultar Calendário
+                    </button>
+                    
+                    <div class="flex gap-2">
+                        <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, start_date: (@start_date - 1.week).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
+                            ← Semana Anterior
+                        <% end %>
+                        
+                        <span class="px-4 py-2 bg-blue-900 text-white rounded-lg">
+                            <%= @start_date.strftime("%d/%m") %> - <%= @end_date.strftime("%d/%m/%Y") %>
+                        </span>
+                        
+                        <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, start_date: (@start_date + 1.week).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
+                            Próxima Semana →
+                        <% end %>
+                    </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                    <table class="w-full border-collapse" id="calendar-table">
+                        <thead>
+                        <tr class="bg-gray-700">
+                            <th class="border border-gray-600 px-2 py-3 text-gray-300 w-20">Hora</th>
+                            <% ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'].each_with_index do |day, index| %>
+                            <th class="border border-gray-600 px-2 py-3 text-gray-300">
+                                <%= day %><br>
+                                <span class="text-sm text-gray-400"><%= (@start_date + index.days).strftime("%d/%m") %></span>
+                            </th>
+                            <% end %>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% @time_slots.each do |hour, minute| %>
+                            <tr>
+                            <td class="border border-gray-600 px-2 py-2 text-center text-sm text-gray-400 bg-gray-750">
+                                <%= sprintf("%02d:%02d", hour, minute) %>
+                            </td>
+                            
+                            <% (0..6).each do |day_offset| %>
+                                <% current_date = @start_date + day_offset.days %>
+                                <% current_time = current_date.to_time.change(hour: hour, min: minute) %>
+                                
+                                <% training_at_slot = @all_trainings.find do |t|
+                                t.start_time <= current_time && t.end_time > current_time
+                                end %>
+                                
+                                <td class="border border-gray-600 px-1 py-1 <%= training_at_slot ? 'bg-green-900' : 'bg-gray-800 hover:bg-gray-700' %>">
+                                <% if training_at_slot %>
+                                    <div class="text-xs text-white font-semibold p-1">
+                                    <%= training_at_slot.club_team.name %>
+                                    <br>
+                                    <span class="text-gray-300">
+                                        <%= training_at_slot.start_time.strftime("%H:%M") %> - <%= training_at_slot.end_time.strftime("%H:%M") %>
+                                    </span>
+                                    <% if training_at_slot.recurring %>
+                                        <br><span class="text-yellow-400 text-xs">♻ Recorrente</span>
+                                    <% end %>
+                                    </div>
+                                <% else %>
+                                    <%= link_to "+", "#", 
+                                        onclick: "document.getElementById('modal-add-training-#{current_date.to_s}-#{hour}').classList.remove('hidden'); return false;",
+                                        class: "text-gray-500 hover:text-green-400 text-xl" %>
+                                <% end %>
+                                </td>
+                                
+                                <div id="modal-add-training-<%= current_date.to_s %>-<%= hour %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+                                    <h3 class="text-xl font-bold text-white mb-4">Criar Treino</h3>
+                                    <p class="text-gray-400 mb-4">
+                                        <%= current_date.strftime("%A, %d/%m/%Y") %> às <%= sprintf("%02d:00", hour) %>
+                                    </p>
+                                    
+                                    <%= form_with(url: club_team_trainings_path, method: :post, local: true, scope: :club_team_training) do |f| %>
+                                        <%= f.hidden_field :club_pitch_id, value: @selected_pitch %>
+                                        <%= f.hidden_field :start_time, value: current_time %>
+                                        
+                                        <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Equipa</label>
+                                        <%= f.select :club_team_id, @available_teams.map { |t| [t.name, t.id] }, {}, class: "w-full bg-gray-700 text-white rounded px-3 py-2" %>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Balneário</label>
+                                        <%= f.select :club_locker_room_id, @available_locker_rooms.map { |lr| [lr.name, lr.id] }, {}, class: "w-full bg-gray-700 text-white rounded px-3 py-2" %>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Duração (horas)</label>
+                                        <%= f.select :end_time, 
+                                            [[" 30 min", current_time + 30.minutes], 
+                                            ["1h", current_time + 1.hour], 
+                                            ["1h30", current_time + 90.minutes],
+                                            ["2h", current_time + 2.hours]], 
+                                            {}, 
+                                            class: "w-full bg-gray-700 text-white rounded px-3 py-2" %>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                        <label class="flex items-center text-gray-400">
+                                            <%= f.check_box :recurring, class: "mr-2" %>
+                                            Treino recorrente (todas as semanas)
+                                        </label>
+                                        </div>
+                                        
+                                        <div class="flex gap-3">
+                                        <button type="button" 
+                                                onclick="document.getElementById('modal-add-training-<%= current_date.to_s %>-<%= hour %>').classList.add('hidden')"
+                                                class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg">
+                                            Cancelar
+                                        </button>
+                                        <%= f.submit "Criar Treino", class: "flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg" %>
+                                        </div>
+                                    <% end %>
+                                    </div>
+                                </div>
+                            <% end %>
+                            </tr>
+                        <% end %>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+                <% end %>
+
             <% if @club_pitches_results.total_pages > 1 %>
                 <div class="mt-8 flex justify-end">
                     <div class="flex flex-col items-end gap-3">               
