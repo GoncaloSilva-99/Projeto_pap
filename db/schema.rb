@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_13_154947) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_16_084416) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -82,6 +82,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_13_154947) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "pitch_type"
     t.index ["club_profile_id"], name: "index_club_pitches_on_club_profile_id"
     t.index ["club_training_center_id"], name: "index_club_pitches_on_club_training_center_id"
     t.index ["sport_id"], name: "index_club_pitches_on_sport_id"
@@ -119,6 +120,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_13_154947) do
     t.bigint "club_team_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "pitch_zone"
     t.index ["club_locker_room_id"], name: "index_club_team_trainings_on_club_locker_room_id"
     t.index ["club_pitch_id"], name: "index_club_team_trainings_on_club_pitch_id"
     t.index ["club_team_id"], name: "index_club_team_trainings_on_club_team_id"

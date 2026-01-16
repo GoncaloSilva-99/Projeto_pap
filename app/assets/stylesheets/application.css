@@ -288,6 +288,10 @@ select:required:hover {
   cursor: not-allowed;
 }
 
+.clickable{
+  cursor: pointer;
+}
+
 
 
 

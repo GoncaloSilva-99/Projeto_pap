@@ -416,6 +416,9 @@
 
                                 <div class="p-4">
                                     <h3 class="text-center font-medium text-yellow-400"> <%= cp.name %> </h3>
+                                    <% if @selected_sport = 'football' %>
+                                        <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
+                                    <% end %>
                                 </div>
                             <% end %>
                         <% else %>
@@ -430,6 +433,9 @@
 
                                 <div class="p-4">
                                     <h3 class="text-center font-medium text-yellow-400"> <%= cp.name %> </h3>
+                                    <% if @selected_sport = 'football' %>
+                                        <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
+                                    <% end %>
                                 </div>
                             <% end %>
                         <% end %>
@@ -446,6 +452,9 @@
 
                                 <div class="p-4">
                                     <h3 class="text-center font-medium text-yellow-500"> <%= cp.name %> </h3>
+                                    <% if @selected_sport = 'football' %>
+                                        <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
+                                    <% end %>
                                 </div>
                             <% end %>
                         <% else %>
@@ -460,6 +469,9 @@
 
                                 <div class="p-4">
                                     <h3 class="text-center font-medium text-yellow-500"> <%= cp.name %> </h3>
+                                    <% if @selected_sport = 'football' %>
+                                        <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
+                                    <% end %>
                                 </div>
                             <% end %>
                         <% end %>
@@ -589,24 +601,27 @@
                 <% if @selected_pitch %>
                 <div class="mt-12 bg-gray-800 rounded-xl p-6">
                     <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-green-400"> Calendário de Treinos - <%= ClubPitch.find(@selected_pitch).name %> </h2>
-                    <button onclick="document.getElementById('calendar-table').classList.toggle('hidden')" class="mb-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
-                        ▼ Mostrar/Ocultar Calendário
-                    </button>
-                    
-                    <div class="flex gap-2">
-                        <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, start_date: (@start_date - 1.week).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
-                            ← Semana Anterior
-                        <% end %>
+                        <h2 class="text-2xl font-bold text-yellow-400"> Calendário - <%= ClubPitch.find(@selected_pitch).name %> </h2>
                         
-                        <span class="px-4 py-2 bg-blue-900 text-white rounded-lg">
-                            <%= @start_date.strftime("%d/%m") %> - <%= @end_date.strftime("%d/%m/%Y") %>
-                        </span>
-                        
-                        <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, start_date: (@start_date + 1.week).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
-                            Próxima Semana →
-                        <% end %>
-                    </div>
+                        <div class="flex items-center gap-2">
+                            <div id="calendar-navigation" class="flex gap-2">
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, start_date: (@start_date - 1.week).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
+                                    ← Semana Anterior
+                                <% end %>
+                                
+                                <span class="px-4 py-2 bg-blue-900 text-white rounded-lg">
+                                    <%= @start_date.strftime("%d/%m") %> - <%= @end_date.strftime("%d/%m/%Y") %>
+                                </span>
+                                
+                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, start_date: (@start_date + 1.week).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
+                                    Próxima Semana →
+                                <% end %>
+                            </div>
+                            
+                            <button onclick="toggleCalendar()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+                                <span id="toggle-icon">▼</span> <span id="toggle-text">Ocultar</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="overflow-x-auto">
@@ -634,7 +649,7 @@
                                 <% current_time = current_date.to_time.change(hour: hour, min: minute) %>
                                 
                                 <% training_at_slot = @all_trainings.find do |t|
-                                t.start_time <= current_time && t.end_time > current_time
+                                    t.start_time <= current_time && t.end_time > current_time
                                 end %>
                                 
                                 <td class="border border-gray-600 px-1 py-1 <%= training_at_slot ? 'bg-green-900' : 'bg-gray-800 hover:bg-gray-700' %>">
@@ -701,7 +716,7 @@
                                                 class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg">
                                             Cancelar
                                         </button>
-                                        <%= f.submit "Criar Treino", class: "flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg" %>
+                                        <%= f.submit "Criar Treino", class: "flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg clickable   " %>
                                         </div>
                                     <% end %>
                                     </div>
@@ -1281,6 +1296,14 @@
                         <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" ,placeholder: "Ex: Campo de jogos 2 SportX", required: true, autofocus: true %>
 
                         <% if @selected_sport == 'football' %>
+                            <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Tipo de Campo</label>
+                            <%= form.select :pitch_type,
+                            ClubPitch::PITCH_TYPE,
+                            { selected: ClubPitch::PITCH_TYPE.first, include_blank:false},
+                            class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" %> 
+                        <% end %>
+
+                        <% if @selected_sport == 'football' %>
                             <%= form.hidden_field :sport_id, value: 2 %>
                         <% elsif @selected_sport == 'handball' %>
                             <%= form.hidden_field :sport_id, value: 3 %>
@@ -1493,6 +1516,28 @@
             }
             }
         });
+    </script>
+
+    <!--Script de mostrar o calendário -->
+
+    <script>
+        function toggleCalendar() {
+            const table = document.getElementById('calendar-table');
+            const navigation = document.getElementById('calendar-navigation');
+            const icon = document.getElementById('toggle-icon');
+            const text = document.getElementById('toggle-text');
+            
+            table.classList.toggle('hidden');
+            navigation.classList.toggle('hidden');
+            
+            if (table.classList.contains('hidden')) {
+                icon.textContent = '▶';
+                text.textContent = 'Mostrar';
+            } else {
+                icon.textContent = '▼';
+                text.textContent = 'Ocultar';
+            }
+        }
     </script>
 
 </body>

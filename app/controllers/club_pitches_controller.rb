@@ -103,6 +103,6 @@ class ClubPitchesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_pitch_params
-      params.require(:club_pitch).permit(:club_profile_id, :club_training_center_id, :sport_id, :name, :pitch_picture)
+      params.require(:club_pitch).permit(:club_profile_id, :club_training_center_id, :sport_id, :name, :pitch_picture, :pitch_type)
     end
 end

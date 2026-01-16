@@ -1,0 +1,12 @@
+Adicionar select para escolher tipo de campo (Zona)
+adicionar verificação para não haver sobreposição de treinos na mesma zona a mesma hora
+mostrar balneário do treino no calendário
+ao clicar na marcação, permite editar ou apagar
+dar fix ao criar treino dar redirect para fora do ct / campo
+mudar mensagem de erro quando existe conflito
+adicionar verificações para só poder apagar campo quando não existirem mais marcações
+dar para mudar foto ao editar campo, ct e balneário
+tentar fazer para que cada tipo de zona tenha uma cor, fica mais fácil nas marcações
+zona iria aparecer depois das horas
+Adicionar verificação para só dar para apagar equipa quando não existirem treinos marcados para eles
+Permitir que o balneário não seja obrigatório escolher
