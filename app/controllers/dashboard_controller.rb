@@ -54,6 +54,8 @@ class DashboardController < ApplicationController
       @available_locker_rooms = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct || nil)
       @available_teams = ClubTeam.where(club_profile_id: club_id, sport_id: sport_id)
       @time_slots = (8..23).flat_map { |h| [[h, 0], [h, 30]] }
+      @selected_pitch_obj = ClubPitch.find(@selected_pitch)
+      @available_zones = @selected_pitch_obj.fut11? ? ClubPitch::PITCH_ZONES_11 : ClubPitch::PITCH_ZONES_OTHERS
     end
 
 

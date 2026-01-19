@@ -23,18 +23,6 @@ class ClubTeamTrainingsController < ApplicationController
   def create
     @club_team_training = ClubTeamTraining.new(club_team_training_params)
 
-    if has_conflict?(@club_team_training)
-      @selected_sport = params[:sport]
-      @selected_pitch = params[:pitch]
-      if params[:ct].present?
-        @selected_ct = params[:ct]
-        redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), alert: "Conflito: já existe um treino neste horário para este campo ou balneário"
-      else
-        redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), alert: "Conflito: já existe um treino neste horário para este campo ou balneário"
-      end
-      return
-    end
-
     if @club_team_training.recurring
       @club_team_training.weekday = @club_team_training.start_time.wday
     end
@@ -85,49 +73,8 @@ class ClubTeamTrainingsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_team_training_params
-      params.require(:club_team_training).permit(:club_pitch_id, :club_locker_room_id, :club_team_id,:start_time, :end_time, :recurring)
+      params.require(:club_team_training).permit(:club_pitch_id, :club_locker_room_id, :club_team_id,:start_time, :end_time, :recurring, :pitch_zone)
     end
 
-    def has_conflict?(training)
-      pitch_conflicts = ClubTeamTraining.where(club_pitch_id: training.club_pitch_id)
-      locker_conflicts = ClubTeamTraining.where(club_locker_room_id: training.club_locker_room_id)
-      
-      if training.recurring
-        [pitch_conflicts, locker_conflicts].each do |conflicts|
-          conflicts.each do |existing|
-            if existing.recurring && existing.weekday == training.start_time.wday
-              if times_overlap?(training, existing)
-                return true
-              end
-            end
-          end
-        end
-      else
 
-        [pitch_conflicts, locker_conflicts].each do |conflicts|
-          conflicts.each do |existing|
-            if existing.recurring
-              if existing.weekday == training.start_time.wday && times_overlap?(training, existing)
-                return true
-              end
-            else
-              if existing.start_time.to_date == training.start_time.to_date && times_overlap?(training, existing)
-                return true
-              end
-            end
-          end
-        end
-      end
-      
-      false
-    end
-    
-    def times_overlap?(training1, training2)
-      t1_start = training1.start_time.hour * 60 + training1.start_time.min
-      t1_end = training1.end_time.hour * 60 + training1.end_time.min
-      t2_start = training2.start_time.hour * 60 + training2.start_time.min
-      t2_end = training2.end_time.hour * 60 + training2.end_time.min
-      
-      t1_start < t2_end && t2_start < t1_end
-    end
 end

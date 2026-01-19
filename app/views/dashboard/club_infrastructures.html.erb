@@ -604,7 +604,7 @@
                         <h2 class="text-2xl font-bold text-yellow-400"> Calendário - <%= ClubPitch.find(@selected_pitch).name %> </h2>
                         
                         <div class="flex items-center gap-2">
-                            <div id="calendar-navigation" class="flex gap-2">
+                            <div id="calendar-navigation" class="flex gap-2 hidden">
                                 <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, start_date: (@start_date - 1.week).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
                                     ← Semana Anterior
                                 <% end %>
@@ -619,13 +619,13 @@
                             </div>
                             
                             <button onclick="toggleCalendar()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
-                                <span id="toggle-icon">▼</span> <span id="toggle-text">Ocultar</span>
+                                <span id="toggle-icon">▶</span> <span id="toggle-text">Mostrar</span>
                             </button>
                         </div>
                     </div>
 
                     <div class="overflow-x-auto">
-                    <table class="w-full border-collapse" id="calendar-table">
+                    <table class="w-full border-collapse hidden" id="calendar-table">
                         <thead>
                         <tr class="bg-gray-700">
                             <th class="border border-gray-600 px-2 py-3 text-gray-300 w-20">Hora</th>
@@ -660,6 +660,11 @@
                                     <span class="text-gray-300">
                                         <%= training_at_slot.start_time.strftime("%H:%M") %> - <%= training_at_slot.end_time.strftime("%H:%M") %>
                                     </span>
+
+                                    <% if training_at_slot.pitch_zone.present? %>
+                                        <br><span class="text-orange-300 text-xs"><%= training_at_slot.pitch_zone.split("(").first.strip %></span>
+                                    <% end %>
+                                    
                                     <% if training_at_slot.recurring %>
                                         <br><span class="text-yellow-400 text-xs">♻ Recorrente</span>
                                     <% end %>
@@ -701,6 +706,12 @@
                                             ["2h", current_time + 2.hours]], 
                                             {}, 
                                             class: "w-full bg-gray-700 text-white rounded px-3 py-2" %>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-400 mb-2 required-label">Zona do Campo</label>
+                                            <%= f.select :pitch_zone, @available_zones, { include_blank: false }, class: "w-full bg-gray-700 text-white rounded px-3 py-2 border border-gray-600 focus:border-orange-400 focus:ring-1 focus:ring-orange-400" %>
+                                            <p class="text-xs text-gray-500 mt-1"> Selecione a zona do campo para este treino </p>
                                         </div>
                                         
                                         <div class="mb-4">
