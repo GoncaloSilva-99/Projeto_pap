@@ -24,9 +24,8 @@
             <!-- Center Links -->
             <div id="nav-links" class="w-full md:w-auto flex justify-center space-x-6 mt-4 md:mt-0 md:order-none order-3 nav-links-overlap">
                 <a href="#inicio" class="hover:text-orange-400 transition">Início</a>
-                <%= link_to "Dashboard", club_dashboard_path, class:"hover:text-orange-400 transition" %>
-                <a href="#" class="hover:text-orange-400 transition">Agenda</a>
-                <a href="#" class="hover:text-orange-400 transition">Análises</a>
+                <a href="#stats" class="hover:text-orange-400 transition">Estatísticas</a>
+                <a href="#popular-profiles" class="hover:text-orange-400 transition">Perfis Populares</a>
             </div>
 
             <!-- Right Side -->
@@ -124,10 +123,12 @@
                         Apps
                     </div>
                     <div class="grid grid-cols-2 gap-3 p-4">
-                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                        <!-- Dashboard -->
+                        <%= link_to club_dashboard_path, class: "block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600" do %>
                             <i data-feather="shield" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
-                            <div class="text-sm font-medium text-gray-900 dark:text-white">Clube</div>
-                        </a>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</div>
+                        <% end %>
+                    
                         <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
                             <i data-feather="users" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                             <div class="text-sm font-medium text-gray-900 dark:text-white">Equipa</div>
@@ -204,6 +205,10 @@
     </nav>
 
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
         @keyframes scroll {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
@@ -562,7 +567,7 @@
     </script>
 
     <!-- Hero Section -->
-    <section  id="inicio" class="relative py-16 px-6 bg-cover bg-center">
+    <section  id="inicio" class="relative py-16 px-6 bg-cover bg-center" style="scroll-margin-top: 72px;">
         <%= image_tag "default_banner.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-20 z-0", alt: "Hero Background" %>
         <!-- overlay to keep text readable -->
         <div class="container mx-auto relative z-10">
@@ -584,7 +589,7 @@
         </div>
     </section>
     <!-- Stats Section -->
-    <section class="py-16 px-6 bg-gray-800">
+    <section id="stats" class="py-16 px-6 bg-gray-800" style="scroll-margin-top: 72px;">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold mb-12 text-center">Estatísticas Da Plataforma</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -608,7 +613,7 @@
     </section>
 
     <!-- Popular Profiles -->
-    <section class="py-16 px-6 bg-gray-900">
+    <section id="popular-profiles" class="py-16 px-6 bg-gray-900" style="scroll-margin-top: 72px;">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold mb-4">Perfis Populares</h2>
             <p class="text-gray-400 mb-12">Descubre os clubes e jogadores mais ativos/vistos na nossa plataforma</p>
@@ -728,9 +733,9 @@
     <!-- Footer -->
     <footer class="bg-gray-800 text-gray-300">
         <div class="container mx-auto py-12 px-6 items-center">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 ml-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 w-full">
                 <!-- Brand -->
-                <div class="max-w-xs">
+                <div class="max-w-xs mx-auto">
                     <a href="#inicio">
                         <div class="flex items-center mb-4" >
                             <div class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
@@ -743,15 +748,20 @@
                         A plataforma definitiva para a gestão e análise de clubes, jogadores e desempenho.
                         </p>
                     
-                    <h4 class="text-white font-semibold mt-6 mb-3">Subscrever</h4>
-                    <form class="flex items-center">
-                    <input type="email" placeholder="SportX@email.com" class="bg-gray-700 text-gray-200 px-3 py-2 rounded-l-md focus:outline-none w-full" style="width: 170px;"/>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r-md text-white">Subscrever</button>
-                    </form>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="mx-auto">
+                    <h4 class="text-white font-semibold mb-4">Navegação</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#inicio" class="hover:text-orange-400 transition">Início</a></li>
+                        <li><a href="#stats" class="hover:text-orange-400 transition">Estatísticas</a></li>
+                        <li><a href="#popular-profiles" class="hover:text-orange-400 transition">Perfis Populares</a></li>
+                    </ul>
                 </div>
 
                 <!-- Contact / Company -->
-                <div class="md:ml-10">
+                <div class="mx-auto">
                     <h4 class="text-white font-semibold mb-4">Contacto</h4>
                     <div class="text-gray-400 text-sm space-y-2">
                         <div style="margin-bottom: 17px;"><strong>SportX - Club Managment</strong></div>
@@ -759,48 +769,29 @@
                             <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
                                 <i data-feather="map-pin" class="w-4 h-4 text-blue-500 group-hover:text-red-500 transition-colors duration-150"></i>
                             </span>
-                            <div>Av. dos Clubes, 4470-123 Maia</div>
+                            <div><a href="https://maps.app.goo.gl/MafCMFdNprsmMgL36" target="_blank" rel="noopener noreferrer" class="hover:text-orange-400 transition">Av. Luís de Camões, 4470-194 Maia</a></div>
                         </div>
                         <div class="flex items-center space-x-4">
                             <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
                                 <i data-feather="phone" class="w-4 h-4 text-blue-500 group-hover:text-red-500 transition-colors duration-150"></i>
                             </span>
-                            <div>+351 912 345 678 </div>
+                            <div><a href="tel:+351912345678" class="hover:text-orange-400 transition">+351 912 345 678</a></div>
                         </div>
                         <div class="flex items-center space-x-4">
                             <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
                                 <i data-feather="mail" class="w-4 h-4 text-blue-500 group-hover:text-red-500 transition-colors duration-150"></i>
                             </span>
-                            <div>suporte@sportx.manage</div>
+                            <div><a href="mailto:suporte_sportx@gmail.com" class="hover:text-orange-400 transition">suporte_sportx@gmail.com</a></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Quick Links -->
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Navegação</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li>Início</li>
-                        <li>Clubes</li>
-                        <li>Jogadores</li>
-                        <li>Agenda</li>
-                        <li>Análises</li>
-                    </ul>
+                <!-- Map -->
+                <div class="mx-auto">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d630.7743905081369!2d-8.618508752518986!3d41.23297970912057!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd24665606eefb45%3A0xc5dd8b06cc341a7b!2sEscola%20Secund%C3%A1ria%20da%20Maia!5e0!3m2!1spt-PT!2spt!4v1768834005628!5m2!1spt-PT!2spt" width="300" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="rounded-lg"></iframe>
                 </div>
-
-                <!-- Recursos -->
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Recursos</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li>Documentação</li>
-                        <li>Suporte</li>
-                        <li>API</li>
-                    </ul>
-                </div>
-
-                
             </div>
-            
+            <!-- Social Media Links -->
             <div class="border-t border-gray-700 mt-8 pt-6 text-gray-350 text-sm font-bold">
                 <div class="flex items-center justify-center space-x-4">
                     <span>Siga-nos:</span>
@@ -837,12 +828,8 @@
 
             <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">
                 <div class="mb-2">© 2025 SportX - Club Managment. Todos os direitos reservados.</div>
-                <div>Desenvolvido por Tomás Nogueira e Gonçalo silva • <a href="https://www.portugal.gov.pt/pt/gc22/politica-de-privacidade">Política de Privacidade</a> • <a href="https://workspace.google.com/intl/pt-PT/terms/service-terms/">Termos de Utilização</a></div>
+                <div>Desenvolvido por Tomás Nogueira e Gonçalo silva • <a href="Política De Privacidade - Sport X.pdf" download>Política de Privacidade</a> • <a href="Termos De Utilização - Sport X.pdf" download>Termos de Utilização</a></div>
             </div>
         </div>
     </footer>
 </body>
-
-
-
-
