@@ -1,7 +1,7 @@
 ﻿
 <body class="bg-gray-900 text-gray-100 min-h-screen" style="flex-wrap: wrap;">
 
-    <!-- Navbar -->
+    <!-------------------------------------------- Navbar ------------------------------------------------>
     <nav class="bg-gray-800 py-4 px-6 shadow-lg fixed w-full z-30 top-0 start-0" style="--nav-height:64px;"">
         <div class="container mx-auto flex items-center justify-between flex-wrap">
             <!-- Logo and Search -->
@@ -166,10 +166,38 @@
                         </div>
                         <ul class="py-2" aria-labelledby="user-menu-button">
                             <li>
-                                <%= link_to new_user_session_path, class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
-                                    <i data-feather="home" class="mr-2"></i>
-                                    <span>Perfil</span>
-                                <% end %>
+                                <% if current_user.club? %>
+                                    <% @club_obj = ClubProfile.find(current_user.club_profile.id) %>
+                                    <%= link_to club_profile_path(@club_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <% end %>
+                                <% elsif current_user.player? %>
+                                    <% @player_obj = PlayerProfile.find(current_user.player_profile.id) %>
+                                    <%= link_to player_profile_path(@player_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <% end %>
+                                <% elsif current_user.board? %>
+                                    <% @board_obj = BoardProfile.find(current_user.board_profile.id) %>
+                                    <%= link_to board_profile_path(@board_profile), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <% end %>
+                                <% elsif current_user.coach? %>
+                                    <% @coach_obj = CoachProfile.find(current_user.coach_profile.id) %>
+                                    <%= link_to coach_profile_path(@coach_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <% end %>
+                                <% elsif current_user.admin? %>
+                                    <% @admin_obj = AdminProfile.find(current_user.admin_profile.id) %>
+                                    <%= link_to admin_profile_path(@admin_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <% end %>
+                                <% elsif current_user.user? %>
+                                    <% @user_obj = UserProfile.find(current_user.user_profile.id) %>
+                                    <%= link_to user_profile_path(@user_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <% end %>
+                                <% end%>
+                                
                             </li>
                             <li>
                                 <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400">
@@ -180,9 +208,11 @@
                                     <i data-feather="bar-chart-2" class="mr-2"></i>Estatísticas</a>
                             </li>
                             <li>
-                                <%= button_to destroy_user_session_path, method: :delete, class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500" do %>
-                                    <i data-feather="log-out" class="mr-2"></i>Log out</a>
-                                <% end %>
+                                <div class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500 dark:active:text-red-500">
+                                    <%= button_to destroy_user_session_path, method: :delete, class: "flex items-center text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500 dark:active:text-red-500" do %>
+                                        <i data-feather="log-out" class="mr-2"></i>Log out</a>
+                                    <% end %>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -289,6 +319,27 @@
                  height: 0;
                  overflow: hidden;
               }
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Emoji Picker Dark Theme */
+        emoji-picker {
+            --background: #1f2937;
+            --border-color: #374151;
+            --input-border-color: #4b5563;
+            --input-font-color: #ffffff;
+            --button-hover-background: #374151;
+            --indicator-color: #3b82f6;
         }
     </style>
 
@@ -566,6 +617,426 @@
         });
     </script>
 
+    <!------------------------------------ Logged-in Main Page ------------------------------------------>
+    <% if user_signed_in? %>
+        <div class="container mx-auto pt-24 pb-12 px-6">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Main Feed -->
+                <div class="flex-1 space-y-6 h-[calc(100vh-100px)] overflow-y-auto pr-2 scroll-smooth no-scrollbar" id="feed-container">
+                    <!-- Create Post -->
+                    <div class="bg-gray-800 rounded-xl p-4 shadow-lg">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                <i data-feather="user" class="text-gray-400"></i>
+                            </div>
+                            <div class="flex-1 relative">
+                                <textarea id="post-content" class="w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none no-scrollbar" rows="1" style="min-height: 3rem; max-height: 16rem;" placeholder="O que estás a pensar?"></textarea>
+                                
+                                <!-- Image Preview -->
+                                <div id="image-preview-container" class="hidden mt-3 relative rounded-lg overflow-hidden">
+                                    <img id="image-preview" src="#" alt="Preview" class="w-full h-auto">
+                                    <button id="remove-image-btn" class="absolute top-2 right-2 bg-gray-800 text-white p-1 rounded-full hover:bg-gray-600 transition">
+                                        <i data-feather="x" class="w-4 h-4"></i>
+                                    </button>
+                                    <div class="bg-gray-800 text-gray-400 text-xs py-1 text-center border-t border-gray-700">
+                                        1
+                                    </div>
+                                </div>
+
+                                <!-- Emoji Picker -->
+                                <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+                                <div id="emoji-picker" class="hidden absolute top-full left-0 mt-2 z-20 shadow-xl rounded-lg overflow-hidden">
+                                    <emoji-picker></emoji-picker>
+                                </div>
+
+                                <div class="flex justify-between items-center mt-3">
+                                    <div class="flex space-x-2">
+                                        <input type="file" id="post-image-upload" class="hidden" accept=".png, .jpg, .jpeg, .gif, .webp">
+                                        <button type="button" id="btn-upload-image" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 transition">
+                                            <i data-feather="image" class="w-5 h-5"></i>
+                                        </button>
+                                        <button type="button" id="btn-toggle-emoji" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 transition">
+                                            <i data-feather="smile" class="w-5 h-5"></i>
+                                        </button>
+                                    </div>
+                                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                                        <i data-feather="send" class="w-5 h-5"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post 1 -->
+                    <div class="post-card bg-gray-800 rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <img class="w-10 h-10 rounded-full object-cover" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png" alt="User avatar">
+                                <div>
+                                    <h3 class="font-bold text-white">Jese Leos</h3>
+                                    <span class="text-gray-400 text-sm">Há 2 horas</span>
+                                </div>
+                            </div>
+                            <button class="text-gray-400 hover:text-white">
+                                <i data-feather="more-horizontal"></i>
+                            </button>
+                        </div>
+                        <p class="post-text text-gray-300 mb-4">
+                            Grande vitória da equipa hoje! O esforço nos treinos está finalmente a dar frutos. Continuamos focados para o próximo desafio. ⚽💪 #Futebol #Vitória #Equipa
+                        </p>
+                        <div class="post-media rounded-lg overflow-hidden mb-4 bg-gray-700 h-64 flex items-center justify-center">
+                             <i data-feather="image" class="w-12 h-12 text-gray-500"></i>
+                        </div>
+                        <div class="post-actions flex items-center justify-between pt-4 border-t border-gray-700">
+                            <div class="flex items-center gap-[15px]">
+                                <button class="like-btn flex items-center space-x-2 text-gray-400 hover:text-red-500 transition group">
+                                    <i data-feather="heart" class="w-5 h-5 group-hover:fill-current"></i>
+                                    <span class="like-count">24</span>
+                                </button>
+                                <button class="comment-btn flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                    <i data-feather="message-circle" class="w-5 h-5"></i>
+                                    <span>5</span>
+                                </button>
+                            </div>
+                            <button class="share-btn flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                                <i data-feather="share-2" class="w-5 h-5"></i>
+                                <span>Partilhar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Post 2 -->
+                    <div class="post-card bg-gray-800 rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <img class="w-10 h-10 rounded-full object-cover" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png" alt="User avatar">
+                                <div>
+                                    <h3 class="font-bold text-white">Jese Leos</h3>
+                                    <span class="text-gray-400 text-sm">Há 2 horas</span>
+                                </div>
+                            </div>
+                            <button class="text-gray-400 hover:text-white">
+                                <i data-feather="more-horizontal"></i>
+                            </button>
+                        </div>
+                        <p class="post-text text-gray-300 mb-4">
+                            Grande vitória da equipa hoje! O esforço nos treinos está finalmente a dar frutos. Continuamos focados para o próximo desafio. ⚽💪 #Futebol #Vitória #Equipa
+                        </p>
+                        <div class="post-media rounded-lg overflow-hidden mb-4 bg-gray-700 h-64 flex items-center justify-center">
+                             <i data-feather="image" class="w-12 h-12 text-gray-500"></i>
+                        </div>
+                        <div class="post-actions flex items-center justify-between pt-4 border-t border-gray-700">
+                            <div class="flex items-center gap-[15px]">
+                                <button class="like-btn flex items-center space-x-2 text-gray-400 hover:text-red-500 transition group">
+                                    <i data-feather="heart" class="w-5 h-5 group-hover:fill-current"></i>
+                                    <span class="like-count">24</span>
+                                </button>
+                                <button class="comment-btn flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                    <i data-feather="message-circle" class="w-5 h-5"></i>
+                                    <span>5</span>
+                                </button>
+                            </div>
+                            <button class="share-btn flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                                <i data-feather="share-2" class="w-5 h-5"></i>
+                                <span>Partilhar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Post 3 -->
+                    <div class="post-card bg-gray-800 rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <img class="w-10 h-10 rounded-full object-cover" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png" alt="User avatar">
+                                <div>
+                                    <h3 class="font-bold text-white">Jese Leos</h3>
+                                    <span class="text-gray-400 text-sm">Há 2 horas</span>
+                                </div>
+                            </div>
+                            <button class="text-gray-400 hover:text-white">
+                                <i data-feather="more-horizontal"></i>
+                            </button>
+                        </div>
+                        <p class="post-text text-gray-300 mb-4">
+                            Grande vitória da equipa hoje! O esforço nos treinos está finalmente a dar frutos. Continuamos focados para o próximo desafio. ⚽💪 #Futebol #Vitória #Equipa
+                        </p>
+                        <div class="post-media rounded-lg overflow-hidden mb-4 bg-gray-700 h-64 flex items-center justify-center">
+                             <i data-feather="image" class="w-12 h-12 text-gray-500"></i>
+                        </div>
+                        <div class="post-actions flex items-center justify-between pt-4 border-t border-gray-700">
+                            <div class="flex items-center gap-[15px]">
+                                <button class="like-btn flex items-center space-x-2 text-gray-400 hover:text-red-500 transition group">
+                                    <i data-feather="heart" class="w-5 h-5 group-hover:fill-current"></i>
+                                    <span class="like-count">24</span>
+                                </button>
+                                <button class="comment-btn flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                    <i data-feather="message-circle" class="w-5 h-5"></i>
+                                    <span>5</span>
+                                </button>
+                            </div>
+                            <button class="share-btn flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                                <i data-feather="share-2" class="w-5 h-5"></i>
+                                <span>Partilhar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Suggestions -->
+                <div class="hidden lg:block w-80 space-y-6 flex-shrink-0">
+                    <div class="bg-gray-800 rounded-xl p-6 shadow-lg sticky top-24">
+                        <h3 class="text-xl font-bold text-white mb-6">Sugestões para seguir</h3>
+                        <div class="space-y-6">
+                            <!-- Suggestion 1 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                        SLB
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-white hover:underline cursor-pointer">SL Benfica</div>
+                                        <div class="text-xs text-gray-400">Futebol • Lisboa</div>
+                                    </div>
+                                </div>
+                                <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
+                                    <i data-feather="user-plus" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+
+                            <!-- Suggestion 2 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold">
+                                        SCP
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-white hover:underline cursor-pointer">Sporting CP</div>
+                                        <div class="text-xs text-gray-400">Futebol • Andebol • Lisboa</div>
+                                    </div>
+                                </div>
+                                <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
+                                    <i data-feather="user-plus" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+
+                            <!-- Suggestion 3 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <img class="w-10 h-10 rounded-full object-cover" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png" alt="User">
+                                    <div>
+                                        <div class="font-semibold text-white hover:underline cursor-pointer">Joseph McFall</div>
+                                        <div class="text-xs text-gray-400">Treinador</div>
+                                    </div>
+                                </div>
+                                <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
+                                    <i data-feather="user-plus" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-700 text-center">
+                            <a href="#" class="text-sm text-blue-400 hover:text-blue-300">Ver mais sugestões</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Screen Comment Modal -->
+        <div id="comment-modal" class="fixed inset-0 z-[100] bg-gray-900 hidden">
+            <div class="flex flex-col lg:flex-row w-full h-full">
+                <!-- Left: Post Content (Visible on Desktop) -->
+                <div class="hidden lg:flex lg:w-2/3 h-full bg-black items-center justify-center p-8 overflow-y-auto relative">
+                    <div id="modal-post-container" class="max-w h-full w-full bg-gray-800 rounded-xl p-6 shadow-2xl flex flex-col">
+                        <!-- Content injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Right: Comments -->
+                <div class="w-full lg:w-1/3 h-full bg-gray-800 border-l border-gray-700 flex flex-col">
+                    <!-- Header -->
+                    <div class="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-800 z-10">
+                        <h3 class="text-xl font-bold text-white">Comentários</h3>
+                        <button id="close-modal-btn" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-medium">Voltar</span>
+                                <i data-feather="x" class="w-5 h-5"></i>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <!-- Comments List -->
+                    <div class="flex-1 overflow-y-auto p-4 space-y-4" id="modal-comments-list">
+                        <!-- Comments injected via JS -->
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="p-4 border-t border-gray-700 bg-gray-800">
+                        <div class="flex items-center space-x-2">
+                            <input type="text" placeholder="Escreve um comentário..." class="flex-1 bg-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button class="text-blue-500 hover:text-blue-400 font-semibold px-3 py-2">Publicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                // Like Button Logic
+                document.querySelectorAll('.like-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        this.classList.toggle('text-red-500');
+                        this.classList.toggle('text-gray-400');
+                        const icon = this.querySelector('svg');
+                        if (icon) icon.classList.toggle('fill-current');
+                        
+                        // Simple counter update simulation
+                        const countSpan = this.querySelector('.like-count');
+                        let count = parseInt(countSpan.innerText);
+                        if (this.classList.contains('text-red-500')) {
+                            countSpan.innerText = (count + 1);
+                        } else {
+                            countSpan.innerText = (count - 1);
+                        }
+                    });
+                });
+
+                // Comment Button Logic
+                const modal = document.getElementById('comment-modal');
+                const closeModalBtn = document.getElementById('close-modal-btn');
+                const modalPostContainer = document.getElementById('modal-post-container');
+                const modalCommentsList = document.getElementById('modal-comments-list');
+                const feedContainer = document.getElementById('feed-container');
+
+                document.querySelectorAll('.comment-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const postCard = this.closest('.post-card');
+                        
+                        // Clone content for modal
+                        const header = postCard.querySelector('.flex.items-center.justify-between.mb-4').cloneNode(true);
+                        const text = postCard.querySelector('.post-text').cloneNode(true);
+                        const media = postCard.querySelector('.post-media').cloneNode(true);
+                        
+                        // Adjust media to fill space
+                        media.classList.remove('h-64', 'mb-4');
+                        media.classList.add('flex-1', 'w-full');
+
+                        // Clear previous content
+                        modalPostContainer.innerHTML = '';
+                        
+                        // Append cloned content
+                        modalPostContainer.appendChild(header);
+                        modalPostContainer.appendChild(text);
+                        modalPostContainer.appendChild(media);
+                        
+                        // Re-initialize feather icons in modal
+                        feather.replace();
+
+                        // Populate dummy comments
+                        modalCommentsList.innerHTML = `
+                            <div class="flex items-start space-x-3">
+                                <div class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-xs text-white">U</div>
+                                <div class="bg-gray-700 rounded-lg p-3 flex-1">
+                                    <p class="text-sm font-semibold text-white mb-1">Utilizador Exemplo</p>
+                                    <p class="text-sm text-gray-300">Grande jogo! Parabéns à equipa. 👏</p>
+                                </div>
+                            </div>
+                        `;
+
+                        // Show modal
+                        modal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                    });
+                });
+
+                // Share Button Logic
+                document.querySelectorAll('.share-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        alert('Link copiado para a área de transferência!');
+                    });
+                });
+
+                // Close Modal Logic
+                closeModalBtn.addEventListener('click', () => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = ''; // Restore scrolling
+                });
+
+                // Image Upload Logic
+                const btnUploadImage = document.getElementById('btn-upload-image');
+                const fileInput = document.getElementById('post-image-upload');
+                const previewContainer = document.getElementById('image-preview-container');
+                const previewImage = document.getElementById('image-preview');
+                const removeImageBtn = document.getElementById('remove-image-btn');
+                
+                if (btnUploadImage && fileInput) {
+                    btnUploadImage.addEventListener('click', () => {
+                        fileInput.click();
+                    });
+
+                    fileInput.addEventListener('change', function() {
+                        const file = this.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                previewImage.src = e.target.result;
+                                previewContainer.classList.remove('hidden');
+                            }
+                            reader.readAsDataURL(file);
+                        }
+                    });
+
+                    removeImageBtn.addEventListener('click', () => {
+                        fileInput.value = '';
+                        previewContainer.classList.add('hidden');
+                        previewImage.src = '#';
+                    });
+                }
+
+                // Emoji Picker Logic
+                const btnToggleEmoji = document.getElementById('btn-toggle-emoji');
+                const emojiPicker = document.getElementById('emoji-picker');
+                const postTextarea = document.getElementById('post-content');
+                
+                if (btnToggleEmoji && emojiPicker && postTextarea) {
+                    btnToggleEmoji.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        emojiPicker.classList.toggle('hidden');
+                    });
+
+                    document.querySelector('emoji-picker').addEventListener('emoji-click', event => {
+                        postTextarea.value += event.detail.unicode;
+                    });
+
+                    document.addEventListener('click', (e) => {
+                        if (!emojiPicker.contains(e.target) && !btnToggleEmoji.contains(e.target)) {
+                            emojiPicker.classList.add('hidden');
+                        }
+                    });
+                }
+
+                // Follow Button Logic
+                document.querySelectorAll('.follow-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        this.innerHTML = '<span class="text-gray-400 text-sm">a seguir</span>';
+                        this.classList.remove('text-blue-400', 'hover:text-white');
+                        this.classList.add('cursor-default');
+                    });
+                });
+
+                // Textarea Auto-resize
+                const postContent = document.getElementById('post-content');
+                if (postContent) {
+                    postContent.addEventListener('input', function() {
+                        this.style.height = 'auto';
+                        this.style.height = (this.scrollHeight) + 'px';
+                    });
+                }
+            });
+        </script>
+    <% else %>
+
+    <!-- Logged-out Main Page -->
     <!-- Hero Section -->
     <section  id="inicio" class="relative py-16 px-6 bg-cover bg-center" style="scroll-margin-top: 72px;">
         <%= image_tag "default_banner.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-20 z-0", alt: "Hero Background" %>
@@ -729,6 +1200,7 @@
             </div>
         </div>
     </section>
+    
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-gray-300">
@@ -787,7 +1259,7 @@
                 </div>
 
                 <!-- Map -->
-                <div class="mx-auto">
+                <div class="mx-auto ml-5">
                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d630.7743905081369!2d-8.618508752518986!3d41.23297970912057!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd24665606eefb45%3A0xc5dd8b06cc341a7b!2sEscola%20Secund%C3%A1ria%20da%20Maia!5e0!3m2!1spt-PT!2spt!4v1768834005628!5m2!1spt-PT!2spt" width="300" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="rounded-lg"></iframe>
                 </div>
             </div>
@@ -832,4 +1304,6 @@
             </div>
         </div>
     </footer>
+
+    <% end %>
 </body>
