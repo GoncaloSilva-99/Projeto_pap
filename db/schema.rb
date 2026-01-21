@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_16_084416) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_21_144826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -111,7 +111,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_16_084416) do
   end
 
   create_table "club_team_trainings", force: :cascade do |t|
-    t.bigint "club_locker_room_id", null: false
+    t.bigint "club_locker_room_id"
     t.bigint "club_pitch_id", null: false
     t.datetime "start_time"
     t.datetime "end_time"
@@ -121,6 +121,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_16_084416) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "pitch_zone"
+    t.integer "locker_room_time_before", default: 0
+    t.integer "locker_room_time_after", default: 0
     t.index ["club_locker_room_id"], name: "index_club_team_trainings_on_club_locker_room_id"
     t.index ["club_pitch_id"], name: "index_club_team_trainings_on_club_pitch_id"
     t.index ["club_team_id"], name: "index_club_team_trainings_on_club_team_id"

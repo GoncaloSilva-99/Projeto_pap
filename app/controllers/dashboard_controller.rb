@@ -46,6 +46,7 @@ class DashboardController < ApplicationController
             virtual_training = recurring.dup
             virtual_training.start_time = date.to_time.change(hour: recurring.start_time.hour, min: recurring.start_time.min)
             virtual_training.end_time = date.to_time.change(hour: recurring.end_time.hour, min: recurring.end_time.min)
+            virtual_training.id = recurring.id 
             @all_trainings << virtual_training
           end
         end
