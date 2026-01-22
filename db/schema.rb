@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_21_144826) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_22_110148) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -123,6 +123,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_21_144826) do
     t.string "pitch_zone"
     t.integer "locker_room_time_before", default: 0
     t.integer "locker_room_time_after", default: 0
+    t.string "name"
     t.index ["club_locker_room_id"], name: "index_club_team_trainings_on_club_locker_room_id"
     t.index ["club_pitch_id"], name: "index_club_team_trainings_on_club_pitch_id"
     t.index ["club_team_id"], name: "index_club_team_trainings_on_club_team_id"

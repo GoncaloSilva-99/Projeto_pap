@@ -73,7 +73,7 @@ class ClubTeamTrainingsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_team_training_params
-      params.require(:club_team_training).permit(:club_pitch_id, :club_locker_room_id, :club_team_id,:start_time, :end_time, :recurring, :pitch_zone, :locker_room_time_before, :locker_room_time_after)
+      params.require(:club_team_training).permit(:club_pitch_id, :club_locker_room_id, :club_team_id,:start_time, :end_time, :recurring, :pitch_zone, :locker_room_time_before, :locker_room_time_after, :name)
     end
 
 
