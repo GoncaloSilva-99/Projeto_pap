@@ -1,5 +1,4 @@
-﻿
-<body class="bg-gray-900 text-gray-100 min-h-screen" style="flex-wrap: wrap;">
+﻿﻿<body class="bg-gray-900 text-gray-100 min-h-screen" style="flex-wrap: wrap;">
 
     <!-------------------------------------------- Navbar ------------------------------------------------>
     <nav class="bg-gray-800 py-4 px-6 shadow-lg fixed w-full z-30 top-0 start-0" style="--nav-height:64px;"">
@@ -332,15 +331,6 @@
             scrollbar-width: none;  /* Firefox */
         }
 
-        /* Emoji Picker Dark Theme */
-        emoji-picker {
-            --background: #1f2937;
-            --border-color: #374151;
-            --input-border-color: #4b5563;
-            --input-font-color: #ffffff;
-            --button-hover-background: #374151;
-            --indicator-color: #3b82f6;
-        }
     </style>
 
     <script>
@@ -633,30 +623,26 @@
                                 <textarea id="post-content" class="w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none no-scrollbar" rows="1" style="min-height: 3rem; max-height: 16rem;" placeholder="O que estás a pensar?"></textarea>
                                 
                                 <!-- Image Preview -->
-                                <div id="image-preview-container" class="hidden mt-3 relative rounded-lg overflow-hidden">
-                                    <img id="image-preview" src="#" alt="Preview" class="w-full h-auto">
-                                    <button id="remove-image-btn" class="absolute top-2 right-2 bg-gray-800 text-white p-1 rounded-full hover:bg-gray-600 transition">
-                                        <i data-feather="x" class="w-4 h-4"></i>
-                                    </button>
-                                    <div class="bg-gray-800 text-gray-400 text-xs py-1 text-center border-t border-gray-700">
-                                        1
+                                <div id="image-preview-container" class="hidden mt-3 relative">
+                                    <div id="image-carousel" class="flex overflow-x-auto scroll-smooth rounded-lg no-scrollbar gap-2">
+                                        <!-- Images will be injected here by JS -->
                                     </div>
-                                </div>
-
-                                <!-- Emoji Picker -->
-                                <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
-                                <div id="emoji-picker" class="hidden absolute top-full left-0 mt-2 z-20 shadow-xl rounded-lg overflow-hidden">
-                                    <emoji-picker></emoji-picker>
+                                    <button id="prev-image-btn" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                        <i data-feather="chevron-left" class="w-6 h-6"></i>
+                                    </button>
+                                    <button id="next-image-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                        <i data-feather="chevron-right" class="w-6 h-6"></i>
+                                    </button>
+                                    <div id="image-dots" class="flex justify-center items-center space-x-2 mt-2">
+                                        <!-- Dots will be injected here by JS -->
+                                    </div>
                                 </div>
 
                                 <div class="flex justify-between items-center mt-3">
                                     <div class="flex space-x-2">
-                                        <input type="file" id="post-image-upload" class="hidden" accept=".png, .jpg, .jpeg, .gif, .webp">
+                                        <input type="file" id="post-image-upload" class="hidden" accept=".png, .jpg, .jpeg, .gif, .webp" multiple>
                                         <button type="button" id="btn-upload-image" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 transition">
                                             <i data-feather="image" class="w-5 h-5"></i>
-                                        </button>
-                                        <button type="button" id="btn-toggle-emoji" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 transition">
-                                            <i data-feather="smile" class="w-5 h-5"></i>
                                         </button>
                                     </div>
                                     <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
@@ -834,7 +820,7 @@
                             </div>
                         </div>
                         <div class="mt-6 pt-4 border-t border-gray-700 text-center">
-                            <a href="#" class="text-sm text-blue-400 hover:text-blue-300">Ver mais sugestões</a>
+                            <a href="#" id="view-all-suggestions-btn" class="text-sm text-blue-400 hover:text-blue-300">Ver mais sugestões</a>
                         </div>
                     </div>
                 </div>
@@ -876,6 +862,90 @@
                             <button class="text-blue-500 hover:text-blue-400 font-semibold px-3 py-2">Publicar</button>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestions Carousel Modal -->
+        <div id="suggestions-modal" class="fixed inset-0 z-[100] bg-gray-900 bg-opacity-95 hidden flex items-center justify-center">
+            <div class="bg-gray-800 rounded-xl p-8 w-full max-w-6xl relative shadow-2xl mx-4">
+                <button id="close-suggestions-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+                <h2 class="text-2xl font-bold text-white mb-8 text-center">Sugestões para si</h2>
+                
+                <div class="relative px-12">
+                    <div class="overflow-hidden" id="suggestions-carousel-container">
+                        <div class="flex transition-transform duration-500 ease-in-out" id="suggestions-track">
+                            <!-- Profile 1 -->
+                            <div class="w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
+                                    <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
+                                    <h3 class="text-lg font-bold text-white">Karen Nelson</h3>
+                                    <span class="text-blue-400 text-sm mb-3 font-medium">Andebol • Guarda-Redes</span>
+                                    <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Atleta dedicada com foco em reflexos rápidos e liderança defensiva. À procura de novos desafios na liga profissional.</p>
+                                    <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
+                                        Seguir
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Profile 2 -->
+                            <div class="w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
+                                    <div class="w-24 h-24 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-2xl mb-4 border-4 border-gray-800">AFC</div>
+                                    <h3 class="text-lg font-bold text-white">Arsenal FC</h3>
+                                    <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Londres</span>
+                                    <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Um dos clubes mais históricos de Inglaterra, focado no desenvolvimento de jovens talentos e futebol ofensivo.</p>
+                                    <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
+                                        Seguir
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Profile 3 -->
+                            <div class="w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
+                                    <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
+                                    <h3 class="text-lg font-bold text-white">Thomas Lean</h3>
+                                    <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Médio</span>
+                                    <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Criativo no meio-campo com excelente visão de jogo. Especialista em bolas paradas e passes longos.</p>
+                                    <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
+                                        Seguir
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Profile 4 -->
+                            <div class="w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
+                                    <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
+                                    <h3 class="text-lg font-bold text-white">Michael Gough</h3>
+                                    <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Treinador • Tático</span>
+                                    <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Treinador experiente com certificação UEFA Pro. Focado em análise de dados e desenvolvimento de equipas.</p>
+                                    <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
+                                        Seguir
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Profile 5 -->
+                            <div class="w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
+                                    <div class="w-24 h-24 rounded-full bg-yellow-500 flex items-center justify-center text-white font-bold text-2xl mb-4 border-4 border-gray-800">BVB</div>
+                                    <h3 class="text-lg font-bold text-white">Dortmund</h3>
+                                    <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Alemanha</span>
+                                    <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Conhecidos pela "Muralha Amarela" e pela paixão intensa dos adeptos. Formação de classe mundial.</p>
+                                    <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
+                                        Seguir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="prev-suggestion" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-3 rounded-full text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i data-feather="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <button id="next-suggestion" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-3 rounded-full text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i data-feather="chevron-right" class="w-6 h-6"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -966,52 +1036,220 @@
                 const btnUploadImage = document.getElementById('btn-upload-image');
                 const fileInput = document.getElementById('post-image-upload');
                 const previewContainer = document.getElementById('image-preview-container');
-                const previewImage = document.getElementById('image-preview');
-                const removeImageBtn = document.getElementById('remove-image-btn');
+                const imageCarousel = document.getElementById('image-carousel');
+                const imageDots = document.getElementById('image-dots');
+                const prevImageBtn = document.getElementById('prev-image-btn');
+                const nextImageBtn = document.getElementById('next-image-btn');
+                let uploadedFiles = [];
                 
-                if (btnUploadImage && fileInput) {
+                if (btnUploadImage && fileInput && previewContainer && imageCarousel && imageDots) {
+                    if (prevImageBtn && nextImageBtn) {
+                        prevImageBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            imageCarousel.scrollBy({ left: -imageCarousel.offsetWidth, behavior: 'smooth' });
+                        });
+
+                        nextImageBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            imageCarousel.scrollBy({ left: imageCarousel.offsetWidth, behavior: 'smooth' });
+                        });
+                    }
+
                     btnUploadImage.addEventListener('click', () => {
                         fileInput.click();
                     });
 
-                    fileInput.addEventListener('change', function() {
-                        const file = this.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                previewImage.src = e.target.result;
-                                previewContainer.classList.remove('hidden');
-                            }
-                            reader.readAsDataURL(file);
+                    const updateDots = () => {
+                        if (uploadedFiles.length === 0) return;
+
+                        let currentIndex = 0;
+                        if (uploadedFiles.length > 1) {
+                            const scrollLeft = imageCarousel.scrollLeft;
+                            const width = imageCarousel.offsetWidth;
+                            currentIndex = Math.round(scrollLeft / width);
                         }
+                        
+                        // Ensure index is within bounds
+                        currentIndex = Math.min(Math.max(currentIndex, 0), uploadedFiles.length - 1);
+                        
+                        const dots = imageDots.children;
+                        for (let i = 0; i < dots.length; i++) {
+                            if (i === currentIndex) {
+                                dots[i].classList.remove('bg-gray-600');
+                                dots[i].classList.add('bg-blue-500');
+                            } else {
+                                dots[i].classList.add('bg-gray-600');
+                                dots[i].classList.remove('bg-blue-500');
+                            }
+                        }
+                    };
+
+                    const renderCarousel = () => {
+                        imageCarousel.innerHTML = '';
+                        imageDots.innerHTML = '';
+                        
+                        if (uploadedFiles.length === 0) {
+                            previewContainer.classList.add('hidden');
+                            return;
+                        }
+
+                        previewContainer.classList.remove('hidden');
+                        
+                        if (uploadedFiles.length > 1) {
+                            imageCarousel.classList.add('snap-x', 'snap-mandatory');
+                            imageCarousel.classList.add('snap-x', 'snap-mandatory');
+                            if (prevImageBtn) prevImageBtn.classList.remove('hidden');
+                            if (nextImageBtn) nextImageBtn.classList.remove('hidden');
+                        } else {
+                            imageCarousel.classList.remove('snap-x', 'snap-mandatory');
+                            imageCarousel.classList.remove('snap-x', 'snap-mandatory');
+                            if (prevImageBtn) prevImageBtn.classList.add('hidden');
+                            if (nextImageBtn) nextImageBtn.classList.add('hidden');
+                        }
+
+                        uploadedFiles.forEach((file, index) => {
+                            const wrapper = document.createElement('div');
+                            wrapper.className = `relative group flex-shrink-0 h-64 bg-gray-900 rounded-lg flex items-center justify-center ${uploadedFiles.length > 1 ? 'snap-center w-full' : 'w-full'}`;
+                            
+                            const img = document.createElement('img');
+                            img.src = URL.createObjectURL(file);
+                            img.alt = `Image preview ${index + 1}`;
+                            img.className = "max-h-full max-w-full object-contain";
+                            
+                            const btn = document.createElement('button');
+                            btn.innerHTML = '<i data-feather="x" class="w-4 h-4"></i>';
+                            btn.className = "absolute top-2 right-2 bg-gray-800 bg-opacity-75 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-red-600";
+                            btn.onclick = (e) => {
+                                e.stopPropagation();
+                                uploadedFiles.splice(index, 1);
+                                renderCarousel();
+                            };
+                            
+                            wrapper.appendChild(img);
+                            wrapper.appendChild(btn);
+                            imageCarousel.appendChild(wrapper);
+
+                            // Create dot
+                            const dot = document.createElement('div');
+                            dot.className = 'w-2 h-2 rounded-full transition-colors duration-200 bg-gray-600';
+                            imageDots.appendChild(dot);
+                        });
+                        
+                        feather.replace();
+                        updateDots();
+                    };
+
+                    imageCarousel.addEventListener('scroll', () => {
+                        updateDots();
                     });
 
-                    removeImageBtn.addEventListener('click', () => {
-                        fileInput.value = '';
-                        previewContainer.classList.add('hidden');
-                        previewImage.src = '#';
+                    // Drag to Scroll Logic
+                    let isDown = false;
+                    let startX;
+                    let scrollLeft;
+
+                    imageCarousel.addEventListener('mousedown', (e) => {
+                        if (uploadedFiles.length <= 1) return;
+                        isDown = true;
+                        imageCarousel.classList.add('cursor-grabbing');
+                        imageCarousel.classList.remove('cursor-grab', 'snap-x', 'snap-mandatory', 'scroll-smooth');
+                        startX = e.pageX - imageCarousel.offsetLeft;
+                        scrollLeft = imageCarousel.scrollLeft;
+                    });
+
+                    const stopDragging = () => {
+                        if (!isDown) return;
+                        isDown = false;
+                        imageCarousel.classList.remove('cursor-grabbing');
+                        imageCarousel.classList.add('cursor-grab', 'scroll-smooth');
+                        if (uploadedFiles.length > 1) imageCarousel.classList.add('snap-x', 'snap-mandatory');
+                    };
+
+                    imageCarousel.addEventListener('mouseleave', stopDragging);
+                    imageCarousel.addEventListener('mouseup', stopDragging);
+
+                    imageCarousel.addEventListener('mousemove', (e) => {
+                        if (!isDown) return;
+                        e.preventDefault();
+                        const x = e.pageX - imageCarousel.offsetLeft;
+                        const walk = (x - startX) * 2; // Scroll speed
+                        imageCarousel.scrollLeft = scrollLeft - walk;
+                    });
+
+                    fileInput.addEventListener('change', function() {
+                        if (this.files.length > 0) {
+                            uploadedFiles.push(...Array.from(this.files));
+                            renderCarousel();
+                            this.value = '';
+                        }
                     });
                 }
 
-                // Emoji Picker Logic
-                const btnToggleEmoji = document.getElementById('btn-toggle-emoji');
-                const emojiPicker = document.getElementById('emoji-picker');
-                const postTextarea = document.getElementById('post-content');
-                
-                if (btnToggleEmoji && emojiPicker && postTextarea) {
-                    btnToggleEmoji.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        emojiPicker.classList.toggle('hidden');
+                // Suggestions Modal & Carousel Logic
+                const viewAllSuggestionsBtn = document.getElementById('view-all-suggestions-btn');
+                const suggestionsModal = document.getElementById('suggestions-modal');
+                const closeSuggestionsModalBtn = document.getElementById('close-suggestions-modal');
+                const suggestionsTrack = document.getElementById('suggestions-track');
+                const prevSuggestionBtn = document.getElementById('prev-suggestion');
+                const nextSuggestionBtn = document.getElementById('next-suggestion');
+
+                if (viewAllSuggestionsBtn && suggestionsModal && suggestionsTrack) {
+                    let currentIndex = 0;
+                    const itemsToShow = 3;
+                    const totalItems = suggestionsTrack.children.length;
+                    const maxIndex = Math.ceil(totalItems / itemsToShow) - 1;
+
+                    const updateCarousel = () => {
+                        const percentage = -(currentIndex * 100);
+                        suggestionsTrack.style.transform = `translateX(${percentage}%)`;
+                        
+                        // Update buttons state
+                        prevSuggestionBtn.disabled = currentIndex === 0;
+                        nextSuggestionBtn.disabled = currentIndex >= maxIndex;
+                        
+                        if (currentIndex === 0) prevSuggestionBtn.classList.add('opacity-50');
+                        else prevSuggestionBtn.classList.remove('opacity-50');
+                        
+                        if (currentIndex >= maxIndex) nextSuggestionBtn.classList.add('opacity-50');
+                        else nextSuggestionBtn.classList.remove('opacity-50');
+                    };
+
+                    viewAllSuggestionsBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        suggestionsModal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                        updateCarousel();
                     });
 
-                    document.querySelector('emoji-picker').addEventListener('emoji-click', event => {
-                        postTextarea.value += event.detail.unicode;
+                    closeSuggestionsModalBtn.addEventListener('click', () => {
+                        suggestionsModal.classList.add('hidden');
+                        document.body.style.overflow = '';
                     });
 
-                    document.addEventListener('click', (e) => {
-                        if (!emojiPicker.contains(e.target) && !btnToggleEmoji.contains(e.target)) {
-                            emojiPicker.classList.add('hidden');
+                    prevSuggestionBtn.addEventListener('click', () => {
+                        if (currentIndex > 0) {
+                            currentIndex--;
+                            updateCarousel();
                         }
+                    });
+
+                    nextSuggestionBtn.addEventListener('click', () => {
+                        if (currentIndex < maxIndex) {
+                            currentIndex++;
+                            updateCarousel();
+                        }
+                    });
+
+                    // Carousel Follow Button Logic
+                    document.querySelectorAll('.follow-btn-carousel').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            this.innerHTML = '<span class="text-white text-sm">A Seguir</span>';
+                            this.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                            this.classList.add('bg-gray-600', 'cursor-default');
+                            this.disabled = true;
+                        });
                     });
                 }
 
