@@ -657,9 +657,8 @@
                                     slots_duration = training_at_slot ? ((training_at_slot.end_time - training_at_slot.start_time) / 1800).to_i : 0
                                 %>
                                 
-                                <td class="border border-gray-600 px-1 py-1 <%= training_at_slot ? 'bg-green-900' : 'bg-gray-800 hover:bg-gray-700' %>">
-                                <% if training_at_slot.present? and !is_training_start %>
-                                <% elsif training_at_slot.present? and is_training_start %>
+                                
+                                <% if training_at_slot.present? and is_training_start %>
                                     <td class="border border-gray-600 px-1 py-1 bg-green-900" rowspan="<%= slots_duration %>">
                                         <div class="text-xs text-white font-semibold p-1" onclick="document.getElementById('modal-edit-training-<%= training_at_slot.id %>').classList.remove('hidden')">>
                                         <%= training_at_slot.club_team.name %>
@@ -772,13 +771,14 @@
                                         </div>
                                     </div>
 
+                                <% elsif training_at_slot.present? and !is_training_start %>
                                 <% else %>
-                                    <%= link_to "+", "#", 
-                                        onclick: "document.getElementById('modal-add-training-#{current_date.to_s}-#{hour}').classList.remove('hidden'); return false;",
-                                        class: "text-gray-500 hover:text-green-400 text-xl" %>
+                                    <td class="border border-gray-600 px-1 py-1 bg-gray-800 hover:bg-gray-700">
+                                        <%= link_to "+", "#", 
+                                            onclick: "document.getElementById('modal-add-training-#{current_date.to_s}-#{hour}').classList.remove('hidden'); return false;",
+                                            class: "text-gray-500 hover:text-green-400 text-xl" %>
+                                    </td>
                                 <% end %>
-                                </td>
-                                
                                 <!-------------------------------------------------------------------------------- MODAL ADICIONAR TREINO ------------------------------------------------------------------------->
 
                                 <div id="modal-add-training-<%= current_date.to_s %>-<%= hour %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

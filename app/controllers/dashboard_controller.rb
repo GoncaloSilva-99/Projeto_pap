@@ -32,8 +32,8 @@ class DashboardController < ApplicationController
 
     if @selected_pitch
       @selected_team = params[:team]
-      @start_date = params[:start_date] ? Date.parse(params[:start_date]) : Date.today.beginning_of_week
-      @end_date = @start_date.end_of_week
+      @start_date = params[:start_date] ? Date.parse(params[:start_date]).beginning_of_week(:monday) : Date.today.beginning_of_week(:monday)
+      @end_date = @start_date + 6.days
       
       @weekly_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: false ).where("start_time >= ? AND start_time <= ?", @start_date, @end_date.end_of_day).order(:start_time)
       @recurring_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: true)
@@ -44,8 +44,8 @@ class DashboardController < ApplicationController
         (@start_date..@end_date).each do |date|
           if date.wday == recurring.weekday
             virtual_training = recurring.dup
-            virtual_training.start_time = date.to_time.change(hour: recurring.start_time.hour, min: recurring.start_time.min)
-            virtual_training.end_time = date.to_time.change(hour: recurring.end_time.hour, min: recurring.end_time.min)
+            virtual_training.start_time = date.in_time_zone('Lisbon').change(hour: recurring.start_time.hour, min: recurring.start_time.min)
+            virtual_training.end_time = date.in_time_zone('Lisbon').change(hour: recurring.end_time.hour, min: recurring.end_time.min)
             virtual_training.id = recurring.id 
             @all_trainings << virtual_training
           end

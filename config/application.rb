@@ -16,6 +16,9 @@ module ProjetoPap
     config.i18n.default_locale = :pt
     config.i18n.fallbacks = [:en]
 
+    config.time_zone = 'Lisbon'
+    config.active_record.default_timezone = :local
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
