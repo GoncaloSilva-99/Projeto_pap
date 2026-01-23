@@ -11,4 +11,4 @@ Encontrar imagem das zonas
 Testar modals com o design do treino
 mudar a cor da marcação do treino para algo melhor
 Pensar em adicionar parte de "outros" para adicionar arrecadações, bar e assim
-    
+Fazer com que dê para desmarcar um treino recorrente (só um ou eliminar todos)
