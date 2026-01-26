@@ -500,6 +500,8 @@
                             </div>
                         </div>
 
+                        
+
                         <!-------------------------------------------------------------------------------- MODAL EDITAR CAMPO ------------------------------------------------------------------------->
                         
                         <div id="modal-editar-campo-<%= cp.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -601,7 +603,7 @@
                 <% if @selected_pitch %>
                 <div class="mt-12 bg-gray-800 rounded-xl p-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold text-yellow-400"> Calendário - <%= ClubPitch.find(@selected_pitch).name %> </h2>
+                        <h2 class="text-2xl font-bold text-yellow-400"> Calendário Semanal - <%= ClubPitch.find(@selected_pitch).name %> </h2>
                         
                         <div class="flex items-center gap-2">
                             <div id="calendar-navigation" class="flex gap-2 hidden">
@@ -659,30 +661,42 @@
                                 
                                 
                                 <% if training_at_slot.present? and is_training_start %>
-                                    <td class="border border-gray-600 px-1 py-1 bg-green-900" rowspan="<%= slots_duration %>">
-                                        <div class="text-xs text-white font-semibold p-1" onclick="document.getElementById('modal-edit-training-<%= training_at_slot.id %>').classList.remove('hidden')">>
-                                        <%= training_at_slot.club_team.name %>
+                                    <td class="px-3 py-2 bg-gradient-to-br from-blue-700 to-blue-950 hover:from-blue-600 hover:to-blue-900  shadow-xl clickable transition-all duration-300" rowspan="<%= slots_duration %>" data-modal-target="modal-edit-training-<%= training_at_slot.id %>" data-modal-toggle="modal-edit-training-<%= training_at_slot.id %>" >
+                                        
+                                        <% if training_at_slot.name.present? %>
+                                            <span class="text-lg text-white font-bold p-1 drop-shadow-lg"><%= training_at_slot.name %></span>
+                                        <% end %>
+
+                                        <div class="text-xs font-semibold p-1">
+                                            <span class="text-gray-100 font-bold"><%= training_at_slot.club_team.name %></span>
                                         <br>
-                                        <span class="text-gray-300">
+
+                                        <span class="text-gray-200 font-bold">
                                             <%= training_at_slot.start_time.strftime("%H:%M") %> - <%= training_at_slot.end_time.strftime("%H:%M") %>
                                         </span>
 
                                         <% if training_at_slot.pitch_zone.present? %>
-                                            <br><span class="text-orange-300 text-xs"><%= training_at_slot.pitch_zone %></span>
+                                            <br><span class="text-blue-100 text-xs font-medium font-bold"><%= training_at_slot.pitch_zone %></span>
                                         <% end %>
-                                        
+
+                                        <% if training_at_slot.club_locker_room.present? %>
+                                            <br><span class="text-rose-400 font-medium font-bold"> <%= training_at_slot.club_locker_room.name %> </span>
+                                        <% end %>
+
                                         <% if training_at_slot.recurring %>
-                                            <br><span class="text-yellow-400 text-xs">♻ Recorrente</span>
+                                            <br><span class="text-yellow-300 text-xs font-medium font-bold">♻ Recorrente</span>
                                         <% end %>
+
+                                        
                                         </div>
                                     </td>
 
                                 <!-------------------------------------------------------------------------------- MODAL EDITAR/APAGAR TREINO ------------------------------------------------------------------------->
-                                    <div id="modal-edit-training-<%= training_at_slot.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onclick="if(event.target === this) this.classList.add('hidden')">
+                                    <div id="modal-edit-training-<%= training_at_slot.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                                         <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
                                             <div class="flex justify-between items-center mb-4">
                                                 <h3 class="text-xl font-bold text-white">Editar Treino</h3>
-                                                <button onclick="document.getElementById('modal-edit-training-<%= training_at_slot.id %>').classList.add('hidden')" 
+                                                <button data-modal-hide="modal-edit-training-<%= training_at_slot.id %>" 
                                                         class="text-gray-400 hover:text-white">
                                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -697,6 +711,11 @@
                                                     <label class="block text-sm font-medium text-gray-400 mb-2">Data e Hora Início</label>
                                                     <p class="text-white"><%= training_at_slot.start_time.strftime("%d/%m/%Y às %H:%M") %></p>
                                                     <%= f.hidden_field :start_time, value: training_at_slot.start_time %>
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label class="block text-sm font-medium text-gray-400 mb-2">Nome</label>
+                                                    <%= f.text_field :name, class: "w-full bg-gray-700 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", value: training_at_slot.name, required: true%>
                                                 </div>
                                                 
                                                 <div class="mb-4">
@@ -734,7 +753,7 @@
                                                         <p class="text-xs text-gray-400 mt-1">Reserva o balneário depois do treino terminar</p>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="mb-4">
                                                     <label class="block text-sm font-medium text-gray-400 mb-2">Duração</label>
                                                     <%= f.select :end_time, 
@@ -761,27 +780,51 @@
                                                 </div>
                                                 
                                                 <div class="flex gap-3">
-                                                    <%= button_to "Apagar", club_team_training_path(training_at_slot, sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), 
-                                                        method: :delete,
-                                                        data: { confirm: "Tem certeza que deseja apagar este treino?" },
-                                                        class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium" %>
-                                                    <%= f.submit "Guardar Alterações", class: "flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium" %>
+                                                    <button type="submit" class= "clickable flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium"> Guardar Alterações </button>
+                                                    <% end %>
+                                                    <button data-modal-target="modal-delete-training-<%= training_at_slot.id %>" data-modal-toggle="modal-delete-training-<%= training_at_slot.id %>" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium"> Apagar</button>
                                                 </div>
+                                        </div>
+                                    </div>
+
+                                <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO APAGAR TREINO ------------------------------------------------------------------------->   
+
+                                <div id="modal-delete-training-<%= training_at_slot.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                                        <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                            <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                            </svg>
+                                        </div>
+                                        <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                                        <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar o evento da equipa <% training_at_slot.club_team %> a <%= training_at_slot.start_time.strftime("%d/%m/%Y às %H:%M") %> ?  </p>
+                                        <div class="flex gap-3">
+                                            <button data-modal-hide="modal-delete-training-<%= training_at_slot.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                                Cancelar
+                                            </button>
+                                            <button class= "flex-1 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors font-medium"> Ainda não faço nada <button>
+                                            <%= button_to club_team_training_path(training_at_slot, sport: @selected_sport, ct: @selected_ct, pitch: @selected_pitch), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                                Apagar Treino
                                             <% end %>
                                         </div>
                                     </div>
+                                </div>
 
                                 <% elsif training_at_slot.present? and !is_training_start %>
                                 <% else %>
                                     <td class="border border-gray-600 px-1 py-1 bg-gray-800 hover:bg-gray-700">
-                                        <%= link_to "+", "#", 
-                                            onclick: "document.getElementById('modal-add-training-#{current_date.to_s}-#{hour}').classList.remove('hidden'); return false;",
+                                        <%= link_to "+", "#",
+                                            data: {
+                                                modal_target: "modal-add-training-#{current_date.to_s}-#{hour}",
+                                                modal_toggle: "modal-add-training-#{current_date.to_s}-#{hour}"
+                                            },
                                             class: "text-gray-500 hover:text-green-400 text-xl" %>
                                     </td>
+
                                 <% end %>
                                 <!-------------------------------------------------------------------------------- MODAL ADICIONAR TREINO ------------------------------------------------------------------------->
 
-                                <div id="modal-add-training-<%= current_date.to_s %>-<%= hour %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                <div id="modal-add-training-<%= current_date.to_s %>-<%= hour %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"  tabindex="-1" aria-hidden="true">
                                     <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
                                     <h3 class="text-xl font-bold text-white mb-4">Criar Treino</h3>
                                     <p class="text-gray-400 mb-4">
@@ -795,11 +838,10 @@
                                         <% if @selected_ct %>
                                             <%= f.hidden_field :ct, value: @selected_ct %>
                                         <% end %>
-                                        <%= f.hidden_field :pitch, value: @selected_pitch %>
 
                                         <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-400 mb-2 required">Nome</label>
-                                        <%= f.text_field :name, class: "w-full bg-gray-700 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", value: "Treino", required: true%>
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Nome</label>
+                                            <%= f.text_field :name, class: "w-full bg-gray-700 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", value: "Treino", required: true%>
                                         </div>
 
 
@@ -862,12 +904,13 @@
                                         </div>
                                         
                                         <div class="flex gap-3">
-                                        <button type="button" 
-                                                onclick="document.getElementById('modal-add-training-<%= current_date.to_s %>-<%= hour %>').classList.add('hidden')"
-                                                class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg">
+                                        <button
+                                            type="button"
+                                            class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+                                            data-modal-hide="modal-add-training-<%= current_date.to_s %>-<%= hour %>">
                                             Cancelar
                                         </button>
-                                        <%= f.submit "Criar Treino", class: "flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg clickable   " %>
+                                        <%= f.submit "Criar Treino", class: "flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg clickable" %>
                                         </div>
                                     <% end %>
                                     </div>
