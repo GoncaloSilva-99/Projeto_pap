@@ -52,6 +52,12 @@ class DashboardController < ApplicationController
         end
       end
       
+      # Agrupar treinos por slot de tempo (data + hora início)
+      # Isto ajuda a mostrar treinos lado a lado se existirem na mesma hora
+      @trainings_by_slot = @all_trainings.group_by do |training|
+        training.start_time.strftime("%Y-%m-%d %H:%M")
+      end
+      
       @available_locker_rooms = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct || nil)
       @available_teams = ClubTeam.where(club_profile_id: club_id, sport_id: sport_id)
       @time_slots = (8..23).flat_map { |h| [[h, 0], [h, 30]] }
