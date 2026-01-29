@@ -180,32 +180,32 @@
                                 <% if current_user.club? %>
                                     <% @club_obj = ClubProfile.find(current_user.club_profile.id) %>
                                     <%= link_to club_profile_path(@club_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
-                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <i data-feather="user" class="mr-2"></i>Perfil 
                                     <% end %>
                                 <% elsif current_user.player? %>
                                     <% @player_obj = PlayerProfile.find(current_user.player_profile.id) %>
                                     <%= link_to player_profile_path(@player_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
-                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <i data-feather="user" class="mr-2"></i>Perfil
                                     <% end %>
                                 <% elsif current_user.board? %>
                                     <% @board_obj = BoardProfile.find(current_user.board_profile.id) %>
                                     <%= link_to board_profile_path(@board_profile), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
-                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <i data-feather="user" class="mr-2"></i>Perfil
                                     <% end %>
                                 <% elsif current_user.coach? %>
                                     <% @coach_obj = CoachProfile.find(current_user.coach_profile.id) %>
                                     <%= link_to coach_profile_path(@coach_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
-                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <i data-feather="user" class="mr-2"></i>Perfil
                                     <% end %>
                                 <% elsif current_user.admin? %>
                                     <% @admin_obj = AdminProfile.find(current_user.admin_profile.id) %>
                                     <%= link_to admin_profile_path(@admin_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
-                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <i data-feather="user" class="mr-2"></i>Perfil
                                     <% end %>
                                 <% elsif current_user.user? %>
                                     <% @user_obj = UserProfile.find(current_user.user_profile.id) %>
                                     <%= link_to user_profile_path(@user_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
-                                    <i data-feather="user" class="mr-2"></i>Perfil </a>
+                                    <i data-feather="user" class="mr-2"></i>Perfil
                                     <% end %>
                                 <% end%>
                                 
@@ -219,11 +219,9 @@
                                     <i data-feather="bar-chart-2" class="mr-2"></i>Estatísticas</a>
                             </li>
                             <li>
-                                <div class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500 dark:active:text-red-500">
-                                    <%= button_to destroy_user_session_path, method: :delete, class: "flex items-center text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500 dark:active:text-red-500" do %>
-                                        <i data-feather="log-out" class="mr-2"></i>Log out</a>
-                                    <% end %>
-                                </div>
+                                <%= button_to destroy_user_session_path, method: :delete, form_class: "w-full", class: "w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500 dark:active:text-red-500" do %>
+                                    <i data-feather="log-out" class="mr-2"></i>Log out
+                                <% end %>
                             </li>
                         </ul>
                     </div>
@@ -1697,7 +1695,7 @@
                         <%= image_tag "default_banner.jpg", alt: "fcporto", class: "w-full h-full object-cover"  %>
                         <div class="absolute -bottom-12 left-6">
                             <div class="w-24 h-24 rounded-full border-4 border-gray-800 overflow-hidden">
-                                <%= image_tag "default_banner.jpg", alt: "fcporto", class: "w-full h-full object-cover"  %>
+                                <%= image_tag "default_pp.jpg", alt: "fcporto", class: "w-full h-full object-cover"  %>
                             </div>
                         </div>
                     </div>
