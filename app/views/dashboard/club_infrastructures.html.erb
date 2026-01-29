@@ -680,9 +680,7 @@
                                             <% full_training = slot_trainings.find { |t| t.all_pitch? } %>
                                             <td class="px-1 py-1" 
                                                 rowspan="<%= slots_duration %>">
-                                                <div class="bg-gradient-to-br from-blue-700 to-blue-950 hover:from-blue-600 hover:to-blue-900 shadow-md rounded p-1 clickable transition-all duration-300 text-center h-full flex flex-col justify-center"
-                                                    data-modal-target="modal-edit-training-<%= full_training.id %>" 
-                                                    data-modal-toggle="modal-edit-training-<%= full_training.id %>">
+                                                <div class="bg-gradient-to-br from-blue-700 to-blue-950 hover:from-blue-600 hover:to-blue-900 shadow-md rounded p-1 transition-all duration-300 hover:-translate-y-1 text-center h-full flex flex-col justify-center relative group">
                                                     
                                                     <% if full_training.name.present? %>
                                                         <div class="text-xs text-white font-bold mb-0.5 truncate"><%= full_training.name %></div>
@@ -702,16 +700,22 @@
                                                             <div class="text-yellow-300 font-medium">♻</div>
                                                         <% end %>
                                                     </div>
+
+                                                    <button
+                                                        type="button"
+                                                        data-modal-target="modal-edit-training-<%= full_training.id %>"
+                                                        data-modal-toggle="modal-edit-training-<%= full_training.id %>"
+                                                        class="absolute inset-0 w-full h-full rounded opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                                                    </button>
                                                 </div>
                                             </td>
                                         
                                         <% elsif has_half_pitch or has_quarter_pitch %>
                                             <td class="px-1 py-1" rowspan="<%= slots_duration %>">
-                                                <div class="grid grid-cols-2 gap-1 h-full">
+                                                <div class="grid grid-cols-2 gap-1 h-full" style="grid-template-rows: repeat(<%= slots_duration %>, minmax(0, 1fr));">
                                                     <% slot_trainings.each do |training| %>
-                                                        <div class="bg-gradient-to-br from-blue-700 to-blue-950 hover:from-blue-600 hover:to-blue-900 rounded shadow-md p-1 clickable transition-all duration-300 cursor-pointer text-center"
-                                                            data-modal-target="modal-edit-training-<%= training.id %>" 
-                                                            data-modal-toggle="modal-edit-training-<%= training.id %>">
+                                                        <div class="bg-gradient-to-br from-blue-700 to-blue-950 hover:from-blue-600 hover:to-blue-900 shadow-md rounded p-1 transition-all duration-300 hover:-translate-y-1 cursor-pointer text-center relative group row-span-full"
+                                                            style="grid-row: span <%= slots_duration %>;">
                                                             
                                                             <div class="text-xs font-bold text-white mb-0.5 truncate"><%= training.name %></div>
                                                             <div class="text-xs text-gray-100 font-bold truncate"><%= training.club_team.name %></div>
@@ -730,29 +734,29 @@
                                                             <% if training.recurring %>
                                                                 <div class="text-xs text-yellow-300 font-medium">♻</div>
                                                             <% end %>
-                                                        </div>
-                                                    <% end %>
-                                                    
 
-                                                    <% if slot_trainings.length < 2 %>
-                                                        <div class="bg-gray-800 hover:bg-gray-700 rounded border border-gray-700 p-1 flex items-center justify-center">
-                                                            <%= link_to "+", "#",
-                                                                data: {
-                                                                    modal_target: "modal-add-training-#{current_date.to_s}-#{hour}",
-                                                                    modal_toggle: "modal-add-training-#{current_date.to_s}-#{hour}"
-                                                                },
-                                                                class: "text-gray-500 hover:text-green-400 text-2xl font-bold" %>
+                                                            <button
+                                                                type="button"
+                                                                data-modal-target="modal-edit-training-<%= training.id %>"
+                                                                data-modal-toggle="modal-edit-training-<%= training.id %>"
+                                                                class="absolute inset-0 w-full h-full rounded opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                                                            </button>
                                                         </div>
                                                     <% end %>
                                                     
-                                                    <% (slots_duration - 1).times do |slot_index| %>
-                                                        <% 2.times do %>
+                                                    <% if slot_trainings.length < 2 %>
+                                                        <% slots_duration.times do |slot_index| %>
+                                                            <% slot_time = current_time + (slot_index * 30.minutes) %>
+                                                            <% slot_hour = slot_time.hour %>
+                                                            <% slot_minute = slot_time.min %>
+                                                            <div class="w-full h-full bg-gray-800 hover:bg-gray-700 rounded border border-gray-700 flex items-center justify-center">
                                                                 <%= link_to "+", "#",
                                                                     data: {
-                                                                        modal_target: "modal-add-training-#{current_date.to_s}-#{hour}",
-                                                                        modal_toggle: "modal-add-training-#{current_date.to_s}-#{hour}"
+                                                                        modal_target: "modal-add-training-#{current_date.to_s}-#{slot_hour}-#{slot_minute}",
+                                                                        modal_toggle: "modal-add-training-#{current_date.to_s}-#{slot_hour}-#{slot_minute}"
                                                                     },
-                                                                    class: "text-gray-500 hover:text-green-400 text-2xl font-bold bg-gray-800 hover:bg-gray-700 rounded border border-gray-700 p-1 flex items-center justify-center" %>
+                                                                    class: "text-gray-500 hover:text-green-400 text-2xl font-bold" %>
+                                                            </div>
                                                         <% end %>
                                                     <% end %>
                                                 </div>
@@ -762,115 +766,124 @@
                                     <% elsif training.present? and !is_training_start %>
                                     <% else %>
                                         <td class="border border-gray-600 px-1 py-1 bg-gray-800 hover:bg-gray-700">
-                                            <%= link_to "+", "#",
-                                                data: {
-                                                    modal_target: "modal-add-training-#{current_date.to_s}-#{hour}",
-                                                    modal_toggle: "modal-add-training-#{current_date.to_s}-#{hour}"
-                                                },
-                                                class: "text-gray-500 hover:text-green-400 text-2xl font-bold bg-gray-800 hover:bg-gray-700 rounded border border-gray-700 p-1 flex items-center justify-center" %>
+                                            <div class="w-full h-full bg-gray-800 hover:bg-gray-700 rounded border border-gray-700 flex items-center justify-center">
+                                                <%= link_to "+", "#",
+                                                    data: {
+                                                        modal_target: "modal-add-training-#{current_date.to_s}-#{hour}",
+                                                        modal_toggle: "modal-add-training-#{current_date.to_s}-#{hour}"
+                                                    },
+                                                    class: "text-gray-500 hover:text-green-400 text-2xl font-bold" %>
+                                            </div>
                                         </td>
                                     <% end %>
 
-                                    <!-------------------------------------------------------------------------------- MODAL ADICIONAR TREINO ------------------------------------------------------------------------->
-                                    <div id="modal-add-training-<%= current_date.to_s %>-<%= hour %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"  tabindex="-1" aria-hidden="true">
-                                        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-                                        <h3 class="text-xl font-bold text-white mb-4">Criar Treino</h3>
-                                        <p class="text-gray-400 mb-4">
-                                            <%= current_date.strftime("%A, %d/%m/%Y") %> às <%= sprintf("%02d:00", hour) %>
-                                        </p>
-                                        
-                                        <%= form_with(url: club_team_trainings_path, method: :post, local: true, scope: :club_team_training) do |f| %>
-                                            <%= f.hidden_field :club_pitch_id, value: @selected_pitch %>
-                                            <%= f.hidden_field :start_time, value: current_time %>
-                                            <%= f.hidden_field :sport, value: @selected_sport %>
-                                            <% if @selected_ct %>
-                                                <%= f.hidden_field :ct, value: @selected_ct %>
-                                            <% end %>
 
-                                            <div class="mb-4">
-                                                <label class="block text-sm font-medium text-gray-400 mb-2">Nome</label>
-                                                <%= f.text_field :name, class: "w-full bg-gray-700 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", value: "Treino", required: true%>
-                                            </div>
-
-                                            <div class="mb-4">  
-                                            <label class="block text-sm font-medium text-gray-400 mb-2">Equipa</label>
-                                            <%= f.select :club_team_id, @available_teams.map { |t| [t.name, t.id] }, {}, class: "w-full bg-gray-700 text-white rounded px-3 py-2" %>
-                                            </div>
-                                            
-                                            <div class="mb-4">
-                                                <label class="block text-sm font-medium text-gray-400 mb-2">Balneário </label>
-                                                <%= f.select :club_locker_room_id, 
-                                                    @available_locker_rooms.map { |lr| [lr.name, lr.id] }, 
-                                                    { include_blank: "Sem balneário" }, 
-                                                    class: "w-full bg-gray-700 text-white rounded px-3 py-2",
-                                                    onchange: "toggleLockerRoomTimes(this, 'create-#{current_date.to_s}-#{hour}')" %>
-                                            </div>
-
-                                            <div id="locker-room-times-create-<%= current_date.to_s %>-<%= hour %>" class="hidden space-y-4 mb-4 p-4 bg-gray-700 rounded-lg">
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-400 mb-2">Tempo antes do treino (minutos)</label>
-                                                    <%= f.select :locker_room_time_before, 
-                                                        [[0, 0], [15, 15], [30, 30], [45, 45], [60, 60]], 
-                                                        { selected: 0 },
-                                                        class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
-                                                    <p class="text-xs text-gray-400 mt-1">Reserva o balneário antes do treino começar</p>
-                                                </div>
-                                                
-                                                <div>
-                                                    <label class="block text-sm font-medium text-gray-400 mb-2">Tempo depois do treino (minutos)</label>
-
-                                                    <%= f.select :locker_room_time_after, 
-                                                        [[0, 0], [15, 15], [30, 30], [45, 45], [60, 60]], 
-                                                        { selected: 0 },
-                                                        class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
-                                                    <p class="text-xs text-gray-400 mt-1">Reserva o balneário depois do treino terminar</p>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="mb-4">
-                                            <label class="block text-sm font-medium text-gray-400 mb-2">Duração (horas)</label>
-                                            <%= f.select :end_time, 
-                                                [[" 30 min", current_time + 30.minutes], 
-                                                ["1h", current_time + 1.hour], 
-                                                ["1h30", current_time + 90.minutes],
-                                                ["2h", current_time + 2.hours]], 
-                                                {}, 
-                                                class: "w-full bg-gray-700 text-white rounded px-3 py-2" %>
-                                            </div>
-
-                                            <div class="mb-4">
-                                                <label class="block text-sm font-medium text-gray-400 mb-2 required-label">Zona do Campo</label>
-                                                <%= f.select :pitch_zone, @available_zones, { include_blank: false }, class: "w-full bg-gray-700 text-white rounded px-3 py-2 border border-gray-600 focus:border-orange-400 focus:ring-1 focus:ring-orange-400" %>
-                                                <p class="text-xs text-gray-500 mt-1"> Selecione a zona do campo para este treino </p>
-                                            </div>
-                                            
-
-                                            <div class="mb-4">
-                                            <label class="flex items-center text-gray-400">
-                                                <%= f.check_box :recurring, class: "mr-2" %>
-                                                Treino recorrente (todas as semanas)
-                                            </label>
-                                            </div>
-                                            
-
-                                            <div class="flex gap-3">
-                                            <button
-                                                type="button"
-                                                class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
-                                                data-modal-hide="modal-add-training-<%= current_date.to_s %>-<%= hour %>">
-                                                Cancelar
-                                            </button>
-                                            <%= f.submit "Criar Treino", class: "flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg clickable" %>
-                                            </div>
-                                        <% end %>
-                                        </div>
-                                    </div>
                                 <% end %>
                                 </tr>
                             <% end %>
                             </tbody>
                         </table>
                         </div>
+
+                        <!-- Modals para todos os slots de treino (gerados uma única vez para toda a semana) -->
+                        <% (@start_date..@end_date).each do |date| %>
+                            <% @time_slots.each do |slot_hour, slot_minute| %>
+                                <% slot_time = date.in_time_zone('Lisbon').change(hour: slot_hour, min: slot_minute) %>
+                                <div id="modal-add-training-<%= date.to_s %>-<%= slot_hour %>-<%= slot_minute %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"  tabindex="-1" aria-hidden="true">
+                                    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+                                    <h3 class="text-xl font-bold text-white mb-4">Criar Treino</h3>
+                                    <p class="text-gray-400 mb-4">
+                                        <%= date.strftime("%A, %d/%m/%Y") %> às <%= sprintf("%02d:%02d", slot_hour, slot_minute) %>
+                                    </p>
+                                    
+                                    <%= form_with(url: club_team_trainings_path, method: :post, local: true, scope: :club_team_training) do |f| %>
+                                        <%= f.hidden_field :club_pitch_id, value: @selected_pitch %>
+                                        <%= f.hidden_field :start_time, value: slot_time %>
+                                        <%= f.hidden_field :sport, value: @selected_sport %>
+                                        <% if @selected_ct %>
+                                            <%= f.hidden_field :ct, value: @selected_ct %>
+                                        <% end %>
+
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Nome</label>
+                                            <%= f.text_field :name, class: "w-full bg-gray-700 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent", value: "Treino", required: true%>
+                                        </div>
+
+                                        <div class="mb-4">  
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Equipa</label>
+                                        <%= f.select :club_team_id, @available_teams.map { |t| [t.name, t.id] }, {}, class: "w-full bg-gray-700 text-white rounded px-3 py-2" %>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-400 mb-2">Balneário </label>
+                                            <%= f.select :club_locker_room_id, 
+                                                @available_locker_rooms.map { |lr| [lr.name, lr.id] }, 
+                                                { include_blank: "Sem balneário" }, 
+                                                class: "w-full bg-gray-700 text-white rounded px-3 py-2",
+                                                onchange: "toggleLockerRoomTimes(this, 'create-#{date.to_s}-#{slot_hour}-#{slot_minute}')" %>
+                                        </div>
+
+                                        <div id="locker-room-times-create-<%= date.to_s %>-<%= slot_hour %>-<%= slot_minute %>" class="hidden space-y-4 mb-4 p-4 bg-gray-700 rounded-lg">
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-400 mb-2">Tempo antes do treino (minutos)</label>
+                                                <%= f.select :locker_room_time_before, 
+                                                    [[0, 0], [15, 15], [30, 30], [45, 45], [60, 60]], 
+                                                    { selected: 0 },
+                                                    class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
+                                                <p class="text-xs text-gray-400 mt-1">Reserva o balneário antes do treino começar</p>
+                                            </div>
+                                            
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-400 mb-2">Tempo depois do treino (minutos)</label>
+
+                                                <%= f.select :locker_room_time_after, 
+                                                    [[0, 0], [15, 15], [30, 30], [45, 45], [60, 60]], 
+                                                    { selected: 0 },
+                                                    class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
+                                                <p class="text-xs text-gray-400 mt-1">Reserva o balneário depois do treino terminar</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-400 mb-2">Duração (horas)</label>
+                                        <%= f.select :end_time, 
+                                            [[" 30 min", slot_time + 30.minutes], 
+                                            ["1h", slot_time + 1.hour], 
+                                            ["1h30", slot_time + 90.minutes],
+                                            ["2h", slot_time + 2.hours]], 
+                                            {}, 
+                                            class: "w-full bg-gray-700 text-white rounded px-3 py-2" %>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-gray-400 mb-2 required-label">Zona do Campo</label>
+                                            <%= f.select :pitch_zone, @available_zones, { include_blank: false }, class: "w-full bg-gray-700 text-white rounded px-3 py-2 border border-gray-600 focus:border-orange-400 focus:ring-1 focus:ring-orange-400" %>
+                                            <p class="text-xs text-gray-500 mt-1"> Selecione a zona do campo para este treino </p>
+                                        </div>
+                                        
+
+                                        <div class="mb-4">
+                                        <label class="flex items-center text-gray-400">
+                                            <%= f.check_box :recurring, class: "mr-2" %>
+                                            Treino recorrente (todas as semanas)
+                                        </label>
+                                        </div>
+                                        
+
+                                        <div class="flex gap-3">
+                                        <button
+                                            type="button"
+                                            class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+                                            data-modal-hide="modal-add-training-<%= date.to_s %>-<%= slot_hour %>-<%= slot_minute %>">
+                                            Cancelar
+                                        </button>
+                                        <%= f.submit "Criar Treino", class: "flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg clickable" %>
+                                        </div>
+                                    <% end %>
+                                    </div>
+                                </div>
+                            <% end %>
+                        <% end %>
 
                         <% @all_trainings.uniq { |t| t.id }.each do |training| %>
                             <div id="modal-edit-training-<%= training.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
