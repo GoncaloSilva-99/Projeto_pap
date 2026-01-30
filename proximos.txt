@@ -11,9 +11,5 @@ Fazer com que dê para desmarcar um treino recorrente (só um ou eliminar todos)
 Dar para marcar treino um em cima do outro desde que as zonas não coincidam
 Quando seleciono um treino como recorrente, ele apaga - Dar fix
 não pode haver treinos da mesma equipa ao mesmo dia e hora
-
-Continua com vários problemas, mas vamos aos visuais primeiro:
-
-o + quando não há treinos marcados está, por vezes, a ficar muito longe das bordas, não é suposto
-quero que as animações dos treinos de meio campo e quarto de campo sejam iguais as do campo inteiro
-o card de campo inteiro está a ficar também muito longe das bordas verticalmente
+Fazer com que um treino possa ser cancelado (1 vez se for recorrente)
+verificação de sobreposição está a dar mal

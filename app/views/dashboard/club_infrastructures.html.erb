@@ -1,5 +1,10 @@
 
     <body class="min-h-screen flex text-white bg-gray-900">
+  <style>
+    /* Pure-CSS modals using :target (no JS needed) */
+    .modal { display: none; }
+    .modal:target { display: flex !important; }
+  </style>
         <!-------------------------------------------------------------------------------- NOME E LOGO DO CLUBE ------------------------------------------------------------------------->
         <div class="w-64 bg-slate-800 shadow-xl min-h-screen flex flex-col border-r border-slate-700">
             <!-- Logo e nome do clube -->
@@ -83,12 +88,12 @@
                                     <% end %>
                                 <% end %>
                                 <% if @selected_sport == 'football' %>
-                                    <button data-modal-target="modal-add-ct" data-modal-toggle="modal-add-ct">
+                                    <a href="#modal-add-ct" onclick="event.stopPropagation();" class="inline-block">
                                         <div class="flex items-center ml-8 py-4 text-slate-400 hover:text-orange-400 transition-all duration-200">
                                             <i data-feather="plus" class="w-3 h-3 mr-2"></i>
                                             <span class="text-xs">Criar centro de treinos</span>
                                         </div>
-                                    </button>
+                                    </a>
                                 <% end %>
                             </div>
                         <% end %>
@@ -117,12 +122,12 @@
                                     <% end %>
                                 <% end %>
                                 <% if @selected_sport == 'handball' %>
-                                    <button data-modal-target="modal-add-ct" data-modal-toggle="modal-add-ct">
+                                    <a href="#modal-add-ct" onclick="event.stopPropagation();" class="inline-block">
                                         <div class="flex items-center ml-8 py-4 text-slate-400 hover:text-orange-400 transition-all duration-200">
                                             <i data-feather="plus" class="w-3 h-3 mr-2"></i>
                                             <span class="text-xs">Criar centro de treinos</span>
                                         </div>
-                                    </button>
+                                    </a>
                                 <% end %>
                             </div>
                         <% end %>
@@ -194,12 +199,12 @@
                     <div class="relative bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
                 <% end %> 
                     <div class="absolute top-2 right-2 flex gap-2 z-10">
-                        <button data-modal-target="modal-editar-ct-<%= ct.id %>" data-modal-toggle="modal-editar-ct-<%= ct.id %>" class="bg-gray-900/80 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                        <a href="#modal-editar-ct-<%= ct.id %>" class="bg-gray-900/80 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation();">
                             <i data-feather="edit" class="w-4 h-4"></i>
-                        </button>
-                        <button data-modal-target="modal-apagar-ct-<%= ct.id %>" data-modal-toggle="modal-apagar-ct-<%= ct.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                        </a>
+                        <a href="#modal-apagar-ct-<%= ct.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation();">
                             <i data-feather="trash-2" class="w-4 h-4"></i>
-                        </button>
+                        </a>
                     </div>
                     <% if ct.id != @selected_ct %>
                         <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: ct.id) do %>
@@ -240,7 +245,7 @@
                         num_locker_rooms_this_ct = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: ct.id).count
                     %>
                     <% if num_pitches_this_ct == 0 and num_locker_rooms_this_ct == 0 %>
-                        <div id="modal-apagar-ct-<%= ct.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div id="modal-apagar-ct-<%= ct.id %>" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
                             <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
                                 <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
                                     <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -260,7 +265,7 @@
                             </div>
                         </div>
                     <% else %>
-                        <div id="modal-apagar-ct-<%= ct.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div id="modal-apagar-ct-<%= ct.id %>" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
                             <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
                                 <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
                                     <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -287,7 +292,7 @@
                                     <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-blue-900">
                                         <i data-feather="edit-3" class="w-6 h-6 text-white"></i>
                                         <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Editar CT </h3>
-                                        <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-editar-ct-<%= ct.id %>">
+                                        <a href="#" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400">
                                             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                                             </svg>
@@ -371,9 +376,9 @@
                         <span>Campos ( <%= @club_pitches_results&.any? ? @club_pitches_results.total_count : "0" %> )</span>
                     </h3>
                     <div class="flex items-center gap-4">
-                            <button data-modal-target="modal-add-campo" data-modal-toggle="modal-add-campo" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
-                                <i class="fa-regular fa-plus w-4 h-4"></i>
-                            </button>
+                        <a href="#modal-add-campo" onclick="event.stopPropagation();" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                            <i class="fa-regular fa-plus w-4 h-4"></i>
+                        </a>
                     </div>
                 </div>
 
@@ -387,21 +392,21 @@
                     <% end %> 
                         <div class="absolute top-2 right-2 flex gap-2 z-10">
                             <% if !@selected_ct and @base_num_club_ct != 0 %>
-                                <button data-modal-target="modal-adicionar-campo-a-ct-<%= cp.id %>" data-modal-toggle="modal-adicionar-campo-a-ct-<%= cp.id %>" class="bg-gray-900/80 hover:bg-blue-600 text-blue-600 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                                <a href="#modal-adicionar-campo-a-ct-<%= cp.id %>" class="bg-gray-900/80 hover:bg-blue-600 text-blue-600 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation();">
                                     <i data-feather="plus" class="w-4 h-4"></i>
-                                </button>
+                                </a>
                             <% end %>
                             <% if @selected_ct %>
-                                <button data-modal-target="modal-remover-campo-do-ct-<%= cp.id %>" data-modal-toggle="modal-remover-campo-do-ct-<%= cp.id %>" class="bg-gray-900/80 hover:bg-red-400 text-red-300 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                                <a href="#modal-remover-campo-do-ct-<%= cp.id %>" class="bg-gray-900/80 hover:bg-red-400 text-red-300 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation();">
                                     <i data-feather="minus" class="w-4 h-4"></i>
-                                </button>
+                                </a>
                             <% end %>
-                            <button data-modal-target="modal-editar-campo-<%= cp.id %>" data-modal-toggle="modal-editar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                            <a href="#modal-editar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation();">
                                 <i data-feather="edit" class="w-4 h-4"></i>
-                            </button>
-                            <button data-modal-target="modal-apagar-campo-<%= cp.id %>" data-modal-toggle="modal-apagar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation(); event.preventDefault();">
+                            </a>
+                            <a href="#modal-apagar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" onclick="event.stopPropagation();">
                                 <i data-feather="trash-2" class="w-4 h-4"></i>
-                            </button>
+                            </a>
                         </div>
                         <% if cp.id != @selected_pitch %>
                             <% if @selected_ct %>
@@ -480,7 +485,7 @@
                     </div>
                             <!-------------------------------------------------------------------------------- MODAL APAGAR CAMPO ------------------------------------------------------------------------->   
 
-                            <div id="modal-apagar-campo-<%= cp.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div id="modal-apagar-campo-<%= cp.id %>" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
                                 <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
                                     <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
                                         <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -490,9 +495,9 @@
                                     <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
                                     <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar o campo "<b><%= cp.name %></b>"?  </p>
                                     <div class="flex gap-3">
-                                        <button data-modal-hide="modal-apagar-campo-<%= cp.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                        <a href="#" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
                                             Cancelar
-                                        </button>
+                                        </a>
                                         <%= button_to club_pitch_path(cp, sport: @selected_sport, ct: @selected_ct), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
                                             Apagar Campo
                                         <% end %>
@@ -574,7 +579,7 @@
 
                             <!-------------------------------------------------------------------------------- MODAL REMOVER CAMPO DO CT ------------------------------------------------------------------------->
 
-                            <div id="modal-remover-campo-do-ct-<%= cp.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div id="modal-remover-campo-do-ct-<%= cp.id %>" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
                                 <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
                                     <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
                                         <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -584,9 +589,9 @@
                                     <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
                                     <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende remover o campo <b><%= cp.name %></b> do Centro de Treinos?  </p>
                                     <div class="flex gap-3">
-                                        <button data-modal-hide="modal-remover-campo-do-ct-<%= cp.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                        <a href="#" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
                                             Cancelar
-                                        </button>
+                                        </a>
                                         <%= button_to remove_from_ct_club_pitch_path(cp, sport: @selected_sport), method: :patch, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
                                             Remover Campo
                                         <% end %>
@@ -627,7 +632,7 @@
                         </div>
 
                         <div class="overflow-x-auto">
-                        <table class="w-full border-collapse hidden" id="calendar-table">
+                        <table class="w-full border-collapse hidden table-auto" id="calendar-table">
                             <thead>
                             <tr class="bg-gray-700">
                                 <th class="border border-gray-600 px-2 py-3 text-gray-300 w-20">Hora</th>
@@ -701,27 +706,21 @@
                                                         <% end %>
                                                     </div>
 
-                                                    <button
-                                                        type="button"
-                                                        data-modal-target="modal-edit-training-<%= full_training.id %>"
-                                                        data-modal-toggle="modal-edit-training-<%= full_training.id %>"
-                                                        class="absolute inset-0 w-full h-full rounded opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                                                    </button>
+                                                    <a
+                                                        href="#modal-edit-training-<%= full_training.id %>"
+                                                        class="absolute inset-0 w-full h-full rounded opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center" onclick="event.stopPropagation();">
+                                                    </a>
                                                 </div>
                                             </td>
                                         
                                         <% elsif has_half_pitch or has_quarter_pitch %>
-                                            <td class="px-1 py-1" rowspan="<%= slots_duration %>">
-                                                <div class="grid grid-cols-2 gap-1 h-full" style="grid-template-rows: repeat(<%= slots_duration %>, minmax(0, 1fr));">
+                                            <td class="px-0.5 py-1 w-0" rowspan="<%= slots_duration %>">
+                                                <div class="grid grid-cols-2 gap-1 h-full">
                                                     <% slot_trainings.each do |training| %>
                                                         <div class="bg-gradient-to-br from-blue-700 to-blue-950 hover:from-blue-600 hover:to-blue-900 shadow-md rounded p-1 transition-all duration-300 hover:-translate-y-1 cursor-pointer text-center relative group row-span-full"
                                                             style="grid-row: span <%= slots_duration %>;">
                                                             
-                                                            <div class="text-xs font-bold text-white mb-0.5 truncate"><%= training.name %></div>
-                                                            <div class="text-xs text-gray-100 font-bold truncate"><%= training.club_team.name %></div>
-                                                            <div class="text-xs text-gray-200 font-bold">
-                                                                <%= training.start_time.strftime("%H:%M") %>
-                                                            </div>
+                                                            <div class="text-xs font-bold text-white mb-0.5 truncate"><%= training.name %> - <%= training.club_team.name %></div>
 
                                                             <% if training.pitch_zone.present? %>
                                                                 <div class="text-xs text-blue-100 font-medium truncate"><%= training.pitch_zone %></div>
@@ -735,12 +734,10 @@
                                                                 <div class="text-xs text-yellow-300 font-medium">♻</div>
                                                             <% end %>
 
-                                                            <button
-                                                                type="button"
-                                                                data-modal-target="modal-edit-training-<%= training.id %>"
-                                                                data-modal-toggle="modal-edit-training-<%= training.id %>"
-                                                                class="absolute inset-0 w-full h-full rounded opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                                                            </button>
+                                                            <a
+                                                                href="#modal-edit-training-<%= training.id %>"
+                                                                class="absolute inset-0 w-full h-full rounded opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center" onclick="event.stopPropagation();">
+                                                            </a>
                                                         </div>
                                                     <% end %>
                                                     
@@ -750,12 +747,7 @@
                                                             <% slot_hour = slot_time.hour %>
                                                             <% slot_minute = slot_time.min %>
                                                             <div class="w-full h-full bg-gray-800 hover:bg-gray-700 rounded border border-gray-700 flex items-center justify-center">
-                                                                <%= link_to "+", "#",
-                                                                    data: {
-                                                                        modal_target: "modal-add-training-#{current_date.to_s}-#{slot_hour}-#{slot_minute}",
-                                                                        modal_toggle: "modal-add-training-#{current_date.to_s}-#{slot_hour}-#{slot_minute}"
-                                                                    },
-                                                                    class: "text-gray-500 hover:text-green-400 text-2xl font-bold" %>
+                                                                <%= link_to "+", "#modal-add-training-#{current_date.to_s}-#{slot_hour}-#{slot_minute}", class: "text-gray-500 hover:text-green-400 text-2xl font-bold" %>
                                                             </div>
                                                         <% end %>
                                                     <% end %>
@@ -767,12 +759,7 @@
                                     <% else %>
                                         <td class="border border-gray-600 px-1 py-1 bg-gray-800 hover:bg-gray-700">
                                             <div class="w-full h-full bg-gray-800 hover:bg-gray-700 rounded border border-gray-700 flex items-center justify-center">
-                                                <%= link_to "+", "#",
-                                                    data: {
-                                                        modal_target: "modal-add-training-#{current_date.to_s}-#{hour}",
-                                                        modal_toggle: "modal-add-training-#{current_date.to_s}-#{hour}"
-                                                    },
-                                                    class: "text-gray-500 hover:text-green-400 text-2xl font-bold" %>
+                                                        <%= link_to "+", "#modal-add-training-#{current_date.to_s}-#{hour}-#{minute}", class: "text-gray-500 hover:text-green-400 text-2xl font-bold" %>
                                             </div>
                                         </td>
                                     <% end %>
@@ -789,7 +776,7 @@
                         <% (@start_date..@end_date).each do |date| %>
                             <% @time_slots.each do |slot_hour, slot_minute| %>
                                 <% slot_time = date.in_time_zone('Lisbon').change(hour: slot_hour, min: slot_minute) %>
-                                <div id="modal-add-training-<%= date.to_s %>-<%= slot_hour %>-<%= slot_minute %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"  tabindex="-1" aria-hidden="true">
+                                <div id="modal-add-training-<%= date.to_s %>-<%= slot_hour %>-<%= slot_minute %>" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal"  tabindex="-1" aria-hidden="true">
                                     <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
                                     <h3 class="text-xl font-bold text-white mb-4">Criar Treino</h3>
                                     <p class="text-gray-400 mb-4">
@@ -871,12 +858,7 @@
                                         
 
                                         <div class="flex gap-3">
-                                        <button
-                                            type="button"
-                                            class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
-                                            data-modal-hide="modal-add-training-<%= date.to_s %>-<%= slot_hour %>-<%= slot_minute %>">
-                                            Cancelar
-                                        </button>
+                                        <a href="#" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg">Cancelar</a>
                                         <%= f.submit "Criar Treino", class: "flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg clickable" %>
                                         </div>
                                     <% end %>
@@ -886,15 +868,15 @@
                         <% end %>
 
                         <% @all_trainings.uniq { |t| t.id }.each do |training| %>
-                            <div id="modal-edit-training-<%= training.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div id="modal-edit-training-<%= training.id %>" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
                                 <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
                                     <div class="flex justify-between items-center mb-4">
                                         <h3 class="text-xl font-bold text-white">Editar Treino</h3>
-                                        <button data-modal-hide="modal-edit-training-<%= training.id %>" class="text-gray-400 hover:text-white">
+                                        <a href="#" class="text-gray-400 hover:text-white">
                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                             </svg>
-                                        </button>
+                                        </a>
                                     </div>
 
                                     <%= form_with(url: club_team_training_path(training), method: :patch, local: true, scope: :club_team_training) do |f| %>
@@ -949,15 +931,15 @@
                                         </div>
                                         
                                         <div class="flex gap-3">
-                                            <button type="submit" class="clickable flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">Guardar</button>
-                                            <button data-modal-target="modal-delete-training-<%= training.id %>" data-modal-toggle="modal-delete-training-<%= training.id %>" type="button" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium">Apagar</button>
+                                            <a href="#modal-delete-training-<%= training.id %>" class="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium" onclick="event.stopPropagation();">Apagar</a>
+                                            <button type="submit" class="clickable flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium">Editar Treino</button>
                                         </div>
                                     <% end %>
                                 </div>
                             </div>
 
                             <!-- Modal Confirmação Apagar -->
-                            <div id="modal-delete-training-<%= training.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div id="modal-delete-training-<%= training.id %>" class="fixed inset-0 z-60 flex items-center justify-center bg-black bg-opacity-50 modal">
                                 <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700">
                                     <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
                                         <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -967,7 +949,7 @@
                                     <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
                                     <p class="text-gray-300 text-center mb-6">Tem a certeza que pretende apagar o treino da equipa <strong><%= training.club_team.name %></strong> a <%= training.start_time.strftime("%d/%m/%Y às %H:%M") %>?</p>
                                     <div class="flex gap-3">
-                                        <button data-modal-hide="modal-delete-training-<%= training.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium">Cancelar</button>
+                                        <a href="#" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium">Cancelar</a>
                                         <%= button_to club_team_training_path(training, sport: @selected_sport, ct: @selected_ct, pitch: @selected_pitch), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium" do %>
                                             Apagar Treino
                                         <% end %>
@@ -1187,7 +1169,7 @@
                     </div>
                             <!-------------------------------------------------------------------------------- MODAL APAGAR BALNEÁRIO ------------------------------------------------------------------------->   
 
-                            <div id="modal-apagar-balneario-<%= clr.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div id="modal-apagar-balneario-<%= clr.id %>" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
                                 <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
                                     <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
                                         <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1197,9 +1179,7 @@
                                     <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
                                     <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar o balneario "<b><%= clr.name %></b>"?  </p>
                                     <div class="flex gap-3">
-                                        <button data-modal-hide="modal-apagar-balneario-<%= clr.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
-                                            Cancelar
-                                        </button>
+                                        <a href="#" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">Cancelar</a>
                                         <%= button_to club_locker_room_path(clr, ct: @selected_ct, sport: @selected_sport), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
                                             Apagar balneario
                                         <% end %>
@@ -1279,7 +1259,7 @@
 
                             <!-------------------------------------------------------------------------------- MODAL REMOVER BALNEARIO DO CT ------------------------------------------------------------------------->
 
-                            <div id="modal-remover-balneario-do-ct-<%= clr.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                            <div id="modal-remover-balneario-do-ct-<%= clr.id %>" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
                                 <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
                                     <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
                                         <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
