@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  player_profiles: one
+  club_teams: one
+
+two:
+  player_profiles: two
+  club_teams: two

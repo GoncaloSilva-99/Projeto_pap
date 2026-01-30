@@ -1,6 +1,16 @@
 class PlayerProfilesController < ApplicationController
   before_action :set_player_profile, only: %i[ show edit update destroy ]
 
+  def remove_from_club
+    @sport = params[:sport]
+    @player_profile = PlayerProfile.find(params[:id])
+    @player_profile.update(club_profile_id: nil)
+    respond_to do |format|
+      format.html { redirect_to club_teams_dashboard_path(sport: @sport), notice: "Jogador removido do clube com sucesso.", status: :see_other }
+      format.json { head :no_content }
+    end
+  end
+
   # GET /player_profiles or /player_profiles.json
   def index
     @player_profiles = PlayerProfile.all

@@ -1,5 +1,7 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_sign_up_params, only: [:create]
+  skip_before_action :require_no_authentication, only: [:new, :create]
+  before_action :dont_allow_any_account_to_create_while_logged
   # before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
@@ -8,6 +10,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
     case params[:role]
       when "Player"
         resource.build_player_profile
+        resource.player_profile.player_teams.build
         render "devise/registrations/new_player_profile" and return
       when "Club"
         resource.build_club_profile
@@ -20,6 +23,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         render "devise/registrations/new_board_profile" and return
       when "Coach"
         resource.build_coach_profile
+        resource.coach_profile.coach_teams.build
         render "devise/registrations/new_coach_profile" and return
     end
     respond_with resource # responde ao pedido http com o objeto resource para que campos possam ser preenchidos automaticamente
@@ -30,27 +34,44 @@ class Users::RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
     if resource.save
       set_flash_message! :notice, :signed_up
-      sign_up(resource_name, resource)
-      respond_with resource, location: after_sign_up_path_for(resource)
+      if (user_signed_in? and current_user.club?) or (user_signed_in? and current_user.board?)
+         respond_with resource, location: club_teams_dashboard_path(sport: params[:selected_sport])
+      else
+        sign_up(resource_name, resource)
+        respond_with resource, location: after_sign_up_path_for(resource)
+      end
     else
       clean_up_passwords resource
-      set_minimum_password_length
-        if resource.role == "Player"
-          resource.build_player_profile
-          render "devise/registrations/new_player_profile" and return
-        elsif resource.role =="Club"
-          resource.build_club_profile
-          render "devise/registrations/new_club_profile" and return
-        elsif resource.role =="User"
-          resource.build_user_profile
-          render "devise/registrations/new_user_profile" and return
-        elsif resource.role == "Board"
-          resource.build_board_profile
-          render "devise/registrations/new_board_profile" and return
-        elsif resource.role =="Coach"
-          resource.build_coach_profile
-          render "devise/registrations/new_coach_profile" and return
+      set_minimum_password_length 
+        case resource.role
+          when "Player"
+            resource.build_player_profile if resource.player_profile.nil?
+            resource.player_profile.player_teams.build if resource.player_profile.player_teams.nil?
+            render "devise/registrations/new_player_profile", status: :unprocessable_entity
+          when "Club"
+            resource.build_club_profile if resource.club_profile.nil?
+            render "devise/registrations/new_club_profile", status: :unprocessable_entity
+          when "User"
+            resource.build_user_profile if resource.user_profile.nil?
+            render "devise/registrations/new_user_profile", status: :unprocessable_entity
+          when "Board"
+            resource.build_board_profile if resource.board_profile.nil?
+            render "devise/registrations/new_board_profile", status: :unprocessable_entity
+          when "Coach"
+            resource.build_coach_profile if resource.coach_profile.nil?
+            resource.coach_profile.coach_teams.build if resource.coach_profile.coach_teams.nil?
+            render "devise/registrations/new_coach_profile", status: :unprocessable_entity
         end
+      end
+  end
+
+  def equipas
+    sport = params[:sport]
+    sport_id = sport=='football' ? 2 : 3
+    @target = params[:target]
+    @equipas = (user_signed_in? and current_user.club?) ? current_user.club_profile.club_teams.where(sport_id: sport_id) : current_user.board_profile.club_profile.club_teams.where(sport_id: sport_id)
+    respond_to do |c|
+      c.turbo_stream
     end
   end
 
@@ -81,12 +102,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def permitted_attributes
-    [:email, :password, :password_confirmation, :current_password, :remember_me, :role,
-      {user_profile_attributes: [:name, :bio]},
-      {player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact, :sport, :dominant_foot_or_hand, :position, :secondary_position]},
-      {coach_profile_attributes: [:name, :birth_date, :coach_type]},
-      {club_profile_attributes: [:name]},
-      {board_profile_attributes: [:name, :bio, :birth_date, :role]}
+    [
+      :email, :password, :password_confirmation, :current_password, :remember_me, :role,
+      { user_profile_attributes: [:name, :bio, :profile_picture, :banner_picture] },
+      { player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact, :sport, :dominant_foot_or_hand, :secondary_position, :profile_picture, :banner_picture,  :club_profile_id, { player_teams_attributes: [:club_team_id] } ]  },
+      { coach_profile_attributes: [:name, :birth_date, :bio, :club_profile_id, :coach_type, :contact, :sport, :profile_picture, :banner_picture, { coach_teams_attributes: [:club_team_id] } ] },
+      { club_profile_attributes: [:name, :foundation_date, :bio, :contact, :verification_document, :profile_picture, :banner_picture] },
+      { board_profile_attributes: [:name, :bio, :birth_date, :contact, :club_profile_id, :profile_picture, :banner_picture]
+     }
     ]
   end
 
@@ -98,25 +121,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
     devise_parameter_sanitizer.sanitize(:sign_up){|user| user.permit(permitted_attributes)}
   end
 
+  def dont_allow_any_account_to_create_while_logged
+    if user_signed_in? and !current_user.club? and !current_user.board?
+      redirect_to root_path, notice: "Já tem sessão iniciada!"
+    end
+  end
+
+
   
 
-  # If you have extra params to permit, append them to the sanitizer.
-  # def configure_sign_up_params
-  #   devise_parameter_sanitizer.permit(:sign_up, keys: [:attribute])
-  # end
-
-  # If you have extra params to permit, append them to the sanitizer.
-  # def configure_account_update_params
-  #   devise_parameter_sanitizer.permit(:account_update, keys: [:attribute])
-  # end
-
-  # The path used after sign up.
-  # def after_sign_up_path_for(resource)
-  #   super(resource)
-  # end
-
-  # The path used after sign up for inactive accounts.
-  # def after_inactive_sign_up_path_for(resource)
-  #   super(resource)
-  # end
 end

@@ -3,13 +3,15 @@ class PlayerProfile < ApplicationRecord
   belongs_to :club_profile, optional: true
   has_one_attached :profile_picture
   has_one_attached :banner_picture
+  has_many :player_teams, dependent: :destroy
+  accepts_nested_attributes_for :player_teams
   
   
   
-  SPORTS = ["Futebol", "Andebol"]
+  SPORTS = ["football", "handball"]
   POSITIONS = {
-    "Futebol" => ["Guarda-Redes", "Lateral Direito", "Lateral Esquerdo", "Central", "Médio Centro", "Médio Ofensivo", "Médio Defensivo", "Extremo Direito", "Extremo Esquerdo", "Ponta de lança"],
-    "Andebol" => ["Guarda-Redes", "Central", "Lateral Esquerdo", "Lateral Direito", "Ponta Esquerda", "Pivô", "Ponta Direita"]
+    "football" => ["Guarda-Redes", "Lateral Direito", "Lateral Esquerdo", "Central", "Médio Centro", "Médio Ofensivo", "Médio Defensivo", "Extremo Direito", "Extremo Esquerdo", "Ponta de lança"],
+    "handball" => ["Guarda-Redes", "Central", "Lateral Esquerdo", "Lateral Direito", "Ponta Esquerda", "Pivô", "Ponta Direita"]
   }
   DOMINANT = ["Direito", "Esquerdo"]
   ALL_POSITIONS = ["Guarda-Redes", "Lateral Direito", "Lateral Esquerdo", "Central", "Médio Centro", "Médio Ofensivo", "Médio Defensivo", "Extremo Direito", "Extremo Esquerdo", "Ponta de lança", "Ponta Esquerda", "Pivô", "Ponta Direita"]
@@ -22,5 +24,11 @@ class PlayerProfile < ApplicationRecord
   validates_presence_of :sport, inclusion: {in: SPORTS}
   validates_presence_of :dominant_foot_or_hand, inclusion: {in: DOMINANT}
   validates_presence_of :name, :birth_date
+
+  include PgSearch::Model
+  
+  pg_search_scope :search_by_name, against: :name, using: { tsearch: {prefix: true} }
+
+
 
 end

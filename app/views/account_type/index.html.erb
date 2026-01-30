@@ -5,7 +5,12 @@
                 <%= link_to root_path do %>
                     <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "mx-auto mb-4", height: 70, width: 70 %>
                 <% end %>
-                <p class="text-indigo-100 text-2xl font-bold mt-2">Escolha o tipo de conta que pretende criar</p>
+                <% if user_signed_in? and (current_user.club? or current_user.board?) %>
+                    <p class="text-indigo-100 text-xl font-bold mt-2">Escolha o tipo de conta que pretende criar para o seu clube</p>
+                <% else %>
+                    <p class="text-indigo-100 text-xl font-bold mt-2">Escolha o tipo de conta que pretende criar</p>
+                <% end %>
+                
             </div>
 
     <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -36,7 +41,11 @@
                         Perfil pessoal com estatísticas, histórico e dados de desempenho
                     </li>
                 </ul>
-                <%= link_to "Escolher Jogador", new_player_profile_registration_path, class: "mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+                <% if (user_signed_in? and current_user.club? and current_user.club_profile.has_no_sports?) or (user_signed_in? and current_user.board? and current_user.board_profile.club_profile.has_no_sports?) %>
+                    <button  class="mt-6 w-full bg-indigo-400 text-white py-2 px-4 rounded-lg transition text-center disabled" > Precisa de uma equipa primeiro! </button>
+                <% else %>
+                    <%= link_to "Escolher Jogador", new_player_profile_registration_path, class: "mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+                <% end %>
             </div>
 
             <!-- Coach Card -->
@@ -64,10 +73,46 @@
                         Ferramenta para desenhar e guardar táticas personalizada
                     </li>
                 </ul>
-                <%= link_to "Escolher Treinador", new_coach_profile_registration_path, class: "mt-6 w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+                <% if (user_signed_in? and current_user.club? and current_user.club_profile.has_no_sports?) or (user_signed_in? and current_user.board? and current_user.board_profile.club_profile.has_no_sports?) %>
+                    <button  class="mt-6 w-full bg-green-500  text-white py-2 px-4 rounded-lg transition text-center disabled" > Precisa de uma equipa primeiro! </button>
+                <% else %>
+                    <%= link_to "Escolher Treinador", new_coach_profile_registration_path, class: "mt-6 w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition text-center" %>
+                <% end %>
+                
             </div>
 
+            <!-- Board Card -->
+            <% if user_signed_in? and current_user.club? %>
+            <div class="card-hover board-bg bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col h-full">
+                <div class="flex items-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-orange-500 flex items-center justify-center mr-4">
+                        <i data-feather="users" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold">Direção</h2>
+                </div>
+                <p class="text-gray-400 flex-grow">
+                    Os membros da direção têm acesso à gestão administrativa do clube, com uma visão global de toda a estrutura, tomam decisões importantes e garantem que todas as áreas funcionam de forma organizada e transparente
+                </p>
+                <ul class="space-y-2 text-sm text-orange-300 mt-4">
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Acompanhamento e gestão do clube
+                    </li>
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Acesso a ferramentas de planeamento 
+                    </li>
+                    <li class="flex items-center">
+                        <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
+                        Gestão da página e comunicação do clube
+                    </li>
+                </ul>
+                <%= link_to "Escolher Direção", new_board_profile_registration_path, class: "mt-6 w-full bg-orange-400 hover:bg-orange-500 text-white py-2 px-4 rounded-lg transition text-center" %>
+            </div>
+            <% end %>
+
             <!-- Fan Card -->
+            <% if !user_signed_in? %>
             <div class="card-hover fan-bg bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col h-full">
                 <div class="flex items-center mb-4">
                     <div class="w-16 h-16 rounded-full bg-rose-500 flex items-center justify-center mr-4">
@@ -94,8 +139,10 @@
                 </ul>
                 <%= link_to "Escolher Adepto", new_user_profile_registration_path, class: "mt-6 w-full bg-rose-600 hover:bg-rose-700 text-white py-2 px-4 rounded-lg transition text-center" %>
             </div>
+            <% end %>
 
             <!-- Club Card -->
+            <% if !user_signed_in? %>
             <div class="card-hover club-bg bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col h-full">
                 <div class="flex items-center mb-4">
                     <div class="w-16 h-16 rounded-full bg-purple-500 flex items-center justify-center mr-4">
@@ -123,11 +170,15 @@
                 </ul>
                 <%= link_to "Escolher Clube", new_club_profile_registration_path, class: "mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition text-center" %>
             </div>
+            <% end %>
         </div>
+
+        <% if !user_signed_in? %>
         <div class="py-20 px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
             <p>Já tem uma conta?
             <%= link_to "Entrar", new_user_session_path, class: "text-indigo-400 hover:text-indigo-300" %>
         </div>
+        <% end %>
 
     </main>
 

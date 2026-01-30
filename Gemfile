@@ -42,6 +42,10 @@ gem "thruster", require: false
 
 gem "tailwindcss-rails"
 gem "devise", "~> 4.9"
+gem 'requestjs-rails'
+gem 'pg_search'
+gem 'kaminari'
+gem 'simple_calendar', '~> 2.4'
 
 
 group :development, :test do

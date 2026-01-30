@@ -8,6 +8,5 @@ window.Stimulus   = application
 
 export { application }
 
-import "flowbite";
 
 

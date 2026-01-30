@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  club_locker_room: one
+  club_pitch: one
+  start_time: 2026-01-13 15:49:47
+  end_time: 2026-01-13 15:49:47
+  recurring: false
+  weekday: 1
+  club_team: one
+
+two:
+  club_locker_room: two
+  club_pitch: two
+  start_time: 2026-01-13 15:49:47
+  end_time: 2026-01-13 15:49:47
+  recurring: false
+  weekday: 1
+  club_team: two

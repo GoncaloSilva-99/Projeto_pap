@@ -1,0 +1,319 @@
+
+<body class="min-h-screen flex text-white bg-gray-900">
+<!---------------------------------------------------- NOME E LOGO DO CLUBE ---------------------------------------------------->
+    <div class="w-64 bg-slate-800 shadow-xl min-h-screen flex flex-col border-r border-slate-700">
+
+        <div class="p-6 border-b border-slate-700">
+            <div class="flex items-center justify-center mb-3">
+                
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% elsif (current_user.board? && current_user.board_profile.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-20 h-20 rounded-full border-1" %>
+                <% end %>
+
+                
+            </div>
+            <h1 class="text-lg font-bold text-center text-white"> <%= current_user.club_profile.name %> </h1>
+        </div>
+<!---------------------------------------------------- OPÇÕES DO SIDEBAR ---------------------------------------------------->
+        <nav class="flex-1 p-4 space-y-2">
+
+            <%= link_to club_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 hover:bg-slate-700 text-slate-300 hover:text-blue-400 rounded-xl border-l-4 hover:border-blue-500 border-transparent transition-all duration-300">
+                <i data-feather="home" class="sidebar-icon text-blue-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Dashboard</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_teams_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-xl border-l-4 border-transparent hover:border-green-500 transition-all duration-300">
+                <i data-feather="users" class="sidebar-icon text-green-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Equipas</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div  class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 rounded-xl border-l-4 border-transparent hover:border-yellow-500 transition-all duration-300">
+                <i data-feather="dollar-sign" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Finanças</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-red-400 rounded-xl border-l-4 border-transparent hover:border-red-500 transition-all duration-300">
+                <i data-feather="heart" class="sidebar-icon text-red-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Adeptos</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-purple-400 rounded-xl border-l-4 border-transparent hover:border-purple-500 transition-all duration-300">
+                <i data-feather="user" class="sidebar-icon text-purple-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Público</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_infrastructures_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-xl border-l-4 border-transparent hover:border-orange-500 transition-all duration-300">
+                <i data-feather="map-pin" class="sidebar-icon text-orange-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Infraestruturas</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_equipment_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-400 rounded-xl border-l-4 border-transparent hover:border-rose-300 transition-all duration-300">
+                <i data-feather="clipboard" class="sidebar-icon text-rose-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Material</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_board_dashboard_path do %>
+
+            <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-rose-700 rounded-xl border-l-4 border-rose-900 transition-all duration-300">
+                <i data-feather="settings" class="sidebar-icon text-rose-900 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Membros da Direção</span>
+            </div>
+            
+            <% end %>
+
+            <%= link_to root_path do %>
+
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-gray-400 rounded-xl border-l-4 border-transparent hover:border-gray-400 transition-all duration-300">
+                <i data-feather="arrow-left" class="sidebar-icon text-gray-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Página Inicial</span>
+            </div>
+            <% end %>
+        </nav>
+
+
+        <div class="p-4 border-t border-slate-700">
+            <div class="flex items-center space-x-3">
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% elsif (current_user.board? and current_user.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% end %>
+                <div class="flex-1">
+                    <% if current_user.club? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.club_profile.name %> </p>
+                    <% elsif current_user.board? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.board_profile.name %> </p>
+                    <% end %>
+                </div>
+                <%= button_to destroy_user_session_path, method: :delete do %>
+                    <i data-feather="log-out" class="text-slate-400 hover:text-red-400 cursor-pointer transition-colors"></i>
+                <% end %>
+            </div>
+        </div>
+</div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold  text-rose-600 slide-in">Membros da Direção</h1>
+                <p class="text-slate-400 mt-1">Gerencie e crie os membros da direção do seu clube! Estes membros têm acesso a ver e mudar coisas no dashboard do clube</p> 
+            </div>
+        </div>
+
+        <div class="mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-indigo-400 flex items-center space-x-2">
+                        <i data-feather="users" class="w-6 h-6"></i>
+                        <span>Direção ( <%= @board_results&.any? ? @board_results.total_count : "0" %> )</span>
+                    </h3>
+
+                    <div class="flex items-center gap-4">
+                        <%= link_to new_board_profile_registration_path do %>
+                            <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                                <i data-feather="user-plus" class="w-4 h-4"></i>
+                            </button>
+                        <% end %>
+
+                    </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <% if @base_num_board != 0 %>
+            <div class="flex justify-between items-center mb-6">
+                <%= form_with url: club_board_dashboard_path, method: :get, local: true, id: "search-form" do %>
+                    <div class="relative w-full">
+                        <i data-feather="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-6 pointer-events-none z-10"></i>
+                        <%= text_field_tag :query,
+                            params[:query],
+                            placeholder: "Pesquisar direção...",
+                            class: "bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-10 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
+                            oninput: "clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(() => this.form.requestSubmit(), 1000); toggleClearButton(this)",
+                            id: "search-input" %>
+                        <button type="button" id="clear-search" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition <%= 'hidden' unless params[:query].present? %>" onclick="clearSearch()">
+                            <i data-feather="x" class="w-4 h-4 text-red-400"></i>
+                        </button>
+                    </div>
+                <% end %>
+            </div>
+        <% end %>
+
+            <% if @board_results&.any? %>
+                <div class="grid grid-cols-4 justify-center gap-6">
+                <% @board_results.each do |board| %>
+                    <div class="bg-gray-800 border-l-4 border-indigo-500 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 relative">
+                        <div class="absolute top-2 right-2 flex space-x-1 z-10">
+                            <%= button_to edit_board_profile_path(board), method: :get,  class: "bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition" do %>
+                                <i data-feather="edit" class="w-4 h-4"></i>
+                            <% end %>
+                            <% if current_user.club? %>
+                                <button data-modal-target="modal-remover-board" data-modal-toggle="modal-remover-board" class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                    <i data-feather="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            <% end %>
+                        </div>
+                        <%= link_to board_profile_path(board) do %>
+                            <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                                <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                                    <% if board.banner_picture.attached? %>
+                                        <%= image_tag url_for(board.banner_picture), class: "w-full h-full object-cover" %>
+                                    <% else %>
+                                        <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                    <% end %>
+                                </div>
+                                <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
+                                    <% if board.profile_picture.attached? %>
+                                        <%= image_tag url_for(board.profile_picture), class: "w-full h-full object-cover " %>
+                                    <% else %>
+                                        <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
+                                    <% end %>
+                                </div>
+                            </div>
+                            <div class="p-4 pt-14 pb-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-bold text-lg"> <%= board.name %> </h3>
+                                        <p class="text-gray-400 text-sm"> <%= ((Date.today - board.birth_date).to_i / 365.25).floor  %> anos</p>
+                                    </div>
+                                </div>
+                            </div>
+                        <% end %>
+                    </div>
+                
+                    <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER BOARD ------------------------------------------------------------------------->
+
+                    <div id="modal-remover-board" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                            <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende remover <b><%= board.name %></b> da direção do clube? Esta ação é irreversível</b>  </p>
+                            <div class="flex gap-3">
+                                <button data-modal-hide="modal-remover-board" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                    Cancelar
+                                </button>
+                                <%= button_to board_profile_path(board), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                    Apagar Membro
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+
+                <% end %>
+
+            </div> 
+
+            <% if @board_results.total_pages > 1 %>
+            <div class="mt-8 flex justify-end">
+                <div class="flex flex-col items-end gap-3">               
+
+                <div class="flex items-center gap-2">
+                    <% if @board_results.prev_page %>
+                        <%= link_to club_board_dashboard_path(query: params[:query], board_page: @board_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        <% end %>
+                    <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        </div>
+                    <% end %>
+
+                    <div class="flex items-center gap-1">
+                    <% (1..@board_results.total_pages).each do |page| %>
+                        <% if page == @board_results.current_page %>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-indigo-500 text-white font-bold border-2 border-indigo-400 shadow-lg">
+                                <%= page %>
+                            </div>
+                        <% else %>
+                            <%= link_to page, club_board_dashboard_path(query: params[:query], board_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                        <% end %>
+                    <% end %>
+                    </div>
+
+                    <% if @board_results.next_page %>
+                        <%= link_to club_board_dashboard_path(query: params[:query], board_page: @board_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <% end %>
+                    <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                    <% end %>
+                </div>
+                </div>
+            </div>
+            
+            <% end %>
+                </div>
+
+            <% elsif !@board_results&.any? and !params[:query].present? %>
+                <div class="flex justify-center items-center mb-8">
+                    <div class="flex flex-col items-start">
+                        <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem nenhum membro da direção!</h1>
+                    </div>
+                </div>
+            <% elsif !@board_results&.any? and params[:query].present? %>
+                <div class="flex justify-center items-center mb-8">
+                    <div class="flex flex-col items-start">
+                        <h1 class="text-2xl text-neutral-400 slide-in mx-auto">A pesquisa "<%= params[:query] %>" não retornou qualquer membro da direção</h1>
+                    </div>
+                </div>
+            <% end %>
+            
+        </div>
+
+    <script>
+        feather.replace();
+    </script>
+
+    <!-- Script de limpar o form de pesquisa -->
+
+    <script>
+    function toggleClearButton(input) {
+        const clearBtn = document.getElementById('clear-search');
+        if (input.value.length > 0) {
+            clearBtn.classList.remove('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
+        }
+        feather.replace();
+    }
+
+    function clearSearch() {
+        const input = document.getElementById('search-input');
+        const form = document.getElementById('search-form');
+        input.value = '';
+        document.getElementById('clear-search').classList.add('hidden');
+        form.requestSubmit();
+    }
+
+</script>
+
+</body>

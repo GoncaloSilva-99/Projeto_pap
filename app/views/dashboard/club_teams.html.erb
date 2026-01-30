@@ -1,0 +1,1073 @@
+<body class="min-h-screen flex text-white bg-gray-900">
+<!-------------------------------------------------------------------------------- NOME E LOGO DO CLUBE ------------------------------------------------------------------------->
+    <div class="w-64 bg-slate-800 shadow-xl min-h-screen flex flex-col border-r border-slate-700">
+        <!-- Logo e nome do clube -->
+        <div class="p-6 border-b border-slate-700">
+            <div class="flex items-center justify-center mb-3">
+                
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% elsif (current_user.board? && current_user.board_profile.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-20 h-20 rounded-full border-1" %>
+                <% end %>
+
+                
+            </div>
+            <h1 class="text-lg font-bold text-center text-white"> <%= current_user.club_profile.name %> </h1>
+        </div>
+<!-------------------------------------------------------------------------------- SIDEBAR ------------------------------------------------------------------------->
+        <nav class="flex-1 p-4 space-y-2">
+
+            <%= link_to club_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 hover:bg-slate-700 text-slate-300 hover:text-blue-400 rounded-xl border-l-4 hover:border-blue-500 border-transparent transition-all duration-300">
+                <i data-feather="home" class="sidebar-icon text-blue-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Dashboard</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_teams_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-green-500  rounded-xl border-l-4 border-green-500 transition-all duration-300">
+                <i data-feather="users" class="sidebar-icon text-green-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Equipas</span>
+            </div>
+            <% end %>
+
+            <div class="space-y-2 ml-10 mt-2">
+                <% if (current_user.club? and !current_user.club_profile.has_no_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_no_sports?) %>
+                    <% if (current_user.club? and current_user.club_profile.has_football?) or (current_user.board? and current_user.board_profile.club_profile.has_football?) %>
+                        <div class="flex items-center justify-between">
+                            <%= link_to club_teams_dashboard_path(sport: 'football'), class: "flex-1" do %>
+                                <% if @selected_sport == 'football' %>
+                                    <div class="flex items-center px-1 py-2 bg-slate-700 text-green-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
+                                        <span class="text-sm">Futebol</span>
+                                    </div>
+                                <% else %>
+                                    <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
+                                        <span class="text-sm">Futebol</span>
+                                    </div>
+                                <% end %>
+                            <% end %>
+                            
+                            <% if @selected_sport == 'football' %>
+                                    <button data-modal-target="modal-remover-desporto" data-modal-toggle="modal-remover-desporto" class="delete-sport-btn ml-2 p-1 text-red-600 hover:text-white hover:bg-red-600 rounded transition-all duration-200 bg-slate-700 py-2 px-2 rounded-lg" > 
+                                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                            <% end %>
+                        </div>
+                    <% end %>
+
+                    <% if (current_user.club? and current_user.club_profile.has_handball?) or (current_user.board? and current_user.board_profile.club_profile.has_handball?) %>
+                        <% if (current_user.club? and current_user.club_profile.has_both_sports?) or (current_user.board? and current_user.board_profile.club_profile.has_both_sports?) %>
+                            <% if @selected_sport == nil %>
+                                <% @selected_sport = "handball" %>
+                            <% end %>
+                        <% else %>
+                            <% @selected_sport = "handball" %>
+                        <% end %>
+
+                        <div class="flex items-center justify-between ">
+                            <%= link_to club_teams_dashboard_path(sport: 'handball'), class: "flex-1" do %>
+                                <% if @selected_sport == 'handball' %>
+                                    <div class="flex items-center px-1 py-2 bg-slate-700 text-green-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
+                                        <span class="text-sm">Andebol</span>
+                                    </div>
+                                <% else %>
+                                    <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
+                                        <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-green-400"></i>
+                                        <span class="text-sm">Andebol</span>
+                                    </div>
+                                <% end %>
+                            <% end %>
+                            
+                            <% if @selected_sport == 'handball' %>
+                                    <button data-modal-target="modal-remover-desporto" data-modal-toggle="modal-remover-desporto" class="delete-sport-btn ml-2 p-1 text-red-600 hover:text-white hover:bg-red-600 rounded transition-all duration-200 bg-slate-700 py-2 px-2 rounded-lg" > 
+                                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                            <% end %>
+                        </div>
+                    <% end %>
+                <% end %>
+
+                <% if (current_user.club? and !current_user.club_profile.has_football?) or (current_user.board? and !current_user.board_profile.club_profile.has_football?) %>
+
+                    <%= form_with(url: club_sports_path, method: :post, scope: :club_sport, local: true) do |form| %>
+                        <% if current_user.club? %>
+                            <%= form.hidden_field :club_profile_id, value: current_user.club_profile.id %>
+                        <% elsif current_user.board? %>
+                            <%= form.hidden_field :club_profile_id, value: current_user.board_profile.club_profile.id %>
+                        <% end %>
+                        
+                        <%= form.hidden_field :sport_id, value: 2 %>
+
+                        <button type="submit" class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
+                            <i data-feather="plus" class="w-4 h-4 mr-2 text-green-400"></i>
+                            <span class="text-sm">Adicionar Futebol</span>
+                        </button>
+                            
+                    <% end %>
+
+                <% end %>
+
+                <% if (current_user.club? and !current_user.club_profile.has_handball?) or (current_user.board? and !current_user.board_profile.club_profile.has_handball?) %>
+                    <%= form_with(url: club_sports_path, method: :post, scope: :club_sport, local: true) do |form| %>
+                        <% if current_user.club? %>
+                            <%= form.hidden_field :club_profile_id, value: current_user.club_profile.id %>
+                        <% elsif current_user.board? %>
+                            <%= form.hidden_field :club_profile_id, value: current_user.board_profile.club_profile.id %>
+                        <% end %>
+                        
+                        <%= form.hidden_field :sport_id, value: 3 %>
+
+                        <button type="submit" class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-lg transition-all duration-200">
+                            <i data-feather="plus" class="w-4 h-4 mr-2 text-green-400"></i>
+                            <span class="text-sm">Adicionar Andebol</span>
+                        </button>
+                            
+                    <% end %>
+                <% end %>
+            </div>
+
+            <%= link_to root_path do %>
+            <div  class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 rounded-xl border-l-4 border-transparent hover:border-yellow-500 transition-all duration-300">
+                <i data-feather="dollar-sign" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Finanças</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-red-400 rounded-xl border-l-4 border-transparent hover:border-red-500 transition-all duration-300">
+                <i data-feather="heart" class="sidebar-icon text-red-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Adeptos</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-purple-400 rounded-xl border-l-4 border-transparent hover:border-purple-500 transition-all duration-300">
+                <i data-feather="user" class="sidebar-icon text-purple-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Público</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_infrastructures_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-xl border-l-4 border-transparent hover:border-orange-500 transition-all duration-300">
+                <i data-feather="map-pin" class="sidebar-icon text-orange-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Infraestruturas</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_equipment_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-400 rounded-xl border-l-4 border-transparent hover:border-rose-300 transition-all duration-300">
+                <i data-feather="clipboard" class="sidebar-icon text-rose-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Material</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_board_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-900 rounded-xl border-l-4 border-transparent hover:border-rose-950 transition-all duration-300">
+                <i data-feather="settings" class="sidebar-icon text-rose-900 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Membros da Direção</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-gray-400 rounded-xl border-l-4 border-transparent hover:border-gray-400 transition-all duration-300">
+                <i data-feather="arrow-left" class="sidebar-icon text-gray-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Página Inicial</span>
+            </div>
+            <% end %>
+        </nav>
+
+
+        <div class="p-4 border-t border-slate-700">
+            <div class="flex items-center space-x-3">
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% elsif (current_user.board? and current_user.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% end %>
+                <div class="flex-1">
+                    <% if current_user.club? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.club_profile.name %> </p>
+                    <% elsif current_user.board? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.board_profile.name %> </p>
+                    <% end %>
+                </div>
+                <%= button_to destroy_user_session_path, method: :delete do %>
+                    <i data-feather="log-out" class="text-slate-400 hover:text-red-400 cursor-pointer transition-colors"></i>
+                <% end %>
+            </div>
+        </div>
+</div>
+<!-------------------------------------------------------------------------------- MAIN ------------------------------------------------------------------------->
+    <div class="flex-1 p-8">
+
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold  text-green-400 slide-in">Equipas</h1>
+                    <p class="text-slate-400 mt-1">Veja as diferentes equipas do seu clube e os seus respetivos membros</p> 
+                </div>
+            </div>
+
+
+<!-------------------------------------------------------------------------------- DESPORTOS ------------------------------------------------------------------------->
+
+            <div class="mb-12">
+                <% if (current_user.club? and current_user.club_profile.has_no_sports?) or (current_user.board? and current_user.board_profile.club_profile.has_no_sports?) %>
+                    <br> <br>
+                    <div class="flex justify-center items-center mb-8">
+                        <div class="flex flex-col items-start">
+                        <h1 class="text-2xl text-neutral-400 slide-in mx-auto">O clube ainda não tem nenhum desporto!</h1>
+                        <h1 class="text-2xl text-neutral-400 slide-in">Adicione um desporto para começar a criar as suas equipas</h1>
+                        </div>
+                    </div>
+                <% end %>
+
+
+<!-------------------------------------------------------------------------------- EQUIPAS ------------------------------------------------------------------------->
+
+        
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <% if (current_user.club? and !current_user.club_profile.has_no_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_no_sports?) %>
+                    <h2 class="text-xl font-bold text-indigo-300 flex items-center space-x-2">
+                        <i data-feather="list" class="w-6 h-6"></i>
+                        <span>Equipas</span>
+                    </h2>
+                    <div class="flex items-center gap-4">
+                        <% if !@selected_team.blank? and @selected_team != 'others' %>
+                            <button data-modal-target="modal-rename-team" data-modal-toggle="modal-rename-team" class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                                <i data-feather="edit-3" class="w-4 h-4"></i>
+                            </button>
+                        <% end %>
+
+                        <button data-modal-target="modal-add-team" data-modal-toggle="modal-add-team" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                            <i data-feather="plus" class="w-4 h-4"></i>
+                        </button>
+
+                        <% if !@selected_team.blank? and @selected_team != 'others' %>
+                            <button data-modal-target="modal-remover-equipa" data-modal-toggle="modal-remover-equipa" class="delete-team-btn bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                                <i data-feather="x" class="w-4 h-4"></i>
+                            </button>
+                        <% end %>
+                    </div>
+                    <% end %>
+                </div>
+            <% if (current_user.club? and (@selected_sport == 'football' and current_user.club_profile&.has_football_teams?) or (@selected_sport == 'handball' and current_user.club_profile&.has_handball_teams?) ) or (current_user.board? and (@selected_sport == 'football' and current_user.board_profile&.club_profile&.has_football_teams?) or (@selected_sport == 'handball' and current_user.board_profile&.club_profile&.has_handball_teams?)) %>
+                <div class="flex items-center mb-6 gap-x-4">
+                    <% @selected_sport == 'football' ? sport_id = 2 : sport_id = 3 %>
+                    <% current_user.club? ? teams=current_user.club_profile.club_teams.where(sport_id: sport_id) : teams=current_user.board_profile.club_profile.club_teams.where(sport_id: sport_id) %>
+
+                    <select id="team-select" class="w-full md:w-64 bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200" onchange="window.location.href = '?sport=<%= @selected_sport %>&team=' + this.value">
+                        <% teams.each do |team|  %>
+                            <option value="<%= team.id %>" <%= 'selected' if @selected_team == team.id.to_s %>> <%= team.name %> </option>
+                        <% end %>
+                        <% if @selected_sport == 'football' and (@base_football_players_wo_team > 0 or @base_football_coaches_wo_team > 0 )  %>
+                            <option value="others" <%= 'selected' if @selected_team == 'others' %>> Outros (Sem equipa atribuída)</option>
+                        <% elsif @selected_sport == 'handball' and (@base_handball_players_wo_team > 0 or @base_handball_coaches_wo_team > 0 ) %>
+                            <option value="others" <%= 'selected' if @selected_team == 'others' %>> Outros (Sem equipa atribuída)</option>
+                        <% end %>
+                    </select>
+
+                    <div class="relative">
+                        <%= form_with url: club_teams_dashboard_path, method: :get, local: true, id: "search-form" do %>
+                            <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-6 pointer-events-none z-10"></i>
+                            <%= text_field_tag :query,
+                                params[:query],
+                                placeholder: "Pesquisar membros...",
+                                class: "bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-10 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
+                                oninput: "clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(() => this.form.requestSubmit(), 1000); toggleClearButton(this)",
+                                id: "search-input" %>
+                            <%= hidden_field_tag :sport, params[:sport] %>
+                            <%= hidden_field_tag :team, params[:team] %>
+                            <button type="button" id="clear-search" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition <%= 'hidden' unless params[:query].present? %>" onclick="clearSearch()">
+                                <i data-feather="x" class="w-4 h-4 text-red-400"></i>
+                            </button>
+                        <% end %>
+                    </div>
+
+                </div>
+            </div>
+
+<!-------------------------------------------------------------------------------- EQUIPA TÉCNICA ------------------------------------------------------------------------->
+
+            <div>
+            <% if (!@coach_results&.any? and !@player_results&.any? and params[:query].present?) %>
+                <div class="flex justify-center items-center mb-8">
+                    <div class="flex flex-col items-start">
+                        <h1 class="text-2xl text-neutral-400 slide-in mx-auto"> A pesquisa "<%= params[:query] %>" não retornou qualquer membro nesta equipa</h1>
+                    </div>
+                </div>
+            <% elsif (params[:query].present? and @coach_results.any?) or (!params[:query].present?) %>
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-yellow-300 flex items-center space-x-2">
+                    <i data-feather="award" class="w-6 h-6"></i>
+                        <span>Equipa Técnica ( <%= @coach_results&.any? ? @coach_results.total_count : "0" %> )</span>
+                    </h3>
+                    <div class="flex items-center gap-4">
+                    <% if @selected_team != 'others' %>
+                        <%= link_to new_coach_profile_registration_path(selected_sport: @selected_sport, selected_team: @selected_team ) do %>
+                            <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                                <i data-feather="user-plus" class="w-4 h-4"></i>
+                            </button>
+                        <% end %>
+                    <% end %>
+                    </div>
+                </div>
+            <% end %>
+
+            <% if @coach_results&.any? %>
+                <div class="grid grid-cols-4 justify-center gap-6">
+                    <% @coach_results.each do |coach| %>
+                    <% coach_team = @selected_team != 'others' ? CoachTeam.find_by(coach_profile_id: coach.id, club_team_id: @selected_team) : nil %>
+                        <div class="bg-gray-800 border-l-4 border-yellow-500 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 relative">
+                            <div class="absolute top-2 right-2 flex space-x-1 z-10">
+                                <% if @selected_team == 'others' %>
+                                    <% club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile %>
+                                    <% if (@selected_sport == 'football' and club_profile.has_football_teams?) or (@selected_sport == 'handball' and club_profile.has_handball_teams?) %>
+                                        <button data-modal-target="modal-adicionar-treinador-a-equipa-<%= coach.id %>" data-modal-toggle="modal-adicionar-treinador-a-equipa-<%= coach.id %>" class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
+                                            <i data-feather="plus" class="w-4 h-4"></i>
+                                        </button>
+                                    <% end %>
+                                <% end %>
+                                <%= button_to edit_coach_profile_path(coach), method: :get, class: "bg-gray-900 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition" do %>
+                                    <i data-feather="edit" class="w-4 h-4"></i>
+                                <% end %>
+                                <% if @selected_team == 'others' %>
+                                    <button data-modal-target="modal-remover-treinador-do-clube-<%= coach.id %>" data-modal-toggle="modal-remover-treinador-do-clube-<%= coach.id %>" class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                <% else %>
+                                    <button data-modal-target="modal-remover-et-<%= coach.id %>" data-modal-toggle="modal-remover-et-<%= coach.id %>" class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                <% end %>
+                            </div>
+                            <%= link_to coach_profile_path(coach) do %>
+                                <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                                    <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                                        <% if coach.banner_picture.attached? %>
+                                            <%= image_tag url_for(coach.banner_picture), class: "w-full h-full object-cover" %>
+                                        <% else %>
+                                            <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                        <% end %>
+                                    </div>
+                                    <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
+                                        <% if coach.profile_picture.attached? %>
+                                            <%= image_tag url_for(coach.profile_picture), class: "w-full h-full object-cover " %>
+                                        <% else %>
+                                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
+                                        <% end %>
+                                    </div>
+                                </div>
+                                <div class="p-4 pt-14 pb-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-bold text-lg"> <%= coach.name %> </h3>
+                                            <p class="text-gray-400 text-sm"> <%= coach.coach_type %> • <%= ((Date.today - coach.birth_date).to_i / 365.25).floor  %> anos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% end %>
+                        </div>
+                        <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER ET ------------------------------------------------------------------------->
+                        <% if @selected_team != 'others' %>
+                            <div id="modal-remover-et-<%= coach.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                                    <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                                    <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende remover <b><%= coach.name %></b> da equipa <b><%= ClubTeam.find(@selected_team).name %></b>  </p>
+                                    <div class="flex gap-3">
+                                        <button data-modal-hide="modal-remover-et-<%= coach.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                            Cancelar
+                                        </button>
+                                        <% if coach_team %>
+                                            <%= button_to coach_team_path(coach_team), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                                Remover Treinador
+                                            <% end %>
+                                        <% end %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% elsif @selected_team == 'others' %>
+                            <div id="modal-remover-treinador-do-clube-<%= coach.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                                    <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                                    <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende remover <b><%= coach.name %></b> do clube? </b>  </p>
+                                    <div class="flex gap-3">
+                                        <button data-modal-hide="modal-remover-treinador-do-clube-<%= coach.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                            Cancelar
+                                        </button>
+                                        <%= button_to remove_from_club_coach_profile_path(coach), method: :patch, params: {sport: @selected_sport}, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                            Remover Treinador
+                                        <% end %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% end %>
+
+                        <!-------------------------------------------------------------------------------- MODAL ADICIONAR ET A EQUIPA ------------------------------------------------------------------------->
+                        <% if @selected_team == 'others' %>
+                            <div id="modal-adicionar-treinador-a-equipa-<%= coach.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                <div class="relative p-4 w-full max-w-md max-h-full">
+                                    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                                        <!-- Modal header -->
+                                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-green-900">
+                                            <i data-feather="plus" class="w-6 h-6 text-white"></i>
+                                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Adicionar a Equipa </h3>
+                                            <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-adicionar-treinador-a-equipa-<%= coach.id %>">
+                                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <!-- Modal body -->
+                                        <div class="p-4 md:p-5">
+                                            <ul class="space-y-4 mb-4">
+                                            <%= form_with(url: coach_teams_path, method: :post, scope: :coach_team, local: true) do |form| %>
+                                                <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Equipa</label>
+
+                                                <% current_user.club? ? teams=current_user.club_profile.club_teams.where(sport_id: sport_id) : teams=current_user.board_profile.club_profile.club_teams.where(sport_id: sport_id) %>
+                                                <%= form.hidden_field :coach_profile_id, value: coach.id %>
+                                                <%= form.select :club_team_id, teams.collect { |t| [t.name, t.id] }, { selected: teams.first }, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700"%>
+
+                                                
+                                                <br> <br>
+                                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gradient-to-r from-emerald-900 to-emerald-800 hover:from-emerald-800 hover:to-emerald-500">
+                                                <i data-feather="check" class="w-4 h-4"></i>
+                                                <span>Adicionar à equipa</span>
+                                                </button>
+                                            <% end %> 
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% end %>
+                    <% end %>
+
+                </div> 
+
+                <% if @coach_results.total_pages > 1 %>
+                <div class="mt-8 flex justify-end">
+                    <div class="flex flex-col items-end gap-3">
+
+                    <div class="flex items-center gap-2">
+                        <% if @coach_results.prev_page %>
+                        <%= link_to club_teams_dashboard_path(sport: params[:sport], team: params[:team], query: params[:query], coach_page: @coach_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        </div>
+                        <% end %>
+
+
+                        <div class="flex items-center gap-1">
+                        <% (1..@coach_results.total_pages).each do |page| %>
+                            <% if page == @coach_results.current_page %>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-yellow-600 text-white font-bold border-2 border-yellow-500 shadow-lg">
+                                <%= page %>
+                            </div>
+                            <% else %>
+                            <%= link_to page, club_teams_dashboard_path(sport: params[:sport], team: params[:team], query: params[:query], coach_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                            <% end %>
+                        <% end %>
+                        </div>
+
+                        <% if @coach_results.next_page %>
+                        <%= link_to club_teams_dashboard_path(sport: params[:sport], team: params[:team], query: params[:query], coach_page: @coach_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                        <% end %>
+                    </div>
+                    </div>
+                </div>
+                
+
+                <% end %>
+                    </div>
+
+                <% elsif !@coach_results&.any? and !params[:query].present? %>
+                    <div class="flex justify-center items-center mb-8">
+                        <div class="flex flex-col items-start">
+                            <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem Equipa Técnica nesta equipa!</h1>
+                        </div>
+                    </div>
+                <% end %>
+                
+            </div>
+
+<!-------------------------------------------------------------------------------- JOGADORES ------------------------------------------------------------------------->
+
+            <div class="mb-12">
+                <% if (params[:query].present? and @player_results.any? ) or (!params[:query].present?) %>
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-secondary-300 flex items-center space-x-2">
+                            <i data-feather="users" class="w-6 h-6"></i>
+                            <span>Jogadores ( <%= @player_results&.any? ? @player_results.total_count : "0" %> )</span>
+                        </h3>
+
+                        <div class="flex items-center gap-4">
+                        <% if @selected_team != 'others' %>
+                            <%= link_to new_player_profile_registration_path(selected_sport: @selected_sport, selected_team: @selected_team ) do %>
+                                <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                                    <i data-feather="user-plus" class="w-4 h-4"></i>
+                                </button>
+                            <% end %>
+                        <% end %>
+                        </div>
+                    </div>
+                <% end %>
+
+                <% if @player_results&.any? %>
+                    <div class="grid grid-cols-4 justify-center gap-6">
+                    <% @player_results.each do |player| %>
+                    <% player_team = @selected_team != 'others' ?  PlayerTeam.find_by(player_profile_id: player.id, club_team_id: @selected_team) : nil %>
+                        <div class="bg-gray-800 border-l-4 border-secondary-300 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 relative">
+                            <div class="absolute top-2 right-2 flex space-x-1 z-10">
+                                <% if @selected_team == 'others' %>
+                                    <% club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile %>
+                                    <% if (@selected_sport == 'football' and club_profile.has_football_teams?) or (@selected_sport == 'handball' and club_profile.has_handball_teams?) %>
+                                        <button data-modal-target="modal-adicionar-jogador-a-equipa-<%= player.id %>" data-modal-toggle="modal-adicionar-jogador-a-equipa-<%= player.id %>" class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
+                                            <i data-feather="plus" class="w-4 h-4"></i>
+                                        </button>
+                                    <% end %>
+                                <% end %>
+                                <%= button_to edit_player_profile_path(player), method: :get,  class: "bg-gray-900 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition" do %>
+                                    <i data-feather="edit" class="w-4 h-4"></i>
+                                <% end %>
+                                <% if @selected_team == 'others' %>
+                                    <button data-modal-target="modal-remover-jogador-do-clube-<%= player.id %>" data-modal-toggle="modal-remover-jogador-do-clube-<%= player.id %>" class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                <% else %>
+                                    <button data-modal-target="modal-remover-jogador-<%= player.id %>" data-modal-toggle="modal-remover-jogador-<%= player.id %>" class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                        <i data-feather="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                <% end %>
+                                
+                            </div>
+                            <%= link_to player_profile_path(player) do %>
+                                <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                                    <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                                        <% if player.banner_picture.attached? %>
+                                            <%= image_tag url_for(player.banner_picture), class: "w-full h-full object-cover" %>
+                                        <% else %>
+                                            <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                        <% end %>
+                                    </div>
+                                    <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
+                                        <% if player.profile_picture.attached? %>
+                                            <%= image_tag url_for(player.profile_picture), class: "w-full h-full object-cover " %>
+                                        <% else %>
+                                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
+                                        <% end %>
+                                    </div>
+                                </div>
+                                <div class="p-4 pt-14 pb-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-bold text-lg"> <%= player.name %> </h3>
+                                            <p class="text-gray-400 text-sm"> <%= player.position %>  <%= " | " + player.secondary_position if player.secondary_position.present? %> • <%= ((Date.today - player.birth_date).to_i / 365.25).floor  %> anos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% end %>
+                        </div>
+                    
+                        <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER JOGADOR ------------------------------------------------------------------------->
+                        <% if @selected_team != 'others' %>
+                            <div id="modal-remover-jogador-<%= player.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                                    <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                                    <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende remover <b><%= player.name %></b> da equipa <b><%= ClubTeam.find(@selected_team).name %></b>  </p>
+                                    <div class="flex gap-3">
+                                        <button data-modal-hide="modal-remover-jogador-<%= player.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                            Cancelar
+                                        </button>
+                                        <% if player_team %>
+                                            <%= button_to player_team_path(player_team), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                                Remover Jogador
+                                            <% end %>
+                                        <% end %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% elsif @selected_team == 'others' %>
+                            <div id="modal-remover-jogador-do-clube-<%= player.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                                    <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                                    <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende remover <b><%= player.name %></b> do clube? </b>  </p>
+                                    <div class="flex gap-3">
+                                        <button data-modal-hide="modal-remover-jogador-do-clube-<%= player.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                            Cancelar
+                                        </button>
+                                        <%= button_to remove_from_club_player_profile_path(player), method: :patch, params: {sport: @selected_sport}, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                            Remover Jogador
+                                        <% end %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% end %>
+
+                         <!-------------------------------------------------------------------------------- MODAL ADICIONAR JOGADOR A EQUIPA ------------------------------------------------------------------------->
+                        <% if @selected_team == 'others' %>
+                            <div id="modal-adicionar-jogador-a-equipa-<%= player.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                <div class="relative p-4 w-full max-w-md max-h-full">
+                                    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                                        <!-- Modal header -->
+                                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-green-900">
+                                            <i data-feather="plus" class="w-6 h-6 text-white"></i>
+                                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Adicionar a Equipa </h3>
+                                            <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-adicionar-jogador-a-equipa-<%= player.id %>">
+                                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <!-- Modal body -->
+                                        <div class="p-4 md:p-5">
+                                            <ul class="space-y-4 mb-4">
+                                            <%= form_with(url: player_teams_path, method: :post, scope: :player_team, local: true) do |form| %>
+                                                <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Equipa</label>
+
+                                                <% current_user.club? ? teams=current_user.club_profile.club_teams.where(sport_id: sport_id) : teams=current_user.board_profile.club_profile.club_teams.where(sport_id: sport_id) %>
+                                                <%= form.hidden_field :player_profile_id, value: player.id %>
+                                                <%= form.select :club_team_id, teams.collect { |t| [t.name, t.id] }, { selected: teams.first }, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700"%>
+                                                  
+                                                <br> <br>
+                                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gradient-to-r from-emerald-900 to-emerald-800 hover:from-emerald-800 hover:to-emerald-500">
+                                                <i data-feather="check" class="w-4 h-4"></i>
+                                                <span>Adicionar à equipa</span>
+                                                </button>
+                                            <% end %> 
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% end %>
+
+                    <% end %>
+
+                </div> 
+
+                <% if @player_results.total_pages > 1 %>
+                <div class="mt-8 flex justify-end">
+                    <div class="flex flex-col items-end gap-3">               
+
+                    <div class="flex items-center gap-2">
+                        <% if @player_results.prev_page %>
+                        <%= link_to club_teams_dashboard_path(sport: params[:sport], team: params[:team], query: params[:query], player_page: @player_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        </div>
+                        <% end %>
+
+                        <div class="flex items-center gap-1">
+                        <% (1..@player_results.total_pages).each do |page| %>
+                            <% if page == @player_results.current_page %>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-purple-600 text-white font-bold border-2 border-purple-500 shadow-lg">
+                                <%= page %>
+                            </div>
+                            <% else %>
+                            <%= link_to page, club_teams_dashboard_path(sport: params[:sport], team: params[:team], query: params[:query], player_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                            <% end %>
+                        <% end %>
+                        </div>
+
+                        <% if @player_results.next_page %>
+                        <%= link_to club_teams_dashboard_path(sport: params[:sport], team: params[:team], query: params[:query], player_page: @player_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                        <% end %>
+                    </div>
+                    </div>
+                </div>
+                
+                <% end %>
+                    </div>
+
+                <% elsif !@player_results&.any? and !params[:query].present? %>
+                    <div class="flex justify-center items-center mb-8">
+                        <div class="flex flex-col items-start">
+                            <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem Jogadores nesta equipa!</h1>
+                        </div>
+                    </div>
+                <% end %>
+                
+            </div>
+
+
+        <% else %>
+            <% if @selected_sport and @selected_team.blank? %>
+            <br> <br>
+            <div class="flex justify-center items-center mb-8">
+                <div class="flex flex-col items-start">
+                    <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem nenhuma equipa neste desporto!</h1>
+                </div>
+            </div>
+            <% end %>
+        <% end %>
+  
+
+<!-------------------------------------------------------------------------------- MODAL ADICIONAR EQUIPA ------------------------------------------------------------------------->   
+
+<% if (current_user.club? and !current_user.club_profile.has_no_sports?) or (current_user.board? and !current_user.board_profile.club_profile.has_no_sports?) %>
+    <div id="modal-add-team" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-green-900">
+                    <i data-feather="plus" class="w-6 h-6 text-white"></i>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Adicionar Equipa </h3>
+                    <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-add-team">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-4 md:p-5">
+                    <ul class="space-y-4 mb-4">
+                    <%= form_with(url: club_teams_path, method: :post, scope: :club_team, local: true) do |form| %>
+                        <% if current_user.club? %>
+                            <%= form.hidden_field :club_profile_id, value: current_user.club_profile.id %>
+                        <% elsif current_user.board? %>
+                            <%= form.hidden_field :club_profile_id, value: current_user.board_profile.club_profile.id %>
+                        <% end %>
+                        
+                        <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome da Equipa</label>
+                        
+                        <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" ,placeholder: "Ex: Sub 17 A", required: true, autofocus: true %>
+
+                        <% if @selected_sport == 'football' %>
+                            <%= form.hidden_field :sport_id, value: 2 %>
+                        <% elsif @selected_sport == 'handball' %>
+                            <%= form.hidden_field :sport_id, value: 3 %>
+                        <% end %>
+                        <%= hidden_field_tag :sport, @selected_sport %>
+                        <br> <br>
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-gradient-to-r from-emerald-900 to-emerald-800 hover:from-emerald-800 hover:to-emerald-500">
+                           <i data-feather="check" class="w-4 h-4"></i>
+                           <span>Criar Equipa</span>
+                        </button>
+                    <% end %> 
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<% end %> 
+
+<!-------------------------------------------------------------------------------- MODAL EDITAR EQUIPA ------------------------------------------------------------------------->   
+<% if @selected_team.present? && @selected_team != 'others' %>
+    <div id="modal-rename-team" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-500 border-gray-200 space-x-1 bg-blue-900">
+                    <i data-feather="edit-3" class="w-6 h-6 text-white"></i>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">   Mudar Nome da Equipa </h3>
+                    <button type="button" class="text-red-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-red-400/20 dark:hover:text-red-400" data-modal-toggle="modal-rename-team">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-4 md:p-5">
+                    <ul class="space-y-4 mb-4">
+                    <%= form_with(url: club_team_path(@selected_team), method: :patch, scope: :club_team, local: true) do |form| %>
+                        <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome da Equipa</label>
+                        <%= form.text_field :name, class: "w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" , placeholder: "Ex: Sub 17 A", required: true, autofocus: true, value: ClubTeam.find(@selected_team).name %>
+                        <br> <br>
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-white font-medium shadow-md transition-transform duration-150 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gradient-to-r from-blue-900 to-blue-800 hover:from-blue-800 hover:to-blue-500">
+                           <i data-feather="check" class="w-4 h-4"></i>
+                           <span>Mudar nome da equipa</span>
+                        </button>
+                    <% end %> 
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>
+
+<!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER DESPORTO ------------------------------------------------------------------------->   
+
+
+    <div id="modal-remover-desporto" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+
+            <% if (@selected_sport == 'football' and ((current_user.club? and current_user.club_profile.has_football_teams?) or (current_user.board? and current_user.board_profile.club_profile.has_football_teams?))) or (@selected_sport == 'handball' and ((current_user.club? and current_user.club_profile.has_handball_teams?) or (current_user.board? and current_user.board_profile.club_profile.has_handball_teams?)))  %>
+                
+                <h3 class="text-xl font-semibold text-white text-center mb-2">Desporto não pode ser apagado!</h3>
+                <p class="text-gray-300 text-center mb-6"> Apague todas as equipas de <%= @selected_sport == 'football' ? "Futebol" : "Andebol" %> para poder apagar o desporto </p>
+                <div class="flex gap-3">
+                <button data-modal-hide="modal-remover-desporto" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                    Cancelar
+                </button>
+                </div>
+            <% elsif @base_num_club_ct != 0 or @base_num_club_pitches != 0 or @base_num_club_locker_rooms != 0 %>
+                <h3 class="text-xl font-semibold text-white text-center mb-2">Desporto não pode ser apagado!</h3>
+                <p class="text-gray-300 text-center mb-6"> Apague todas as infraestruturas de <%= @selected_sport == 'football' ? "Futebol" : "Andebol" %> em <b>"<%= link_to "Infraestruturas", club_infrastructures_dashboard_path(sport: @selected_sport), class: "hover:underline bold text-orange-400 hover:text-orange-500" %>"</b> para poder apagar o desporto </p>
+                <div class="flex gap-3">
+                <button data-modal-hide="modal-remover-desporto" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                    Cancelar
+                </button>
+                </div>
+            <% else %>
+                <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar <%= @selected_sport == 'football' ? "Futebol" : "Andebol" %>? Esta ação é irreversível</p>
+                <div class="flex gap-3">
+                <button data-modal-hide="modal-remover-desporto" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                    Cancelar
+                </button>
+                <% club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile %>
+                <% if @selected_sport == 'football' %>
+                    <% football_sport = club_profile.club_sports.find_by(sport_id: 2) %>
+                    <%= button_to club_sport_path(football_sport), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                        Apagar Desporto
+                    <% end %>
+                <% elsif @selected_sport == 'handball' %>
+                    <% handball_sport = club_profile.club_sports.find_by(sport_id: 3) %>
+                    <%= button_to club_sport_path(handball_sport), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                        Apagar Desporto
+                    <% end %>
+                <% end %>
+
+                </div>
+            <% end %>
+
+        </div>
+    </div>
+
+
+<!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER EQUIPA ------------------------------------------------------------------------->
+<% if @selected_team.present? and @selected_team != 'others' %>
+    <div id="modal-remover-equipa" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+        <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+            <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+        </div>
+
+        <% if @base_num_players > 0 or @base_num_coaches > 0  %>
+            
+            <h3 class="text-xl font-semibold text-white text-center mb-2">Equipa não pode ser apagada!</h3>
+            <p class="text-gray-300 text-center mb-6"> Remova todos os jogadores e equipa técnica para poder apagar a equipa
+            <div class="flex gap-3">
+            <button data-modal-hide="modal-remover-equipa" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                Cancelar
+            </button>
+            </div>
+        <% else %>
+            <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+            <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar a equipa <%= ClubTeam.find(@selected_team).name %>? Esta ação é irreversível</p>
+            <div class="flex gap-3">
+                <button data-modal-hide="modal-remover-equipa" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                    Cancelar
+                </button>
+                <%= button_to club_team_path(@selected_team), method: :delete , params: { sport: @selected_sport }, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                    Apagar Equipa
+                <% end %>
+            </div>
+        <% end %>
+
+    </div>
+    </div>
+<% end %>
+
+
+<!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER ET ------------------------------------------------------------------------->    
+
+
+<script>
+    feather.replace();
+</script>
+
+</body>
+
+<!-------------------------------------------------------------------------------- SCRIPTS ------------------------------------------------------------------------->   
+
+
+<!-- Script de limpar o form de pesquisa -->
+<script>
+    function toggleClearButton(input) {
+        const clearBtn = document.getElementById('clear-search');
+        if (input.value.length > 0) {
+            clearBtn.classList.remove('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
+        }
+        feather.replace();
+    }
+
+    function clearSearch() {
+        const input = document.getElementById('search-input');
+        const form = document.getElementById('search-form');
+        input.value = '';
+        document.getElementById('clear-search').classList.add('hidden');
+        form.requestSubmit();
+    }
+
+</script>
+
+<style>
+
+    h1 {
+        font-size: 16px;
+        margin-top: 0;
+    }
+
+    p {
+        color: rgb(107, 114, 128);
+        font-size: 15px;
+        margin-bottom: 10px;
+        margin-top: 5px;
+    }
+
+    .card {
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 16px;
+        border: 1px solid lightgray;
+        border-radius: 16px;
+    }
+
+    .card p:last-child {
+        margin-bottom: 0;
+    }
+
+    .sidebar-icon {
+        transition: all 0.3s ease;
+    }
+    
+    .sidebar-item:hover .sidebar-icon {
+        transform: translateX(5px);
+    }
+    
+    .stat-card {
+        background: rgba(30, 41, 59, 0.8);
+    }
+    
+    .glow {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+</style>
+
+<!-- Configuração da cor principal e secundária do tailwind -->
+
+<script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                colors: {
+                    primary: {
+                        500: '#6366f1',
+                    },
+                    secondary: {
+                        500: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    }
+</script>
+
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+

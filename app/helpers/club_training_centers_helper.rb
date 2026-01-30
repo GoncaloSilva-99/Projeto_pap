@@ -1,0 +1,2 @@
+module ClubTrainingCentersHelper
+end
