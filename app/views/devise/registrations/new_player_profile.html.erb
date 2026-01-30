@@ -76,8 +76,10 @@
         
         <%= f.hidden_field :role,
             value: "Player" %>
+        <%= hidden_field_tag :selected_sport, params[:selected_sport] %>  <!-- ADICIONADO -->
+        <%= hidden_field_tag :selected_team, params[:selected_team] %>    <!-- ADICIONADO -->
 
-
+    
 <!--------------------------------------------------------------- Step 1 ----------------------------------------------------------------------------->
 
 

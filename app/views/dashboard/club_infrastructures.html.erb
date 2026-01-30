@@ -598,36 +598,19 @@
                                     </div>
                                 </div>
                             </div>
-
-                        <% end %>
-                    </div>
-                <% end %>
-
-                <!-------------------------------------------------------------------------------- CALENDÁRIO DE TREINOS ------------------------------------------------------------------------->
-
-                    <% if @selected_pitch %>
-                    <div class="mt-12 bg-gray-800 rounded-xl p-6">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl font-bold text-yellow-400"> Calendário Semanal - <%= ClubPitch.find(@selected_pitch).name %> </h2>
-                            
-                            <div class="flex items-center gap-2">
-                                <div id="calendar-navigation" class="flex gap-2 hidden">
-                                    <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, start_date: (@start_date - 1.week).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
-                                        ← Semana Anterior
-                                    <% end %>
-                                    
-                                    <span class="px-4 py-2 bg-blue-900 text-white rounded-lg">
-                                        <%= @start_date.strftime("%d/%m") %> - <%= @end_date.strftime("%d/%m/%Y") %>
-                                    </span>
-                                    
-                                    <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, start_date: (@start_date + 1.week).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
-                                        Próxima Semana →
+                            <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                            <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar o centro de treinos "<b><%= ct.name %></b>"?  </p>
+                            <div class="flex items-center gap-3">
+                                <div class="w-1/2">
+                                    <button data-modal-hide="modal-apagar-ct-<%= ct.id %>" class="w-full px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium text-center">
+                                        Cancelar
+                                    </button>
+                                </div>
+                                <div class="w-1/2">
+                                    <%= button_to club_training_center_path(ct), method: :delete, class: "w-full px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium text-center" do %>
+                                        Apagar CT
                                     <% end %>
                                 </div>
-                                
-                                <button onclick="toggleCalendar()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
-                                    <span id="toggle-icon">▶</span> <span id="toggle-text">Mostrar</span>
-                                </button>
                             </div>
                         </div>
 

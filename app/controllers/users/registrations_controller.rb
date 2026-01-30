@@ -35,7 +35,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
     if resource.save
       set_flash_message! :notice, :signed_up
       if (user_signed_in? and current_user.club?) or (user_signed_in? and current_user.board?)
-         respond_with resource, location: club_teams_dashboard_path(sport: params[:selected_sport])
+         sport = if params[:selected_team].present? and params[:selected_team] != 'others'
+                   team = ClubTeam.find(params[:selected_team]) rescue nil
+                   team ? (team.sport_id == 2 ? 'football' : 'handball') : (params[:selected_sport].presence || 'handball')
+                 else
+                   params[:selected_sport].presence || 'handball'
+                 end
+         respond_with resource, location: club_teams_dashboard_path(sport: sport, team: params[:selected_team])
       else
         sign_up(resource_name, resource)
         respond_with resource, location: after_sign_up_path_for(resource)

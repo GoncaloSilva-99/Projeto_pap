@@ -1,9 +1,9 @@
+﻿﻿<body class="bg-gray-900 text-gray-100 min-h-screen" style="flex-wrap: wrap;">
 
-<body class="bg-gray-900 text-gray-100 min-h-screen" style="flex-wrap: wrap;">
-
-    <!-- Navbar -->
+    <!-------------------------------------------- Navbar ------------------------------------------------>
     <nav class="bg-gray-800 py-4 px-6 shadow-lg fixed w-full z-30 top-0 start-0" style="--nav-height:64px;"">
         <div class="container mx-auto flex items-center justify-between flex-wrap">
+            
             <!-- Logo and Search -->
             <div class="flex items-center space-x-6">
                 <div class="flex items-center" >
@@ -17,17 +17,27 @@
                         <i data-feather="search"></i>
                     </button>
                     <input type="text" id="search-bar" placeholder="Search..." 
-                           class="bg-gray-700 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            class="bg-gray-700 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
             </div>
 
+            <% if user_signed_in? %>
             <!-- Center Links -->
             <div id="nav-links" class="w-full md:w-auto flex justify-center space-x-6 mt-4 md:mt-0 md:order-none order-3 nav-links-overlap">
-                <a href="#inicio" class="hover:text-orange-400 transition">Início</a>
-                <%= link_to "Dashboard", club_dashboard_path, class:"hover:text-orange-400 transition" %>
-                <a href="#" class="hover:text-orange-400 transition">Agenda</a>
-                <a href="#" class="hover:text-orange-400 transition">Análises</a>
+                <a href="#inicio-pub" class="hover:text-orange-400 transition">Voltar ao Início</a>
+                <a href="#mensagens" class="hover:text-orange-400 transition">Mensagens</a>  <!-- link to -->
+                <a href="#equipa" class="hover:text-orange-400 transition">Equipa</a>  <!-- link to -->
             </div>
+
+            <% else %>
+
+            <div id="nav-links" class="w-full md:w-auto flex justify-center space-x-6 mt-4 md:mt-0 md:order-none order-3 nav-links-overlap">
+                <a href="#inicio" class="hover:text-orange-400 transition">Início</a>
+                <a href="#stats" class="hover:text-orange-400 transition">Estatísticas</a>
+                <a href="#popular-profiles" class="hover:text-orange-400 transition">Perfis Populares</a>
+            </div>
+
+            <% end %>
 
             <!-- Right Side -->
             <div class="flex items-center space-x-4 right-overlap">
@@ -124,10 +134,12 @@
                         Apps
                     </div>
                     <div class="grid grid-cols-2 gap-3 p-4">
-                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                        <!-- Dashboard -->
+                        <%= link_to club_dashboard_path, class: "block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600" do %>
                             <i data-feather="shield" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
-                            <div class="text-sm font-medium text-gray-900 dark:text-white">Clube</div>
-                        </a>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</div>
+                        <% end %>
+                    
                         <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
                             <i data-feather="users" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                             <div class="text-sm font-medium text-gray-900 dark:text-white">Equipa</div>
@@ -144,7 +156,7 @@
                             <i data-feather="message-square" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                             <div class="text-sm font-medium text-gray-900 dark:text-white">Menssagens</div>
                         </a>
-                        <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                        <a href="#" id="favorites-app-link" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
                             <i data-feather="heart" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                             <div class="text-sm font-medium text-gray-900 dark:text-white">Favoritos</div>
                         </a>
@@ -165,16 +177,51 @@
                         </div>
                         <ul class="py-2" aria-labelledby="user-menu-button">
                             <li>
-                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400"><i data-feather="home" class="mr-2"></i>Perfil</a>
+                                <% if current_user.club? %>
+                                    <% @club_obj = ClubProfile.find(current_user.club_profile.id) %>
+                                    <%= link_to club_profile_path(@club_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil 
+                                    <% end %>
+                                <% elsif current_user.player? %>
+                                    <% @player_obj = PlayerProfile.find(current_user.player_profile.id) %>
+                                    <%= link_to player_profile_path(@player_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil
+                                    <% end %>
+                                <% elsif current_user.board? %>
+                                    <% @board_obj = BoardProfile.find(current_user.board_profile.id) %>
+                                    <%= link_to board_profile_path(@board_profile), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil
+                                    <% end %>
+                                <% elsif current_user.coach? %>
+                                    <% @coach_obj = CoachProfile.find(current_user.coach_profile.id) %>
+                                    <%= link_to coach_profile_path(@coach_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil
+                                    <% end %>
+                                <% elsif current_user.admin? %>
+                                    <% @admin_obj = AdminProfile.find(current_user.admin_profile.id) %>
+                                    <%= link_to admin_profile_path(@admin_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil
+                                    <% end %>
+                                <% elsif current_user.user? %>
+                                    <% @user_obj = UserProfile.find(current_user.user_profile.id) %>
+                                    <%= link_to user_profile_path(@user_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                    <i data-feather="user" class="mr-2"></i>Perfil
+                                    <% end %>
+                                <% end%>
+                                
                             </li>
                             <li>
-                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400"><i data-feather="settings" class="mr-2"></i>Definições</a>
+                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400">
+                                    <i data-feather="settings" class="mr-2"></i>Definições</a>
                             </li>
                             <li>
-                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400"><i data-feather="bar-chart-2" class="mr-2"></i>Estatísticas</a>
+                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400">
+                                    <i data-feather="bar-chart-2" class="mr-2"></i>Estatísticas</a>
                             </li>
                             <li>
-                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500"><i data-feather="log-out" class="mr-2"></i>Log out</a>
+                                <%= button_to destroy_user_session_path, method: :delete, form_class: "w-full", class: "w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500 dark:active:text-red-500" do %>
+                                    <i data-feather="log-out" class="mr-2"></i>Log out
+                                <% end %>
                             </li>
                         </ul>
                     </div>
@@ -196,79 +243,9 @@
         </div>
     </nav>
 
-    <!-- News Ticker -->
-    <div class="py-2 px-6 overflow-hidden bg-gradient-to-b from-gray-900 to-gray-800 fixed w-full z-20 top-0 start-0" style="margin-bottom: -17px;" id="news-ticker">
-        <div class="container mx-auto relative">
-            <div class="absolute left-0 top-0 bottom-0 flex items-center z-10">
-                <span class="bg-red-500 px-2 py-1 rounded text-xs font-bold">NOTÍCIAS</span>
-            </div>
-            <div class="flex whitespace-nowrap news-scroll">
-                <!-- Primeira cópia -->
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/1" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">New tournament announced:</span>
-                    <span class="text-gray-400 ml-2">Regional Championship registration now open!</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/2" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">System Update:</span>
-                    <span class="text-gray-400 ml-2">New analytics dashboard now available</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/3" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">Training Tip:</span>
-                    <span class="text-gray-400 ml-2">Improve your endurance with these exercises</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/4" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">Player Spotlight:</span>
-                    <span class="text-gray-400 ml-2">Meet this month's rising star athlete</span>
-                </div>
-
-                <!-- Segunda cópia (para loop infinito contínuo) -->
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/1" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">New tournament announced:</span>
-                    <span class="text-gray-400 ml-2">Regional Championship registration now open!</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/2" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">System Update:</span>
-                    <span class="text-gray-400 ml-2">New analytics dashboard now available</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/3" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">Training Tip:</span>
-                    <span class="text-gray-400 ml-2">Improve your endurance with these exercises</span>
-                </div>
-                <div class="flex items-center mr-16">
-                    <div class="w-6 h-6 rounded-full bg-gray-700 mr-2 overflow-hidden">
-                        <img src="http://static.photos/people/200x200/4" class="w-full h-full object-cover">
-                    </div>
-                    <span class="font-medium">Player Spotlight:</span>
-                    <span class="text-gray-400 ml-2">Meet this month's rising star athlete</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    
     <style>
-        .news-scroll {
-            animation: scroll 20s linear infinite;
+        html {
+            scroll-behavior: smooth;
         }
 
         @keyframes scroll {
@@ -337,7 +314,7 @@
         }
 
          /* Desktop: esconde os links de navegação quando searchbar está activa */
-         @media (min-width: 641px) {
+        @media (min-width: 641px) {
              .nav-links-overlap {
                  transition: opacity .18s ease, visibility .18s;
              }
@@ -351,365 +328,1383 @@
                  height: 0;
                  overflow: hidden;
               }
-          }
-
-        #news-ticker {
-            margin-top: 0;
         }
 
-        #news-ticker .container {
-            position: relative;
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
 
-        #news-ticker .news-scroll {
-            padding-left: 4rem;
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
 
-        #news-ticker .absolute.left-0 {
-            z-index: 10;
+        /* Thin Scrollbar for Emoji Picker */
+        .thin-scrollbar::-webkit-scrollbar {
+            height: 2px;
         }
-
-        #news-ticker .container::before {
-            content: "";
-            position: absolute;
-            left: -210px;
-            top: -7px;
-            bottom: 0;
-            height: 40px;
-            width: 260px;
-            background-image: linear-gradient(to bottom, #111827 0%, #1f2937 100%);
-            z-index: 10;
-            pointer-events: none;
+        .thin-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
         }
-
-        #news-ticker .container::after {
-            content: "";
-            position: absolute;
-            right: -100px;
-            top: -7px;
-            bottom: 0;
-            height: 40px;
-            width: 119px;
-            background-image: linear-gradient(to bottom, #111827 0%, #1f2937 100%);
-            z-index: 10;
-            pointer-events: none;
+        .thin-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 20px;
         }
     </style>
 
     <script>
-        // Espera que o DOM(Document Object Model — representação em memória da página HTML/XML que o browser cria)
-        // esteja totalmente carregado antes de executar a função
+        // Este evento é acionado quando o DOM (a página HTML) está completamente carregado
         document.addEventListener('DOMContentLoaded', () => {
-        // Se a biblioteca feather estiver disponível, substitui os ícones <i> pelo SVG correspondente
-        if (typeof feather !== 'undefined') feather.replace();
+            // Se a biblioteca Feather.js está disponível, converte os ícones em SVG
+            // Os ícones com data-feather="nome" são substituídos por imagens SVG
+            if (typeof feather !== 'undefined') feather.replace();
 
-        // Obtém o botão que activa a pesquisa pelo id
-        const searchButton = document.getElementById('search-button');
-        // Obtém o campo de input da pesquisa pelo id
-        const searchBar = document.getElementById('search-bar');
-        // Obtém o container do nav para cálculos de layout
-        const navContainer = document.querySelector('nav .container');
-        // Se não existir a searchBar ou o navContainer, sai da função (não prossegue)
-        if (!searchBar || !navContainer) return;
+            // Obtém o botão de pesquisa pelo seu id
+            const searchButton = document.getElementById('search-button');
+            // Obtém o input da barra de pesquisa
+            const searchBar = document.getElementById('search-bar');
+            // Obtém o container do navbar
+            const navContainer = document.querySelector('nav .container');
+            // Se algum destes elementos não existir, sai da função (return)
+            // Isto previne erros caso a página não tenha os elementos necessários
+            if (!searchBar || !navContainer) return;
 
-        // Seletor do grupo de elementos do lado direito do nav (usado para calcular espaço)
-        const rightSideSelector = '.right-overlap';
-         // Função que devolve o elemento do lado direito dentro do nav
-         function getRightSideEl() { return navContainer.querySelector(rightSideSelector); }
+            // Função que retorna o elemento ".right-overlap" (o lado direito da navbar)
+            // As setas => indicam uma função arrow
+            const getRightSideEl = () => navContainer.querySelector('.right-overlap');
+            // Função que retorna o elemento ".nav-links-overlap" (os botões de navegação do meio)
+            const getNavLinksEl = () => document.querySelector('.nav-links-overlap');
+            // Função que recebe uma string como "24px" e retorna apenas o número (24)
+            // Replace substitui "px" por nada, e parseFloat converte a string em número
+            const parsePx = v => v ? parseFloat(v.replace('px','')) : 0;
 
-        // Cria um elemento canvas(área bitmap onde se pode desenhar dinamicamente com JavaScript)
-        // para medir a largura do texto
-        const canvas = document.createElement('canvas');
-        // Obtém o contexto 2D do canvas para medir texto
-        const ctx = canvas.getContext('2d');
-
-        // Função que mede a largura em pixels de um texto dado usando o canvas
-        function measureTextWidth(text) {
-            // Obtém os estilos computados do input para usar a mesma fonte na medição
-            const style = window.getComputedStyle(searchBar);
-            // Define a fonte do contexto (usa style.font se existir, senão composição de tamanho e família)
-            ctx.font = style.font || `${style.fontSize} ${style.fontFamily}`;
-            // Mede a largura do texto (ou string vazia) e arredonda para cima
-            return Math.ceil(ctx.measureText(text || '').width);
-        }
-
-        // Função utilitária que converte "NNpx" para número (float)
-        function parsePx(v) { return v ? parseFloat(v.replace('px','')) : 0; }
-
-        // Função que ajusta dinamicamente a largura da barra de pesquisa
-        function adjustSearchWidth() {
-            // Se a barra de pesquisa não tiver a classe 'active', remove a largura inline e sai
-            if (!searchBar.classList.contains('active')) {
-                searchBar.style.width = '';
-                searchBar.style.maxWidth = '';
-                searchBar.style.right = '';
-                return;
-            }
-
-            // Largura mínima quando activa em px (mais pequena em mobile)
-            const MIN_ACTIVE = window.innerWidth <= 640 ? 200 : 300;
-
-            // Rect do input para cálculos de posição
-            const inputRect = searchBar.getBoundingClientRect();
-            // Elemento do lado direito (botões) — pode ser null
-            const rightEl = getRightSideEl();
-
-            // Texto actual (valor do input ou placeholder)
-            const text = searchBar.value || searchBar.placeholder || '';
-            // Largura do texto medida via canvas
-            const textWidth = measureTextWidth(text);
-
-            // Inclui paddings horizontais e um buffer extra para o caret/espacamento
-            const cs = window.getComputedStyle(searchBar);
-            const paddingLR = parsePx(cs.paddingLeft) + parsePx(cs.paddingRight);
-            const extraBuffer = 24; // espaço extra para caret e folga
-            const contentWidth = textWidth + paddingLR + extraBuffer;
-
-            // Determina margem direita de segurança
-            const MARGIN_RIGHT = 12; // px (mais apertado — JS controla o resto)
-
-            // Calcula espaço disponível até à borda direita do nav/viewport (prioritário)
-            const viewportRight = window.innerWidth;
-            const navRect = navContainer ? navContainer.getBoundingClientRect() : { right: viewportRight };
-            // usa o mínimo entre o viewport e a borda do nav para evitar overflow
-            let availableViewport = Math.max(0, Math.min(viewportRight, navRect.right) - inputRect.left - MARGIN_RIGHT);
-
-            // Se existir o elemento do lado direito e ele estiver visível dentro do nav, use-o como limite adicional
-            if (rightEl && rightEl.offsetParent !== null) {
-                try {
-                    const rightRect = rightEl.getBoundingClientRect();
-                    // espaço até ao início do lado direito (mantém pequena folga)
-                    const calc = Math.max(40, rightRect.left - inputRect.left - 8);
-                    availableViewport = Math.min(availableViewport, calc);
-                } catch (e) {
-                    // fallback silencioso
-                }
-            }
-
-            // Proteção CSS inline: garante que o input nunca excede o limite calculado
-            searchBar.style.maxWidth = availableViewport + 'px';
-            // Em mobile (relativo) não forçamos `right` inline — deixa o fluxo natural
-            if (window.innerWidth > 640) {
-                searchBar.style.right = MARGIN_RIGHT + 'px';
-            } else {
-                searchBar.style.right = '';
-            }
-
-            // Ajusta o mínimo para caber caso a viewport seja muito estreita
-            const effectiveMin = Math.min(MIN_ACTIVE, Math.max(0, availableViewport));
-
-            // Calcula a largura desejada respeitando mínimo, conteúdo e o limite do viewport
-            const desired = Math.min(Math.max(effectiveMin, contentWidth), availableViewport);
-            // Aplica a largura calculada ao input
-            searchBar.style.width = desired + 'px';
-        }
-
-        // Se o botão de pesquisa existir, adiciona o listener de clique
-        if (searchButton) {
-            let isToggglingSearch = false; // Flag para evitar conflito entre eventos
-
-            searchButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                isToggglingSearch = true;
-                const nowActive = searchBar.classList.toggle('active');
-                const rightEl = getRightSideEl();
-                const navLinksEl = document.querySelector('.nav-links-overlap');
-
-                // Em mobile: esconde o lado direito (notificações, apps, user menu)
-                if (window.innerWidth <= 640 && rightEl) {
-                    if (nowActive) {
-                        rightEl.classList.add('hidden-by-search');
-                    } else {
-                        rightEl.classList.remove('hidden-by-search');
-                    }
-                 }
-
-                 // Em desktop: esconde os links de navegação
-                 if (window.innerWidth > 640 && navLinksEl) {
-                    if (nowActive) {
-                        navLinksEl.classList.add('hidden-by-search');
-                    } else {
-                        navLinksEl.classList.remove('hidden-by-search');
-                    }
-                 }
-
-                  // Ajusta largura dinamicamente (mobile e desktop) e foca
-                  setTimeout(() => { searchBar.focus(); adjustSearchWidth(); }, 0);
-                  if (!nowActive) {
-                      searchBar.style.width = '';
-                     // Reaparecer elementos após 400ms
-                     if (rightEl) rightEl.classList.remove('hidden-by-search');
-                      if (navLinksEl) {
-                          setTimeout(() => {
-                              navLinksEl.classList.remove('hidden-by-search');
-                          }, 400);
-                      }
-                   }
-               });
-
-              // Fecha ao clicar fora
-              document.addEventListener('click', (ev) => {
-                  if (isToggglingSearch) return; // Ignora o clique se estamos a fazer toggle
-                  if (!searchBar.classList.contains('active')) return;
-                  if (ev.target === searchBar || ev.target === searchButton || searchBar.contains(ev.target)) return;
-                  searchBar.classList.remove('active');
-                  const rightEl = getRightSideEl();
-                  const navLinksEl = document.querySelector('.nav-links-overlap');
-                 // Remove hidden-by-search de ambos em mobile e desktop
-                 if (rightEl) rightEl.classList.remove('hidden-by-search');
-                  if (navLinksEl) {
-                      setTimeout(() => {
-                          navLinksEl.classList.remove('hidden-by-search');
-                      }, 400);
-                  }
-                  searchBar.style.width = '';
-              });
-         }
-
-        // IIFE que gere eventos de input e resize sem poluir o escopo global
-        (function() {
-            // Guarda o comprimento anterior do valor do input para detecção de mudanças
-            let prevLen = searchBar.value ? searchBar.value.length : 0;
-
-            // Ao alterar o conteúdo do input
-            searchBar.addEventListener('input', () => {
-            // Obtém o novo comprimento do texto
-            const len = searchBar.value.length;
-            // Se o comprimento não mudou, não faz nada
-            if (len === prevLen) return;
-            // Recalcula a largura com base no texto actual (assim backspace também reduz)
-            adjustSearchWidth();
-            // Actualiza o comprimento anterior
-            prevLen = len;
-            });
-
-            // Ao clicar no botão de pesquisa, sincroniza prevLen após o reflow
-            if (searchButton) {
-            searchButton.addEventListener('click', () => {
-                setTimeout(() => {
-                prevLen = searchBar.classList.contains('active') ? (searchBar.value ? searchBar.value.length : 0) : 0;
-                }, 0);
-            });
-            }
-
-            // Ao redimensionar a janela, debounce e recalcula a largura
-            window.addEventListener('resize', () => {
-            clearTimeout(window.__searchResizeTimer);
-            window.__searchResizeTimer = setTimeout(adjustSearchWidth, 120);
-            });
-        })();
-
-        // Chamada inicial para ajustar a largura quando a página carrega
-        adjustSearchWidth();
-        
-        // Lógica para o menu de utilizador (clicar para abrir, sair para fechar)
-        const userMenuContainer = document.getElementById('user-menu-container');
-        const userMenuButton = document.getElementById('user-menu-button');
-        const userDropdown = document.getElementById('user-dropdown');
-
-        let isMenuPinned = false; // Variável para controlar se o menu está "fixo"
-
-        if (userMenuContainer && userMenuButton && userDropdown) {
-            // 1. Mostrar menu ao passar o rato por cima
-            userMenuContainer.addEventListener('mouseenter', () => {
-                userDropdown.classList.remove('hidden');
-            });
-
-            // 2. Esconder o menu ao sair com o rato, APENAS se não estiver fixo
-            userMenuContainer.addEventListener('mouseleave', () => {
-                if (!isMenuPinned) {
-                    userDropdown.classList.add('hidden');
-                }
-            });
-
-            // 3. Fixar/libertar o menu ao clicar no botão
-            userMenuButton.addEventListener('click', (event) => {
-                event.stopPropagation(); // Impede que o clique feche o menu imediatamente
-                isMenuPinned = !isMenuPinned; // Alterna o estado "fixo"
-                if (isMenuPinned) {
-                    userDropdown.classList.remove('hidden'); // Garante que está visível ao fixar
-                }
-            });
-
-            // 4. Fechar o menu se estiver fixo e o utilizador clicar fora ou fizer scroll
-            const closePinnedMenu = () => {
-                if (isMenuPinned) {
-                    isMenuPinned = false;
-                    userDropdown.classList.add('hidden');
-                }
+            // Cria um elemento canvas que será usado para medir texto
+            // Canvas é uma área onde podemos desenhar e fazer cálculos de pixels
+            const canvas = document.createElement('canvas');
+            // Obtém o contexto 2D do canvas (a forma de desenhar)
+            const ctx = canvas.getContext('2d');
+            // Função que mede a largura em pixels de um texto
+            const measureTextWidth = text => {
+                // Obtém os estilos CSS da barra de pesquisa (cor, tamanho da fonte, etc)
+                const style = window.getComputedStyle(searchBar);
+                // Define a fonte no canvas com o tamanho e tipo de letra corretos
+                // Se a propriedade 'font' não existir, cria manualmente a string
+                ctx.font = style.font || `${style.fontSize} ${style.fontFamily}`;
+                // Mede a largura do texto e arredonda para cima (Math.ceil)
+                // O resultado é em pixels
+                return Math.ceil(ctx.measureText(text || '').width);
             };
 
-            document.addEventListener('click', closePinnedMenu);
-            window.addEventListener('scroll', closePinnedMenu);
-        }
+            // Função que ajusta a largura da barra de pesquisa dinamicamente
+            // Esta função é chamada sempre que precisa calcular o tamanho
+            const adjustSearchWidth = () => {
+                // Se a barra de pesquisa não tem a classe 'active' (não está aberta)
+                if (!searchBar.classList.contains('active')) {
+                    // Remove os estilos de largura, largura máxima e posição
+                    // Isto retorna a barra ao estado inicial
+                    searchBar.style.width = '';
+                    searchBar.style.maxWidth = '';
+                    searchBar.style.right = '';
+                    // Sai da função (não há mais nada a fazer)
+                    return;
+                }
 
-        // Calcula a duração da animação baseada na largura do conteúdo (velocidade consistente)
-        function calculateScrollDuration() {
-            const scrollContainer = document.querySelector('.news-scroll');
-            if (!scrollContainer) return;
+                // Define o tamanho mínimo da barra quando está aberta
+                // Em telemóveis (≤640px) o mínimo é 200px, em desktop é 300px
+                const MIN_ACTIVE = window.innerWidth <= 640 ? 200 : 300;
+                // Obtém a posição e tamanho do elemento searchBar na tela
+                const inputRect = searchBar.getBoundingClientRect();
+                // Obtém o elemento do lado direito (os botões de notificações, etc)
+                const rightEl = getRightSideEl();
+                // Obtém o texto que está no input ou usa o placeholder se estiver vazio
+                const text = searchBar.value || searchBar.placeholder || '';
+                // Mede a largura do texto em pixels
+                const textWidth = measureTextWidth(text);
+                // Obtém os estilos CSS da barra de pesquisa
+                const cs = window.getComputedStyle(searchBar);
+                // Calcula o espaço ocupado pela margem esquerda e direita
+                const paddingLR = parsePx(cs.paddingLeft) + parsePx(cs.paddingRight);
+                // Calcula a largura total necessária: texto + margens + espaço extra (24px)
+                const contentWidth = textWidth + paddingLR + 24;
+                // Define um espaço mínimo entre o input e o lado direito (em pixels)
+                const MARGIN_RIGHT = 12;
 
-            // Velocidade em pixels por segundo (ajuste conforme necessário)
-            const PIXELS_PER_SECOND = 10;
-            
-            // Obtém a largura total do conteúdo
-            const totalWidth = scrollContainer.scrollWidth;
-            // A animação vai de 0 a -50%, então a distância é 50% da largura
-            const distanceToCover = totalWidth / 2;
-            
-            // Calcula a duração em segundos
-            const duration = distanceToCover / PIXELS_PER_SECOND;
-            
-            // Define a variável CSS
-            document.documentElement.style.setProperty('--scroll-duration', duration + 's');
-        }
+                // Obtém a largura total da viewport
+                const viewportRight = window.innerWidth;
+                // Obtém a posição do container da navegação
+                const navRect = navContainer.getBoundingClientRect();
+                // Calcula o espaço disponível para a barra de pesquisa
+                // É o espaço desde o input até ao fim da navbar, menos uma margem
+                let availableViewport = Math.max(0, Math.min(viewportRight, navRect.right) - inputRect.left - MARGIN_RIGHT);
 
-        // Calcula ao carregar
-        calculateScrollDuration();
+                // Se o elemento do lado direito existe e é visível
+                if (rightEl && rightEl.offsetParent !== null) {
+                    // Tenta calcular quanto espaço há até aos botões do lado direito
+                    try {
+                        // Obtém a posição do lado direito
+                        const rightRect = rightEl.getBoundingClientRect();
+                        // Recalcula o espaço disponível (não pode ir além dos botões)
+                        availableViewport = Math.min(availableViewport, Math.max(40, rightRect.left - inputRect.left - 8));
+                    } catch (e) {
+                        // Se houver um erro, ignora (o availableViewport mantém o valor anterior)
+                    }
+                }
 
-        // Recalcula ao redimensionar
-        window.addEventListener('resize', () => {
-            clearTimeout(window.__scrollDurationTimer);
-            window.__scrollDurationTimer = setTimeout(calculateScrollDuration, 120);
-        });
+                // Define a largura máxima que a barra de pesquisa pode ter
+                searchBar.style.maxWidth = availableViewport + 'px';
+                // Se estamos em desktop, define a distância do lado direito
+                searchBar.style.right = window.innerWidth > 640 ? MARGIN_RIGHT + 'px' : '';
+                // Calcula o tamanho mínimo efetivo (não pode ser maior que o espaço disponível)
+                const effectiveMin = Math.min(MIN_ACTIVE, Math.max(0, availableViewport));
+                // Calcula a largura desejada (a maior entre o mínimo e o tamanho do conteúdo)
+                const desired = Math.min(Math.max(effectiveMin, contentWidth), availableViewport);
+                // Define a largura final da barra de pesquisa
+                searchBar.style.width = desired + 'px';
+            };
 
-        // posiciona o ticker imediatamente abaixo do navbar (funciona em mobile e desktop)
-        function positionTicker() {
-            const nav = document.querySelector('nav');
-            const ticker = document.getElementById('news-ticker');
-            const heroSection = document.getElementById('inicio');
-            
-            if (!nav || !ticker) return;
-            
-            const navRect = nav.getBoundingClientRect();
-            // define top inline para o bottom do nav (px)
-            ticker.style.top = navRect.bottom + 'px';
-            
-            // Calcula a altura total ocupada (navbar + ticker)
-            if (heroSection) {
-                const tickerRect = ticker.getBoundingClientRect();
-                const totalHeight = tickerRect.bottom;
-                // Aplica margin-top dinamicamente para evitar que o ticker tape o conteúdo
-                heroSection.style.marginTop = totalHeight + 'px';
+            // Função que mostra ou esconde elementos quando a pesquisa está ativa
+            const toggleSearchElements = (show) => {
+                // Obtém o elemento do lado direito
+                const rightEl = getRightSideEl();
+                // Obtém os links de navegação do meio
+                const navLinksEl = getNavLinksEl();
+                // Se estamos em telemóvel (≤640px) e existe o elemento do lado direito
+                if (window.innerWidth <= 640 && rightEl) 
+                    // Adiciona ou remove a classe 'hidden-by-search' baseado em 'show'
+                    rightEl.classList.toggle('hidden-by-search', show);
+                // Se estamos em desktop (>640px) e existem os links de navegação
+                if (window.innerWidth > 640 && navLinksEl) 
+                    // Adiciona ou remove a classe 'hidden-by-search' dos links
+                    navLinksEl.classList.toggle('hidden-by-search', show);
+            };
+
+            // Handler (tratador) do clique no botão de pesquisa
+            if (searchButton) {
+                // Variável que controla se estamos a fazer a animação de abertura/fecho
+                // Isto evita que os cliques sejam registados enquanto a animação está a correr
+                let isTogglingSearch = false;
+                // Quando o utilizador clica no botão de pesquisa
+                searchButton.addEventListener('click', (e) => {
+                    // Para a propagação do evento (impede que outros listeners sejam chamados)
+                    e.stopPropagation();
+                    // Marca que estamos a fazer toggle (abertura/fecho)
+                    isTogglingSearch = true;
+                    // Alterna a classe 'active' na barra de pesquisa (adiciona se não tiver, remove se tiver)
+                    const nowActive = searchBar.classList.toggle('active');
+                    // Se agora está ativa (foi aberta)
+                    if (nowActive) toggleSearchElements(true); // Esconde apenas ao abrir
+                    // Usa setTimeout com 0ms para executar depois que a animação CSS começou
+                    setTimeout(() => { 
+                        // Coloca o cursor dentro da barra de pesquisa (focus)
+                        searchBar.focus(); 
+                        // Ajusta a largura da barra ao novo conteúdo
+                        adjustSearchWidth(); 
+                        // Marca que já terminou a animação (permite novos cliques)
+                        isTogglingSearch = false;
+                    }, 0);
+                    // Se agora está inativa (foi fechada)
+                    if (!nowActive) {
+                        // Limpa o texto que estava no input
+                        searchBar.value = '';
+                        // Remove a largura em pixels (volta ao CSS)
+                        searchBar.style.width = '';
+                        // Obtém o elemento do lado direito
+                        const rightEl = getRightSideEl();
+                        // Obtém os links de navegação
+                        const navLinksEl = getNavLinksEl();
+                        // Se o elemento do lado direito existe, remove a classe que o escondia
+                        if (rightEl) rightEl.classList.remove('hidden-by-search');
+                        // Se os links de navegação existem, remove a classe que os escondia após 200ms
+                        if (navLinksEl) setTimeout(() => navLinksEl.classList.remove('hidden-by-search'), 200);
+                    }
+                });
+
+                // Handler para quando o utilizador clica fora da barra de pesquisa
+                document.addEventListener('click', (ev) => {
+                    // Se estamos a fazer toggle, ignora este clique
+                    if (isTogglingSearch) return;
+                    // Se a barra de pesquisa não está ativa, ignora (não há nada a fazer)
+                    if (!searchBar.classList.contains('active')) return;
+                    // Se clicou no input, no botão ou dentro do input, ignora (não quer fechar)
+                    if (ev.target === searchBar || ev.target === searchButton || searchBar.contains(ev.target)) return;
+                    // Se chegou aqui, o utilizador clicou fora, então fecha a barra
+                    // Remove a classe 'active' da barra de pesquisa
+                    searchBar.classList.remove('active');
+                    // Limpa o texto que estava no input
+                    searchBar.value = '';
+                    // Reajusta a largura da barra (reseta os estilos)
+                    adjustSearchWidth();
+                    // Obtém o elemento do lado direito
+                    const rightEl = getRightSideEl();
+                    // Obtém os links de navegação
+                    const navLinksEl = getNavLinksEl();
+                    // Remove a classe que escondia o elemento do lado direito
+                    if (rightEl) rightEl.classList.remove('hidden-by-search');
+                    // Remove a classe que escondia os links após 200ms 
+                    if (navLinksEl) setTimeout(() => navLinksEl.classList.remove('hidden-by-search'), 200);
+                });
             }
-        }
 
-        // chama uma vez ao carregar
-        positionTicker();
+            // Handler para quando o utilizador escreve no input de pesquisa
+            // Guarda o comprimento anterior do texto
+            let prevLen = searchBar.value ? searchBar.value.length : 0;
+            // Quando o utilizador escreve algo no input
+            searchBar.addEventListener('input', () => {
+                // Obtém o novo comprimento do texto
+                const len = searchBar.value.length;
+                // Se o comprimento mudou (cresceu ou diminuiu)
+                if (len !== prevLen) { 
+                    // Reajusta a largura da barra de pesquisa
+                    adjustSearchWidth(); 
+                    // Atualiza o comprimento anterior
+                    prevLen = len; 
+                }
+            });
 
-        // reajusta no resize com debounce simples
-        let _tickerResizeTimer = null;
-        window.addEventListener('resize', () => {
-            clearTimeout(_tickerResizeTimer);
-            _tickerResizeTimer = setTimeout(positionTicker, 120);
-        });
+            // Handler para quando a janela do navegador é redimensionada
+            // Isto garante que o layout fica correto em diferentes tamanhos
+            window.addEventListener('resize', () => {
+                // Limpa o timer anterior (se existisse um)
+                clearTimeout(window.__searchResizeTimer);
+                // Cria um novo timer que espera 120ms antes de reajustar
+                // Isto evita chamar adjustSearchWidth muitas vezes durante o redimensionamento
+                window.__searchResizeTimer = setTimeout(adjustSearchWidth, 120);
+            });
 
-        
+            // Faz um ajuste inicial da largura da barra (quando a página carrega)
+            adjustSearchWidth();
 
+            // Handler para o menu do utilizador (o botão com o ícone de utilizador)
+            // Obtém o container do menu do utilizador
+            const userMenuContainer = document.getElementById('user-menu-container');
+            // Obtém o botão do menu do utilizador
+            const userMenuButton = document.getElementById('user-menu-button');
+            // Obtém o dropdown (menu) do utilizador
+            const userDropdown = document.getElementById('user-dropdown');
+            // Variável que controla se o menu está "fixado" (aberto permanentemente)
+            let isMenuPinned = false;
+
+            // Se todos os elementos do menu existem
+            if (userMenuContainer && userMenuButton && userDropdown) {
+                // Quando o rato entra no container do menu
+                userMenuContainer.addEventListener('mouseenter', () => 
+                    // Remove a classe 'hidden' (mostra o menu)
+                    userDropdown.classList.remove('hidden'));
+                // Quando o rato sai do container do menu
+                userMenuContainer.addEventListener('mouseleave', () => {
+                    // Se o menu não está fixado
+                    if (!isMenuPinned) 
+                        // Adiciona a classe 'hidden' (esconde o menu)
+                        userDropdown.classList.add('hidden');
+                });
+                // Quando o utilizador clica no botão do menu
+                userMenuButton.addEventListener('click', (event) => {
+                    // Para a propagação do evento
+                    event.stopPropagation();
+                    // Alterna o estado do menu (fixado/não-fixado)
+                    isMenuPinned = !isMenuPinned;
+                    // Se agora está fixado
+                    if (isMenuPinned) 
+                        // Mostra o menu
+                        userDropdown.classList.remove('hidden');
+                });
+                // Função que fecha o menu se estiver fixado
+                const closePinnedMenu = () => {
+                    // Se o menu está fixado
+                    if (isMenuPinned) {
+                        // Marca que deixou de estar fixado
+                        isMenuPinned = false;
+                        // Esconde o menu
+                        userDropdown.classList.add('hidden');
+                    }
+                };
+                // Quando o utilizador clica em qualquer lugar da página
+                document.addEventListener('click', closePinnedMenu);
+                // Quando o utilizador faz scroll na página
+                window.addEventListener('scroll', closePinnedMenu);
+            }
         });
     </script>
 
+    <!------------------------------------ Logged-in Main Page ------------------------------------------>
+    <% if user_signed_in? %>
+        <div class="container mx-auto pt-24 pb-12 px-6">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Main Feed -->
+                <div class="flex-1 space-y-6 h-[calc(100vh-100px)] overflow-y-auto pr-2 scroll-smooth no-scrollbar" id="feed-container">
+                    <!-- Create Post -->
+                    <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                <i data-feather="user" class="text-gray-400"></i>
+                            </div>
+                            <div class="flex-1 relative">
+                                <textarea id="post-content" class="w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none no-scrollbar" rows="1" style="min-height: 3rem; max-height: 16rem;" placeholder="O que estás a pensar?"></textarea>
+                                
+                                <!-- Image Preview -->
+                                <div id="image-preview-container" class="hidden mt-3 relative">
+                                    <div id="image-carousel" class="flex overflow-x-auto scroll-smooth rounded-lg no-scrollbar gap-2">
+                                        <!-- Images will be injected here by JS -->
+                                    </div>
+                                    <button id="prev-image-btn" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                        <i data-feather="chevron-left" class="w-6 h-6"></i>
+                                    </button>
+                                    <button id="next-image-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                        <i data-feather="chevron-right" class="w-6 h-6"></i>
+                                    </button>
+                                    <div id="image-dots" class="flex justify-center items-center space-x-2 mt-2">
+                                        <!-- Dots will be injected here by JS -->
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-between items-center mt-3">
+                                    <div class="flex space-x-2">
+                                        <input type="file" id="post-image-upload" class="hidden" accept=".png, .jpg, .jpeg, .gif, .webp" multiple>
+                                        <button type="button" id="btn-upload-image" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 transition">
+                                            <i data-feather="image" class="w-5 h-5"></i>
+                                        </button>
+                                    </div>
+                                    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                                        <i data-feather="send" class="w-5 h-5"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Post 1 -->
+                    <div class="post-card bg-gray-800 rounded-xl p-6 shadow-lg" data-post-id="1">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                    <i data-feather="user" class="text-gray-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-white">Tomás Nogueira</h3>
+                                    <span class="text-gray-400 text-sm">Há 2 horas</span>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <button class="post-options-btn text-gray-400 hover:text-white">
+                                    <i data-feather="more-vertical"></i>
+                                </button>
+                                <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
+                                    <a href="#" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-t-md transition-colors">
+                                        <div class="flex items-center"><i data-feather="bookmark" class="w-4 h-4 mr-2"></i><span class="save-text">Guardar publicação</span></div>
+                                    </a>
+                                    <a href="#" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-b-md transition-colors">
+                                        <div class="flex items-center"><i data-feather="download" class="w-4 h-4 mr-2"></i><span>Descarregar imagem</span></div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="post-text text-gray-300 mb-4">
+                            Grande vitória da equipa hoje! O esforço nos treinos está finalmente a dar frutos. Continuamos focados para o próximo desafio. ⚽💪 #Futebol #Vitória #Equipa
+                        </p>
+                        <div class="post-media rounded-lg overflow-hidden mb-4 bg-gray-700 h-64 flex items-center justify-center">
+                            <i data-feather="image" class="w-12 h-12 text-gray-500"></i>
+                        </div>
+                        <div class="post-actions flex items-center justify-between pt-4 border-t border-gray-700">
+                            <div class="flex items-center gap-[15px]">
+                                <button class="like-btn flex items-center space-x-2 text-gray-400 hover:text-red-500 transition group">
+                                    <i data-feather="heart" class="w-5 h-5 group-hover:fill-current"></i>
+                                    <span class="like-count">0 likes</span>
+                                </button>
+                                <button class="comment-btn flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                    <i data-feather="message-circle" class="w-5 h-5"></i>
+                                    <span class="comment-count">1 comentário</span>
+                                </button>
+                            </div>
+                            <button class="share-btn flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                                <i data-feather="share-2" class="w-5 h-5"></i>
+                                <span>Partilhar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Post 2 -->
+                    <div class="post-card bg-gray-800 rounded-xl p-6 shadow-lg" data-post-id="2">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                    <i data-feather="user" class="text-gray-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-white">Jese Leos</h3>
+                                    <span class="text-gray-400 text-sm">Há 2 horas</span>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <button class="post-options-btn text-gray-400 hover:text-white">
+                                    <i data-feather="more-vertical"></i>
+                                </button>
+                                <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
+                                    <a href="#" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-t-md transition-colors">
+                                        <div class="flex items-center"><i data-feather="bookmark" class="w-4 h-4 mr-2"></i><span class="save-text">Guardar publicação</span></div>
+                                    </a>
+                                    <a href="#" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-b-md transition-colors">
+                                        <div class="flex items-center"><i data-feather="download" class="w-4 h-4 mr-2"></i><span>Descarregar imagem</span></div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="post-text text-gray-300 mb-4">
+                            Grande vitória da equipa hoje! O esforço nos treinos está finalmente a dar frutos. Continuamos focados para o próximo desafio. ⚽💪 #Futebol #Vitória #Equipa
+                        </p>
+                        <div class="post-media rounded-lg overflow-hidden mb-4 bg-gray-700 h-64 flex items-center justify-center">
+                            <i data-feather="image" class="w-12 h-12 text-gray-500"></i>
+                        </div>
+                        <div class="post-actions flex items-center justify-between pt-4 border-t border-gray-700">
+                            <div class="flex items-center gap-[15px]">
+                                <button class="like-btn flex items-center space-x-2 text-gray-400 hover:text-red-500 transition group">
+                                    <i data-feather="heart" class="w-5 h-5 group-hover:fill-current"></i>
+                                    <span class="like-count">0 likes</span>
+                                </button>
+                                <button class="comment-btn flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                    <i data-feather="message-circle" class="w-5 h-5"></i>
+                                    <span class="comment-count">0 comentários</span>
+                                </button>
+                            </div>
+                            <button class="share-btn flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                                <i data-feather="share-2" class="w-5 h-5"></i>
+                                <span>Partilhar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Post 3 -->
+                    <div class="post-card bg-gray-800 rounded-xl p-6 shadow-lg" data-post-id="3">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                    <i data-feather="user" class="text-gray-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-white">Jese Leos</h3>
+                                    <span class="text-gray-400 text-sm">Há 2 horas</span>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <button class="post-options-btn text-gray-400 hover:text-white">
+                                    <i data-feather="more-vertical"></i>
+                                </button>
+                                <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
+                                    <a href="#" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-t-md transition-colors">
+                                        <div class="flex items-center"><i data-feather="bookmark" class="w-4 h-4 mr-2"></i><span class="save-text">Guardar publicação</span></div>
+                                    </a>
+                                    <a href="#" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-b-md transition-colors">
+                                        <div class="flex items-center"><i data-feather="download" class="w-4 h-4 mr-2"></i><span>Descarregar imagem</span></div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="post-text text-gray-300 mb-4">
+                            Grande vitória da equipa hoje! O esforço nos treinos está finalmente a dar frutos. Continuamos focados para o próximo desafio. ⚽💪 #Futebol #Vitória #Equipa
+                        </p>
+                        <div class="post-media rounded-lg overflow-hidden mb-4 bg-gray-700 h-64 flex items-center justify-center">
+                            <i data-feather="image" class="w-12 h-12 text-gray-500"></i>
+                        </div>
+                        <div class="post-actions flex items-center justify-between pt-4 border-t border-gray-700">
+                            <div class="flex items-center gap-[15px]">
+                                <button class="like-btn flex items-center space-x-2 text-gray-400 hover:text-red-500 transition group">
+                                    <i data-feather="heart" class="w-5 h-5 group-hover:fill-current"></i>
+                                    <span class="like-count">0 likes</span>
+                                </button>
+                                <button class="comment-btn flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                    <i data-feather="message-circle" class="w-5 h-5"></i>
+                                    <span class="comment-count">0 comentários</span>
+                                </button>
+                            </div>
+                            <button class="share-btn flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                                <i data-feather="share-2" class="w-5 h-5"></i>
+                                <span>Partilhar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Suggestions -->
+                <div class="hidden lg:block w-80 space-y-6 flex-shrink-0">
+                    <div class="bg-gray-800 rounded-xl p-6 shadow-lg sticky top-24">
+                        <h3 class="text-xl font-bold text-white mb-6">Sugestões para seguir</h3>
+                        <div class="space-y-6">
+                            <!-- Suggestion 1 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
+                                        SLB
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-white hover:underline cursor-pointer">SL Benfica</div>
+                                        <div class="text-xs text-gray-400">Futebol • Lisboa</div>
+                                    </div>
+                                </div>
+                                <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
+                                    <i data-feather="user-plus" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+
+                            <!-- Suggestion 2 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold">
+                                        SCP
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-white hover:underline cursor-pointer">Sporting CP</div>
+                                        <div class="text-xs text-gray-400">Futebol • Andebol • Lisboa</div>
+                                    </div>
+                                </div>
+                                <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
+                                    <i data-feather="user-plus" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+
+                            <!-- Suggestion 3 -->
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <img class="w-10 h-10 rounded-full object-cover" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png" alt="User">
+                                    <div>
+                                        <div class="font-semibold text-white hover:underline cursor-pointer">Joseph McFall</div>
+                                        <div class="text-xs text-gray-400">Treinador</div>
+                                    </div>
+                                </div>
+                                <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
+                                    <i data-feather="user-plus" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-gray-700 text-center">
+                            <a href="#" id="view-all-suggestions-btn" class="text-sm text-blue-400 hover:text-blue-300">Ver mais sugestões</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Screen Comment Modal -->
+        <div id="comment-modal" class="fixed inset-0 z-[100] bg-gray-900 hidden">
+            <div class="flex flex-col lg:flex-row w-full h-full">
+                <!-- Left: Post Content (Visible on Desktop) -->
+                <div class="hidden lg:flex lg:w-2/3 h-full bg-black items-center justify-center p-8 overflow-y-auto relative">
+                    <div id="modal-post-container" class="max-w h-full w-full bg-gray-800 rounded-xl p-6 shadow-2xl flex flex-col">
+                        <!-- Content injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Right: Comments -->
+                <div class="w-full lg:w-1/3 h-full bg-gray-800 border-l border-gray-700 flex flex-col">
+                    <!-- Header -->
+                    <div class="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-800 z-10">
+                        <h3 class="text-xl font-bold text-white">Comentários</h3>
+                        <button id="close-modal-btn" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-medium">Voltar</span>
+                                <i data-feather="x" class="w-5 h-5"></i>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <!-- Comments List -->
+                    <div class="flex-1 overflow-y-auto p-4 space-y-4" id="modal-comments-list">
+                        <!-- Comments injected via JS -->
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="p-4 border-t border-gray-700 bg-gray-800">
+                        <div class="flex items-center space-x-2">
+                            <div class="flex-1 relative flex items-center">
+                                <input id="modal-comment-input" type="text" placeholder="Escreve um comentário..." class="w-full bg-gray-700 rounded-lg px-4 py-3 pr-12 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <button type="button" id="emoji-picker-btn" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-400">
+                                    <i data-feather="smile" class="w-5 h-5"></i>
+                                </button>
+                                <!-- Emoji Picker -->
+                                <div id="emoji-picker" class="absolute bottom-full right-0 mb-2 bg-gray-800 border border-gray-700 rounded-lg shadow-xl p-2 hidden w-80 z-50">
+                                    <div class="grid grid-rows-2 grid-flow-col gap-1 overflow-x-auto thin-scrollbar pb-2" style="max-width: 100%;">
+                                        <% ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "🥲", "☺️", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🥸", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾", "🤲", "👐", "🙌", "👏", "🤝", "👍", "👎", "👊", "✊", "🤛", "🤜", "🤞", "✌️", "🤟", "🤘", "👌", "🤌", "🤏", "👈", "👉", "👆", "👇", "☝️", "✋", "🤚", "🖐", "🖖", "👋", "🤙", "💪", "🦾", "🖕", "✍️", "🙏", "⚽", "🏀", "🏈", "⚾", "🥎", "🎾", "🏐", "🏉", "🥏", "🎱", "🪀", "🏓", "🏸", "🏒", "🏑", "🥍", "🏏", "🪃", "🥅", "⛳", "🪁", "🏹", "🎣", "🤿", "🥊", "🥋", "🎽", "🛹", "🛼", "🛷", "⛸", "🥌", "🎿", "⛷", "🏂", "🪂", "🏋️‍♀️", "🏋️", "🏋️‍♂️", "🤼‍♀️", "🤼", "🤼‍♂️", "🤸‍♀️", "🤸", "🤸‍♂️", "⛹️‍♀️", "⛹️", "⛹️‍♂️", "🤺", "🤾‍♀️", "🤾", "🤾‍♂️", "🏌️‍♀️", "🏌️", "🏌️‍♂️", "🏇", "🧘‍♀️", "🧘", "🧘‍♂️", "🏄‍♀️", "🏄", "🏄‍♂️", "🏊‍♀️", "🏊", "🏊‍♂️", "🤽‍♀️", "🤽", "🤽‍♂️", "🚣‍♀️", "🚣", "🚣‍♂️", "🧗‍♀️", "🧗", "🧗‍♂️", "🚵‍♀️", "🚵", "🚵‍♂️", "🚴‍♀️", "🚴", "🚴‍♂️", "🏆", "🥇", "🥈", "🥉", "🏅", "🎖", "🏵", "🎗", "🎫", "🎟", "🎪"].each do |emoji| %>
+                                            <button class="emoji-option hover:bg-gray-700 p-1 rounded text-xl w-8 h-8 flex items-center justify-center flex-shrink-0"><%= emoji %></button>
+                                        <% end %>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="modal-publish-comment-btn" class="text-blue-500 hover:text-blue-400 font-semibold px-3 py-2">Publicar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestions Carousel Modal -->
+        <div id="suggestions-modal" class="fixed inset-0 z-[100] bg-gray-900 bg-opacity-95 hidden flex items-center justify-center">
+            <div class="bg-gray-800 rounded-xl p-8 w-full max-w-6xl relative shadow-2xl mx-4">
+                <button id="close-suggestions-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+                <h2 class="text-2xl font-bold text-white mb-8 text-center">Sugestões para si</h2>
+                
+                <div class="relative px-12">
+                    <div class="overflow-hidden" id="suggestions-carousel-container">
+                        <div class="flex transition-transform duration-500 ease-in-out" id="suggestions-track">
+                            <!-- Profile 1 -->
+                            <div class="w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
+                                    <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
+                                    <h3 class="text-lg font-bold text-white">Karen Nelson</h3>
+                                    <span class="text-blue-400 text-sm mb-3 font-medium">Andebol • Guarda-Redes</span>
+                                    <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Atleta dedicada com foco em reflexos rápidos e liderança defensiva. À procura de novos desafios na liga profissional.</p>
+                                    <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
+                                        Seguir
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Profile 2 -->
+                            <div class="w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
+                                    <div class="w-24 h-24 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-2xl mb-4 border-4 border-gray-800">AFC</div>
+                                    <h3 class="text-lg font-bold text-white">Arsenal FC</h3>
+                                    <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Londres</span>
+                                    <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Um dos clubes mais históricos de Inglaterra, focado no desenvolvimento de jovens talentos e futebol ofensivo.</p>
+                                    <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
+                                        Seguir
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Profile 3 -->
+                            <div class="w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
+                                    <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
+                                    <h3 class="text-lg font-bold text-white">Thomas Lean</h3>
+                                    <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Médio</span>
+                                    <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Criativo no meio-campo com excelente visão de jogo. Especialista em bolas paradas e passes longos.</p>
+                                    <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
+                                        Seguir
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Profile 4 -->
+                            <div class="w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
+                                    <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
+                                    <h3 class="text-lg font-bold text-white">Michael Gough</h3>
+                                    <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Treinador • Tático</span>
+                                    <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Treinador experiente com certificação UEFA Pro. Focado em análise de dados e desenvolvimento de equipas.</p>
+                                    <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
+                                        Seguir
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Profile 5 -->
+                            <div class="w-1/3 flex-shrink-0 px-3">
+                                <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
+                                    <div class="w-24 h-24 rounded-full bg-yellow-500 flex items-center justify-center text-white font-bold text-2xl mb-4 border-4 border-gray-800">BVB</div>
+                                    <h3 class="text-lg font-bold text-white">Dortmund</h3>
+                                    <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Alemanha</span>
+                                    <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Conhecidos pela "Muralha Amarela" e pela paixão intensa dos adeptos. Formação de classe mundial.</p>
+                                    <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
+                                        Seguir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="prev-suggestion" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-3 rounded-full text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i data-feather="chevron-left" class="w-6 h-6"></i>
+                    </button>
+                    <button id="next-suggestion" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-3 rounded-full text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i data-feather="chevron-right" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favorites Modal -->
+        <div id="favorites-modal" class="fixed inset-0 z-[100] bg-gray-900 bg-opacity-95 hidden flex items-center justify-center">
+            <div class="bg-gray-800 rounded-xl p-8 w-full max-w-4xl relative shadow-2xl mx-4 h-[80vh] flex flex-col">
+                <button id="close-favorites-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                    <i data-feather="x" class="w-6 h-6"></i>
+                </button>
+                <h2 class="text-2xl font-bold text-white mb-6 text-center">Publicações Favoritas</h2>
+                <div id="favorites-list" class="flex-1 overflow-y-auto space-y-6 pr-2 no-scrollbar">
+                    <!-- Liked posts injected here -->
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Espera que o conteúdo HTML da página seja todo carregado antes de correr o script
+            document.addEventListener('DOMContentLoaded', () => {
+                // Cria um Set para guardar os IDs dos posts que levaram like (Set evita duplicados automaticamente)
+                const likedPosts = new Set();
+                // Cria outro Set para guardar os IDs dos posts que foram guardados/salvos
+                const savedPosts = new Set();
+
+                // --- GESTOR DE JANELAS (MODALS) ---
+                // Array para guardar a lista de modais abertos (funciona como uma pilha)
+                const openModals = [];
+
+                // Função para abrir um modal
+                const openModal = (modalElement) => {
+                    // Se o elemento não existir, sai da função
+                    if (!modalElement) return;
+                    
+                    // Calcula um z-index maior que o anterior para o novo modal ficar por cima
+                    const newZIndex = 100 + openModals.length * 10;
+                    modalElement.style.zIndex = newZIndex;
+                    
+                    // Remove a classe 'hidden' para mostrar o modal
+                    modalElement.classList.remove('hidden');
+                    
+                    // Adiciona o modal à lista de abertos
+                    openModals.push(modalElement);
+                    
+                    // Bloqueia o scroll do body para a página de trás não mexer
+                    document.body.style.overflow = 'hidden';
+                };
+
+                // Função para fechar um modal
+                const closeModal = (modalElement) => {
+                    // Se o elemento não existir, sai da função
+                    if (!modalElement) return;
+                    
+                    // Adiciona a classe 'hidden' para esconder o modal
+                    modalElement.classList.add('hidden');
+                    // Limpa o z-index
+                    modalElement.style.zIndex = '';
+                    
+                    // Procura a posição deste modal na lista de abertos
+                    const index = openModals.findIndex(m => m === modalElement);
+                    // Se encontrou, remove-o da lista (splice remove 1 elemento na posição index)
+                    if (index > -1) openModals.splice(index, 1);
+                    
+                    // Se não houver mais modais abertos, devolve o scroll à página (body)
+                    if (openModals.length === 0) document.body.style.overflow = '';
+                };
+
+                // --- SELEÇÃO DE ELEMENTOS DO DOM ---
+                // Guarda referências para os elementos HTML que vamos usar
+                const modal = document.getElementById('comment-modal');
+                const closeModalBtn = document.getElementById('close-modal-btn');
+                const modalPostContainer = document.getElementById('modal-post-container');
+                const modalCommentsList = document.getElementById('modal-comments-list');
+                const feedContainer = document.getElementById('feed-container');
+                const modalCommentInput = document.getElementById('modal-comment-input');
+                const modalPublishBtn = document.getElementById('modal-publish-comment-btn');
+
+                // --- LÓGICA DO SELETOR DE EMOJIS ---
+                const emojiBtn = document.getElementById('emoji-picker-btn');
+                const emojiPicker = document.getElementById('emoji-picker');
+
+                // Verifica se os elementos existem antes de adicionar eventos
+                if (emojiBtn && emojiPicker) {
+                    // Ao clicar no botão de emoji
+                    emojiBtn.addEventListener('click', (e) => {
+                        // Impede que o clique se propague (para não fechar logo o menu)
+                        e.stopPropagation();
+                        // Alterna a visibilidade do menu (mostra/esconde)
+                        emojiPicker.classList.toggle('hidden');
+                    });
+
+                    // Para cada opção de emoji disponível
+                    document.querySelectorAll('.emoji-option').forEach(opt => {
+                        opt.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            // Pega o texto (o emoji em si)
+                            const emoji = opt.innerText;
+                            // Adiciona o emoji ao input de comentário
+                            modalCommentInput.value += emoji;
+                            // Volta a focar no input para continuar a escrever
+                            modalCommentInput.focus();
+                        });
+                    });
+
+                    // Fecha o menu de emojis se clicar fora dele
+                    document.addEventListener('click', (e) => {
+                        if (!emojiPicker.contains(e.target) && e.target !== emojiBtn && !emojiBtn.contains(e.target)) {
+                            emojiPicker.classList.add('hidden');
+                        }
+                    });
+                }
+
+                // --- LÓGICA DE COMENTÁRIOS ---
+                // Objeto para guardar os comentários em memória (apaga ao recarregar a página)
+                const commentsByPost = {
+                    // Exemplo inicial: Post ID "1" tem um comentário
+                    "1": [{ user: "Utilizador Exemplo", text: "Grande jogo! Parabéns à equipa. 👏", createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000) }], // 2 horas atrás
+                };
+
+                // Função auxiliar para formatar a data (ex: "2d" ou "14:30")
+                const formatTimestamp = (date) => {
+                    if (!date) return '';
+                    const now = new Date();
+                    const diffMs = now - date;
+                    // Converte milissegundos para dias
+                    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+                    // Se passou mais de 1 dia, mostra os dias
+                    if (diffDays > 0) {
+                        return `${diffDays}d`;
+                    }
+                    
+                    // Senão, mostra a hora e minutos
+                    const hours = date.getHours().toString().padStart(2, '0');
+                    const minutes = date.getMinutes().toString().padStart(2, '0');
+                    return `${hours}:${minutes}`;
+                };
+
+                // Função para desenhar os comentários na lista
+                const renderComments = (postId) => {
+                    modalCommentsList.innerHTML = ''; // Limpa os comentários antigos
+                    const comments = commentsByPost[postId] || []; // Vai buscar os comentários deste post
+
+                    // Se não houver comentários, mostra mensagem padrão
+                    if (comments.length === 0) {
+                        modalCommentsList.innerHTML = '<p class="text-gray-400 text-sm text-center">Ainda não há comentários. Sê o primeiro a comentar!</p>';
+                    } else {
+                        // Para cada comentário, cria o HTML correspondente
+                        comments.forEach(comment => {
+                            const commentEl = document.createElement('div');
+                            commentEl.className = 'flex items-start space-x-3';
+                            // Template string com o HTML do comentário
+                            commentEl.innerHTML = `
+                                <div class="w-8 h-8 rounded-full bg-gray-600 flex-shrink-0 flex items-center justify-center text-xs text-white">${comment.user.charAt(0)}</div>
+                                <div class="bg-gray-700 rounded-lg p-3 flex-1">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <p class="text-sm font-semibold text-white">${comment.user}</p>
+                                        <span class="text-xs text-gray-400">${formatTimestamp(comment.createdAt)}</span>
+                                    </div>
+                                    <p class="text-sm text-gray-300">${comment.text}</p>
+                                </div>
+                            `;
+                            // Adiciona o elemento à lista
+                            modalCommentsList.appendChild(commentEl);
+                        });
+                    }
+                };
+                
+                // Função para abrir o modal de um post específico
+                const openPostModal = (postCard) => {
+                    const postId = postCard.dataset.postId;
+                    
+                    // Guarda o ID do post atual no modal para sabermos onde comentar
+                    modal.dataset.currentPostId = postId;
+                    
+                    // Configura o container do modal para parecer um card de post
+                    modalPostContainer.classList.add('post-card');
+                    modalPostContainer.dataset.postId = postId;
+                    
+                    // Clona os elementos do post original (cabeçalho, texto, media, ações)
+                    // Usamos cloneNode(true) para copiar tudo sem remover do feed original
+                    const header = postCard.querySelector('.flex.items-center.justify-between.mb-4').cloneNode(true);
+                    const text = postCard.querySelector('.post-text').cloneNode(true);
+                    const media = postCard.querySelector('.post-media').cloneNode(true);
+                    const actions = postCard.querySelector('.post-actions').cloneNode(true);
+
+                    // Ajusta o estilo da imagem/media para ocupar o espaço todo no modal
+                    media.classList.remove('h-64', 'mb-4');
+                    media.classList.add('flex-1', 'w-full');
+
+                    // Limpa o conteúdo anterior do modal
+                    modalPostContainer.innerHTML = '';
+
+                    // Adiciona os elementos clonados ao modal
+                    modalPostContainer.appendChild(header);
+                    modalPostContainer.appendChild(text);
+                    modalPostContainer.appendChild(media);
+                    modalPostContainer.appendChild(actions);
+
+                    // Reinicializa os ícones Feather (porque os novos elementos clonados ainda não são SVG)
+                    feather.replace();
+
+                    // Carrega os comentários deste post
+                    renderComments(postId);
+
+                    // Abre o modal visualmente
+                    openModal(modal);
+                };
+
+                // --- GESTÃO DE EVENTOS (EVENT DELEGATION) ---
+                // Em vez de adicionar um evento a cada botão, adicionamos um ao 'body' e vemos onde foi o clique.
+                // Isto é mais eficiente e funciona para elementos criados dinamicamente.
+                document.body.addEventListener('click', (e) => {
+                    const target = e.target;
+
+                    // 1. Botão de Opções (três pontinhos)
+                    const optionsBtn = target.closest('.post-options-btn');
+                    if (optionsBtn) {
+                        e.stopPropagation();
+                        // Fecha outros dropdowns que estejam abertos
+                        document.querySelectorAll('.post-options-dropdown').forEach(d => {
+                            if (d !== optionsBtn.nextElementSibling) d.classList.add('hidden');
+                        });
+                        // Alterna a visibilidade do dropdown atual
+                        optionsBtn.nextElementSibling.classList.toggle('hidden');
+                        return;
+                    }
+
+                    // Fecha dropdowns se clicar fora
+                    if (!target.closest('.post-options-dropdown')) {
+                        document.querySelectorAll('.post-options-dropdown').forEach(d => d.classList.add('hidden'));
+                    }
+
+                    // 2. Botão de Like
+                    const likeBtn = target.closest('.like-btn');
+                    if (likeBtn) {
+                        e.stopPropagation();
+                        const postCard = likeBtn.closest('.post-card');
+                        const postId = postCard.dataset.postId;
+                        
+                        // Verifica se já tem like (se não tem a classe vermelha)
+                        const isLiking = !likeBtn.classList.contains('text-red-500');
+                        
+                        // Atualiza os dados no Set
+                        if (isLiking) likedPosts.add(postId);
+                        else likedPosts.delete(postId);
+
+                        // Atualiza a interface em TODAS as instâncias desse post (no feed e nos favoritos)
+                        document.querySelectorAll(`.post-card[data-post-id='${postId}'] .like-btn`).forEach(btn => {
+                            const icon = btn.querySelector('svg');
+                            const countSpan = btn.querySelector('.like-count');
+                            let count = parseInt(countSpan.innerText);
+                            
+                            if (isLiking) {
+                                // Adiciona like visualmente
+                                if (!btn.classList.contains('text-red-500')) {
+                                    btn.classList.add('text-red-500');
+                                    btn.classList.remove('text-gray-400');
+                                    if(icon) icon.classList.add('fill-current'); // Preenche o coração
+                                    count++;
+                                }
+                            } else {
+                                // Remove like visualmente
+                                if (btn.classList.contains('text-red-500')) {
+                                    btn.classList.remove('text-red-500');
+                                    btn.classList.add('text-gray-400');
+                                    if(icon) icon.classList.remove('fill-current');
+                                    count--;
+                                }
+                            }
+                            // Atualiza o texto do contador
+                            countSpan.innerText = `${count} ${count === 1 ? 'like' : 'likes'}`;
+                        });
+                        return;
+                    }
+
+                    // 3. Botão de Comentário
+                    const commentBtn = target.closest('.comment-btn');
+                    if (commentBtn) {
+                        e.stopPropagation();
+                        const postCard = commentBtn.closest('.post-card');
+                        // Abre o modal do post
+                        openPostModal(postCard);
+                        return;
+                    }
+
+                    // 4. Botão de Partilhar
+                    const shareBtn = target.closest('.share-btn');
+                    if (shareBtn) {
+                        e.stopPropagation();
+                        alert('Link copiado para a área de transferência!');
+                        return;
+                    }
+
+                    // 5. Botão de Guardar Post
+                    const saveBtn = target.closest('.save-post-btn');
+                    if (saveBtn) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const postCard = saveBtn.closest('.post-card');
+                        const postId = postCard.dataset.postId;
+                        
+                        const isSaving = !savedPosts.has(postId);
+                        
+                        if (isSaving) {
+                            savedPosts.add(postId);
+                        } else {
+                            savedPosts.delete(postId);
+                            // Se estivermos a remover dentro do modal de favoritos, faz uma animação de saída
+                            if (postCard.closest('#favorites-modal')) {
+                                postCard.style.transition = 'opacity 0.5s ease';
+                                postCard.style.opacity = '0';
+                                setTimeout(() => {
+                                    postCard.remove();
+                                    // Se ficar vazio, mostra mensagem
+                                    const favoritesList = document.getElementById('favorites-list');
+                                    if (favoritesList && favoritesList.children.length === 0) {
+                                        favoritesList.innerHTML = '<div class="text-center text-gray-400 py-8">Ainda não tens publicações guardadas.</div>';
+                                    }
+                                }, 500); // Remove após 0.5s
+                            }
+                        }
+                        
+                        // Atualiza o texto do botão em todas as instâncias
+                        document.querySelectorAll(`.post-card[data-post-id='${postId}'] .save-text`).forEach(span => {
+                            span.innerText = isSaving ? "Remover dos guardados" : "Guardar publicação";
+                        });
+                        
+                        // Fecha o dropdown
+                        const dropdown = saveBtn.closest('.post-options-dropdown');
+                        if(dropdown) dropdown.classList.add('hidden');
+                        return;
+                    }
+
+                    // 6. Botão de Descarregar Imagem
+                    const downloadBtn = target.closest('.download-img-btn');
+                    if (downloadBtn) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const postCard = downloadBtn.closest('.post-card');
+                        const img = postCard.querySelector('.post-media img');
+                        if (img) {
+                            // Cria um link temporário para forçar o download
+                            const a = document.createElement('a');
+                            a.href = img.src;
+                            a.download = `post-${postCard.dataset.postId}-image.jpg`;
+                            document.body.appendChild(a);
+                            a.click(); // Simula o clique
+                            document.body.removeChild(a); // Limpa o elemento
+                        } else {
+                            alert('Esta publicação não tem uma imagem para descarregar.');
+                        }
+                        const dropdown = downloadBtn.closest('.post-options-dropdown');
+                        if(dropdown) dropdown.classList.add('hidden');
+                        return;
+                    }
+
+                    // 7. Clique Geral no Post (Abre Modal)
+                    const postCard = target.closest('.post-card');
+                    if (postCard) {
+                        // Ignora se clicou em botões, links ou inputs (para não abrir o modal sem querer)
+                        if (target.closest('a') || target.closest('button') || target.closest('input') || target.closest('textarea')) {
+                            return;
+                        }
+                        // Ignora se o utilizador estiver a selecionar texto
+                        if (window.getSelection().toString().length > 0) return;
+
+                        openPostModal(postCard);
+                    }
+                });
+
+                // --- PUBLICAR COMENTÁRIO ---
+                if (modalPublishBtn) {
+                    modalPublishBtn.addEventListener('click', () => {
+                        const postId = modal.dataset.currentPostId;
+                        const commentText = modalCommentInput.value.trim();
+                        
+                        // Se houver texto e um post selecionado
+                        if (commentText && postId) {
+                            if (!commentsByPost[postId]) {
+                                commentsByPost[postId] = [];
+                            }
+                            // Adiciona o novo comentário ao array
+                            commentsByPost[postId].push({ user: "Tomás Nogueira", text: commentText, createdAt: new Date() });
+                            
+                            // Atualiza o contador de comentários em todos os cards
+                            document.querySelectorAll(`.post-card[data-post-id='${postId}']`).forEach(card => {
+                                const commentCountSpan = card.querySelector('.comment-count');
+                                if (commentCountSpan) {
+                                    const count = commentsByPost[postId].length;
+                                    commentCountSpan.innerText = `${count} ${count === 1 ? 'comentário' : 'comentários'}`;
+                                }
+                            });
+
+                            // Redesenha a lista de comentários
+                            renderComments(postId);
+                            // Limpa o input
+                            modalCommentInput.value = '';
+                        }
+                    });
+                }
+
+                // Botão de fechar modal
+                closeModalBtn.addEventListener('click', () => closeModal(modal));
+
+                // --- UPLOAD DE IMAGEM E CARROSSEL ---
+                const btnUploadImage = document.getElementById('btn-upload-image');
+                const fileInput = document.getElementById('post-image-upload');
+                const previewContainer = document.getElementById('image-preview-container');
+                const imageCarousel = document.getElementById('image-carousel');
+                const imageDots = document.getElementById('image-dots');
+                const prevImageBtn = document.getElementById('prev-image-btn');
+                const nextImageBtn = document.getElementById('next-image-btn');
+                let uploadedFiles = [];
+                
+                if (btnUploadImage && fileInput && previewContainer && imageCarousel && imageDots) {
+                    // Botões de navegação do carrossel
+                    if (prevImageBtn && nextImageBtn) {
+                        prevImageBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            // Rola para a esquerda
+                            imageCarousel.scrollBy({ left: -imageCarousel.offsetWidth, behavior: 'smooth' });
+                        });
+
+                        nextImageBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            // Rola para a direita
+                            imageCarousel.scrollBy({ left: imageCarousel.offsetWidth, behavior: 'smooth' });
+                        });
+                    }
+
+                    // Clicar no ícone de imagem abre o seletor de ficheiros
+                    btnUploadImage.addEventListener('click', () => {
+                        fileInput.click();
+                    });
+
+                    // Atualiza os pontinhos (indicadores) do carrossel
+                    const updateDots = () => {
+                        if (uploadedFiles.length === 0) return;
+
+                        let currentIndex = 0;
+                        if (uploadedFiles.length > 1) {
+                            const scrollLeft = imageCarousel.scrollLeft;
+                            const width = imageCarousel.offsetWidth;
+                            // Calcula qual imagem está visível
+                            currentIndex = Math.round(scrollLeft / width);
+                        }
+                        
+                        // Garante que o índice é válido
+                        currentIndex = Math.min(Math.max(currentIndex, 0), uploadedFiles.length - 1);
+                        
+                        const dots = imageDots.children;
+                        for (let i = 0; i < dots.length; i++) {
+                            if (i === currentIndex) {
+                                dots[i].classList.remove('bg-gray-600');
+                                dots[i].classList.add('bg-blue-500'); // Ativo
+                            } else {
+                                dots[i].classList.add('bg-gray-600');
+                                dots[i].classList.remove('bg-blue-500'); // Inativo
+                            }
+                        }
+                    };
+
+                    // Renderiza (desenha) o carrossel com as imagens
+                    const renderCarousel = () => {
+                        imageCarousel.innerHTML = '';
+                        imageDots.innerHTML = '';
+                        
+                        if (uploadedFiles.length === 0) {
+                            previewContainer.classList.add('hidden');
+                            return;
+                        }
+
+                        previewContainer.classList.remove('hidden');
+                        
+                        // Configura classes para snap (rolagem magnética) se houver mais de 1 imagem
+                        if (uploadedFiles.length > 1) {
+                            imageCarousel.classList.add('snap-x', 'snap-mandatory');
+                            if (prevImageBtn) prevImageBtn.classList.remove('hidden');
+                            if (nextImageBtn) nextImageBtn.classList.remove('hidden');
+                        } else {
+                            imageCarousel.classList.remove('snap-x', 'snap-mandatory');
+                            if (prevImageBtn) prevImageBtn.classList.add('hidden');
+                            if (nextImageBtn) nextImageBtn.classList.add('hidden');
+                        }
+
+                        // Cria os elementos para cada ficheiro
+                        uploadedFiles.forEach((file, index) => {
+                            const wrapper = document.createElement('div');
+                            wrapper.className = `relative group flex-shrink-0 h-64 bg-gray-900 rounded-lg flex items-center justify-center ${uploadedFiles.length > 1 ? 'snap-center w-full' : 'w-full'}`;
+                            
+                            const img = document.createElement('img');
+                            img.src = URL.createObjectURL(file); // Cria URL temporário para preview
+                            img.alt = `Image preview ${index + 1}`;
+                            img.className = "max-h-full max-w-full object-contain";
+                            
+                            // Botão de remover imagem
+                            const btn = document.createElement('button');
+                            btn.innerHTML = '<i data-feather="x" class="w-4 h-4"></i>';
+                            btn.className = "absolute top-2 right-2 bg-gray-800 bg-opacity-75 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-red-600";
+                            btn.onclick = (e) => {
+                                e.stopPropagation();
+                                uploadedFiles.splice(index, 1); // Remove do array
+                                renderCarousel(); // Redesenha
+                            };
+                            
+                            wrapper.appendChild(img);
+                            wrapper.appendChild(btn);
+                            imageCarousel.appendChild(wrapper);
+
+                            // Cria o ponto indicador
+                            const dot = document.createElement('div');
+                            dot.className = 'w-2 h-2 rounded-full transition-colors duration-200 bg-gray-600';
+                            imageDots.appendChild(dot);
+                        });
+                        
+                        feather.replace();
+                        updateDots();
+                    };
+
+                    imageCarousel.addEventListener('scroll', () => {
+                        updateDots();
+                    });
+
+                    // --- LÓGICA DE ARRASTAR PARA ROLAR (DRAG TO SCROLL) ---
+                    let isDown = false;
+                    let startX;
+                    let scrollLeft;
+
+                    imageCarousel.addEventListener('mousedown', (e) => {
+                        if (uploadedFiles.length <= 1) return;
+                        isDown = true;
+                        imageCarousel.classList.add('cursor-grabbing');
+                        // Remove snap temporariamente para o arrasto ser suave
+                        imageCarousel.classList.remove('cursor-grab', 'snap-x', 'snap-mandatory', 'scroll-smooth');
+                        startX = e.pageX - imageCarousel.offsetLeft;
+                        scrollLeft = imageCarousel.scrollLeft;
+                    });
+
+                    const stopDragging = () => {
+                        if (!isDown) return;
+                        isDown = false;
+                        imageCarousel.classList.remove('cursor-grabbing');
+                        imageCarousel.classList.add('cursor-grab', 'scroll-smooth');
+                        // Reativa o snap
+                        if (uploadedFiles.length > 1) imageCarousel.classList.add('snap-x', 'snap-mandatory');
+                    };
+
+                    imageCarousel.addEventListener('mouseleave', stopDragging);
+                    imageCarousel.addEventListener('mouseup', stopDragging);
+
+                    imageCarousel.addEventListener('mousemove', (e) => {
+                        if (!isDown) return;
+                        e.preventDefault();
+                        const x = e.pageX - imageCarousel.offsetLeft;
+                        const walk = (x - startX) * 2; // Velocidade do scroll
+                        imageCarousel.scrollLeft = scrollLeft - walk;
+                    });
+
+                    // Quando o utilizador seleciona ficheiros
+                    fileInput.addEventListener('change', function() {
+                        if (this.files.length > 0) {
+                            uploadedFiles.push(...Array.from(this.files));
+                            renderCarousel();
+                            this.value = ''; // Limpa o input para permitir selecionar o mesmo ficheiro novamente
+                        }
+                    });
+                }
+
+                // --- MODAL DE SUGESTÕES (CARROSSEL) ---
+                const viewAllSuggestionsBtn = document.getElementById('view-all-suggestions-btn');
+                const suggestionsModal = document.getElementById('suggestions-modal');
+                const closeSuggestionsModalBtn = document.getElementById('close-suggestions-modal');
+                const suggestionsTrack = document.getElementById('suggestions-track');
+                const prevSuggestionBtn = document.getElementById('prev-suggestion');
+                const nextSuggestionBtn = document.getElementById('next-suggestion');
+
+                if (viewAllSuggestionsBtn && suggestionsModal && suggestionsTrack) {
+                    let currentIndex = 0;
+                    const itemsToShow = 3; // Mostra 3 sugestões de cada vez
+                    const totalItems = suggestionsTrack.children.length;
+                    const maxIndex = Math.ceil(totalItems / itemsToShow) - 1;
+
+                    // Atualiza a posição do carrossel
+                    const updateCarousel = () => {
+                        const percentage = -(currentIndex * 100);
+                        suggestionsTrack.style.transform = `translateX(${percentage}%)`;
+                        
+                        // Ativa/Desativa botões se estiver no início ou fim
+                        prevSuggestionBtn.disabled = currentIndex === 0;
+                        nextSuggestionBtn.disabled = currentIndex >= maxIndex;
+                        
+                        if (currentIndex === 0) prevSuggestionBtn.classList.add('opacity-50');
+                        else prevSuggestionBtn.classList.remove('opacity-50');
+                        
+                        if (currentIndex >= maxIndex) nextSuggestionBtn.classList.add('opacity-50');
+                        else nextSuggestionBtn.classList.remove('opacity-50');
+                    };
+
+                    viewAllSuggestionsBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        openModal(suggestionsModal);
+                        updateCarousel();
+                    });
+
+                    closeSuggestionsModalBtn.addEventListener('click', () => closeModal(suggestionsModal));
+
+                    prevSuggestionBtn.addEventListener('click', () => {
+                        if (currentIndex > 0) {
+                            currentIndex--;
+                            updateCarousel();
+                        }
+                    });
+
+                    nextSuggestionBtn.addEventListener('click', () => {
+                        if (currentIndex < maxIndex) {
+                            currentIndex++;
+                            updateCarousel();
+                        }
+                    });
+
+                    // Botão de Seguir no carrossel
+                    document.querySelectorAll('.follow-btn-carousel').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            this.innerHTML = '<span class="text-white text-sm">A Seguir</span>';
+                            this.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                            this.classList.add('bg-gray-600', 'cursor-default');
+                            this.disabled = true;
+                        });
+                    });
+                }
+
+                // --- MODAL DE FAVORITOS ---
+                const favoritesLink = document.getElementById('favorites-app-link');
+                const favoritesModal = document.getElementById('favorites-modal');
+                const closeFavoritesBtn = document.getElementById('close-favorites-modal');
+                const favoritesList = document.getElementById('favorites-list');
+
+                if (favoritesLink && favoritesModal) {
+                    favoritesLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        favoritesList.innerHTML = '';
+                        
+                        if (savedPosts.size === 0) {
+                            favoritesList.innerHTML = '<div class="text-center text-gray-400 py-8">Ainda não tens publicações guardadas.</div>';
+                        } else {
+                            // Para cada post guardado, clona o original e mete na lista
+                            savedPosts.forEach(postId => {
+                                const originalPost = document.querySelector(`.post-card[data-post-id='${postId}']`);
+                                if (originalPost) {
+                                    const clone = originalPost.cloneNode(true);
+                                    favoritesList.appendChild(clone);
+                                }
+                            });
+                            feather.replace();
+                        }
+                        openModal(favoritesModal);
+                    });
+
+                    closeFavoritesBtn.addEventListener('click', () => closeModal(favoritesModal));
+                }
+
+                // --- BOTÃO DE SEGUIR (GERAL) ---
+                document.querySelectorAll('.follow-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        this.innerHTML = '<span class="text-gray-400 text-sm">a seguir</span>';
+                        this.classList.remove('text-blue-400', 'hover:text-white');
+                        this.classList.add('cursor-default');
+                    });
+                });
+
+                // --- AUTO-RESIZE DA TEXTAREA ---
+                // Faz a caixa de texto crescer conforme escrevemos
+                const postContent = document.getElementById('post-content');
+                if (postContent) {
+                    postContent.addEventListener('input', function() {
+                        this.style.height = 'auto'; // Reseta altura
+                        this.style.height = (this.scrollHeight) + 'px'; // Define nova altura baseada no conteúdo
+                    });
+                }
+            });
+        </script>
+    <% else %>
+
+    <!-- Logged-out Main Page -->
     <!-- Hero Section -->
-    <section  id="inicio" class="relative py-16 px-6 bg-cover bg-center">
+    <section  id="inicio" class="relative py-16 px-6 bg-cover bg-center" style="scroll-margin-top: 72px;">
         <%= image_tag "default_banner.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-20 z-0", alt: "Hero Background" %>
         <!-- overlay to keep text readable -->
         <div class="container mx-auto relative z-10">
@@ -730,8 +1725,9 @@
             </div>
         </div>
     </section>
+    
     <!-- Stats Section -->
-    <section class="py-16 px-6 bg-gray-800">
+    <section id="stats" class="py-16 px-6 bg-gray-800" style="scroll-margin-top: 72px;">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold mb-12 text-center">Estatísticas Da Plataforma</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -755,7 +1751,7 @@
     </section>
 
     <!-- Popular Profiles -->
-    <section class="py-16 px-6 bg-gray-900">
+    <section id="popular-profiles" class="py-16 px-6 bg-gray-900" style="scroll-margin-top: 72px;">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold mb-4">Perfis Populares</h2>
             <p class="text-gray-400 mb-12">Descubre os clubes e jogadores mais ativos/vistos na nossa plataforma</p>
@@ -767,7 +1763,7 @@
                         <%= image_tag "default_banner.jpg", alt: "fcporto", class: "w-full h-full object-cover"  %>
                         <div class="absolute -bottom-12 left-6">
                             <div class="w-24 h-24 rounded-full border-4 border-gray-800 overflow-hidden">
-                                <%= image_tag "default_banner.jpg", alt: "fcporto", class: "w-full h-full object-cover"  %>
+                                <%= image_tag "default_pp.jpg", alt: "fcporto", class: "w-full h-full object-cover"  %>
                             </div>
                         </div>
                     </div>
@@ -871,13 +1867,13 @@
             </div>
         </div>
     </section>
-
+    
     <!-- Footer -->
     <footer class="bg-gray-800 text-gray-300">
         <div class="container mx-auto py-12 px-6 items-center">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 ml-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 w-full">
                 <!-- Brand -->
-                <div class="max-w-xs">
+                <div class="max-w-xs mx-auto">
                     <a href="#inicio">
                         <div class="flex items-center mb-4" >
                             <div class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
@@ -890,15 +1886,20 @@
                         A plataforma definitiva para a gestão e análise de clubes, jogadores e desempenho.
                         </p>
                     
-                    <h4 class="text-white font-semibold mt-6 mb-3">Subscrever</h4>
-                    <form class="flex items-center">
-                    <input type="email" placeholder="SportX@email.com" class="bg-gray-700 text-gray-200 px-3 py-2 rounded-l-md focus:outline-none w-full" style="width: 170px;"/>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r-md text-white">Subscrever</button>
-                    </form>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="mx-auto">
+                    <h4 class="text-white font-semibold mb-4">Navegação</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#inicio" class="hover:text-orange-400 transition">Início</a></li>
+                        <li><a href="#stats" class="hover:text-orange-400 transition">Estatísticas</a></li>
+                        <li><a href="#popular-profiles" class="hover:text-orange-400 transition">Perfis Populares</a></li>
+                    </ul>
                 </div>
 
                 <!-- Contact / Company -->
-                <div class="md:ml-10">
+                <div class="mx-auto">
                     <h4 class="text-white font-semibold mb-4">Contacto</h4>
                     <div class="text-gray-400 text-sm space-y-2">
                         <div style="margin-bottom: 17px;"><strong>SportX - Club Managment</strong></div>
@@ -906,48 +1907,29 @@
                             <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
                                 <i data-feather="map-pin" class="w-4 h-4 text-blue-500 group-hover:text-red-500 transition-colors duration-150"></i>
                             </span>
-                            <div>Av. dos Clubes, 4470-123 Maia</div>
+                            <div><a href="https://maps.app.goo.gl/MafCMFdNprsmMgL36" target="_blank" rel="noopener noreferrer" class="hover:text-orange-400 transition">Av. Luís de Camões, 4470-194 Maia</a></div>
                         </div>
                         <div class="flex items-center space-x-4">
                             <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
                                 <i data-feather="phone" class="w-4 h-4 text-blue-500 group-hover:text-red-500 transition-colors duration-150"></i>
                             </span>
-                            <div>+351 912 345 678 </div>
+                            <div><a href="tel:+351912345678" class="hover:text-orange-400 transition">+351 912 345 678</a></div>
                         </div>
                         <div class="flex items-center space-x-4">
                             <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
                                 <i data-feather="mail" class="w-4 h-4 text-blue-500 group-hover:text-red-500 transition-colors duration-150"></i>
                             </span>
-                            <div>suporte@sportx.manage</div>
+                            <div><a href="mailto:suporte_sportx@gmail.com" class="hover:text-orange-400 transition">suporte_sportx@gmail.com</a></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Quick Links -->
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Navegação</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li>Início</li>
-                        <li>Clubes</li>
-                        <li>Jogadores</li>
-                        <li>Agenda</li>
-                        <li>Análises</li>
-                    </ul>
+                <!-- Map -->
+                <div class="mx-auto ml-5">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d630.7743905081369!2d-8.618508752518986!3d41.23297970912057!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd24665606eefb45%3A0xc5dd8b06cc341a7b!2sEscola%20Secund%C3%A1ria%20da%20Maia!5e0!3m2!1spt-PT!2spt!4v1768834005628!5m2!1spt-PT!2spt" width="300" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="rounded-lg"></iframe>
                 </div>
-
-                <!-- Recursos -->
-                <div>
-                    <h4 class="text-white font-semibold mb-4">Recursos</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li>Documentação</li>
-                        <li>Suporte</li>
-                        <li>API</li>
-                    </ul>
-                </div>
-
-                
             </div>
-            
+            <!-- Social Media Links -->
             <div class="border-t border-gray-700 mt-8 pt-6 text-gray-350 text-sm font-bold">
                 <div class="flex items-center justify-center space-x-4">
                     <span>Siga-nos:</span>
@@ -974,8 +1956,10 @@
 
             <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">
                 <div class="mb-2">© 2025 SportX - Club Managment. Todos os direitos reservados.</div>
-                <div>Desenvolvido por Tomás Nogueira e Gonçalo silva • <a href="https://www.portugal.gov.pt/pt/gc22/politica-de-privacidade">Política de Privacidade</a> • <a href="https://workspace.google.com/intl/pt-PT/terms/service-terms/">Termos de Utilização</a></div>
+                <div>Desenvolvido por Tomás Nogueira e Gonçalo silva • <a href="Política De Privacidade - Sport X.pdf" download>Política de Privacidade</a> • <a href="Termos De Utilização - Sport X.pdf" download>Termos de Utilização</a></div>
             </div>
         </div>
     </footer>
+
+    <% end %>
 </body>
