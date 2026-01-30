@@ -10,12 +10,62 @@ class DashboardController < ApplicationController
   protected
 
   def infrastructures
-    @selected_ct = params[:ct].to_i
+    @selected_ct = params[:ct].present? ? params[:ct].to_i : nil
     @selected_sport = params[:sport]
+    @selected_pitch = params[:pitch].present? ? params[:pitch].to_i : nil
+    @selected_locker_room = params[:locker_room].present? ? params[:locker_room].to_i : nil
     club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
     sport_id = @selected_sport == 'football' ? 2 : 3
     club_ct_query = ClubTrainingCenter.where(club_profile_id: club_id, sport_id: sport_id)
     @club_ct_results = club_ct_query.page(params[:club_ct_page]).per(4)
+    if @selected_ct
+      club_pitches_query = ClubPitch.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct)
+      club_locker_rooms_query = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct)
+    else
+      club_pitches_query = ClubPitch.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: nil)
+      club_locker_rooms_query = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: nil)
+    end
+    @club_pitches_results = club_pitches_query.page(params[:club_pitches_page]).per(4)
+    @club_locker_rooms_results = club_locker_rooms_query.page(params[:club_locker_rooms_page]).per(4)
+    @base_num_club_ct = ClubTrainingCenter.where(club_profile_id: club_id, sport_id: sport_id).count
+
+
+    if @selected_pitch
+      @selected_team = params[:team]
+      @start_date = params[:start_date] ? Date.parse(params[:start_date]).beginning_of_week(:monday) : Date.today.beginning_of_week(:monday)
+      @end_date = @start_date + 6.days
+      
+      @weekly_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: false ).where("start_time >= ? AND start_time <= ?", @start_date, @end_date.end_of_day).order(:start_time)
+      @recurring_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: true)
+      
+
+      @all_trainings = @weekly_trainings.to_a
+      @recurring_trainings.each do |recurring|
+        (@start_date..@end_date).each do |date|
+          if date.wday == recurring.weekday
+            virtual_training = recurring.dup
+            virtual_training.start_time = date.in_time_zone('Lisbon').change(hour: recurring.start_time.hour, min: recurring.start_time.min)
+            virtual_training.end_time = date.in_time_zone('Lisbon').change(hour: recurring.end_time.hour, min: recurring.end_time.min)
+            virtual_training.id = recurring.id 
+            @all_trainings << virtual_training
+          end
+        end
+      end
+      
+      # Agrupar treinos por slot de tempo (data + hora início)
+      # Isto ajuda a mostrar treinos lado a lado se existirem na mesma hora
+      @trainings_by_slot = @all_trainings.group_by do |training|
+        training.start_time.strftime("%Y-%m-%d %H:%M")
+      end
+      
+      @available_locker_rooms = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct || nil)
+      @available_teams = ClubTeam.where(club_profile_id: club_id, sport_id: sport_id)
+      @time_slots = (8..23).flat_map { |h| [[h, 0], [h, 30]] }
+      @selected_pitch_obj = ClubPitch.find(@selected_pitch)
+      @available_zones = @selected_pitch_obj.fut11? ? ClubPitch::PITCH_ZONES_11 : ClubPitch::PITCH_ZONES_OTHERS
+    end
+
+
   end
 
   def sport
@@ -105,6 +155,13 @@ class DashboardController < ApplicationController
     @base_football_coaches_wo_team = CoachProfile.where(club_profile_id: club_id, sport: 'football').left_joins(:coach_teams).where(coach_teams: { id: nil }).count
     @base_handball_coaches_wo_team = CoachProfile.where(club_profile_id: club_id, sport: 'handball').left_joins(:coach_teams).where(coach_teams: { id: nil }).count
 
+    @sport_id = @selected_sport == 'football' ? 2 : 3
+    club_ct_query = ClubTrainingCenter.where(club_profile_id: club_id, sport_id: @sport_id)
+    club_pitches_query = ClubPitch.where(club_profile_id: club_id, sport_id: @sport_id)
+    club_locker_rooms_query = ClubLockerRoom.where(club_profile_id: club_id, sport_id: @sport_id)
+    @base_num_club_ct = club_ct_query.count
+    @base_num_club_pitches = club_pitches_query.count
+    @base_num_club_locker_rooms = club_locker_rooms_query.count
   end
 
   def setup_search_board
