@@ -1034,39 +1034,57 @@
         </div>
 
         <script>
+            // Espera que o conteúdo HTML da página seja todo carregado antes de correr o script
             document.addEventListener('DOMContentLoaded', () => {
-                // Store liked posts IDs
+                // Cria um Set para guardar os IDs dos posts que levaram like (Set evita duplicados automaticamente)
                 const likedPosts = new Set();
+                // Cria outro Set para guardar os IDs dos posts que foram guardados/salvos
                 const savedPosts = new Set();
 
-                // --- MODAL MANAGER ---
+                // --- GESTOR DE JANELAS (MODALS) ---
+                // Array para guardar a lista de modais abertos (funciona como uma pilha)
                 const openModals = [];
 
+                // Função para abrir um modal
                 const openModal = (modalElement) => {
+                    // Se o elemento não existir, sai da função
                     if (!modalElement) return;
                     
+                    // Calcula um z-index maior que o anterior para o novo modal ficar por cima
                     const newZIndex = 100 + openModals.length * 10;
                     modalElement.style.zIndex = newZIndex;
                     
+                    // Remove a classe 'hidden' para mostrar o modal
                     modalElement.classList.remove('hidden');
                     
+                    // Adiciona o modal à lista de abertos
                     openModals.push(modalElement);
                     
+                    // Bloqueia o scroll do body para a página de trás não mexer
                     document.body.style.overflow = 'hidden';
                 };
 
+                // Função para fechar um modal
                 const closeModal = (modalElement) => {
+                    // Se o elemento não existir, sai da função
                     if (!modalElement) return;
                     
+                    // Adiciona a classe 'hidden' para esconder o modal
                     modalElement.classList.add('hidden');
+                    // Limpa o z-index
                     modalElement.style.zIndex = '';
                     
+                    // Procura a posição deste modal na lista de abertos
                     const index = openModals.findIndex(m => m === modalElement);
+                    // Se encontrou, remove-o da lista (splice remove 1 elemento na posição index)
                     if (index > -1) openModals.splice(index, 1);
                     
+                    // Se não houver mais modais abertos, devolve o scroll à página (body)
                     if (openModals.length === 0) document.body.style.overflow = '';
                 };
 
+                // --- SELEÇÃO DE ELEMENTOS DO DOM ---
+                // Guarda referências para os elementos HTML que vamos usar
                 const modal = document.getElementById('comment-modal');
                 const closeModalBtn = document.getElementById('close-modal-btn');
                 const modalPostContainer = document.getElementById('modal-post-container');
@@ -1075,25 +1093,34 @@
                 const modalCommentInput = document.getElementById('modal-comment-input');
                 const modalPublishBtn = document.getElementById('modal-publish-comment-btn');
 
-                // Emoji Picker Logic
+                // --- LÓGICA DO SELETOR DE EMOJIS ---
                 const emojiBtn = document.getElementById('emoji-picker-btn');
                 const emojiPicker = document.getElementById('emoji-picker');
 
+                // Verifica se os elementos existem antes de adicionar eventos
                 if (emojiBtn && emojiPicker) {
+                    // Ao clicar no botão de emoji
                     emojiBtn.addEventListener('click', (e) => {
+                        // Impede que o clique se propague (para não fechar logo o menu)
                         e.stopPropagation();
+                        // Alterna a visibilidade do menu (mostra/esconde)
                         emojiPicker.classList.toggle('hidden');
                     });
 
+                    // Para cada opção de emoji disponível
                     document.querySelectorAll('.emoji-option').forEach(opt => {
                         opt.addEventListener('click', (e) => {
                             e.stopPropagation();
+                            // Pega o texto (o emoji em si)
                             const emoji = opt.innerText;
+                            // Adiciona o emoji ao input de comentário
                             modalCommentInput.value += emoji;
+                            // Volta a focar no input para continuar a escrever
                             modalCommentInput.focus();
                         });
                     });
 
+                    // Fecha o menu de emojis se clicar fora dele
                     document.addEventListener('click', (e) => {
                         if (!emojiPicker.contains(e.target) && e.target !== emojiBtn && !emojiBtn.contains(e.target)) {
                             emojiPicker.classList.add('hidden');
@@ -1101,37 +1128,46 @@
                     });
                 }
 
-                // Store comments in-memory for the session
+                // --- LÓGICA DE COMENTÁRIOS ---
+                // Objeto para guardar os comentários em memória (apaga ao recarregar a página)
                 const commentsByPost = {
-                    "1": [{ user: "Utilizador Exemplo", text: "Grande jogo! Parabéns à equipa. 👏", createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000) }], // 2 hours ago
-                    // Other posts will start with no comments
+                    // Exemplo inicial: Post ID "1" tem um comentário
+                    "1": [{ user: "Utilizador Exemplo", text: "Grande jogo! Parabéns à equipa. 👏", createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000) }], // 2 horas atrás
                 };
 
+                // Função auxiliar para formatar a data (ex: "2d" ou "14:30")
                 const formatTimestamp = (date) => {
                     if (!date) return '';
                     const now = new Date();
                     const diffMs = now - date;
+                    // Converte milissegundos para dias
                     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
+                    // Se passou mais de 1 dia, mostra os dias
                     if (diffDays > 0) {
                         return `${diffDays}d`;
                     }
                     
+                    // Senão, mostra a hora e minutos
                     const hours = date.getHours().toString().padStart(2, '0');
                     const minutes = date.getMinutes().toString().padStart(2, '0');
                     return `${hours}:${minutes}`;
                 };
 
+                // Função para desenhar os comentários na lista
                 const renderComments = (postId) => {
-                    modalCommentsList.innerHTML = ''; // Clear existing comments
-                    const comments = commentsByPost[postId] || [];
+                    modalCommentsList.innerHTML = ''; // Limpa os comentários antigos
+                    const comments = commentsByPost[postId] || []; // Vai buscar os comentários deste post
 
+                    // Se não houver comentários, mostra mensagem padrão
                     if (comments.length === 0) {
                         modalCommentsList.innerHTML = '<p class="text-gray-400 text-sm text-center">Ainda não há comentários. Sê o primeiro a comentar!</p>';
                     } else {
+                        // Para cada comentário, cria o HTML correspondente
                         comments.forEach(comment => {
                             const commentEl = document.createElement('div');
                             commentEl.className = 'flex items-start space-x-3';
+                            // Template string com o HTML do comentário
                             commentEl.innerHTML = `
                                 <div class="w-8 h-8 rounded-full bg-gray-600 flex-shrink-0 flex items-center justify-center text-xs text-white">${comment.user.charAt(0)}</div>
                                 <div class="bg-gray-700 rounded-lg p-3 flex-1">
@@ -1142,99 +1178,107 @@
                                     <p class="text-sm text-gray-300">${comment.text}</p>
                                 </div>
                             `;
+                            // Adiciona o elemento à lista
                             modalCommentsList.appendChild(commentEl);
                         });
                     }
                 };
                 
-                // Function to open post modal
+                // Função para abrir o modal de um post específico
                 const openPostModal = (postCard) => {
                     const postId = postCard.dataset.postId;
                     
-                    // Store the current post ID on the modal
+                    // Guarda o ID do post atual no modal para sabermos onde comentar
                     modal.dataset.currentPostId = postId;
                     
-                    // Setup modal container as a post-card for event delegation
+                    // Configura o container do modal para parecer um card de post
                     modalPostContainer.classList.add('post-card');
                     modalPostContainer.dataset.postId = postId;
                     
-                    // Clone content for modal
+                    // Clona os elementos do post original (cabeçalho, texto, media, ações)
+                    // Usamos cloneNode(true) para copiar tudo sem remover do feed original
                     const header = postCard.querySelector('.flex.items-center.justify-between.mb-4').cloneNode(true);
                     const text = postCard.querySelector('.post-text').cloneNode(true);
                     const media = postCard.querySelector('.post-media').cloneNode(true);
                     const actions = postCard.querySelector('.post-actions').cloneNode(true);
 
-                    // Adjust media to fill space
+                    // Ajusta o estilo da imagem/media para ocupar o espaço todo no modal
                     media.classList.remove('h-64', 'mb-4');
                     media.classList.add('flex-1', 'w-full');
 
-                    // Clear previous content
+                    // Limpa o conteúdo anterior do modal
                     modalPostContainer.innerHTML = '';
 
-                    // Append cloned content
+                    // Adiciona os elementos clonados ao modal
                     modalPostContainer.appendChild(header);
                     modalPostContainer.appendChild(text);
                     modalPostContainer.appendChild(media);
                     modalPostContainer.appendChild(actions);
 
-                    // Re-initialize feather icons in modal
+                    // Reinicializa os ícones Feather (porque os novos elementos clonados ainda não são SVG)
                     feather.replace();
 
-                    // Render comments for this post
+                    // Carrega os comentários deste post
                     renderComments(postId);
 
-                    // Show modal
+                    // Abre o modal visualmente
                     openModal(modal);
                 };
 
-                // Unified Event Delegation for all Post Actions (Feed & Favorites)
+                // --- GESTÃO DE EVENTOS (EVENT DELEGATION) ---
+                // Em vez de adicionar um evento a cada botão, adicionamos um ao 'body' e vemos onde foi o clique.
+                // Isto é mais eficiente e funciona para elementos criados dinamicamente.
                 document.body.addEventListener('click', (e) => {
                     const target = e.target;
 
-                    // 1. Handle Options Dropdown Toggle
+                    // 1. Botão de Opções (três pontinhos)
                     const optionsBtn = target.closest('.post-options-btn');
                     if (optionsBtn) {
                         e.stopPropagation();
-                        // Close other dropdowns
+                        // Fecha outros dropdowns que estejam abertos
                         document.querySelectorAll('.post-options-dropdown').forEach(d => {
                             if (d !== optionsBtn.nextElementSibling) d.classList.add('hidden');
                         });
+                        // Alterna a visibilidade do dropdown atual
                         optionsBtn.nextElementSibling.classList.toggle('hidden');
                         return;
                     }
 
-                    // Close dropdowns if clicking outside
+                    // Fecha dropdowns se clicar fora
                     if (!target.closest('.post-options-dropdown')) {
                         document.querySelectorAll('.post-options-dropdown').forEach(d => d.classList.add('hidden'));
                     }
 
-                    // 2. Handle Like Button
+                    // 2. Botão de Like
                     const likeBtn = target.closest('.like-btn');
                     if (likeBtn) {
                         e.stopPropagation();
                         const postCard = likeBtn.closest('.post-card');
                         const postId = postCard.dataset.postId;
                         
+                        // Verifica se já tem like (se não tem a classe vermelha)
                         const isLiking = !likeBtn.classList.contains('text-red-500');
                         
-                        // Update Data
+                        // Atualiza os dados no Set
                         if (isLiking) likedPosts.add(postId);
                         else likedPosts.delete(postId);
 
-                        // Update UI on ALL instances (Feed + Favorites)
+                        // Atualiza a interface em TODAS as instâncias desse post (no feed e nos favoritos)
                         document.querySelectorAll(`.post-card[data-post-id='${postId}'] .like-btn`).forEach(btn => {
                             const icon = btn.querySelector('svg');
                             const countSpan = btn.querySelector('.like-count');
                             let count = parseInt(countSpan.innerText);
                             
                             if (isLiking) {
+                                // Adiciona like visualmente
                                 if (!btn.classList.contains('text-red-500')) {
                                     btn.classList.add('text-red-500');
                                     btn.classList.remove('text-gray-400');
-                                    if(icon) icon.classList.add('fill-current');
+                                    if(icon) icon.classList.add('fill-current'); // Preenche o coração
                                     count++;
                                 }
                             } else {
+                                // Remove like visualmente
                                 if (btn.classList.contains('text-red-500')) {
                                     btn.classList.remove('text-red-500');
                                     btn.classList.add('text-gray-400');
@@ -1242,21 +1286,23 @@
                                     count--;
                                 }
                             }
+                            // Atualiza o texto do contador
                             countSpan.innerText = `${count} ${count === 1 ? 'like' : 'likes'}`;
                         });
                         return;
                     }
 
-                    // 3. Handle Comment Button
+                    // 3. Botão de Comentário
                     const commentBtn = target.closest('.comment-btn');
                     if (commentBtn) {
                         e.stopPropagation();
                         const postCard = commentBtn.closest('.post-card');
+                        // Abre o modal do post
                         openPostModal(postCard);
                         return;
                     }
 
-                    // 4. Handle Share Button
+                    // 4. Botão de Partilhar
                     const shareBtn = target.closest('.share-btn');
                     if (shareBtn) {
                         e.stopPropagation();
@@ -1264,7 +1310,7 @@
                         return;
                     }
 
-                    // 5. Handle Save Post
+                    // 5. Botão de Guardar Post
                     const saveBtn = target.closest('.save-post-btn');
                     if (saveBtn) {
                         e.preventDefault();
@@ -1278,32 +1324,33 @@
                             savedPosts.add(postId);
                         } else {
                             savedPosts.delete(postId);
-                            // If unsaving from within the favorites modal, fade and remove
+                            // Se estivermos a remover dentro do modal de favoritos, faz uma animação de saída
                             if (postCard.closest('#favorites-modal')) {
                                 postCard.style.transition = 'opacity 0.5s ease';
                                 postCard.style.opacity = '0';
                                 setTimeout(() => {
                                     postCard.remove();
+                                    // Se ficar vazio, mostra mensagem
                                     const favoritesList = document.getElementById('favorites-list');
                                     if (favoritesList && favoritesList.children.length === 0) {
                                         favoritesList.innerHTML = '<div class="text-center text-gray-400 py-8">Ainda não tens publicações guardadas.</div>';
                                     }
-                                }, 500); // Remove after 0.5s
+                                }, 500); // Remove após 0.5s
                             }
                         }
                         
-                        // Update UI on all instances
+                        // Atualiza o texto do botão em todas as instâncias
                         document.querySelectorAll(`.post-card[data-post-id='${postId}'] .save-text`).forEach(span => {
                             span.innerText = isSaving ? "Remover dos guardados" : "Guardar publicação";
                         });
                         
-                        // Close dropdown
+                        // Fecha o dropdown
                         const dropdown = saveBtn.closest('.post-options-dropdown');
                         if(dropdown) dropdown.classList.add('hidden');
                         return;
                     }
 
-                    // 6. Handle Download Image
+                    // 6. Botão de Descarregar Imagem
                     const downloadBtn = target.closest('.download-img-btn');
                     if (downloadBtn) {
                         e.preventDefault();
@@ -1311,12 +1358,13 @@
                         const postCard = downloadBtn.closest('.post-card');
                         const img = postCard.querySelector('.post-media img');
                         if (img) {
+                            // Cria um link temporário para forçar o download
                             const a = document.createElement('a');
                             a.href = img.src;
                             a.download = `post-${postCard.dataset.postId}-image.jpg`;
                             document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
+                            a.click(); // Simula o clique
+                            document.body.removeChild(a); // Limpa o elemento
                         } else {
                             alert('Esta publicação não tem uma imagem para descarregar.');
                         }
@@ -1325,32 +1373,35 @@
                         return;
                     }
 
-                    // 7. Handle General Post Click (Open Modal)
+                    // 7. Clique Geral no Post (Abre Modal)
                     const postCard = target.closest('.post-card');
                     if (postCard) {
-                        // Ignore if clicked on interactive elements not handled above
+                        // Ignora se clicou em botões, links ou inputs (para não abrir o modal sem querer)
                         if (target.closest('a') || target.closest('button') || target.closest('input') || target.closest('textarea')) {
                             return;
                         }
-                        // Ignore if selecting text
+                        // Ignora se o utilizador estiver a selecionar texto
                         if (window.getSelection().toString().length > 0) return;
 
                         openPostModal(postCard);
                     }
                 });
 
+                // --- PUBLICAR COMENTÁRIO ---
                 if (modalPublishBtn) {
                     modalPublishBtn.addEventListener('click', () => {
                         const postId = modal.dataset.currentPostId;
                         const commentText = modalCommentInput.value.trim();
+                        
+                        // Se houver texto e um post selecionado
                         if (commentText && postId) {
                             if (!commentsByPost[postId]) {
                                 commentsByPost[postId] = [];
                             }
+                            // Adiciona o novo comentário ao array
                             commentsByPost[postId].push({ user: "Tomás Nogueira", text: commentText, createdAt: new Date() });
                             
-                            // Update comment count on the card
-                            // Update comment count on all card instances (Feed + Favorites)
+                            // Atualiza o contador de comentários em todos os cards
                             document.querySelectorAll(`.post-card[data-post-id='${postId}']`).forEach(card => {
                                 const commentCountSpan = card.querySelector('.comment-count');
                                 if (commentCountSpan) {
@@ -1359,16 +1410,18 @@
                                 }
                             });
 
+                            // Redesenha a lista de comentários
                             renderComments(postId);
+                            // Limpa o input
                             modalCommentInput.value = '';
                         }
                     });
                 }
 
-                // Close Modal Logic
+                // Botão de fechar modal
                 closeModalBtn.addEventListener('click', () => closeModal(modal));
 
-                // Image Upload Logic
+                // --- UPLOAD DE IMAGEM E CARROSSEL ---
                 const btnUploadImage = document.getElementById('btn-upload-image');
                 const fileInput = document.getElementById('post-image-upload');
                 const previewContainer = document.getElementById('image-preview-container');
@@ -1379,24 +1432,29 @@
                 let uploadedFiles = [];
                 
                 if (btnUploadImage && fileInput && previewContainer && imageCarousel && imageDots) {
+                    // Botões de navegação do carrossel
                     if (prevImageBtn && nextImageBtn) {
                         prevImageBtn.addEventListener('click', (e) => {
                             e.preventDefault();
                             e.stopPropagation();
+                            // Rola para a esquerda
                             imageCarousel.scrollBy({ left: -imageCarousel.offsetWidth, behavior: 'smooth' });
                         });
 
                         nextImageBtn.addEventListener('click', (e) => {
                             e.preventDefault();
                             e.stopPropagation();
+                            // Rola para a direita
                             imageCarousel.scrollBy({ left: imageCarousel.offsetWidth, behavior: 'smooth' });
                         });
                     }
 
+                    // Clicar no ícone de imagem abre o seletor de ficheiros
                     btnUploadImage.addEventListener('click', () => {
                         fileInput.click();
                     });
 
+                    // Atualiza os pontinhos (indicadores) do carrossel
                     const updateDots = () => {
                         if (uploadedFiles.length === 0) return;
 
@@ -1404,24 +1462,26 @@
                         if (uploadedFiles.length > 1) {
                             const scrollLeft = imageCarousel.scrollLeft;
                             const width = imageCarousel.offsetWidth;
+                            // Calcula qual imagem está visível
                             currentIndex = Math.round(scrollLeft / width);
                         }
                         
-                        // Ensure index is within bounds
+                        // Garante que o índice é válido
                         currentIndex = Math.min(Math.max(currentIndex, 0), uploadedFiles.length - 1);
                         
                         const dots = imageDots.children;
                         for (let i = 0; i < dots.length; i++) {
                             if (i === currentIndex) {
                                 dots[i].classList.remove('bg-gray-600');
-                                dots[i].classList.add('bg-blue-500');
+                                dots[i].classList.add('bg-blue-500'); // Ativo
                             } else {
                                 dots[i].classList.add('bg-gray-600');
-                                dots[i].classList.remove('bg-blue-500');
+                                dots[i].classList.remove('bg-blue-500'); // Inativo
                             }
                         }
                     };
 
+                    // Renderiza (desenha) o carrossel com as imagens
                     const renderCarousel = () => {
                         imageCarousel.innerHTML = '';
                         imageDots.innerHTML = '';
@@ -1433,41 +1493,42 @@
 
                         previewContainer.classList.remove('hidden');
                         
+                        // Configura classes para snap (rolagem magnética) se houver mais de 1 imagem
                         if (uploadedFiles.length > 1) {
-                            imageCarousel.classList.add('snap-x', 'snap-mandatory');
                             imageCarousel.classList.add('snap-x', 'snap-mandatory');
                             if (prevImageBtn) prevImageBtn.classList.remove('hidden');
                             if (nextImageBtn) nextImageBtn.classList.remove('hidden');
                         } else {
                             imageCarousel.classList.remove('snap-x', 'snap-mandatory');
-                            imageCarousel.classList.remove('snap-x', 'snap-mandatory');
                             if (prevImageBtn) prevImageBtn.classList.add('hidden');
                             if (nextImageBtn) nextImageBtn.classList.add('hidden');
                         }
 
+                        // Cria os elementos para cada ficheiro
                         uploadedFiles.forEach((file, index) => {
                             const wrapper = document.createElement('div');
                             wrapper.className = `relative group flex-shrink-0 h-64 bg-gray-900 rounded-lg flex items-center justify-center ${uploadedFiles.length > 1 ? 'snap-center w-full' : 'w-full'}`;
                             
                             const img = document.createElement('img');
-                            img.src = URL.createObjectURL(file);
+                            img.src = URL.createObjectURL(file); // Cria URL temporário para preview
                             img.alt = `Image preview ${index + 1}`;
                             img.className = "max-h-full max-w-full object-contain";
                             
+                            // Botão de remover imagem
                             const btn = document.createElement('button');
                             btn.innerHTML = '<i data-feather="x" class="w-4 h-4"></i>';
                             btn.className = "absolute top-2 right-2 bg-gray-800 bg-opacity-75 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-red-600";
                             btn.onclick = (e) => {
                                 e.stopPropagation();
-                                uploadedFiles.splice(index, 1);
-                                renderCarousel();
+                                uploadedFiles.splice(index, 1); // Remove do array
+                                renderCarousel(); // Redesenha
                             };
                             
                             wrapper.appendChild(img);
                             wrapper.appendChild(btn);
                             imageCarousel.appendChild(wrapper);
 
-                            // Create dot
+                            // Cria o ponto indicador
                             const dot = document.createElement('div');
                             dot.className = 'w-2 h-2 rounded-full transition-colors duration-200 bg-gray-600';
                             imageDots.appendChild(dot);
@@ -1481,7 +1542,7 @@
                         updateDots();
                     });
 
-                    // Drag to Scroll Logic
+                    // --- LÓGICA DE ARRASTAR PARA ROLAR (DRAG TO SCROLL) ---
                     let isDown = false;
                     let startX;
                     let scrollLeft;
@@ -1490,6 +1551,7 @@
                         if (uploadedFiles.length <= 1) return;
                         isDown = true;
                         imageCarousel.classList.add('cursor-grabbing');
+                        // Remove snap temporariamente para o arrasto ser suave
                         imageCarousel.classList.remove('cursor-grab', 'snap-x', 'snap-mandatory', 'scroll-smooth');
                         startX = e.pageX - imageCarousel.offsetLeft;
                         scrollLeft = imageCarousel.scrollLeft;
@@ -1500,6 +1562,7 @@
                         isDown = false;
                         imageCarousel.classList.remove('cursor-grabbing');
                         imageCarousel.classList.add('cursor-grab', 'scroll-smooth');
+                        // Reativa o snap
                         if (uploadedFiles.length > 1) imageCarousel.classList.add('snap-x', 'snap-mandatory');
                     };
 
@@ -1510,20 +1573,21 @@
                         if (!isDown) return;
                         e.preventDefault();
                         const x = e.pageX - imageCarousel.offsetLeft;
-                        const walk = (x - startX) * 2; // Scroll speed
+                        const walk = (x - startX) * 2; // Velocidade do scroll
                         imageCarousel.scrollLeft = scrollLeft - walk;
                     });
 
+                    // Quando o utilizador seleciona ficheiros
                     fileInput.addEventListener('change', function() {
                         if (this.files.length > 0) {
                             uploadedFiles.push(...Array.from(this.files));
                             renderCarousel();
-                            this.value = '';
+                            this.value = ''; // Limpa o input para permitir selecionar o mesmo ficheiro novamente
                         }
                     });
                 }
 
-                // Suggestions Modal & Carousel Logic
+                // --- MODAL DE SUGESTÕES (CARROSSEL) ---
                 const viewAllSuggestionsBtn = document.getElementById('view-all-suggestions-btn');
                 const suggestionsModal = document.getElementById('suggestions-modal');
                 const closeSuggestionsModalBtn = document.getElementById('close-suggestions-modal');
@@ -1533,15 +1597,16 @@
 
                 if (viewAllSuggestionsBtn && suggestionsModal && suggestionsTrack) {
                     let currentIndex = 0;
-                    const itemsToShow = 3;
+                    const itemsToShow = 3; // Mostra 3 sugestões de cada vez
                     const totalItems = suggestionsTrack.children.length;
                     const maxIndex = Math.ceil(totalItems / itemsToShow) - 1;
 
+                    // Atualiza a posição do carrossel
                     const updateCarousel = () => {
                         const percentage = -(currentIndex * 100);
                         suggestionsTrack.style.transform = `translateX(${percentage}%)`;
                         
-                        // Update buttons state
+                        // Ativa/Desativa botões se estiver no início ou fim
                         prevSuggestionBtn.disabled = currentIndex === 0;
                         nextSuggestionBtn.disabled = currentIndex >= maxIndex;
                         
@@ -1574,7 +1639,7 @@
                         }
                     });
 
-                    // Carousel Follow Button Logic
+                    // Botão de Seguir no carrossel
                     document.querySelectorAll('.follow-btn-carousel').forEach(btn => {
                         btn.addEventListener('click', function() {
                             this.innerHTML = '<span class="text-white text-sm">A Seguir</span>';
@@ -1585,7 +1650,7 @@
                     });
                 }
 
-                // Favorites Modal Logic
+                // --- MODAL DE FAVORITOS ---
                 const favoritesLink = document.getElementById('favorites-app-link');
                 const favoritesModal = document.getElementById('favorites-modal');
                 const closeFavoritesBtn = document.getElementById('close-favorites-modal');
@@ -1599,6 +1664,7 @@
                         if (savedPosts.size === 0) {
                             favoritesList.innerHTML = '<div class="text-center text-gray-400 py-8">Ainda não tens publicações guardadas.</div>';
                         } else {
+                            // Para cada post guardado, clona o original e mete na lista
                             savedPosts.forEach(postId => {
                                 const originalPost = document.querySelector(`.post-card[data-post-id='${postId}']`);
                                 if (originalPost) {
@@ -1614,7 +1680,7 @@
                     closeFavoritesBtn.addEventListener('click', () => closeModal(favoritesModal));
                 }
 
-                // Follow Button Logic
+                // --- BOTÃO DE SEGUIR (GERAL) ---
                 document.querySelectorAll('.follow-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         this.innerHTML = '<span class="text-gray-400 text-sm">a seguir</span>';
@@ -1623,12 +1689,13 @@
                     });
                 });
 
-                // Textarea Auto-resize
+                // --- AUTO-RESIZE DA TEXTAREA ---
+                // Faz a caixa de texto crescer conforme escrevemos
                 const postContent = document.getElementById('post-content');
                 if (postContent) {
                     postContent.addEventListener('input', function() {
-                        this.style.height = 'auto';
-                        this.style.height = (this.scrollHeight) + 'px';
+                        this.style.height = 'auto'; // Reseta altura
+                        this.style.height = (this.scrollHeight) + 'px'; // Define nova altura baseada no conteúdo
                     });
                 }
             });
@@ -1658,6 +1725,7 @@
             </div>
         </div>
     </section>
+    
     <!-- Stats Section -->
     <section id="stats" class="py-16 px-6 bg-gray-800" style="scroll-margin-top: 72px;">
         <div class="container mx-auto">

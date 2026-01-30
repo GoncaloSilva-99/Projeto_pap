@@ -14,7 +14,8 @@
             </div>
 
     <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <% grid_cols = (user_signed_in? && current_user.club?) ? "lg:grid-cols-3" : "lg:grid-cols-4" %>
+        <div class="grid grid-cols-1 md:grid-cols-2 <%= grid_cols %> gap-6">
             <!-- Player Card -->
             <div class="card-hover player-bg bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col h-full">
                 <div class="flex items-center mb-4">
@@ -189,6 +190,3 @@
   });
 </script>
 </body>
-
-
-
