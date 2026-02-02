@@ -119,7 +119,6 @@ class ClubTeamTrainingsController < ApplicationController
       if zone2.include?("Zona C") and (zone1.include?("Zona F") or zone1.include?("Zona G"))
         return true
       end
-
       false
     end
 

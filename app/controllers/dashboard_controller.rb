@@ -52,8 +52,6 @@ class DashboardController < ApplicationController
         end
       end
       
-      # Agrupar treinos por slot de tempo (data + hora início)
-      # Isto ajuda a mostrar treinos lado a lado se existirem na mesma hora
       @trainings_by_slot = @all_trainings.group_by do |training|
         training.start_time.strftime("%Y-%m-%d %H:%M")
       end

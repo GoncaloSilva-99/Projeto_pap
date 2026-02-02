@@ -288,8 +288,8 @@ select:required:hover {
   cursor: not-allowed;
 }
 
-.button_delete{
-  
+.clickable{
+  cursor: pointer;
 }
 
 

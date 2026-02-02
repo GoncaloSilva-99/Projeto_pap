@@ -379,12 +379,8 @@
 
                     <% if @club_pitches_results %>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <% @club_pitches_results.each do |cp| %>
-                    <% if cp.id == @selected_pitch %>
-                        <div class="relative bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl overflow-hidden shadow-xl shadow-yellow-500/30 transition-all duration-300 -translate-y-1 ring-2 ring-yellow-500">
-                    <% else %>
-                        <div class="relative bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
-                    <% end %> 
+                                        <% @club_pitches_results.each do |cp| %>
+                                            <div class="<%= cp.id == @selected_pitch ? 'relative bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl overflow-hidden shadow-xl shadow-yellow-500/30 transition-all duration-300 -translate-y-1 ring-2 ring-yellow-500' : 'relative bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1' %>">
                         <div class="absolute top-2 right-2 flex gap-2 z-10">
                             <% if !@selected_ct and @base_num_club_ct != 0 %>
                                 <div data-modal-target="modal-adicionar-campo-a-ct-<%= cp.id %>" data-modal-toggle="modal-adicionar-campo-a-ct-<%= cp.id %>" class="bg-gray-900/80 hover:bg-blue-600 text-blue-600 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" >
@@ -403,80 +399,75 @@
                                 <i data-feather="trash-2" class="w-4 h-4"></i>
                             </div>
                         </div>
-                        <% if cp.id != @selected_pitch %>
                             <% if @selected_ct %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, pitch: cp.id) do %>
-                                    <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
-                                        <% if cp.pitch_picture.attached? %>
-                                            <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
-                                        <% else %>
-                                            <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
-                                        <% end %>
-                                    </div>
-
-                                    <div class="p-4">
-                                        <h3 class="text-center font-medium text-yellow-400"> <%= cp.name %> </h3>
-                                        <% if @selected_sport == 'football' %>
-                                            <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
-                                        <% end %>
-                                    </div>
+                                <% if cp.id == @selected_pitch %>   
+                                    <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct) do %>
+                                        <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                                            <% if cp.pitch_picture.attached? %>
+                                                <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
+                                            <% else %>
+                                                <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                            <% end %>
+                                        </div>
+                                        <div class="p-4">
+                                            <h3 class="text-center font-medium text-yellow-500"> <%= cp.name %> </h3>
+                                            <% if @selected_sport == 'football' %>
+                                                <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
+                                            <% end %>
+                                        </div>
+                                    <% end %>
+                                <% else %>
+                                    <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct, pitch: cp.id) do %>
+                                        <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                                            <% if cp.pitch_picture.attached? %>
+                                                <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
+                                            <% else %>
+                                                <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                            <% end %>
+                                        </div>
+                                        <div class="p-4">
+                                            <h3 class="text-center font-medium text-yellow-400"> <%= cp.name %> </h3>
+                                            <% if @selected_sport == 'football' %>
+                                                <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
+                                            <% end %>
+                                        </div>
+                                    <% end %>
                                 <% end %>
                             <% else %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: cp.id) do %>
-                                    <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
-                                        <% if cp.pitch_picture.attached? %>
-                                            <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
-                                        <% else %>
-                                            <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
-                                        <% end %>
-                                    </div>
-
-                                    <div class="p-4">
-                                        <h3 class="text-center font-medium text-yellow-400"> <%= cp.name %> </h3>
-                                        <% if @selected_sport == 'football' %>
-                                            <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
-                                        <% end %>
-                                    </div>
+                                <% if cp.id == @selected_pitch %>
+                                    <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport) do %>
+                                        <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                                            <% if cp.pitch_picture.attached? %>
+                                                <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
+                                            <% else %>
+                                                <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                            <% end %>
+                                        </div>
+                                        <div class="p-4">
+                                            <h3 class="text-center font-medium text-yellow-500"> <%= cp.name %> </h3>
+                                            <% if @selected_sport == 'football' %>
+                                                <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
+                                            <% end %>
+                                        </div>
+                                    <% end %>
+                                <% else %>
+                                    <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: cp.id) do %>
+                                        <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
+                                            <% if cp.pitch_picture.attached? %>
+                                                <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
+                                            <% else %>
+                                                <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                            <% end %>
+                                        </div>
+                                        <div class="p-4">
+                                            <h3 class="text-center font-medium text-yellow-400"> <%= cp.name %> </h3>
+                                            <% if @selected_sport == 'football' %>
+                                                <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
+                                            <% end %>
+                                        </div>
+                                    <% end %>
                                 <% end %>
                             <% end %>
-                        <% else %>
-                            <% if @selected_ct %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct) do %>
-                                    <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
-                                        <% if cp.pitch_picture.attached? %>
-                                            <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
-                                        <% else %>
-                                            <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
-                                        <% end %>
-                                    </div>
-
-                                    <div class="p-4">
-                                        <h3 class="text-center font-medium text-yellow-500"> <%= cp.name %> </h3>
-                                        <% if @selected_sport == 'football' %>
-                                            <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
-                                        <% end %>
-                                    </div>
-                                <% end %>
-                            <% else %>
-                                <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport) do %>
-                                    <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
-                                        <% if cp.pitch_picture.attached? %>
-                                            <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
-                                        <% else %>
-                                            <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
-                                        <% end %>
-                                    </div>
-
-                                    <div class="p-4">
-                                        <h3 class="text-center font-medium text-yellow-500"> <%= cp.name %> </h3>
-                                        <% if @selected_sport == 'football' %>
-                                            <p class= "text-center font-small text-yellow-600">  <%= cp.pitch_type %> </p>
-                                        <% end %>
-                                    </div>
-                                <% end %>
-                            <% end %>
-                            </div>
-                        <% end %>
                             
                     </div>
                     
@@ -739,7 +730,9 @@
                                                             <% slot_hour = slot_time.hour %>
                                                             <% slot_minute = slot_time.min %>
                                                             <div class="w-full h-full bg-gray-800 hover:bg-gray-700 rounded border border-gray-700 flex items-center justify-center">
-                                                                <%= link_to "+", "#modal-add-training-#{current_date.to_s}-#{slot_hour}-#{slot_minute}", class: "text-gray-500 hover:text-green-400 text-2xl font-bold" %>
+                                                                <div data-modal-target="modal-add-training-<%= current_date.to_s %>-<%=slot_hour%>-<%=slot_minute%>" data-modal-toggle="modal-add-training-<%= current_date.to_s %>-<%= hour %>-<%= minute %>" class="text-gray-500 hover:text-green-400 text-2xl font-bold clickable">
+                                                                    +
+                                                                </div>
                                                             </div>
                                                         <% end %>
                                                     <% end %>
@@ -750,8 +743,8 @@
                                     <% elsif training.present? and !is_training_start %>
                                     <% else %>
                                         <td class="border border-gray-600 px-1 py-1 bg-gray-800 hover:bg-gray-700">
-                                            <div class="w-full h-full bg-gray-800 hover:bg-gray-700 rounded border border-gray-700 flex items-center justify-center">
-                                                        <%= link_to "+", "#modal-add-training-#{current_date.to_s}-#{hour}-#{minute}", class: "text-gray-500 hover:text-green-400 text-2xl font-bold" %>
+                                            <div data-modal-target="modal-add-training-<%= current_date.to_s %>-<%=hour%>-<%=minute%>" data-modal-toggle="modal-add-training-<%= current_date.to_s %>-<%= hour %>-<%= minute %>" class="text-gray-500 hover:text-green-400 text-2xl font-bold clickable">
+                                                +
                                             </div>
                                         </td>
                                     <% end %>
@@ -849,7 +842,7 @@
                                         
 
                                         <div class="flex gap-3">
-                                        <a href="#" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg">Cancelar</a>
+                                        <a data-modal-hide="modal-add-training-<%= date.to_s %>-<%= slot_hour %>-<%= slot_minute %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg">Cancelar</a>
                                         <%= f.submit "Criar Treino", class: "flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg clickable" %>
                                         </div>
                                     <% end %>
