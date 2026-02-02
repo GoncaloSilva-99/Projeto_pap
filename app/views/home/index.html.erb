@@ -7,9 +7,15 @@
             <!-- Logo and Search -->
             <div class="flex items-center space-x-6">
                 <div class="flex items-center" >
+                    <% if user_signed_in? %>
+                    <div class=" w-8 h-8 rounded-md flex items-center justify-center">
+                        <a href="#inicio-pub"><%= image_tag "logo_sem_texto.png", alt: "Logo", class: "rounded-full" %></a>
+                    </div>
+                    <% else %>
                     <div class=" w-8 h-8 rounded-md flex items-center justify-center">
                         <a href="#inicio"><%= image_tag "logo_sem_texto.png", alt: "Logo", class: "rounded-full" %></a>
                     </div>
+                    <% end %>
                     <span class="ml-2 font-bold text-xl">SportX</span>
                 </div>
                 <div class="relative flex items-center">
@@ -22,12 +28,8 @@
             </div>
 
             <% if user_signed_in? %>
-            <!-- Center Links -->
-            <div id="nav-links" class="w-full md:w-auto flex justify-center space-x-6 mt-4 md:mt-0 md:order-none order-3 nav-links-overlap">
-                <a href="#inicio-pub" class="hover:text-orange-400 transition">Voltar ao Início</a>
-                <a href="#mensagens" class="hover:text-orange-400 transition">Mensagens</a>  <!-- link to -->
-                <a href="#equipa" class="hover:text-orange-400 transition">Equipa</a>  <!-- link to -->
-            </div>
+            
+            <!-- Não tem nenhum botão, porque os botoes estão todos no menu -->
 
             <% else %>
 
@@ -1052,9 +1054,11 @@
                     const toast = document.createElement('div');
                     toast.id = 'toast-notification';
                     toast.className = `fixed top-24 right-5 text-white px-6 py-3 rounded-lg shadow-2xl z-[200] transition-all duration-300 ease-in-out transform translate-x-[150%]`;
-                    
+                    // ------------------------------------------------------------------------------------------------------
                     if (type === 'success') {
-                        toast.classList.add('bg-blue-600');
+                        toast.classList.add('bg-green-600');
+                    } else if (type === 'warning') {
+                        toast.classList.add('bg-red-500');
                     } else { // 'error'
                         toast.classList.add('bg-red-600');
                     }
@@ -1359,7 +1363,7 @@
                             showToast('Publicação guardada com sucesso!', 'success');
                         } else {
                             savedPosts.delete(postId);
-                            showToast('Publicação removida dos guardados.', 'success');
+                            showToast('Publicação removida dos guardados.', 'warning');
                             // Se estivermos a remover dentro do modal de favoritos, faz uma animação de saída
                             if (postCard.closest('#favorites-modal')) {
                                 postCard.style.transition = 'opacity 0.5s ease';
