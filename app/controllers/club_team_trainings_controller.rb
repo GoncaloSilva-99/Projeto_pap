@@ -23,6 +23,12 @@ class ClubTeamTrainingsController < ApplicationController
 
   # POST /club_team_trainings or /club_team_trainings.json
   def create
+
+    if params[:club_team_training][:duration_minutes].present?
+      duration = params[:club_team_training][:duration_minutes].to_i
+      @club_team_training.end_time = @club_team_training.start_time + duration.minutes
+    end
+
     if @club_team_training.recurring
       @club_team_training.weekday = @club_team_training.start_time.wday
     end
@@ -31,7 +37,8 @@ class ClubTeamTrainingsController < ApplicationController
       if @club_team_training.save
         @selected_sport = params[:sport]
         @selected_pitch = params[:pitch]
-        if params[:ct].present?
+        @selected_ct = params[:ct]
+        if @selected_ct.present?
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), notice: "Treino criado com sucesso!" }
         else
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), notice: "Treino criado com sucesso!" }
@@ -46,12 +53,17 @@ class ClubTeamTrainingsController < ApplicationController
 
   # PATCH/PUT /club_team_trainings/1 or /club_team_trainings/1.json
   def update
+    if params[:club_team_training][:duration_minutes].present?
+      duration = params[:club_team_training][:duration_minutes].to_i
+      club_team_training_params_hash = club_team_training_params.to_h
+      club_team_training_params_hash[:end_time] = club_team_training_params_hash[:start_time].to_time + duration.minutes
+    end
     respond_to do |format|
       if @club_team_training.update(club_team_training_params)
         @selected_sport = params[:sport]
         @selected_pitch = params[:pitch]
-        if params[:ct].present?
-          @selected_ct = params[:ct]
+        @selected_ct = params[:ct]
+        if @selected_ct.present?
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), notice: "Treino atualizado com sucesso!" }
         else
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), notice: "Treino atualizado com sucesso!" }
@@ -71,8 +83,8 @@ class ClubTeamTrainingsController < ApplicationController
     respond_to do |format|
         @selected_sport = params[:sport]
         @selected_pitch = params[:pitch]
-        if params[:ct].present?
-          @selected_ct = params[:ct]
+        @selected_ct = params[:ct]
+        if @selected_ct.present?
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), notice: "Treino apagado com sucesso!" }
         else
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), notice: "Treino apagado com sucesso!" }
@@ -93,7 +105,7 @@ class ClubTeamTrainingsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_team_training_params
-      params.require(:club_team_training).permit(:club_pitch_id, :club_locker_room_id, :club_team_id,:start_time, :end_time, :recurring, :pitch_zone, :locker_room_time_before, :locker_room_time_after, :name)
+      params.require(:club_team_training).permit(:club_pitch_id, :club_locker_room_id, :club_team_id,:start_time, :end_time, :recurring, :pitch_zone, :locker_room_time_before, :locker_room_time_after, :name, :duration_minutes)
     end
 
     def times_overlap_with?(training1, training2)
@@ -102,7 +114,6 @@ class ClubTeamTrainingsController < ApplicationController
       t2_start = training2.start_time
       t2_end = training2.end_time
       t1_start < t2_end and t2_start < t1_end
-
     end
 
     def zones_conflict?(zone1, zone2)
@@ -145,10 +156,7 @@ class ClubTeamTrainingsController < ApplicationController
           end
           return
         end
-      end
-
-
-
+    end
   end
 
 

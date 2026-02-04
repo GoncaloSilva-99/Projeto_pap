@@ -38,27 +38,35 @@ class DashboardController < ApplicationController
       @weekly_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: false ).where("start_time >= ? AND start_time <= ?", @start_date, @end_date.end_of_day).order(:start_time)
       @recurring_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: true)
       
+      @trainings_by_date = {}
+      (@start_date..@end_date).each do |date|
+        @trainings_by_date[date] = []
+      end
 
-      @all_trainings = @weekly_trainings.to_a
+      @weekly_trainings.each do |training|
+        date = training.start_time.to_date
+        @trainings_by_date[date] << training if @trainings_by_date.key?(date)
+      end
+
       @recurring_trainings.each do |recurring|
         (@start_date..@end_date).each do |date|
           if date.wday == recurring.weekday
             virtual_training = recurring.dup
             virtual_training.start_time = date.in_time_zone('Lisbon').change(hour: recurring.start_time.hour, min: recurring.start_time.min)
             virtual_training.end_time = date.in_time_zone('Lisbon').change(hour: recurring.end_time.hour, min: recurring.end_time.min)
-            virtual_training.id = recurring.id 
-            @all_trainings << virtual_training
+            virtual_training.id = recurring.id
+            @trainings_by_date[date] << virtual_training
           end
         end
       end
       
-      @trainings_by_slot = @all_trainings.group_by do |training|
-        training.start_time.strftime("%Y-%m-%d %H:%M")
+      @trainings_by_date.each do |date, trainings|
+        @trainings_by_date[date] = trainings.sort_by(&:start_time)
       end
+      
       
       @available_locker_rooms = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct || nil)
       @available_teams = ClubTeam.where(club_profile_id: club_id, sport_id: sport_id)
-      @time_slots = (8..23).flat_map { |h| [[h, 0], [h, 30]] }
       @selected_pitch_obj = ClubPitch.find(@selected_pitch)
       @available_zones = @selected_pitch_obj.fut11? ? ClubPitch::PITCH_ZONES_11 : ClubPitch::PITCH_ZONES_OTHERS
     end
