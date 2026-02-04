@@ -97,11 +97,12 @@ class ClubTeamTrainingsController < ApplicationController
     end
 
     def times_overlap_with?(training1, training2)
-      t1_start = training1.start_time.hour * 60 + training1.start_time.min
-      t1_end = training1.end_time.hour * 60 + training1.end_time.min
-      t2_start = training2.start_time.hour * 60 + training2.start_time.min
-      t2_end = training2.end_time.hour * 60 + training2.end_time.min
+      t1_start = training1.start_time
+      t1_end = training1.end_time
+      t2_start = training2.start_time
+      t2_end = training2.end_time
       t1_start < t2_end and t2_start < t1_end
+
     end
 
     def zones_conflict?(zone1, zone2)
