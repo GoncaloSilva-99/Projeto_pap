@@ -674,8 +674,28 @@
                                     <% end %>
 
                                     <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-400 mb-2">Data e Hora de Início</label>
-                                    <%= f.datetime_local_field :start_time, value: date.to_s + "T09:00", class: "w-full bg-gray-700 rounded-md px-4 py-2 text-white border border-gray-700", required: true %>
+                                        <label class="block text-sm font-medium text-gray-400 mb-3">Hora de Início</label>
+                                        
+                                        <div class="space-y-4">
+                                            <div class="grid grid-cols-4 gap-2 max-h-64 overflow-y-auto p-3 bg-gray-700/50 rounded-lg">
+                                            <% (8..22).each do |hour| %>
+                                                <% ['00', '30'].each do |minutes| %>
+                                                <% time_string = "#{hour.to_s.rjust(2, '0')}:#{minutes}" %>
+                                                <% datetime_value = "#{date}T#{time_string}" %>
+                                                
+                                                <label class="cursor-pointer group">
+                                                    <%= f.radio_button :start_time, datetime_value, 
+                                                        checked: (hour == 9 && minutes == '00'),
+                                                        class: "peer sr-only" %>
+                                                    
+                                                    <div class="peer-checked:bg-gradient-to-br peer-checked:from-blue-500 peer-checked:to-blue-600 peer-checked:text-white peer-checked:shadow-lg peer-checked:scale-105 peer-checked:ring-2 peer-checked:ring-blue-400 bg-gray-700 group-hover:bg-gray-600 text-gray-300 px-4 py-3 rounded-lg text-center font-semibold transition-all duration-200">
+                                                    <%= time_string %>
+                                                    </div>
+                                                </label>
+                                                <% end %>
+                                            <% end %>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="mb-4">
@@ -724,7 +744,7 @@
 
                                     <div class="flex gap-3">
                                     <button type="button" data-modal-hide="modal-add-training-<%= date.to_s %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg">Cancelar</button>
-                                    <%= f.submit "Criar Treino", class: "flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg" %>
+                                    <%= f.submit "Criar Treino", class: "flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg clickable" %>
                                     </div>
                                 <% end %>
                                 </div>
@@ -732,7 +752,7 @@
                             <% end %>
 
                         <% @trainings_by_date.values.flatten.uniq { |t| t.id }.each do |training| %>
-                            <div id="modal-edit-training-<%= training.id %>" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50 modal">
+                            <div id="modal-edit-training-<%= training.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
                             <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
                                 <div class="flex justify-between items-center mb-4">
                                 <h3 class="text-xl font-bold text-white">Editar Treino</h3>
@@ -751,8 +771,29 @@
                                 <% end %>
 
                                 <div class="mb-4">
-                                    <label class="block text-sm font-medium text-gray-400 mb-2">Data e Hora de Início</label>
-                                    <%= f.datetime_local_field :start_time, value: training.start_time.strftime("%Y-%m-%dT%H:%M"), class: "w-full bg-gray-700 rounded-md px-4 py-2 text-white border border-gray-700", required: true %>
+                                    <label class="block text-sm font-medium text-gray-400 mb-3">Hora de Início</label>
+                                    
+                                    <div class="space-y-4">
+                                        <div class="grid grid-cols-4 gap-2 max-h-64 overflow-y-auto p-3 bg-gray-700/50 rounded-lg">
+                                        <% (8..22).each do |hour| %>
+                                            <% ['00', '30'].each do |minutes| %>
+                                                <% time_string = "#{hour.to_s.rjust(2, '0')}:#{minutes}" %>
+                                                <% training_hour = training.start_time.hour %>
+                                                <% training_minutes = training.start_time.min %>
+                                                
+                                                <label class="cursor-pointer group">
+                                                <%= f.radio_button :start_time, training.start_time.strftime("%Y-%m-%dT#{time_string}"), 
+                                                    checked: (hour == training_hour && minutes.to_i == training_minutes),
+                                                    class: "peer sr-only" %>
+                                                
+                                                <div class="peer-checked:bg-gradient-to-br peer-checked:from-blue-500 peer-checked:to-blue-600 peer-checked:text-white peer-checked:shadow-lg peer-checked:scale-105 peer-checked:ring-2 peer-checked:ring-blue-400 bg-gray-700 group-hover:bg-gray-600 text-gray-300 px-4 py-3 rounded-lg text-center font-semibold transition-all duration-200">
+                                                <%= time_string %>
+                                                </div>
+                                            </label>
+                                            <% end %>
+                                        <% end %>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="mb-4">

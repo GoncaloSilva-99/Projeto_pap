@@ -24,10 +24,10 @@ class ClubTeamTrainingsController < ApplicationController
   # POST /club_team_trainings or /club_team_trainings.json
   def create
 
-    if params[:club_team_training][:duration_minutes].present?
       duration = params[:club_team_training][:duration_minutes].to_i
+      training_params = club_team_training_params.except(:duration_minutes)
+      @club_team_training = ClubTeamTraining.new(training_params) 
       @club_team_training.end_time = @club_team_training.start_time + duration.minutes
-    end
 
     if @club_team_training.recurring
       @club_team_training.weekday = @club_team_training.start_time.wday
@@ -105,7 +105,7 @@ class ClubTeamTrainingsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_team_training_params
-      params.require(:club_team_training).permit(:club_pitch_id, :club_locker_room_id, :club_team_id,:start_time, :end_time, :recurring, :pitch_zone, :locker_room_time_before, :locker_room_time_after, :name, :duration_minutes)
+      params.require(:club_team_training).permit(:club_pitch_id, :club_locker_room_id, :club_team_id,:start_time, :end_time, :recurring, :pitch_zone, :locker_room_time_before, :locker_room_time_after, :name)
     end
 
     def times_overlap_with?(training1, training2)
