@@ -1,37 +1,35 @@
-<%= form_with(model: club_profile) do |form| %>
-  <% if club_profile.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(club_profile.errors.count, "error") %> prohibited this club_profile from being saved:</h2>
+<div class="bg-gray-800 p-8 rounded-xl shadow-lg max-w-2xl mx-auto my-8">
+  <%= form_with(model: club_profile, class: "space-y-6") do |form| %>
+    <% if club_profile.errors.any? %>
+      <div id="error_explanation" class="bg-red-900 bg-opacity-50 border border-red-700 text-red-300 px-4 py-3 rounded-lg" role="alert">
+        <h2 class="font-bold text-lg mb-2"><%= pluralize(club_profile.errors.count, "erro") %> impediu que as alterações fossem guardadas:</h2>
+        <ul class="list-disc list-inside text-sm">
+          <% club_profile.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
-      <ul>
-        <% club_profile.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+    <div>
+      <%= form.label :name, "Nome do Clube", class: "block text-sm font-medium text-gray-400 mb-1" %>
+      <%= form.text_field :name,
+          class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+          placeholder:"Ex. SportX FC" %>
+    </div>
+
+    <!-- A biografia não está a ser guardada -->
+
+    <div>
+      <%= form.label :bio, "Biografia", class: "block text-sm font-medium text-gray-400 mb-1" %>
+      <%= form.textarea :bio,
+          rows: 6,
+          class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+          placeholder:"Escreve uma breve descrição sobre o clube. A informação estará visível para todos no perfil" %>
+    </div>
+
+    <div class="pt-4">
+      <%= form.submit "Guardar Alterações", class: "w-full cursor-pointer bg-primary-500 hover:bg-primary-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30" %>
     </div>
   <% end %>
-
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
-  </div>
-
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div>
-    <%= form.label :status, style: "display: block" %>
-    <%= form.checkbox :status %>
-  </div>
-
-  <div>
-    <%= form.label :approved_by, style: "display: block" %>
-    <%= form.number_field :approved_by %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+</div>
