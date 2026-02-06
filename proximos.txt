@@ -1,7 +1,4 @@
 dar para mudar foto ao editar campo, ct e balneário
 Pensar em adicionar parte de "outros" para adicionar arrecadações, bar e assim
-
-
-
-
 Treino dá problemas quando passa a ser recorrente e não era (dá bug na hora de fim) - dar fix
+mudar designs dos modals para ficarem parecidos com o adicionar treino (mais profissional)

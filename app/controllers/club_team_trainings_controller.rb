@@ -53,13 +53,19 @@ class ClubTeamTrainingsController < ApplicationController
 
   # PATCH/PUT /club_team_trainings/1 or /club_team_trainings/1.json
   def update
-    if params[:club_team_training][:duration_minutes].present?
-      duration = params[:club_team_training][:duration_minutes].to_i
-      club_team_training_params_hash = club_team_training_params.to_h
-      club_team_training_params_hash[:end_time] = club_team_training_params_hash[:start_time].to_time + duration.minutes
+    training_params = club_team_training_params.to_h
+    
+    if params[:club_team_training][:end_time].present?
+      duration = params[:club_team_training][:end_time].to_i
+      training_params[:end_time] = training_params[:start_time].to_time + duration.minutes
     end
+    
+    if training_params[:recurring] == "1" || training_params[:recurring] == true
+      training_params[:weekday] = training_params[:start_time].to_time.wday
+    end
+    
     respond_to do |format|
-      if @club_team_training.update(club_team_training_params)
+      if @club_team_training.update(training_params)
         @selected_sport = params[:sport]
         @selected_pitch = params[:pitch]
         @selected_ct = params[:ct]

@@ -51,11 +51,13 @@ class DashboardController < ApplicationController
       @recurring_trainings.each do |recurring|
         (@start_date..@end_date).each do |date|
           if date.wday == recurring.weekday
-            virtual_training = recurring.dup
-            virtual_training.start_time = date.in_time_zone('Lisbon').change(hour: recurring.start_time.hour, min: recurring.start_time.min)
-            virtual_training.end_time = date.in_time_zone('Lisbon').change(hour: recurring.end_time.hour, min: recurring.end_time.min)
-            virtual_training.id = recurring.id
-            @trainings_by_date[date] << virtual_training
+            if recurring.start_time.present? && recurring.end_time.present?
+              virtual_training = recurring.dup
+              virtual_training.start_time = date.in_time_zone('Lisbon').change(hour: recurring.start_time.hour, min: recurring.start_time.min)
+              virtual_training.end_time = date.in_time_zone('Lisbon').change(hour: recurring.end_time.hour, min: recurring.end_time.min)
+              virtual_training.id = recurring.id
+              @trainings_by_date[date] << virtual_training
+            end
           end
         end
       end
