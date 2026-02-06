@@ -716,12 +716,12 @@
                                     <div id="locker-room-times-create-<%= date.to_s %>" class="hidden space-y-4 mb-4 p-4 bg-gray-700 rounded-lg">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-400 mb-2">Tempo antes do treino (minutos)</label>
-                                        <%= f.select :locker_room_time_before, [[0, 0], [15, 15], [30, 30], [45, 45], [60, 60]], { selected: 0 }, class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
+                                        <%= f.select :locker_room_time_before, [[0, 0], [30, 30], [60, 60]], { selected: 0 }, class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
                                     </div>
                                     
                                     <div>
                                         <label class="block text-sm font-medium text-gray-400 mb-2">Tempo depois do treino (minutos)</label>
-                                        <%= f.select :locker_room_time_after, [[0, 0], [15, 15], [30, 30], [45, 45], [60, 60]], { selected: 0 }, class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
+                                        <%= f.select :locker_room_time_after, [[0, 0],  [30, 30], [60, 60]], { selected: 0 }, class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
                                     </div>
                                     </div>
                                     
@@ -814,11 +814,11 @@
                                 <div id="locker-room-times-edit-<%= training.id %>" class="<%= training.club_locker_room_id.present? ? '' : 'hidden' %> space-y-4 mb-4 p-4 bg-gray-700 rounded-lg">
                                     <div>
                                     <label class="block text-sm font-medium text-gray-400 mb-2">Tempo antes (min)</label>
-                                    <%= f.select :locker_room_time_before, [[0, 0], [15, 15], [30, 30], [45, 45], [60, 60]], { selected: training.locker_room_time_before || 0 }, class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
+                                    <%= f.select :locker_room_time_before, [[0, 0],  [30, 30], [60, 60]], { selected: training.locker_room_time_before || 0 }, class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
                                     </div>
                                     <div>
                                     <label class="block text-sm font-medium text-gray-400 mb-2">Tempo depois (min)</label>
-                                    <%= f.select :locker_room_time_after, [[0, 0], [15, 15], [30, 30], [45, 45], [60, 60]], { selected: training.locker_room_time_after || 0 }, class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
+                                    <%= f.select :locker_room_time_after, [[0, 0], [30, 30],  [60, 60]], { selected: training.locker_room_time_after || 0 }, class: "w-full bg-gray-600 text-white rounded px-3 py-2" %>
                                     </div>
                                 </div>
 

@@ -39,9 +39,9 @@ class ClubTeamTrainingsController < ApplicationController
       
       respond_to do |format|
         if @selected_ct.present?
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), alert: "Não foi possível criar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário." }
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), alert: "Não foi possível criar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
         else
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), alert: "Não foi possível criar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário." }
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), alert: "Não foi possível criar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
         end
         format.json { render json: { error: "Sobreposição de treinos" }, status: :unprocessable_entity }
       end
@@ -88,9 +88,9 @@ class ClubTeamTrainingsController < ApplicationController
       
       respond_to do |format|
         if @selected_ct.present?
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), alert: "Não foi possível atualizar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário." }
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), alert: "Não foi possível atualizar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
         else
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), alert: "Não foi possível atualizar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário." }
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), alert: "Não foi possível atualizar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
         end
         format.json { render json: { error: "Sobreposição de treinos" }, status: :unprocessable_entity }
       end
@@ -152,7 +152,23 @@ class ClubTeamTrainingsController < ApplicationController
       t1_end = training1.end_time
       t2_start = training2.start_time
       t2_end = training2.end_time
-      t1_start < t2_end and t2_start < t1_end
+
+      t1_start < t2_end and t2_start < t1_end 
+    end
+
+    def locker_rooms_conflict?(training1, training2)
+
+      return false if training1.club_locker_room_id.nil? or training2.club_locker_room_id.nil?
+      return false if training1.club_locker_room_id != training2.club_locker_room_id
+      
+
+      t1_locker_start = training1.start_time - training1.locker_room_time_before.minutes
+      t1_locker_end = training1.end_time + training1.locker_room_time_after.minutes
+      
+      t2_locker_start = training2.start_time - training2.locker_room_time_before.minutes
+      t2_locker_end = training2.end_time + training2.locker_room_time_after.minutes
+      
+      t1_locker_start < t2_locker_end and t2_locker_start < t1_locker_end
     end
 
     def zones_conflict?(zone1, zone2)
@@ -190,6 +206,11 @@ class ClubTeamTrainingsController < ApplicationController
         if times_overlap_with?(@club_team_training, training) and zones_conflict?(@club_team_training.pitch_zone, training.pitch_zone)
           return true
         end
+
+        if locker_rooms_conflict?(@club_team_training, training)
+          return true
+        end
+
       end 
     false
   end
