@@ -1,35 +1,53 @@
-<div class="bg-gray-800 p-8 rounded-xl shadow-lg max-w-2xl mx-auto my-8">
-  <%= form_with(model: club_profile, class: "space-y-6") do |form| %>
-    <% if club_profile.errors.any? %>
-      <div id="error_explanation" class="bg-red-900 bg-opacity-50 border border-red-700 text-red-300 px-4 py-3 rounded-lg" role="alert">
-        <h2 class="font-bold text-lg mb-2"><%= pluralize(club_profile.errors.count, "erro") %> impediu que as alterações fossem guardadas:</h2>
-        <ul class="list-disc list-inside text-sm">
-          <% club_profile.errors.each do |error| %>
-            <li><%= error.full_message %></li>
-          <% end %>
-        </ul>
+<div class="bg-gray-900 text-gray-100 p-4">
+  <div class="text-center mb-8">
+      <div class="text-center mb-8 mt-8">
+              <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "mx-auto mb-4", height: 70, width: 70 %>
+          <p class="text-indigo-100 font-bold mt-2">Editar Perfil</p>
+      </div>
+  </div>
+
+  <div class="bg-gray-800 p-8 rounded-xl shadow-lg max-w-2xl mx-auto my-8">
+    <%= form_with(model: club_profile, class: "space-y-6") do |form| %>
+      <% if club_profile.errors.any? %>
+        <div id="error_explanation" class="bg-red-900 bg-opacity-50 border border-red-700 text-red-300 px-4 py-3 rounded-lg" role="alert">
+          <h2 class="font-bold text-lg mb-2"><%= pluralize(club_profile.errors.count, "erro") %> impediu que as alterações fossem guardadas:</h2>
+          <ul class="list-disc list-inside text-sm">
+            <% club_profile.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      
+      <%= link_to root_path, class: "absolute z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white" do %>
+          <i data-feather="arrow-left"></i>
+          <span>Voltar</span>
+      <% end %>
+      <div>
+        <%= link_to root_path, class: "absolute z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white" do %>
+            <i data-feather="arrow-left"></i>
+            <span>Voltar</span>
+        <% end %>
+        <%= form.label :name, "Nome do Clube", class: "block text-sm font-medium text-gray-400 mb-1" %>
+        <%= form.text_field :name,
+            class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+            placeholder:"Ex. SportX FC" %>
+      </div>
+
+      <!-- A biografia não está a ser guardada -->
+
+      <div>
+        <%= form.label :bio, "Biografia", class: "block text-sm font-medium text-gray-400 mb-1" %>
+        <%= form.textarea :bio,
+            rows: 6,
+            class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+            placeholder:"Escreva uma breve descrição sobre o clube. A informação estará visível para todos no perfil" %>
+      </div>
+
+      <div class="pt-4">
+        <%= form.submit "Guardar Alterações", class: "w-full bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30" %>
       </div>
     <% end %>
-
-    <div>
-      <%= form.label :name, "Nome do Clube", class: "block text-sm font-medium text-gray-400 mb-1" %>
-      <%= form.text_field :name,
-          class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
-          placeholder:"Ex. SportX FC" %>
-    </div>
-
-    <!-- A biografia não está a ser guardada -->
-
-    <div>
-      <%= form.label :bio, "Biografia", class: "block text-sm font-medium text-gray-400 mb-1" %>
-      <%= form.textarea :bio,
-          rows: 6,
-          class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
-          placeholder:"Escreve uma breve descrição sobre o clube. A informação estará visível para todos no perfil" %>
-    </div>
-
-    <div class="pt-4">
-      <%= form.submit "Guardar Alterações", class: "w-full cursor-pointer bg-primary-500 hover:bg-primary-600 text-white font-bold py-3 px-4 rounded-lg transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30" %>
-    </div>
-  <% end %>
+  </div>
 </div>

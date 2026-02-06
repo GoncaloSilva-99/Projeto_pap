@@ -2,7 +2,7 @@
 
     <!-- Banner -->
     <div class="relative h-64 bg-gradient-to-r from-indigo-900 to-purple-900 overflow-hidden">
-        <%= link_to root_path, class: "absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-gray-800 bg-opacity-50 hover:bg-opacity-75 rounded-lg transition text-white" do %>
+        <%= link_to root_path, class: "absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white" do %>
             <i data-feather="arrow-left"></i>
             <span>Voltar</span>
         <% end %>
@@ -67,14 +67,14 @@
             </div>
             
             <!-- Biography Details -->
-            <div class="bg-gray-800 rounded-xl p-4 shadow-lg fade-in h-26">
-                <div class="space-y-6">
+            <div class="bg-gray-800 rounded-xl p-4 shadow-lg fade-in h-28">
+                <div class="space-y-6 mt-1">
                     <div class="flex items-center gap-3">
                         <i data-feather="calendar" class="text-gray-400"></i>
                         <span class="text-gray-300">Fundado em: 24 de Julho, 1980</span>
                     </div>
                     <div class="flex items-start gap-3">
-                        <i data-feather="award" class="text-gray-400 mt-1"></i>
+                        <i data-feather="award" class="text-gray-400"></i>
                         <div class="text-gray-300">
                             <span>Modalidade(s):</span>
                             <% if club_profile.has_both_sports? %>
@@ -877,6 +877,7 @@
         }
     </style>
 
+<!-- 
     <div id="<%= dom_id club_profile %>">
         <p>
             <strong>User:</strong>
@@ -899,5 +900,5 @@
         </p>
         <br>
     </div>
-
-</body>
+-->
+</body> 
