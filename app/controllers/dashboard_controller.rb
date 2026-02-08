@@ -71,6 +71,10 @@ class DashboardController < ApplicationController
       @available_teams = ClubTeam.where(club_profile_id: club_id, sport_id: sport_id)
       @selected_pitch_obj = ClubPitch.find(@selected_pitch)
       @available_zones = @selected_pitch_obj.fut11? ? ClubPitch::PITCH_ZONES_11 : ClubPitch::PITCH_ZONES_OTHERS
+
+
+      @num_trainings_in_pitch = ClubTeamTraining.where(club_pitch_id: @selected_pitch).count
+
     end
 
 
