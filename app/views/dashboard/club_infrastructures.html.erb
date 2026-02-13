@@ -187,10 +187,10 @@
                     <div class="relative bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1">
                 <% end %> 
                     <div class="absolute top-2 right-2 flex gap-2 z-10">
-                        <div data-modal-target="modal-editar-ct-<%= ct.id %>" data-modal-toggle="modal-editar-ct-<%= ct.id %>"  class="bg-gray-900/80 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm">
+                        <div data-modal-target="modal-editar-ct-<%= ct.id %>" data-modal-toggle="modal-editar-ct-<%= ct.id %>"  class="bg-gray-900/80 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm clickable">
                             <i data-feather="edit" class="w-4 h-4"></i>
                         </div>
-                        <div data-modal-target="modal-apagar-ct-<%= ct.id %>" data-modal-toggle="modal-apagar-ct-<%= ct.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" >
+                        <div data-modal-target="modal-apagar-ct-<%= ct.id %>" data-modal-toggle="modal-apagar-ct-<%= ct.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm clickable" >
                             <i data-feather="trash-2" class="w-4 h-4"></i>
                         </div>
                     </div>
@@ -223,8 +223,9 @@
                             </div>
                         <% end %>
                     <% end %>
-                        
-                    <!-------------------------------------------------------------------------------- MODAL APAGAR CT ------------------------------------------------------------------------->   
+                    
+                </div>
+                <!-------------------------------------------------------------------------------- MODAL APAGAR CT ------------------------------------------------------------------------->   
                     <%
                         sport_id = @selected_sport == 'football' ? 2 : 3
                         club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
@@ -272,7 +273,7 @@
 
                     <!-------------------------------------------------------------------------------- MODAL EDITAR CT ------------------------------------------------------------------------->
                     
-                    <div id="modal-editar-ct-<%= ct.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div id="modal-editar-ct-<%= ct.id %>" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full modal">
                         <div class="relative p-4 w-full max-w-md max-h-full">
                             <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-800">
                                 <!-- Modal header -->
@@ -303,10 +304,9 @@
                             </div>
                         </div>
                     </div>
-                    
-                </div>
                 <% end %>
             </div>
+            
         <% end %>
 
             <% if @club_ct_results.total_pages > 1 %>
@@ -371,13 +371,13 @@
 
                     <% if @club_pitches_results %>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                                        <% @club_pitches_results.each do |cp| %>
-                                            <div class="<%= cp.id == @selected_pitch ? 'relative bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl overflow-hidden shadow-xl shadow-yellow-500/30 transition-all duration-300 -translate-y-1 ring-2 ring-yellow-500' : 'relative bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1' %>">
+                        <% @club_pitches_results.each do |cp| %>
+                            <div class="<%= cp.id == @selected_pitch ? 'relative bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl overflow-hidden shadow-xl shadow-yellow-500/30 transition-all duration-300 -translate-y-1 ring-2 ring-yellow-500' : 'relative bg-gray-800 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-yellow-500/10 transition-all duration-300 hover:-translate-y-1' %>">
                         <div class="absolute top-2 right-2 flex gap-2 z-10">
-                            <div data-modal-target="modal-editar-campo-<%= cp.id %>" data-modal-toggle="modal-editar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" >
+                            <div data-modal-target="modal-editar-campo-<%= cp.id %>" data-modal-toggle="modal-editar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-yellow-500 text-yellow-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm clickable" >
                                 <i data-feather="edit" class="w-4 h-4"></i>
                             </div>
-                            <div data-modal-target="modal-apagar-campo-<%= cp.id %>" data-modal-toggle="modal-apagar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm" >
+                            <div data-modal-target="modal-apagar-campo-<%= cp.id %>" data-modal-toggle="modal-apagar-campo-<%= cp.id %>" class="bg-gray-900/80 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition shadow-lg backdrop-blur-sm clickable " >
                                 <i data-feather="trash-2" class="w-4 h-4"></i>
                             </div>
                         </div>
@@ -387,8 +387,10 @@
                                         <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
                                             <% if cp.pitch_picture.attached? %>
                                                 <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
-                                            <% else %>
+                                            <% elsif @selected_sport == 'football' %>
                                                 <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                            <% elsif @selected_sport == 'handball' %>
+                                                <%= image_tag "default_pitch_handball.jpg", class: "w-full h-full object-cover" %>
                                             <% end %>
                                         </div>
                                         <div class="p-4">
@@ -403,8 +405,10 @@
                                         <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
                                             <% if cp.pitch_picture.attached? %>
                                                 <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
-                                            <% else %>
+                                            <% elsif @selected_sport == 'football' %>
                                                 <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                            <% elsif @selected_sport == 'handball' %>
+                                                <%= image_tag "default_pitch_handball.jpg", class: "w-full h-full object-cover" %>
                                             <% end %>
                                         </div>
                                         <div class="p-4">
@@ -421,8 +425,10 @@
                                         <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
                                             <% if cp.pitch_picture.attached? %>
                                                 <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
-                                            <% else %>
+                                            <% elsif @selected_sport == 'football' %>
                                                 <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                            <% elsif @selected_sport == 'handball' %>
+                                                <%= image_tag "default_pitch_handball.jpg", class: "w-full h-full object-cover" %>
                                             <% end %>
                                         </div>
                                         <div class="p-4">
@@ -437,8 +443,10 @@
                                         <div class="relative w-full h-48 bg-gray-700 overflow-hidden">
                                             <% if cp.pitch_picture.attached? %>
                                                 <%= image_tag url_for(cp.pitch_picture), class: "w-full h-full object-cover" %>
-                                            <% else %>
+                                            <% elsif @selected_sport == 'football' %>
                                                 <%= image_tag "default_pitch.png", class: "w-full h-full object-cover" %>
+                                            <% elsif @selected_sport == 'handball' %>
+                                                <%= image_tag "default_pitch_handball.jpg", class: "w-full h-full object-cover" %>
                                             <% end %>
                                         </div>
                                         <div class="p-4">
@@ -1001,7 +1009,7 @@
                                         </svg>
                                     </div>
                                     <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
-                                    <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar o balneario "<b><%= clr.name %></b>"?  </p>
+                                    <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar o balneario "<b><%= clr.name %></b>"?  Todos os treinos que tenham este balneário passarão a não ter nenhum balneário associado!</p>
                                     <div class="flex gap-3">
                                         <a data-modal-hide="modal-apagar-balneario-<%= clr.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">Cancelar</a>
                                         <%= button_to club_locker_room_path(clr, ct: @selected_ct, sport: @selected_sport), method: :delete, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
@@ -1047,6 +1055,68 @@
                         <% end %>
                     </div>
                 <% end %>
+
+                <!-------------------------------------------------------------------------------- CALENDÁRIO DE TREINOS - BALNEÁRIO ------------------------------------------------------------------------->  
+
+                <% if @selected_locker_room %>
+                        <div class="mt-12 bg-gray-800 rounded-xl p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-yellow-400">Calendário Semanal - <%= ClubLockerRoom.find(@selected_locker_room).name %></h2>
+                            
+                            <div class="flex items-center gap-2">
+                            <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, locker_room: @selected_locker_room, ct: @selected_ct, start_date: (@start_date_lr - 1.week).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
+                                ← Semana Anterior
+                            <% end %>
+                            
+                            <span class="px-4 py-2 bg-blue-900 text-white rounded-lg">
+                                <%= @start_date_lr.strftime("%d/%m") %> - <%= @end_date_lr.strftime("%d/%m/%Y") %>
+                            </span>
+                            
+                            <%= link_to club_infrastructures_dashboard_path(sport: @selected_sport, locker_room: @selected_locker_room, ct: @selected_ct, start_date: (@start_date_lr + 1.week).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
+                                Próxima Semana →
+                            <% end %>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-7 gap-4">
+                            <% ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'].each_with_index do |day_name, index| %>
+                            <% current_date = @start_date_lr + index.days %>
+                            <div class="bg-gray-700 rounded-lg p-4">
+                                <div class="text-center mb-4">
+                                <h3 class="text-lg font-bold text-white"><%= day_name %></h3>
+                                <p class="text-sm text-gray-400"><%= current_date.strftime("%d/%m") %></p>
+                                </div>
+                                
+                                
+                                <div class="space-y-2">
+                                <% if @occupations_by_date[current_date].any? %>
+                                    <% @occupations_by_date[current_date].each do |training| %>
+                                    <div class="bg-gradient-to-br from-blue-700 to-blue-950 hover:from-blue-600 hover:to-blue-900 p-3 rounded-lg cursor-pointer transition-all duration-300 hover:-translate-y-1">
+                                        <% if training.name.present? %>
+                                            <div class="text-xs text-white font-bold mb-1 truncate"><%= training.name %></div>
+                                        <% end %>
+                                            <div class="text-sm text-gray-100 font-bold truncate"><%= training.club_team.name %></div>
+                                            <div class="text-sm text-gray-200 font-medium">
+                                                <% training_start_time = training.start_time - training.locker_room_time_before.minutes  %>
+                                                <% training_end_time = training.end_time + training.locker_room_time_after.minutes %>
+                                                <%= training_start_time.strftime("%H:%M") %> - <%= training_end_time.strftime("%H:%M") %>
+                                            </div>
+                                        <% if training.recurring %>
+                                            <div class="text-xs text-yellow-300">♻ Recorrente</div>
+                                        <% end %>
+                                    </div>
+                                    <% end %>
+                                <% else %>
+                                    <div class="text-center text-gray-500 text-sm py-4">
+                                    Sem treinos
+                                    </div>
+                                <% end %>
+                                </div>
+                            </div>
+                            <% end %>
+                        </div>
+                    <% end %>
+
 
                 <% if @club_locker_rooms_results.total_pages > 1 %>
                     <div class="mt-8 flex justify-end">

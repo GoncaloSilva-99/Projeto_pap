@@ -18,6 +18,7 @@ class DashboardController < ApplicationController
     sport_id = @selected_sport == 'football' ? 2 : 3
     club_ct_query = ClubTrainingCenter.where(club_profile_id: club_id, sport_id: sport_id)
     @club_ct_results = club_ct_query.page(params[:club_ct_page]).per(4)
+    
     if @selected_ct
       club_pitches_query = ClubPitch.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct)
       club_locker_rooms_query = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct)
@@ -25,6 +26,7 @@ class DashboardController < ApplicationController
       club_pitches_query = ClubPitch.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: nil)
       club_locker_rooms_query = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: nil)
     end
+    
     @club_pitches_results = club_pitches_query.page(params[:club_pitches_page]).per(4)
     @club_locker_rooms_results = club_locker_rooms_query.page(params[:club_locker_rooms_page]).per(4)
     @base_num_club_ct = ClubTrainingCenter.where(club_profile_id: club_id, sport_id: sport_id).count
@@ -35,7 +37,7 @@ class DashboardController < ApplicationController
       @start_date = params[:start_date] ? Date.parse(params[:start_date]).beginning_of_week(:monday) : Date.today.beginning_of_week(:monday)
       @end_date = @start_date + 6.days
       
-      @weekly_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: false ).where("start_time >= ? AND start_time <= ?", @start_date, @end_date.end_of_day).order(:start_time)
+      @weekly_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: false).where("start_time >= ? AND start_time <= ?", @start_date, @end_date.end_of_day).order(:start_time)
       @recurring_trainings = ClubTeamTraining.where(club_pitch_id: @selected_pitch, recurring: true)
       
       @trainings_by_date = {}
@@ -66,19 +68,50 @@ class DashboardController < ApplicationController
         @trainings_by_date[date] = trainings.sort_by(&:start_time)
       end
       
-      
       @available_locker_rooms = ClubLockerRoom.where(club_profile_id: club_id, sport_id: sport_id, club_training_center_id: @selected_ct || nil)
       @available_teams = ClubTeam.where(club_profile_id: club_id, sport_id: sport_id)
       @selected_pitch_obj = ClubPitch.find(@selected_pitch)
       @available_zones = @selected_pitch_obj.fut11? ? ClubPitch::PITCH_ZONES_11 : ClubPitch::PITCH_ZONES_OTHERS
-
-
-      @num_trainings_in_pitch = ClubTeamTraining.where(club_pitch_id: @selected_pitch).count
-
     end
 
 
+  if @selected_locker_room
+    @selected_team_lr = params[:team]
+    @start_date_lr = params[:start_date] ? Date.parse(params[:start_date]).beginning_of_week(:monday) : Date.today.beginning_of_week(:monday)
+    @end_date_lr = @start_date_lr + 6.days
+    
+    @weekly_occupations = ClubTeamTraining.where(club_locker_room_id: @selected_locker_room, recurring: false).where("start_time >= ? AND start_time <= ?", @start_date_lr, @end_date_lr.end_of_day).order(:start_time)
+    @recurring_occupations = ClubTeamTraining.where(club_locker_room_id: @selected_locker_room, recurring: true)
+    
+    @occupations_by_date = {}
+    (@start_date_lr..@end_date_lr).each do |date|
+      @occupations_by_date[date] = []
+    end
+
+    @weekly_occupations.each do |occupation|
+      date = occupation.start_time.to_date
+      @occupations_by_date[date] << occupation if @occupations_by_date.key?(date)
+    end
+
+    @recurring_occupations.each do |recurring|
+      (@start_date_lr..@end_date_lr).each do |date|
+        if date.wday == recurring.weekday
+          if recurring.start_time.present? && recurring.end_time.present?
+            virtual_occupation = recurring.dup
+            virtual_occupation.start_time = date.in_time_zone('Lisbon').change(hour: recurring.start_time.hour, min: recurring.start_time.min)
+            virtual_occupation.end_time = date.in_time_zone('Lisbon').change(hour: recurring.end_time.hour, min: recurring.end_time.min)
+            virtual_occupation.id = recurring.id
+            @occupations_by_date[date] << virtual_occupation
+          end
+        end
+      end
+    end
+    
+    @occupations_by_date.each do |date, occupations|
+      @occupations_by_date[date] = occupations.sort_by(&:start_time)
+    end
   end
+end
 
   def sport
     club = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile

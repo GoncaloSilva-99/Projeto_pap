@@ -83,6 +83,13 @@ class ClubLockerRoomsController < ApplicationController
 
   # DELETE /club_locker_rooms/1 or /club_locker_rooms/1.json
   def destroy
+    @club_locker_room_id = @club_locker_room.id
+    @trainings = ClubTeamTraining.where(club_locker_room_id: @club_locker_room_id)
+    @trainings.each do |training|
+      training.update(club_locker_room_id: nil, locker_room_time_before: 0, locker_room_time_after: 0)
+    end
+    
+
     @club_locker_room.destroy!
     respond_to do |format|
       @selected_sport = params[:sport]
