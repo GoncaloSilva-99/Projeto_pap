@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  resources :post_views
+  resources :follows
+  resources :post_comments
+  resources :post_likes
+  resources :posts
   resources :club_team_trainings
   resources :club_training_centers
   resources :coach_teams

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_22_110148) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_15_204950) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -173,6 +173,15 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_110148) do
     t.index ["coach_profile_id"], name: "index_coach_teams_on_coach_profile_id"
   end
 
+  create_table "follows", force: :cascade do |t|
+    t.bigint "follower_id", null: false
+    t.bigint "followed_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["followed_id"], name: "index_follows_on_followed_id"
+    t.index ["follower_id"], name: "index_follows_on_follower_id"
+  end
+
   create_table "player_profiles", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name"
@@ -198,6 +207,45 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_110148) do
     t.datetime "updated_at", null: false
     t.index ["club_team_id"], name: "index_player_teams_on_club_team_id"
     t.index ["player_profile_id"], name: "index_player_teams_on_player_profile_id"
+  end
+
+  create_table "post_comments", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "post_id", null: false
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_post_comments_on_post_id"
+    t.index ["user_id"], name: "index_post_comments_on_user_id"
+  end
+
+  create_table "post_likes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "post_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_post_likes_on_post_id"
+    t.index ["user_id"], name: "index_post_likes_on_user_id"
+  end
+
+  create_table "post_views", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "post_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_post_views_on_post_id"
+    t.index ["user_id"], name: "index_post_views_on_user_id"
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "content", null: false
+    t.integer "likes_count", default: 0, null: false
+    t.integer "comments_count", default: 0, null: false
+    t.integer "views_count", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
   create_table "sports", force: :cascade do |t|
@@ -263,9 +311,18 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_22_110148) do
   add_foreign_key "coach_profiles", "users"
   add_foreign_key "coach_teams", "club_teams"
   add_foreign_key "coach_teams", "coach_profiles"
+  add_foreign_key "follows", "users", column: "followed_id"
+  add_foreign_key "follows", "users", column: "follower_id"
   add_foreign_key "player_profiles", "club_profiles"
   add_foreign_key "player_profiles", "users"
   add_foreign_key "player_teams", "club_teams"
   add_foreign_key "player_teams", "player_profiles"
+  add_foreign_key "post_comments", "posts"
+  add_foreign_key "post_comments", "users"
+  add_foreign_key "post_likes", "posts"
+  add_foreign_key "post_likes", "users"
+  add_foreign_key "post_views", "posts"
+  add_foreign_key "post_views", "users"
+  add_foreign_key "posts", "users"
   add_foreign_key "user_profiles", "users"
 end
