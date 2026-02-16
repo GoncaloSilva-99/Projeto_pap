@@ -18,7 +18,7 @@
     <!-- Profile Picture -->
     <div class="container mx-auto px-4 -mt-16 relative z-10">
         <div class="flex flex-col md:flex-row items-center md:items-end gap-6">
-            <div id="profile-pic-container" class="profile-pic w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-800 overflow-hidden border-4 border-gray-700 shadow-xl cursor-pointer">
+            <div id="profile-pic-container" class="profile-pic w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-800 overflow-hidden border-4 border-gray-700 shadow-xl cursor-pointer group relative">
                 <% if club_profile.profile_picture.attached? %>
                     <%= image_tag url_for(club_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
                 <% else %>
@@ -33,7 +33,7 @@
                         <span class="text-sm text-red-500 font-semibold">A aguardar aprovação de um administrador</span>
                     <% end %>
                 </div>
-                
+                <!-- Botão editar campos -->
                 <div class="flex items-center gap-4 mt-4">
                     <% if current_user && current_user.id == club_profile.user_id %>
                         <%= link_to edit_club_profile_path(club_profile), class: "flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition" do %>
@@ -57,12 +57,12 @@
             <!-- Biography -->
             <div class="lg:col-span-2 bg-gray-800 rounded-xl p-6 shadow-lg fade-in">
                 <h3 class="text-xl font-bold mb-4">Biografia</h3>
-                <div class="bg-gray-700 rounded-xl p-8 shadow-lg fade-in">
-                    <% if club_profile.bio.present? %>
-                        <%= club_profile.bio %>
-                    <% else %>
-                        <p class="text-gray-300 mb-4"> Ainda sem biografia </p>
-                    <% end %>
+                <div class="bg-gray-700 rounded-xl px-8 py-1 shadow-lg fade-in whitespace-pre-wrap">
+<% if club_profile.bio.present? -%>
+<%= club_profile.bio %>
+<%- else -%>
+<p class="text-gray-300 mb-4">Ainda sem biografia</p>
+<%- end -%>
                 </div>
             </div>
             
@@ -432,27 +432,6 @@
                 <div class="flex-1 overflow-y-auto p-4 space-y-4" id="modal-comments-list">
                     <!-- Comments injected via JS -->
                 </div>
-
-                <!-- Input Area -->
-                <div class="p-4 border-t border-gray-700 bg-gray-800">
-                    <div class="flex items-center space-x-2">
-                        <div class="flex-1 relative flex items-center">
-                            <input id="modal-comment-input" type="text" placeholder="Escreve um comentário..." class="w-full bg-gray-700 rounded-lg px-4 py-3 pr-12 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <button type="button" id="emoji-picker-btn" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-400">
-                                <i data-feather="smile" class="w-5 h-5"></i>
-                            </button>
-                            <!-- Emoji Picker -->
-                            <div id="emoji-picker" class="absolute bottom-full right-0 mb-2 bg-gray-800 border border-gray-700 rounded-lg shadow-xl p-2 hidden w-80 z-50">
-                                <div class="grid grid-rows-2 grid-flow-col gap-1 overflow-x-auto thin-scrollbar pb-2" style="max-width: 100%;">
-                                    <% ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "🥲", "☺️", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🧐", "🤓", "😎", "🥸", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃", "😺", "😸", "😹", "😻", "😼", "😽", "🙀", "😿", "😾", "🤲", "👐", "🙌", "👏", "🤝", "👍", "👎", "👊", "✊", "🤛", "🤜", "🤞", "✌️", "🤟", "🤘", "👌", "🤌", "🤏", "👈", "👉", "👆", "👇", "☝️", "✋", "🤚", "🖐", "🖖", "👋", "🤙", "💪", "🦾", "🖕", "✍️", "🙏", "⚽", "🏀", "🏈", "⚾", "🥎", "🎾", "🏐", "🏉", "🥏", "🎱", "🪀", "🏓", "🏸", "🏒", "🏑", "🥍", "🏏", "🪃", "🥅", "⛳", "🪁", "🏹", "🎣", "🤿", "🥊", "🥋", "🎽", "🛹", "🛼", "🛷", "⛸", "🥌", "🎿", "⛷", "🏂", "🪂", "🏋️‍♀️", "🏋️", "🏋️‍♂️", "🤼‍♀️", "🤼", "🤼‍♂️", "🤸‍♀️", "🤸", "🤸‍♂️", "⛹️‍♀️", "⛹️", "⛹️‍♂️", "🤺", "🤾‍♀️", "🤾", "🤾‍♂️", "🏌️‍♀️", "🏌️", "🏌️‍♂️", "🏇", "🧘‍♀️", "🧘", "🧘‍♂️", "🏄‍♀️", "🏄", "🏄‍♂️", "🏊‍♀️", "🏊", "🏊‍♂️", "🤽‍♀️", "🤽", "🤽‍♂️", "🚣‍♀️", "🚣", "🚣‍♂️", "🧗‍♀️", "🧗", "🧗‍♂️", "🚵‍♀️", "🚵", "🚵‍♂️", "🚴‍♀️", "🚴", "🚴‍♂️", "🏆", "🥇", "🥈", "🥉", "🏅", "🎖", "🏵", "🎗", "🎫", "🎟", "🎪"].each do |emoji| %>
-                                        <button class="emoji-option hover:bg-gray-700 p-1 rounded text-xl w-8 h-8 flex items-center justify-center flex-shrink-0"><%= emoji %></button>
-                                    <% end %>
-                                </div>
-                            </div>
-                        </div>
-                        <button id="modal-publish-comment-btn" class="text-blue-500 hover:text-blue-400 font-semibold px-3 py-2">Publicar</button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -473,333 +452,241 @@
     </a>
 
     <script>
+        // Inicializa os ícones da biblioteca Feather (substitui as tags <i> pelos ícones SVG)
         feather.replace();
 
+        // Função que controla o botão de Seguir/Deixar de Seguir
         function toggleFollow() {
+            // Encontra o botão de seguir na página
             const btn = document.getElementById('followBtn');
+            // Encontra o texto dentro do botão
             const text = document.getElementById('followText');
             
+            // Se o texto atual for "Seguir"
             if (text.innerText === 'Seguir') {
+                // Muda o texto para "Deixar de Seguir"
                 text.innerText = 'Deixar de Seguir';
+                // Remove a cor azul (indigo) do botão
                 btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                // Adiciona a cor cinzenta ao botão
                 btn.classList.add('bg-gray-600', 'hover:bg-gray-700');
             } else {
+                // Se já estiver a seguir, volta o texto para "Seguir"
                 text.innerText = 'Seguir';
+                // Remove a cor cinzenta
                 btn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                // Adiciona a cor azul de volta
                 btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
             }
         }
 
-        // Image Modal Logic
+        // --- Lógica do Modal de Imagem (Visualizar foto de perfil em ecrã inteiro) ---
+        
+        // Encontra o contentor da foto de perfil pequena
         const profilePicContainer = document.getElementById('profile-pic-container');
+        // Encontra o modal (janela flutuante) que vai mostrar a imagem grande
         const imageModal = document.getElementById('image-modal');
+        // Encontra o elemento de imagem dentro do modal
         const modalImage = document.getElementById('modal-image');
+        // Encontra o botão de fechar o modal
         const closeImageModalBtn = document.getElementById('close-image-modal');
 
+        // Verifica se todos os elementos existem na página antes de adicionar eventos
         if (profilePicContainer && imageModal && modalImage && closeImageModalBtn) {
+            // Quando se clica na foto de perfil pequena
             profilePicContainer.addEventListener('click', () => {
+                // Encontra a imagem real dentro do contentor
                 const profilePicImg = document.getElementById('profile-pic-img');
+                // Se a imagem existir
                 if (profilePicImg) {
+                    // Copia o endereço da imagem pequena para a imagem grande do modal
                     modalImage.src = profilePicImg.src;
+                    // Remove a classe que esconde o modal
                     imageModal.classList.remove('hidden');
-                    imageModal.classList.add('flex'); // Use flex to center
-                    document.body.style.overflow = 'hidden'; // Prevent scrolling
+                    // Adiciona a classe para centrar o conteúdo (flex)
+                    imageModal.classList.add('flex');
+                    // Impede que a página por trás faça scroll
+                    document.body.style.overflow = 'hidden';
                 }
             });
 
+            // Função para fechar o modal
             const closeModal = () => {
+                // Esconde o modal novamente
                 imageModal.classList.add('hidden');
+                // Remove a formatação de flex
                 imageModal.classList.remove('flex');
-                document.body.style.overflow = ''; // Restore scrolling
+                // Permite que a página volte a fazer scroll
+                document.body.style.overflow = '';
             };
 
+            // Quando se clica no botão de fechar, executa a função de fechar
             closeImageModalBtn.addEventListener('click', closeModal);
             
+            // Quando se clica na área escura à volta da imagem, também fecha
             imageModal.addEventListener('click', (e) => {
+                // Verifica se o clique foi exatamente no fundo escuro e não na imagem
                 if (e.target === imageModal) closeModal();
             });
         }
 
-        // --- COMMENT MODAL LOGIC ---
+        // --- Lógica do Modal de Comentários (Abrir post e ver comentários) ---
+        
+        // Encontra o modal de comentários
         const modal = document.getElementById('comment-modal');
+        // Encontra o botão de fechar este modal
         const closeModalBtn = document.getElementById('close-modal-btn');
+        // Encontra a área onde o conteúdo do post vai ser mostrado dentro do modal
         const modalPostContainer = document.getElementById('modal-post-container');
+        // Encontra a lista onde os comentários vão aparecer
         const modalCommentsList = document.getElementById('modal-comments-list');
-        const modalCommentInput = document.getElementById('modal-comment-input');
-        const modalPublishBtn = document.getElementById('modal-publish-comment-btn');
-        const emojiBtn = document.getElementById('emoji-picker-btn');
-        const emojiPicker = document.getElementById('emoji-picker');
 
-        const commentsByPost = {
-            "1": [{ user: "Utilizador Exemplo", text: "Grande jogo! Parabéns à equipa. 👏", createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000) }],
-        };
-
-        const formatTimestamp = (date) => {
-            if (!date) return '';
-            const now = new Date();
-            const diffMs = now - date;
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            if (diffDays > 0) return `${diffDays}d`;
-            const hours = date.getHours().toString().padStart(2, '0');
-            const minutes = date.getMinutes().toString().padStart(2, '0');
-            return `${hours}:${minutes}`;
-        };
-
-        const renderComments = (postId) => {
-            modalCommentsList.innerHTML = '';
-            const comments = commentsByPost[postId] || [];
-            if (comments.length === 0) {
-                modalCommentsList.innerHTML = '<p class="text-gray-400 text-sm text-center">Ainda não há comentários. Sê o primeiro a comentar!</p>';
-            } else {
-                comments.forEach(comment => {
-                    const commentEl = document.createElement('div');
-                    commentEl.className = 'flex items-start space-x-3';
-                    commentEl.innerHTML = `
-                        <div class="w-8 h-8 rounded-full bg-gray-600 flex-shrink-0 flex items-center justify-center text-xs text-white">${comment.user.charAt(0)}</div>
-                        <div class="bg-gray-700 rounded-lg p-3 flex-1">
-                            <div class="flex justify-between items-center mb-1">
-                                <p class="text-sm font-semibold text-white">${comment.user}</p>
-                                <span class="text-xs text-gray-400">${formatTimestamp(comment.createdAt)}</span>
-                            </div>
-                            <p class="text-sm text-gray-300">${comment.text}</p>
-                        </div>
-                    `;
-                    modalCommentsList.appendChild(commentEl);
-                });
-            }
-        };
-
+        // Função para abrir o modal de um post específico
         const openPostModal = (postCard) => {
+            // Pega o ID do post clicado
             const postId = postCard.dataset.postId;
+            // Guarda o ID do post atual no modal
             modal.dataset.currentPostId = postId;
+            // Adiciona a classe de estilo de cartão ao contentor do modal
             modalPostContainer.classList.add('post-card');
+            // Define o ID no contentor também
             modalPostContainer.dataset.postId = postId;
 
+            // Clona (copia) o cabeçalho do post original (nome, foto, data)
             const header = postCard.querySelector('.flex.items-center.justify-between.mb-4').cloneNode(true);
+            // Clona o texto do post
             const text = postCard.querySelector('.post-text').cloneNode(true);
+            // Clona a imagem/media do post
             const media = postCard.querySelector('.post-media').cloneNode(true);
+            // Clona os botões de ação (like, comentar, partilhar)
             const actions = postCard.querySelector('.post-actions').cloneNode(true);
 
+            // Ajusta o estilo da imagem para caber bem no modal (remove altura fixa)
             media.classList.remove('h-64', 'mb-4');
             media.classList.add('flex-1', 'w-full');
 
+            // Limpa qualquer conteúdo antigo do modal
             modalPostContainer.innerHTML = '';
+            // Adiciona as cópias dos elementos ao modal
             modalPostContainer.appendChild(header);
             modalPostContainer.appendChild(text);
             modalPostContainer.appendChild(media);
             modalPostContainer.appendChild(actions);
 
+            // Reinicializa os ícones nos elementos copiados
             feather.replace();
-            renderComments(postId);
+
+            // Se for o post número 1, adiciona um comentário de exemplo manualmente
+            if (postId === "1") {
+                modalCommentsList.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-gray-600 flex-shrink-0 flex items-center justify-center text-xs text-white">U</div>
+                        <div class="bg-gray-700 rounded-lg p-3 flex-1">
+                            <div class="flex justify-between items-center mb-1">
+                                <p class="text-sm font-semibold text-white">Utilizador Exemplo</p>
+                                <span class="text-xs text-gray-400">Há 2 horas</span>
+                            </div>
+                            <p class="text-sm text-gray-300">Grande jogo! Parabéns à equipa. 👏</p>
+                        </div>
+                    </div>`;
+            } else {
+                // Para outros posts, mantém a mensagem de vazio
+                modalCommentsList.innerHTML = '<p class="text-gray-400 text-sm text-center">Ainda não há comentários.</p>';
+            }
+
+            // Mostra o modal removendo a classe 'hidden'
             modal.classList.remove('hidden');
+            // Bloqueia o scroll da página principal
             document.body.style.overflow = 'hidden';
         };
 
+        // Se o botão de fechar existir, adiciona o evento de clique
         if (closeModalBtn) {
             closeModalBtn.addEventListener('click', () => {
+                // Esconde o modal
                 modal.classList.add('hidden');
+                // Restaura o scroll da página
                 document.body.style.overflow = '';
             });
         }
 
-        // Emoji Picker Logic
-        if (emojiBtn && emojiPicker) {
-            emojiBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                emojiPicker.classList.toggle('hidden');
-            });
-            document.querySelectorAll('.emoji-option').forEach(opt => {
-                opt.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    modalCommentInput.value += opt.innerText;
-                    modalCommentInput.focus();
-                });
-            });
-            document.addEventListener('click', (e) => {
-                if (!emojiPicker.contains(e.target) && e.target !== emojiBtn && !emojiBtn.contains(e.target)) {
-                    emojiPicker.classList.add('hidden');
-                }
-            });
-        }
-
-        // Publish Comment
-        if (modalPublishBtn) {
-            modalPublishBtn.addEventListener('click', () => {
-                const postId = modal.dataset.currentPostId;
-                const commentText = modalCommentInput.value.trim();
-                if (commentText && postId) {
-                    if (!commentsByPost[postId]) commentsByPost[postId] = [];
-                    commentsByPost[postId].push({ user: "Eu", text: commentText, createdAt: new Date() });
-                    
-                    document.querySelectorAll(`.post-card[data-post-id='${postId}']`).forEach(card => {
-                        const commentCountSpan = card.querySelector('.comment-count');
-                        if (commentCountSpan) {
-                            const count = commentsByPost[postId].length;
-                            commentCountSpan.innerText = `${count} ${count === 1 ? 'comentário' : 'comentários'}`;
-                        }
-                    });
-                    renderComments(postId);
-                    modalCommentInput.value = '';
-                }
-            });
-        }
-
-        // Event Delegation for Posts
+        // --- Delegação de Eventos para os Posts (Gerir cliques em qualquer post) ---
+        // Adiciona um "ouvinte" de cliques na página inteira
         document.body.addEventListener('click', (e) => {
+            // Identifica onde foi o clique
             const target = e.target;
 
-            // Options Button
+            // --- Botão de Opções (três pontinhos) ---
+            // Verifica se clicou no botão de opções ou dentro dele
             const optionsBtn = target.closest('.post-options-btn');
             if (optionsBtn) {
+                // Impede que o clique se propague para outros elementos
                 e.stopPropagation();
+                // Fecha todos os outros menus dropdown abertos
                 document.querySelectorAll('.post-options-dropdown').forEach(d => {
                     if (d !== optionsBtn.nextElementSibling) d.classList.add('hidden');
                 });
+                // Alterna (abre/fecha) o menu dropdown deste botão específico
                 optionsBtn.nextElementSibling.classList.toggle('hidden');
-                return;
+                return; // Para a execução aqui
             }
+            // Se clicou fora de qualquer menu dropdown, fecha todos
             if (!target.closest('.post-options-dropdown')) {
                 document.querySelectorAll('.post-options-dropdown').forEach(d => d.classList.add('hidden'));
             }
 
-            // Like Button
-            const likeBtn = target.closest('.like-btn');
-            if (likeBtn) {
-                e.stopPropagation();
-                const postCard = likeBtn.closest('.post-card');
-                const postId = postCard.dataset.postId;
-                const isLiking = !likeBtn.classList.contains('text-red-500');
-                
-                document.querySelectorAll(`.post-card[data-post-id='${postId}'] .like-btn`).forEach(btn => {
-                    const icon = btn.querySelector('svg');
-                    const countSpan = btn.querySelector('.like-count');
-                    let count = parseInt(countSpan.innerText);
-                    
-                    if (isLiking) {
-                        if (!btn.classList.contains('text-red-500')) {
-                            btn.classList.add('text-red-500');
-                            btn.classList.remove('text-gray-400');
-                            if(icon) icon.classList.add('fill-current');
-                            count++;
-                        }
-                    } else {
-                        if (btn.classList.contains('text-red-500')) {
-                            btn.classList.remove('text-red-500');
-                            btn.classList.add('text-gray-400');
-                            if(icon) icon.classList.remove('fill-current');
-                            count--;
-                        }
-                    }
-                    countSpan.innerText = `${count} ${count === 1 ? 'like' : 'likes'}`;
-                });
-                return;
-            }
-
-            // Comment Button
+            // --- Botão de Comentar ---
+            // Verifica se clicou no botão de comentar
             const commentBtn = target.closest('.comment-btn');
             if (commentBtn) {
                 e.stopPropagation();
+                // Encontra o cartão do post a que este botão pertence
                 const postCard = commentBtn.closest('.post-card');
+                // Abre o modal desse post
                 openPostModal(postCard);
                 return;
             }
 
-            // Share Button
-            const shareBtn = target.closest('.share-btn');
-            if (shareBtn) {
-                e.stopPropagation();
-                alert('Link copiado para a área de transferência!');
-                return;
-            }
-
-            // Save Button
-            const saveBtn = target.closest('.save-post-btn');
-            if (saveBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                const postCard = saveBtn.closest('.post-card');
-                const postId = postCard.dataset.postId;
-                const span = saveBtn.querySelector('.save-text');
-                if (span.innerText === "Guardar publicação") {
-                    span.innerText = "Remover dos guardados";
-                    alert('Publicação guardada!');
-                } else {
-                    span.innerText = "Guardar publicação";
-                    alert('Publicação removida!');
-                }
-                const dropdown = saveBtn.closest('.post-options-dropdown');
-                if(dropdown) dropdown.classList.add('hidden');
-                return;
-            }
-
-            // Delete Post Button
-            const deleteBtn = target.closest('.delete-post-btn');
-            if (deleteBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                if (confirm('Tem a certeza que deseja remover esta publicação?')) {
-                    const postCard = deleteBtn.closest('.post-card');
-                    postCard.remove();
-                }
-                const dropdown = deleteBtn.closest('.post-options-dropdown');
-                if(dropdown) dropdown.classList.add('hidden');
-                return;
-            }
-
-            // Download Button
-            const downloadBtn = target.closest('.download-img-btn');
-            if (downloadBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                const postCard = downloadBtn.closest('.post-card');
-                const img = postCard.querySelector('.post-media img');
-                if (img && img.src) {
-                    fetch(img.src)
-                        .then(response => response.blob())
-                        .then(blob => {
-                            const url = window.URL.createObjectURL(blob);
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `post-${postCard.dataset.postId}-image.jpg`;
-                            document.body.appendChild(a);
-                            a.click();
-                            document.body.removeChild(a);
-                            window.URL.revokeObjectURL(url);
-                        }).catch(() => alert('Não foi possível descarregar a imagem.'));
-                }
-                const dropdown = downloadBtn.closest('.post-options-dropdown');
-                if(dropdown) dropdown.classList.add('hidden');
-                return;
-            }
-
-            // General Post Click
+            // --- Clique Geral no Post ---
+            // Verifica se clicou em qualquer parte do cartão do post
             const postCard = target.closest('.post-card');
+            // Garante que não clicou num link, botão ou campo de texto (para não abrir o modal sem querer)
             if (postCard && !target.closest('a') && !target.closest('button') && !target.closest('input') && !target.closest('textarea')) {
+                // Abre o modal do post
                 openPostModal(postCard);
             }
         });
 
-        // --- BACK TO TOP BUTTON LOGIC ---
+        // --- Lógica do Botão "Voltar ao Topo" ---
+        // Encontra o botão de voltar ao topo
         const backToTopBtn = document.getElementById('back-to-top');
+        // Encontra todos os posts na página
         const posts = document.querySelectorAll('.post-card');
 
+        // Só ativa se o botão existir e houver mais de 1 post
         if (backToTopBtn && posts.length > 1) {
-            // The button should appear after scrolling past the second post.
+            // Define que o botão aparece depois de passar pelo segundo post
             const secondPost = posts[1];
             const showAt = secondPost.offsetTop;
 
+            // Ouve o evento de scroll da janela
             window.addEventListener('scroll', () => {
+                // Se a posição do scroll for maior que a posição do segundo post
                 if (window.scrollY > showAt) {
+                    // Mostra o botão
                     backToTopBtn.classList.remove('hidden');
                 } else {
+                    // Esconde o botão
                     backToTopBtn.classList.add('hidden');
                 }
             });
 
+            // Quando clica no botão de voltar ao topo
             backToTopBtn.addEventListener('click', (e) => {
-                e.preventDefault();
+                e.preventDefault(); // Previne comportamento padrão do link
+                // Rola suavemente até ao topo da página
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                // After the scroll animation (approximated), reload the page.
+                // Espera um pouco (200ms) e recarrega a página (simulando atualização)
                 setTimeout(() => {
                     location.reload();
                 }, 200);

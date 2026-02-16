@@ -36,8 +36,18 @@ class ClubProfilesController < ApplicationController
 
   # PATCH/PUT /club_profiles/1 or /club_profiles/1.json
   def update
+    # Handle image removal
+    @club_profile.profile_picture.purge if params[:club_profile][:remove_profile_picture] == '1'
+    @club_profile.banner_picture.purge if params[:club_profile][:remove_banner_picture] == '1'
+    
+    # Clean bio - remove indentation spaces but keep user-inserted line breaks
+    bio_params = club_profile_params
+    if bio_params[:bio].present?
+      bio_params[:bio] = bio_params[:bio].strip.lines.map(&:strip).join("\n")
+    end
+    
     respond_to do |format|
-      if @club_profile.update(club_profile_params)
+      if @club_profile.update(bio_params)
         format.html { redirect_to @club_profile, notice: "Club profile was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @club_profile }
       else
@@ -65,6 +75,6 @@ class ClubProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_profile_params
-      params.expect(club_profile: [ :user_id, :name, :status, :approved_by, :bio ])
+      params.expect(club_profile: [ :user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture ])
     end
 end
