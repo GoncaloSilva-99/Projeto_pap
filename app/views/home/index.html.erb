@@ -193,8 +193,18 @@
                     <% if user_signed_in? %>
                         <div class="absolute right-0 mt-2 z-50 hidden w-56 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
                         <div class="px-4 py-3">
-                            <span class="block text-sm text-gray-900 dark:text-white">Tomás Nogueira</span>
-                            <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">tomas.nogueira@sportX.com</span>
+                            <% if current_user.club? %>
+                                <span class="block text-sm text-gray-900 dark:text-white"> <%= current_user.club_profile.name %> </span>
+                            <% elsif current_user.board? %> 
+                                <span class="block text-sm text-gray-900 dark:text-white"> <%= current_user.board_profile.name %> </span>
+                            <% elsif current_user.coach? %>
+                                <span class="block text-sm text-gray-900 dark:text-white"> <%= current_user.coach_profile.name %> </span>
+                            <% elsif current_user.player? %>
+                                <span class="block text-sm text-gray-900 dark:text-white"> <%= current_user.player_profile.name %> </span>
+                            <% elsif current_user.admin? %>
+                                <span class="block text-sm text-gray-900 dark:text-white"> <%= current_user.admin_profile.name %> </span>
+                            <% end %>
+                            <span class="block text-sm  text-gray-500 truncate dark:text-gray-400"> <%= current_user.email %> </span>
                         </div>
                         <ul class="py-2" aria-labelledby="user-menu-button">
                             <li>
