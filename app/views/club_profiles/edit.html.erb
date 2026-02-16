@@ -1,12 +1,3 @@
 <% content_for :title, "Editing club profile" %>
 
-<h1>Editing club profile</h1>
-
 <%= render "form", club_profile: @club_profile %>
-
-<br>
-
-<div>
-  <%= link_to "Show this club profile", @club_profile %> |
-  <%= link_to "Back to club profiles", club_profiles_path %>
-</div>
