@@ -50,6 +50,60 @@ class User < ApplicationRecord
   end
 
   REGEX_EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+
+  has_many :posts, dependent: :destroy
+  has_many :post_likes, dependent: :destroy
+  has_many :post_comments, dependent: :destroy
+  has_many :post_views, dependent: :destroy
+  has_many :liked_posts, through: :likes, source: :post
   
+  has_many :following_relationships, class_name: 'Follow', foreign_key: :follower_id, dependent: :destroy
+  has_many :following, through: :following_relationships, source: :followed
+
+  has_many :follower_relationships, class_name: 'Follow', foreign_key: :followed_id, dependent: :destroy
+  has_many :followers, through: :follower_relationships, source: :follower
+
+  def following?(other_user)
+    following.include?(other_user)
+  end
+
+  def following_count
+    following.count
+  end
+
+  def followers_count
+    followers.count
+  end
+
+  def feed_posts(page: 1, per_page: 25)
+    followed_ids = following.pluck(:id) + [id]
+
+    Post.from_users(followed_ids)
+    .not_viewed_by(self)
+    .recent
+    .limit(per_page)
+    .offset((page - 1) * per_page)
+  end
+
+  def discover_posts(page: 1, per_page: 10)
+    excluded_ids = following.pluck(:id) + [id]
+
+    Post.where.not(user_id: excluded_ids)
+    .not_viewed_by(self)
+    .recent
+    .limit(per_page)
+    .offset((page - 1) * per_page)
+  end
+
+  def suggested_users_to_follow(limit: 6)
+    excluded_ids = following.pluck(:id) + [id]
+
+    User.where.not(id: excluded_ids)
+    .where.not(profile_type: 'admin')
+    .left_joins(:follower_relationships)
+    .group('users.id')
+    .order('COUNT(follows.id) DESC')
+    .limit(limit)
+  end
 
 end

@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
   resources :post_views
   resources :follows
-  resources :post_comments
-  resources :post_likes
-  resources :posts
+  resources :posts do
+    resource :post_likes, only: [:create, :destroy]
+    resource :post_comments, only: [:create, :destroy]
+  end
   resources :club_team_trainings
   resources :club_training_centers
   resources :coach_teams

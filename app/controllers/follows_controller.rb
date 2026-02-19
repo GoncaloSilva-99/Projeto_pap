@@ -1,4 +1,5 @@
 class FollowsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_follow, only: %i[ show edit update destroy ]
 
   # GET /follows or /follows.json
@@ -21,39 +22,32 @@ class FollowsController < ApplicationController
 
   # POST /follows or /follows.json
   def create
-    @follow = Follow.new(follow_params)
-
+    current_user.follow(@user)
     respond_to do |format|
-      if @follow.save
-        format.html { redirect_to @follow, notice: "Follow was successfully created." }
-        format.json { render :show, status: :created, location: @follow }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @follow.errors, status: :unprocessable_entity }
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+        "follow_button_#{@user.id}",
+        partial: "users/follow_button",
+        locals: { user: @user }
+        )
       end
+      format.html { redirect_back(fallback_location: root_path) }
     end
   end
 
-  # PATCH/PUT /follows/1 or /follows/1.json
-  def update
-    respond_to do |format|
-      if @follow.update(follow_params)
-        format.html { redirect_to @follow, notice: "Follow was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @follow }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @follow.errors, status: :unprocessable_entity }
-      end
-    end
-  end
 
   # DELETE /follows/1 or /follows/1.json
   def destroy
-    @follow.destroy!
+    current_user.unfollow(@user)
 
     respond_to do |format|
-      format.html { redirect_to follows_path, notice: "Follow was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+        "follow_button_#{@user.id}",
+        partial: "users/follow_button",
+        locals: { user: @user })
+      end
+      format.html { redirect_back(fallback_location: root_path) }
     end
   end
 

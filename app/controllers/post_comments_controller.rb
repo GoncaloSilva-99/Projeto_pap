@@ -1,5 +1,6 @@
 class PostCommentsController < ApplicationController
   before_action :set_post_comment, only: %i[ show edit update destroy ]
+  before_action :authenticate_user!
 
   # GET /post_comments or /post_comments.json
   def index
@@ -21,41 +22,46 @@ class PostCommentsController < ApplicationController
 
   # POST /post_comments or /post_comments.json
   def create
-    @post_comment = PostComment.new(post_comment_params)
+    @comment = @post.post_comments.build(comment_params)
+    @comment.user = current_user
 
-    respond_to do |format|
-      if @post_comment.save
-        format.html { redirect_to @post_comment, notice: "Post comment was successfully created." }
-        format.json { render :show, status: :created, location: @post_comment }
-      else
+    if @comment.save
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.append(
+            "comments_list_#{@post.id}",
+            partial: "comments/comment",
+            locals: { comment: @comment }
+          ),
+          turbo_stream.replace(
+            "comment_form_#{@post.id}",
+            partial: "comments/form",
+            locals: { post: @post, comment: PostComment.new }
+          ),
+          turbo_stream.replace(
+            "comments_count_#{@post.id}",
+            partial: "posts/comments_count",
+            locals: { post: @post }
+          )
+          ]
+        end
+        format.html { redirect_to post_path(@post) }
+      end
+    else
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "comment_form_#{@post.id}",
+            partial: "comments/form",
+            locals: { post: @post, comment: @comment }
+          ), status: :unprocessable_entity
+        end
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @post_comment.errors, status: :unprocessable_entity }
       end
     end
   end
 
-  # PATCH/PUT /post_comments/1 or /post_comments/1.json
-  def update
-    respond_to do |format|
-      if @post_comment.update(post_comment_params)
-        format.html { redirect_to @post_comment, notice: "Post comment was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @post_comment }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @post_comment.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /post_comments/1 or /post_comments/1.json
-  def destroy
-    @post_comment.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to post_comments_path, notice: "Post comment was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
-  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

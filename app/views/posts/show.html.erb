@@ -1,15 +1,27 @@
-<% content_for :title, "Showing post" %>
+  <div class="container mx-auto pt-24 pb-12 px-6">
+  <div class="max-w-3xl mx-auto">
 
-<div class="md:w-2/3 w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
+  <%= link_to "← Voltar", posts_path, class: "text-blue-400 hover:text-blue-300 mb-6 inline-block" %>
+
+  <%= render 'posts/post', post: @post %>
+
+  <div class="bg-gray-800 rounded-xl p-6 shadow-lg mt-6">
+  <h3 class="text-xl font-bold mb-4">Comentários</h3>
+
+  <%= turbo_frame_tag "comments_list_#{@post.id}", class: "space-y-4 mb-6" do %>
+  <% @comments.each do |comment| %>
+  <%= render 'comments/comment', comment: comment %>
   <% end %>
 
-  <h1 class="font-bold text-4xl">Showing post</h1>
+  <% if @comments.empty? %>
+  <p class="text-gray-400 text-center py-8">
+  Ainda não há comentários. Sê o primeiro!
+  </p>
+  <% end %>
+  <% end %>
 
-  <%= render @post %>
+  <%= render 'comments/form', post: @post %>
+  </div>
 
-  <%= link_to "Edit this post", edit_post_path(@post), class: "w-full sm:w-auto text-center rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= link_to "Back to posts", posts_path, class: "w-full sm:w-auto text-center mt-2 sm:mt-0 sm:ml-2 rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
-  <%= button_to "Destroy this post", @post, method: :delete, form_class: "sm:inline-block mt-2 sm:mt-0 sm:ml-2", class: "w-full rounded-md px-3.5 py-2.5 text-white bg-red-600 hover:bg-red-500 font-medium cursor-pointer", data: { turbo_confirm: "Are you sure?" } %>
-</div>
+  </div>
+  </div>
