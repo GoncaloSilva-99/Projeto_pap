@@ -1448,10 +1448,28 @@
 
                 // --- BOTÃO DE SEGUIR (GERAL) ---
                 document.querySelectorAll('.follow-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        this.innerHTML = '<span class="text-gray-400 text-sm">a seguir</span>';
-                        this.classList.remove('text-blue-400', 'hover:text-white');
-                        this.classList.add('cursor-default');
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const icon = this.querySelector('i');
+                        const text = this.querySelector('span');
+                        
+                        if (text.innerText === 'Seguir') {
+                            text.innerText = 'Deixar de Seguir';
+                            this.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                            this.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                            if (icon) {
+                                icon.setAttribute('data-feather', 'user-minus');
+                                feather.replace();
+                            }
+                        } else {
+                            text.innerText = 'Seguir';
+                            this.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                            this.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                            if (icon) {
+                                icon.setAttribute('data-feather', 'user-plus');
+                                feather.replace();
+                            }
+                        }
                     });
                 });
 

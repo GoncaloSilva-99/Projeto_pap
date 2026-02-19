@@ -2,10 +2,10 @@
 
     <!-- Banner -->
     <div class="relative h-64 bg-gradient-to-r from-indigo-900 to-purple-900 overflow-hidden">
-        <%= link_to root_path, class: "absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white" do %>
+        <button onclick="window.history.back()" class="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white">
             <i data-feather="arrow-left"></i>
             <span>Voltar</span>
-        <% end %>
+        </button>
         <div class="absolute inset-0 bg-black opacity-30"></div>
         <div class="relative h-full flex items-center justify-center">
             <% if player_profile.banner_picture.attached? %>
@@ -82,6 +82,38 @@
                         <span>Posição(s): <%= positions.join(' | ') %></span>
                     </div> 
                 </div> 
+            </div>
+        </div>
+
+        <!-- Club Section -->
+        <div class="mt-1">
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in">
+                <h3 class="text-xl font-bold mb-4">Clube</h3>
+                <% if player_profile.club_profile.present? %>
+                    <div class="flex items-center gap-8 w-full">
+                        <!-- Club Profile Picture -->
+                        <div class="w-24 h-24 rounded-full bg-gray-700 overflow-hidden border-4 border-gray-700 shadow-lg flex-shrink-0">
+                            <% if player_profile.club_profile.profile_picture.attached? %>
+                                <%= image_tag url_for(player_profile.club_profile.profile_picture), class: "w-full h-full object-cover" %>
+                            <% else %>
+                                <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                            <% end %>
+                        </div>
+
+                        <!-- Club Info -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-4">
+                                <%= link_to player_profile.club_profile.name, club_profile_path(player_profile.club_profile), class: "text-2xl font-bold text-indigo-400 hover:text-indigo-300 transition truncate" %>
+                                <button id="followClubBtn" onclick="toggleFollowClub()" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition flex-shrink-0 whitespace-nowrap">
+                                    <i data-feather="user-plus" id="followClubIcon" class="w-5 h-5"></i>
+                                    <span id="followClubText">Seguir</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                <% else %>
+                    <p class="text-gray-400">Este jogador não pertence a nenhum clube no momento.</p>
+                <% end %>
             </div>
         </div>
     </div>
@@ -454,6 +486,8 @@
             const btn = document.getElementById('followBtn');
             // Encontra o texto dentro do botão
             const text = document.getElementById('followText');
+            // Encontra o ícone dentro do botão
+            const icon = document.querySelector('#followBtn i');
             
             // Se o texto atual for "Seguir"
             if (text.innerText === 'Seguir') {
@@ -463,6 +497,9 @@
                 btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
                 // Adiciona a cor cinzenta ao botão
                 btn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                // Muda o ícone de user-plus para user-minus
+                icon.setAttribute('data-feather', 'user-minus');
+                feather.replace();
             } else {
                 // Se já estiver a seguir, volta o texto para "Seguir"
                 text.innerText = 'Seguir';
@@ -470,6 +507,42 @@
                 btn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
                 // Adiciona a cor azul de volta
                 btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                // Muda o ícone de user-minus para user-plus
+                icon.setAttribute('data-feather', 'user-plus');
+                feather.replace();
+            }
+        }
+
+        // Função que controla o botão de Seguir/Deixar de Seguir Clube
+        function toggleFollowClub() {
+            // Encontra o botão de seguir clube na página
+            const btn = document.getElementById('followClubBtn');
+            // Encontra o texto dentro do botão
+            const text = document.getElementById('followClubText');
+            // Encontra o ícone dentro do botão
+            const icon = document.getElementById('followClubIcon');
+            
+            // Se o texto atual for "Seguir"
+            if (text.innerText === 'Seguir') {
+                // Muda o texto para "Deixar de Seguir" em duas linhas
+                text.innerHTML = 'Deixar de<br>Seguir';
+                // Remove a cor azul (indigo) do botão
+                btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                // Adiciona a cor cinzenta ao botão
+                btn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                // Muda o ícone de user-plus para user-minus
+                icon.setAttribute('data-feather', 'user-minus');
+                feather.replace();
+            } else {
+                // Se já estiver a seguir, volta o texto para "Seguir"
+                text.innerHTML = 'Seguir';
+                // Remove a cor cinzenta
+                btn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                // Adiciona a cor azul de volta
+                btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                // Muda o ícone de user-minus para user-plus
+                icon.setAttribute('data-feather', 'user-plus');
+                feather.replace();
             }
         }
 

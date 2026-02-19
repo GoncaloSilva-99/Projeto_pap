@@ -2,10 +2,10 @@
 
     <!-- Banner -->
     <div class="relative h-64 bg-gradient-to-r from-indigo-900 to-purple-900 overflow-hidden">
-        <%= link_to root_path, class: "absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white" do %>
+        <button onclick="window.history.back()" class="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white">
             <i data-feather="arrow-left"></i>
             <span>Voltar</span>
-        <% end %>
+        </button>
         <div class="absolute inset-0 bg-black opacity-30"></div>
         <div class="relative h-full flex items-center justify-center">
             <% if club_profile.banner_picture.attached? %>
@@ -29,7 +29,7 @@
             <div class="flex-1">
                 <div class="flex items-center gap-4">
                     <h2 class="text-2xl md:text-3xl font-bold py-1"><%= club_profile.name %></h2>
-                    <% if club_profile.status == false %>
+                    <% if club_profile.status == false && current_user && current_user.id == club_profile.user_id %>
                         <span class="text-sm text-red-500 font-semibold">A aguardar aprovação de um administrador</span>
                     <% end %>
                 </div>
@@ -42,7 +42,7 @@
                         <% end %>
                     <% else %>
                         <button id="followBtn" onclick="toggleFollow()" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
-                            <i data-feather="user-plus"></i>
+                            <i data-feather="user-plus" id="followIcon"></i>
                             <span id="followText">Seguir</span>
                         </button>
                     <% end %>
@@ -101,10 +101,12 @@
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-bold">Publicações</h3>
-                    <button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
-                        <i data-feather="plus"></i>
-                        <span>Publicar</span>
-                    </button>
+                    <% if current_user && current_user.id == club_profile.user_id %>
+                        <button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
+                            <i data-feather="plus"></i>
+                            <span>Publicar</span>
+                        </button>
+                    <% end %>
                 </div>
                 
                 <!-- Post 1 -->
@@ -461,6 +463,8 @@
             const btn = document.getElementById('followBtn');
             // Encontra o texto dentro do botão
             const text = document.getElementById('followText');
+            // Encontra o ícone dentro do botão
+            const icon = document.getElementById('followIcon');
             
             // Se o texto atual for "Seguir"
             if (text.innerText === 'Seguir') {
@@ -470,6 +474,9 @@
                 btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
                 // Adiciona a cor cinzenta ao botão
                 btn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                // Muda o ícone de user-plus para user-minus
+                icon.setAttribute('data-feather', 'user-minus');
+                feather.replace();
             } else {
                 // Se já estiver a seguir, volta o texto para "Seguir"
                 text.innerText = 'Seguir';
@@ -477,6 +484,9 @@
                 btn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
                 // Adiciona a cor azul de volta
                 btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                // Muda o ícone de user-minus para user-plus
+                icon.setAttribute('data-feather', 'user-plus');
+                feather.replace();
             }
         }
 
@@ -764,13 +774,13 @@
         }
     </style>
 
-<!-- 
+
     <div id="<%= dom_id club_profile %>">
         <p>
             <strong>User:</strong>
-            <%= club_profile.user_id %>
+            <%= club_profile.id %>
         </p>
-
+<!-- 
         <p>
             <strong>Name:</strong>
             <%= club_profile.name %>
