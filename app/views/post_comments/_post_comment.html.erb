@@ -1,14 +1,33 @@
-<div id="<%= dom_id post_comment %>" class="w-full sm:w-auto my-5 space-y-5">
-  <div>
-    <strong class="block font-medium mb-1">User:</strong>
-    <%= post_comment.user_id %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Post:</strong>
-    <%= post_comment.post_id %>
-  </div>
-  <div>
-    <strong class="block font-medium mb-1">Content:</strong>
-    <%= post_comment.content %>
-  </div>
-</div>
+<%= turbo_frame_tag "comment_#{comment.id}", class: "flex items-start space-x-3" do %>
+
+ <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 flex items-center justify-center">
+ <span class="text-xs text-white"><%= comment.user.name.first.upcase %></span>
+ </div>
+
+ <div class="bg-gray-700 rounded-lg p-3 flex-1">
+ <div class="flex justify-between items-center mb-1">
+ <p class="text-sm font-semibold text-white">
+ <%= comment.user.name %>
+ </p>
+ <span class="text-xs text-gray-400"><%= comment.time_ago %> atrás</span>
+ </div>
+
+ <p class="text-sm text-gray-300">
+ <%= simple_format(comment.content, {}, sanitize: true) %>
+ </p>
+
+ <% if comment.editable_by?(current_user) %>
+ <div class="mt-2">
+ <%= button_to "Eliminar",
+ post_comment_path(comment.post, comment),
+ method: :delete,
+ class: "text-xs text-red-400 hover:text-red-300",
+ data: {
+ turbo_frame: "comment_#{comment.id}",
+ turbo_confirm: "Tens a certeza?"
+ } %>
+ </div>
+ <% end %>
+ </div>
+
+<% end %>

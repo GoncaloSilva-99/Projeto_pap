@@ -1,42 +1,42 @@
-<%= form_with(model: post, class: "contents") do |form| %>
-  <% if post.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
-
-      <ul class="list-disc ml-6">
-        <% post.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="my-5">
-    <%= form.label :user_id %>
-    <%= form.text_field :user_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": post.errors[:user_id].none?, "border-red-400 focus:outline-red-600": post.errors[:user_id].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :content %>
-    <%= form.textarea :content, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": post.errors[:content].none?, "border-red-400 focus:outline-red-600": post.errors[:content].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :likes_count %>
-    <%= form.number_field :likes_count, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": post.errors[:likes_count].none?, "border-red-400 focus:outline-red-600": post.errors[:likes_count].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :comments_count %>
-    <%= form.number_field :comments_count, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": post.errors[:comments_count].none?, "border-red-400 focus:outline-red-600": post.errors[:comments_count].any?}] %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :views_count %>
-    <%= form.number_field :views_count, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": post.errors[:views_count].none?, "border-red-400 focus:outline-red-600": post.errors[:views_count].any?}] %>
-  </div>
-
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
-  </div>
+<%= form_with(model: post, local: false) do |form| %>
+ <% if post.errors.any? %>
+ <div class="bg-red-900 border border-red-700 text-red-100 px-4 py-3 rounded mb-4">
+ <h2 class="font-bold mb-2"><%= pluralize(post.errors.count, "erro") %> impediram de guardar:</h2>
+ <ul class="list-disc list-inside">
+ <% post.errors.full_messages.each do |message| %>
+ <li><%= message %></li>
+ <% end %>
+ </ul>
+ </div>
+ <% end %>
+ <div class="space-y-4">
+ <div>
+ <%= form.label :content, "Conteúdo", class: "block text-sm font-medium mb-2" %>
+ <%= form.text_area :content,
+ rows: 5,
+ class: "w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue"
+ </div>
+ <div>
+ <%= form.label :images, "Imagens (máx. 10)", class: "block text-sm font-medium mb-2" %>
+ <%= form.file_field :images,
+ multiple: true,
+ accept: "image/png, image/jpg, image/jpeg, image/gif, image/webp",
+ class: "block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm"%>
+ </div>
+ <% if post.persisted? && post.images.attached? %>
+ <div class="space-y-2">
+ <p class="text-sm font-medium">Imagens atuais:</p>
+ <div class="flex flex-wrap gap-2">
+ <% post.images.each do |image| %>
+ <div class="relative">
+ <%= image_tag image, class: "w-20 h-20 object-cover rounded" %>
+ </div>
+ <% end %>
+ </div>
+ </div>
+ <% end %>
+ <div class="flex gap-4">
+ <%= form.submit "Guardar", class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium cursor-pointer"%>
+ <%= link  "Cancelar", posts_path, class: "bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium"%>
+ </div>
 <% end %>

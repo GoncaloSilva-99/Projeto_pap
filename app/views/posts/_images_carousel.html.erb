@@ -1,0 +1,17 @@
+v class="relative">
+ <div class="flex overflow-x-auto snap-x snap-mandatory gap-2 rounded-lg no-scrollbar" id="carousel_<%= post.id %>">
+ <% post.images.each_with_index do |image, index| %>
+ <div class="flex-shrink-0 snap-center w-full">
+ <%= image_tag image, class: "w-full h-96 object-cover rounded-lg" %>
+ </div>
+ <% end %>
+ </div>
+
+ <% if post.images.count > 1 %>
+ <div class="flex justify-center mt-2 space-x-2">
+ <% post.images.count.times do |i| %>
+ <div class="w-2 h-2 rounded-full bg-gray-600"></div>
+ <% end %>
+ </div>
+ <% end %>
+</div>

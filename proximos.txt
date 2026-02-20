@@ -1,4 +1,45 @@
-dar para mudar foto ao editar campo, ct e balneário
-Pensar em adicionar parte de "outros" para adicionar arrecadações, bar e assim
-Treino dá problemas quando passa a ser recorrente e não era (dá bug na hora de fim) - dar fix
-mudar designs dos modals para ficarem parecidos com o adicionar treino (mais profissional)
+Problemas a arranjar:
+Adicionar imagens não está a dar (caroussel como estava)
+publicações estão a ser adicionadas na bd mas não estão a aparecer
+sugestões não estão a aparecer
+Notificações não podem aparecer sem login
+apps não podem aparecer sem login
+falta dar para mudar email e palavra passe nos perfis (quando tiverem finalizados adiciona-se)
+falta adicionar foto no hero quando não há login feito
+redirecionamentos depois de marcar treino não estão a dar direito
+mensagens ao atualizar perfis estão default
+começa já não leva para escolher perfil
+falta adicionar as estatisticas reais da plataforma e algo mais apelativo e demonstrativo da aplicação quando não há login feito
+perfis populares convém aparecer mesmo os perfis populares
+deve dar para mudar foto dos ct's campos e balneários
+colocar estatisticas reais no dashboard
+arranjar membros da direção apagar no membro+1
+abulir o público do dashboard
+
+
+
+Depois:
+
+Colocar posts nos perfis funcional
+fazer pesquisa da página principal (a redirecionar para página de pesquisa)
+fazer material no dashboard do clube (poder adicionar e gerir stock de material do clube, dar para associar material a um ct, campo ou balneário ou a equipa)
+fazer finanças no dashboard do clube
+fazer admin dashboard (estatisticas da aplicação, parte de super admin para criar admins, verificação de clubes, reports de posts e perfis, contas banidas, logs)
+
+
+Se der tempo, preferencialmente:
+
+adicionar verificações ao criar conta (verificar email, etc.)
+adicionar possíbilidade de jogador pertencer a mais que um escalão
+criar avisos de avarias e manutenções nas infraestruturas (estas teriam um tipo, descrição e se estão resolvidas ou não)
+fazer player dashboard
+fazer coach dashboard (ver jogadores e treinos, onde tem o mesmo coiso de treino do clube só que ao clicar no próprio treino abre um menu de presenças/faltas, painel de táticas e sitio para escrever notas sobre cada jogador)
+fazer comunicados (posts internos) no dashboard do clube
+fazer adeptos no dashboard do clube (loja de produtos, socios e bilhetes de jogos)
+adicionar transferências entre clubes
+adicionar notificações
+adicionar mensagens
+
+Último de tudo:
+
+Antes de entregar a pap, fazer uma limpeza geral aos ficheiros e verificar tudo

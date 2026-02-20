@@ -99,7 +99,7 @@ class User < ApplicationRecord
     excluded_ids = following.pluck(:id) + [id]
 
     User.where.not(id: excluded_ids)
-    .where.not(profile_type: 'admin')
+    .where.not(role: 'admin')
     .left_joins(:follower_relationships)
     .group('users.id')
     .order('COUNT(follows.id) DESC')

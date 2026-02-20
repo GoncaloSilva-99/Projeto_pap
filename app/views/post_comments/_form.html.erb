@@ -1,32 +1,16 @@
-<%= form_with(model: post_comment, class: "contents") do |form| %>
-  <% if post_comment.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
-      <h2><%= pluralize(post_comment.errors.count, "error") %> prohibited this post_comment from being saved:</h2>
+<%= turbo_frame_tag "comment_form_#{post.id}" do %>
 
-      <ul class="list-disc ml-6">
-        <% post_comment.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+ <%= form_with model: [post, Comment.new], local: false, class: "flex items-center space-x-2" do |f| %>
 
-  <div class="my-5">
-    <%= form.label :user_id %>
-    <%= form.text_field :user_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": post_comment.errors[:user_id].none?, "border-red-400 focus:outline-red-600": post_comment.errors[:user_id].any?}] %>
-  </div>
+ <div class="flex-1">
+ <%= f.text_field :content,
+ placeholder: "Escreve um comentário...",
+ class: "w-full bg-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+ </div>
 
-  <div class="my-5">
-    <%= form.label :post_id %>
-    <%= form.text_field :post_id, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": post_comment.errors[:post_id].none?, "border-red-400 focus:outline-red-600": post_comment.errors[:post_id].any?}] %>
-  </div>
+ <%= f.submit "Publicar",
+ class: "text-blue-500 hover:text-blue-400 font-semibold px-3 py-2 cursor-pointer" %>
 
-  <div class="my-5">
-    <%= form.label :content %>
-    <%= form.textarea :content, rows: 4, class: ["block shadow-sm rounded-md border px-3 py-2 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": post_comment.errors[:content].none?, "border-red-400 focus:outline-red-600": post_comment.errors[:content].any?}] %>
-  </div>
+ <% end %>
 
-  <div class="inline">
-    <%= form.submit class: "w-full sm:w-auto rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white inline-block font-medium cursor-pointer" %>
-  </div>
 <% end %>

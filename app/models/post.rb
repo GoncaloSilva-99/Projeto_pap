@@ -7,7 +7,7 @@ class Post < ApplicationRecord
   has_many_attached :images
 
   validates :content, presence: true, length: { minimum: 1, maximum: 5000 }
-  validates :acceptable_images
+  validate :acceptable_images
 
 
   scope :recent, -> { order(created_at: :desc) }
@@ -23,7 +23,7 @@ class Post < ApplicationRecord
 
   def liked_by?(user)
     return false unless user
-    likes.exists?(user: user)
+    post_likes.exists?(user: user)
   end
 
   def mark_as_viewed_by(user)
@@ -45,12 +45,19 @@ class Post < ApplicationRecord
     end
 
     acceptable_types = %w[image/jpeg image/jpg image/png image/gif image/webp]
+    max_size = 10.megabytes
 
     images.each do |image|
       unless image.content_type.in?(acceptable_types)
-      errors.add(:images, "#{image.filename} não é válida (apenas JPG, PNG, GIF, WEBP)")
-    end
-  end
+        errors.add(:images, "#{image.filename} não é válida (apenas JPG, PNG, GIF, WEBP)")
+      end
+      
+      if image.byte_size > max_size
+        size_mb = (image.byte_size / 1.megabyte.to_f).round(2)
+        errors.add(:images, "#{image.filename} é muito grande (#{size_mb}MB, máx 10MB)")
+      end
+    end  
+  end  
 
 
 
