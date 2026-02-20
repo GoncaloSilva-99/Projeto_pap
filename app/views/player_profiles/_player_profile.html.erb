@@ -2,7 +2,7 @@
 
     <!-- Banner -->
     <div class="relative h-64 bg-gradient-to-r from-indigo-900 to-purple-900 overflow-hidden">
-        <button onclick="window.history.back()" class="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white">
+        <button onclick="goBack()" class="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white">
             <i data-feather="arrow-left"></i>
             <span>Voltar</span>
         </button>
@@ -33,7 +33,7 @@
                 <!-- Botão editar campos -->
                 <div class="flex items-center gap-4 mt-4">
                     <% if current_user && current_user.id == player_profile.user_id %>
-                        <%= link_to edit_player_profile_path(player_profile), class: "flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition" do %>
+                        <%= link_to edit_player_profile_path(player_profile), class: "flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition" do %>
                             <i data-feather="edit"></i>
                             <span>Editar Perfil</span>
                         <% end %>
@@ -87,12 +87,12 @@
 
         <!-- Club Section -->
         <div class="mt-1">
-            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in">
-                <h3 class="text-xl font-bold mb-4">Clube</h3>
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in min-w-full w-fit">
+                <h2 class="text-xl font-bold mb-4">Clube</h2>
                 <% if player_profile.club_profile.present? %>
-                    <div class="flex items-center gap-8 w-full">
+                    <div class="flex items-center gap-8 ">
                         <!-- Club Profile Picture -->
-                        <div class="w-24 h-24 rounded-full bg-gray-700 overflow-hidden border-4 border-gray-700 shadow-lg flex-shrink-0">
+                        <div class="w-20 h-20 rounded-full bg-gray-700 overflow-hidden border-4 border-gray-700 shadow-lg flex-shrink-0">
                             <% if player_profile.club_profile.profile_picture.attached? %>
                                 <%= image_tag url_for(player_profile.club_profile.profile_picture), class: "w-full h-full object-cover" %>
                             <% else %>
@@ -101,9 +101,9 @@
                         </div>
 
                         <!-- Club Info -->
-                        <div class="flex-1 min-w-0">
+                        <div class="flex-1 ">
                             <div class="flex items-center gap-4">
-                                <%= link_to player_profile.club_profile.name, club_profile_path(player_profile.club_profile), class: "text-2xl font-bold text-indigo-400 hover:text-indigo-300 transition truncate" %>
+                                <%= link_to player_profile.club_profile.name, club_profile_path(player_profile.club_profile), class: "text-2xl font-bold text-indigo-400 hover:text-indigo-300 transition whitespace-nowrap" %>
                                 <button id="followClubBtn" onclick="toggleFollowClub()" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition flex-shrink-0 whitespace-nowrap">
                                     <i data-feather="user-plus" id="followClubIcon" class="w-5 h-5"></i>
                                     <span id="followClubText">Seguir</span>
@@ -479,6 +479,31 @@
     <script>
         // Inicializa os ícones da biblioteca Feather (substitui as tags <i> pelos ícones SVG)
         feather.replace();
+
+        // --- Lógica do Botão "Voltar" Inteligente ---
+        const playerReturnUrlKey = 'smartBackReturnUrl_player_<%= player_profile.id %>';
+
+        // Esta função é chamada pelo botão "Voltar"
+        function goBack() {
+            const returnUrl = sessionStorage.getItem(playerReturnUrlKey);
+            
+            // Se houver um URL de retorno guardado e não for a página atual, usa-o
+            if (returnUrl && returnUrl !== window.location.href) {
+                window.location.href = returnUrl;
+            } else {
+                // Caso contrário, usa o histórico do navegador como fallback
+                window.history.back();
+            }
+        }
+
+        // Quando a página de perfil carrega, decide se deve guardar o URL de referência
+        document.addEventListener('DOMContentLoaded', function() {
+            // Só guarda o URL de referência se a página anterior NÃO for a de edição.
+            // Isto preserva o URL "bom" (anterior à edição) quando se volta da página de edição.
+            if (document.referrer && !document.referrer.includes('/edit')) {
+                sessionStorage.setItem(playerReturnUrlKey, document.referrer);
+            }
+        });
 
         // Função que controla o botão de Seguir/Deixar de Seguir
         function toggleFollow() {
