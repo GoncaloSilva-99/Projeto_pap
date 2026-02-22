@@ -1,25 +1,24 @@
 Problemas a arranjar:
-Adicionar imagens não está a dar (caroussel como estava)
-publicações estão a ser adicionadas na bd mas não estão a aparecer
 sugestões não estão a aparecer
-Notificações não podem aparecer sem login
-apps não podem aparecer sem login
 falta dar para mudar email e palavra passe nos perfis (quando tiverem finalizados adiciona-se)
 falta adicionar foto no hero quando não há login feito
 redirecionamentos depois de marcar treino não estão a dar direito
 mensagens ao atualizar perfis estão default
-começa já não leva para escolher perfil
 falta adicionar as estatisticas reais da plataforma e algo mais apelativo e demonstrativo da aplicação quando não há login feito
 perfis populares convém aparecer mesmo os perfis populares
 deve dar para mudar foto dos ct's campos e balneários
 colocar estatisticas reais no dashboard
 arranjar membros da direção apagar no membro+1
 abulir o público do dashboard
+data de criar clube dá para ser depois de hoje
+as imagens dos posts estão maiores do que no preview (aparecem esticadas para cobrir tudo)
+quando se tenta publicar sem ter nada dá erro (não um erro de mensagem, erro na aplicação)
 
 
 
 Depois:
 
+Adicionar estatistica de clicks nos perfis para depois coocar nos perfis populares
 Colocar posts nos perfis funcional
 fazer pesquisa da página principal (a redirecionar para página de pesquisa)
 fazer material no dashboard do clube (poder adicionar e gerir stock de material do clube, dar para associar material a um ct, campo ou balneário ou a equipa)
