@@ -1,6 +1,6 @@
 <%= turbo_frame_tag "comment_form_#{post.id}" do %>
 
- <%= form_with model: [post, Comment.new], local: false, class: "flex items-center space-x-2" do |f| %>
+ <%= form_with model: [post, PostComment.new], local: false, class: "flex items-center space-x-2" do |f| %>
 
  <div class="flex-1">
  <%= f.text_field :content,

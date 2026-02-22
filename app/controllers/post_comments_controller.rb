@@ -1,4 +1,5 @@
 class PostCommentsController < ApplicationController
+  before_action :set_post, only: [:create]
   before_action :set_post_comment, only: %i[ show edit update destroy ]
   before_action :authenticate_user!
 
@@ -64,6 +65,11 @@ class PostCommentsController < ApplicationController
 
 
   private
+
+    def set_post
+      @post = Post.find(params[:post_id])
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_post_comment
       @post_comment = PostComment.find(params.expect(:id))
