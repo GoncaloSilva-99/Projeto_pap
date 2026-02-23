@@ -1,5 +1,5 @@
 class PostLikesController < ApplicationController
-  before_action :set_post_like, only: %i[ show edit update destroy ]
+  before_action :set_post_like, only: %i[ show  destroy ]
 
   # GET /post_likes or /post_likes.json
   def index

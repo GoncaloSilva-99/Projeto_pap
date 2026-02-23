@@ -21,6 +21,7 @@ class Post < ApplicationRecord
     .distinct
   }
 
+
   def liked_by?(user)
     return false unless user
     post_likes.exists?(user: user)

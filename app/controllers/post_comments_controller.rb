@@ -1,6 +1,5 @@
 class PostCommentsController < ApplicationController
   before_action :set_post, only: [:create]
-  before_action :set_post_comment, only: %i[ show edit update destroy ]
   before_action :authenticate_user!
 
   # GET /post_comments or /post_comments.json
@@ -23,7 +22,7 @@ class PostCommentsController < ApplicationController
 
   # POST /post_comments or /post_comments.json
   def create
-    @comment = @post.post_comments.build(comment_params)
+    @comment = @post.post_comments.build(post_comment_params)
     @comment.user = current_user
 
     if @comment.save
@@ -32,12 +31,12 @@ class PostCommentsController < ApplicationController
           render turbo_stream: [
             turbo_stream.append(
             "comments_list_#{@post.id}",
-            partial: "comments/comment",
+            partial: "post_comments/post_comment",
             locals: { comment: @comment }
           ),
           turbo_stream.replace(
             "comment_form_#{@post.id}",
-            partial: "comments/form",
+            partial: "post_comments/form",
             locals: { post: @post, comment: PostComment.new }
           ),
           turbo_stream.replace(
@@ -70,10 +69,6 @@ class PostCommentsController < ApplicationController
       @post = Post.find(params[:post_id])
     end
 
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post_comment
-      @post_comment = PostComment.find(params.expect(:id))
-    end
 
     # Only allow a list of trusted parameters through.
     def post_comment_params

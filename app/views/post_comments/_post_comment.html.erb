@@ -1,33 +1,42 @@
-<%= turbo_frame_tag "comment_#{comment.id}", class: "flex items-start space-x-3" do %>
-
- <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 flex items-center justify-center">
- <span class="text-xs text-white"><%= comment.user.name.first.upcase %></span>
- </div>
-
- <div class="bg-gray-700 rounded-lg p-3 flex-1">
- <div class="flex justify-between items-center mb-1">
- <p class="text-sm font-semibold text-white">
- <%= comment.user.name %>
- </p>
- <span class="text-xs text-gray-400"><%= comment.time_ago %> atrás</span>
- </div>
-
- <p class="text-sm text-gray-300">
- <%= simple_format(comment.content, {}, sanitize: true) %>
- </p>
-
- <% if comment.editable_by?(current_user) %>
- <div class="mt-2">
- <%= button_to "Eliminar",
- post_comment_path(comment.post, comment),
- method: :delete,
- class: "text-xs text-red-400 hover:text-red-300",
- data: {
- turbo_frame: "comment_#{comment.id}",
- turbo_confirm: "Tens a certeza?"
- } %>
- </div>
- <% end %>
- </div>
-
-<% end %>
+<div class="flex items-start space-x-3" id="comment_<%= comment.id %>">
+  <div class="w-8 h-8 rounded-full bg-gray-600 flex-shrink-0 overflow-hidden flex items-center justify-center">
+    <% 
+      commenter_profile = nil
+      if comment.user.club?
+        commenter_profile = comment.user.club_profile
+      elsif comment.user.player?
+        commenter_profile = comment.user.player_profile
+      elsif comment.user.coach?
+        commenter_profile = comment.user.coach_profile
+      elsif comment.user.board?
+        commenter_profile = comment.user.board_profile
+      end
+    %>
+    
+    <% if commenter_profile && commenter_profile.profile_picture.attached? %>
+      <%= image_tag url_for(commenter_profile.profile_picture), class: "w-full h-full object-cover" %>
+    <% else %>
+      <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+    <% end %>
+  </div>
+  
+  <div class="bg-gray-700 rounded-lg p-3 flex-1">
+    <div class="flex justify-between items-center mb-1">
+      <p class="text-sm font-semibold text-white">
+        <% if comment.user.club? %>
+          <%= comment.user.club_profile.name %>
+        <% elsif comment.user.player? %>
+          <%= comment.user.player_profile.name %>
+        <% elsif comment.user.coach? %>
+          <%= comment.user.coach_profile.name %>
+        <% elsif comment.user.board? %>
+          <%= comment.user.board_profile.name %>
+        <% else %>
+          <%= comment.user.email %>
+        <% end %>
+      </p>
+      <span class="text-xs text-gray-400"><%= time_ago_in_words(comment.created_at) %> atrás</span>
+    </div>
+    <p class="text-sm text-gray-300"><%= comment.content %></p>
+  </div>
+</div>
