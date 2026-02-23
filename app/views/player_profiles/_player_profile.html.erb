@@ -33,7 +33,7 @@
                 <!-- Botão editar campos -->
                 <div class="flex items-center gap-4 mt-4">
                     <% if current_user && current_user.id == player_profile.user_id %>
-                        <%= link_to edit_player_profile_path(player_profile), class: "flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition" do %>
+                        <%= link_to edit_player_profile_path(player_profile), class: "flex items-center gap-2 px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg transition" do %>
                             <i data-feather="edit"></i>
                             <span>Editar Perfil</span>
                         <% end %>
