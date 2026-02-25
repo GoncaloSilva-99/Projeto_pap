@@ -850,8 +850,10 @@
                                                 
                                                 <div class="flex items-center space-x-2 text-gray-400 comment-btn">
                                                     <i data-feather="message-circle" class="w-5 h-5"></i>
-                                                    <span class="text-sm">
-                                                        <%= post.comments_count %> <%= 'comentário'.pluralize(post.comments_count) %>
+                                                    <span class="text-gray-400 text-sm">
+                                                        <%= turbo_frame_tag "comments_count_#{post.id}" do %>
+                                                            <%= render "posts/comments_count", post: post %> 
+                                                        <% end %>
                                                     </span>
                                                 </div>
                                             </div>
@@ -879,7 +881,13 @@
                                             <div class="w-full lg:w-1/3 h-full bg-gray-800 border-l border-gray-700 flex flex-col">
                                                 <!-- Header -->
                                                 <div class="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-800 z-10">
-                                                    <h3 class="text-xl font-bold text-white">Comentários (<%= post.comments_count %>) </h3>
+                                                    <h3 class="text-xl font-bold text-white">
+                                                        Comentários (
+                                                        <%= turbo_frame_tag "comments_count_on_#{post.id}" do %>
+                                                            <%= render "posts/comments_count_on", post: post %> 
+                                                        <% end %>
+                                                        )
+                                                    </h3>
                                                     <button id="close-modal-btn" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
                                                         <div class="flex items-center gap-2" data-modal-hide="modal-post-<%=post.id%>">
                                                             <span class="text-sm font-medium">Voltar</span>
@@ -901,7 +909,7 @@
 
                                                 <!-- Input Area -->
                                                 <div class="p-4 border-t border-gray-700 bg-gray-800">
-                                                    <div class="flex items-center space-x-2">
+                                                    <div class="flex items-center space-x-2 ">
                                                         <%= turbo_frame_tag "comment_form_#{post.id}" do %>
                                                             <%= render "post_comments/form", post: post, comment: PostComment.new %>
                                                         <% end %>

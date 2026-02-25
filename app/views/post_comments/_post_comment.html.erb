@@ -24,13 +24,29 @@
     <div class="flex justify-between items-center mb-1">
       <p class="text-sm font-semibold text-white">
         <% if comment.user.club? %>
-          <%= comment.user.club_profile.name %>
+          <%= link_to club_profile_path(comment.user.club_profile), 
+            data: { turbo_frame: "_top" }, 
+            class: "hover:underline" do %>
+            <%= comment.user.club_profile.name %>
+          <% end %>
         <% elsif comment.user.player? %>
-          <%= comment.user.player_profile.name %>
+          <%= link_to player_profile_path(comment.user.play_profile), 
+            data: { turbo_frame: "_top" }, 
+            class: "hover:underline" do %>
+            <%= comment.user.player_profile.name %>
+          <% end %>
         <% elsif comment.user.coach? %>
-          <%= comment.user.coach_profile.name %>
+          <%= link_to coach_profile_path(comment.user.coach_profile), 
+            data: { turbo_frame: "_top" }, 
+            class: "hover:underline" do %>
+            <%= comment.user.coach_profile.name %>
+          <% end %>
         <% elsif comment.user.board? %>
-          <%= comment.user.board_profile.name %>
+          <%= link_to board_profile_path(comment.user.board_profile), 
+            data: { turbo_frame: "_top" }, 
+            class: "hover:underline" do %>
+            <%= comment.user.coach_profile.name %>
+          <% end %>
         <% else %>
           <%= comment.user.email %>
         <% end %>

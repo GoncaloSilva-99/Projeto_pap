@@ -1,5 +1,5 @@
 <%= turbo_frame_tag "comments_count_#{post.id}" do %>
-    <span class="text-gray-400 text-sm">
+    <span>
         <%= post.comments_count %> <%= 'comentário'.pluralize(post.comments_count) %>
     </span>
 <% end %>
