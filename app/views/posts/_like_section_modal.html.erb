@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "like_section_#{post.id}", style: "display: contents;" do %>
+<%= turbo_frame_tag "like_section_modal_#{post.id}", style: "display: contents;" do %>
 
     <div class="flex items-center gap-4">
         <div>
@@ -7,7 +7,7 @@
                     method: :delete,
                     form: { class: "inline" },
                     class: "flex items-center space-x-2 text-red-500 hover:text-red-400 transition",
-                    data: { turbo_frame: "like_section_#{post.id}" } do %>
+                    data: { turbo_frame: "like_section_modal_#{post.id}" } do %>
                     <i data-feather="heart" class="w-5 h-5 fill-current"></i>
                     <span><%= post.likes_count %> <%= 'like'.pluralize(post.likes_count) %></span>
                 <% end %>
@@ -16,7 +16,7 @@
                     method: :post,
                     form: { class: "inline" },
                     class: "flex items-center space-x-2 text-gray-400 hover:text-red-500 transition",
-                    data: { turbo_frame: "like_section_#{post.id}" } do %>
+                    data: { turbo_frame: "like_section_modal_#{post.id}" } do %>
                     <i data-feather="heart" class="w-5 h-5"></i>
                     <span><%= post.likes_count %> <%= 'like'.pluralize(post.likes_count) %></span>
                 <% end %>

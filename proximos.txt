@@ -1,5 +1,11 @@
 Problemas a arranjar:
+days and minutes atrás para dias e minutos atrás
+dar para apagar posts se for admin, superadmin ou proprio dono do post (mesma coisa para os comentários)
+adicionar botão de report (publicações, comentários e perfis)
+voltar a adicionar barra de guardar (falta fazer a tabela, parecido com os likes)
+adicionar possibilidade para mostrar quem deu like (esperar pelo modal que o tomás vai fazer)
 sugestões não estão a aparecer
+carregar mais só pode aparecer se houver algo mais a carregar
 falta dar para mudar email e palavra passe nos perfis (quando tiverem finalizados adiciona-se)
 falta adicionar foto no hero quando não há login feito
 redirecionamentos depois de marcar treino não estão a dar direito

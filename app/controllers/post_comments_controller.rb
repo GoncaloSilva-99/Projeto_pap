@@ -43,6 +43,11 @@ class PostCommentsController < ApplicationController
             "comments_count_#{@post.id}",
             partial: "posts/comments_count",
             locals: { post: @post }
+          ),
+          turbo_stream.replace(
+            "comments_count_on_#{@post.id}", 
+            partial: "posts/comments_count_on", 
+            locals: { post: @post }
           )
           ]
         end

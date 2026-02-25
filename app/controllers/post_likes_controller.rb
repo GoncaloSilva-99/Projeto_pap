@@ -1,5 +1,6 @@
 class PostLikesController < ApplicationController
-  before_action :set_post_like, only: %i[ show  destroy ]
+  before_action :set_post
+  before_action :authenticate_user!
 
   # GET /post_likes or /post_likes.json
   def index
@@ -18,28 +19,28 @@ class PostLikesController < ApplicationController
 
   # POST /post_likes or /post_likes.json
   def create
-    @like = @post.likes.build(user: current_user)
+    @like = @post.post_likes.build(user: current_user)
 
     if @like.save
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-          "like_section_#{@post.id}",
-          partial: "posts/like_section",
-          locals: { post: @post }
-        )
+          render turbo_stream: [
+            turbo_stream.replace(
+              "like_section_#{@post.id}",
+              partial: "posts/like_section",
+              locals: { post: @post }
+            ),
+            turbo_stream.replace(
+              "like_section_modal_#{@post.id}",
+              partial: "posts/like_section_modal",
+              locals: { post: @post }
+            )
+          ]
         end
         format.html { redirect_to posts_path }
       end
     else
       respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-          "like_section_#{@post.id}",
-          partial: "posts/like_section",
-          locals: { post: @post, error: "Já deste like!" }
-        )
-        end
         format.html { redirect_to posts_path }
       end
     end
@@ -53,19 +54,27 @@ class PostLikesController < ApplicationController
 
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-        "like_section_#{@post.id}",
-        partial: "posts/like_section",
-        locals: { post: @post })
+        render turbo_stream: [
+          turbo_stream.replace(
+            "like_section_#{@post.id}",
+            partial: "posts/like_section",
+            locals: { post: @post }
+          ),
+          turbo_stream.replace(
+            "like_section_modal_#{@post.id}",
+            partial: "posts/like_section_modal",
+            locals: { post: @post }
+          )
+        ]
       end
       format.html { redirect_to posts_path }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post_like
-      @post_like = PostLike.find(params.expect(:id))
+
+    def set_post
+      @post = Post.find(params[:post_id])
     end
 
     # Only allow a list of trusted parameters through.

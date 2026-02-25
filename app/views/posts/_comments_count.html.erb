@@ -1,5 +1,10 @@
-<%= turbo_frame_tag "comments_count_#{post.id}" do %>
-    <span>
+<%= turbo_frame_tag "comments_count_#{post.id}", style: "display: contents;" do %>
+    <div class="flex items-center gap-2 text-gray-400 hover:text-blue-500 clickable">
+        <i data-feather="message-circle" class="w-5 h-5"></i>
         <%= post.comments_count %> <%= 'comentário'.pluralize(post.comments_count) %>
-    </span>
+    </div>
+
+    <script>
+        feather.replace();
+    </script>
 <% end %>
