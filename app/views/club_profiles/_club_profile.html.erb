@@ -2,7 +2,7 @@
 
     <!-- Banner -->
     <div class="relative h-64 bg-gradient-to-r from-indigo-900 to-purple-900 overflow-hidden">
-        <button onclick="goBack()" class="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white">
+        <button onclick="window.location.href='/'" class="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white">
             <i data-feather="arrow-left"></i>
             <span>Voltar</span>
         </button>
@@ -16,7 +16,7 @@
         </div>
     </div>
     <!-- Profile Picture -->
-    <div class="container mx-auto px-4 -mt-16 relative z-10">
+    <div class="container mx-auto px-4 -mt-12 relative z-10">
         <div class="flex flex-col md:flex-row items-center md:items-end gap-6">
             <div id="profile-pic-container" class="profile-pic w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-800 overflow-hidden border-4 border-gray-700 shadow-xl cursor-pointer group relative">
                 <% if club_profile.profile_picture.attached? %>
@@ -457,32 +457,6 @@
         // Inicializa os ícones da biblioteca Feather (substitui as tags <i> pelos ícones SVG)
         feather.replace();
 
-        // --- Lógica do Botão "Voltar" Inteligente ---
-        const clubReturnUrlKey = 'smartBackReturnUrl_club_<%= club_profile.id %>';
-
-        // Esta função é chamada pelo botão "Voltar"
-        function goBack() {
-            const returnUrl = sessionStorage.getItem(clubReturnUrlKey);
-            
-            // Se houver um URL de retorno guardado e não for a página atual, usa-o
-            if (returnUrl && returnUrl !== window.location.href) {
-                window.location.href = returnUrl;
-            } else {
-                // Caso contrário, usa o histórico do navegador como fallback
-                window.history.back();
-            }
-        }
-
-        // Quando a página de perfil carrega, decide se deve guardar o URL de referência
-        document.addEventListener('DOMContentLoaded', function() {
-            const referrer = document.referrer;
-            const currentUrl = window.location.href;
-
-            // Só guarda o URL de referência se existir, não for edição e não for a própria página (reload)
-            if (referrer && !referrer.includes('/edit') && referrer !== currentUrl) {
-                sessionStorage.setItem(clubReturnUrlKey, referrer);
-            }
-        });
 
         // Função que controla o botão de Seguir/Deixar de Seguir
         function toggleFollow() {
