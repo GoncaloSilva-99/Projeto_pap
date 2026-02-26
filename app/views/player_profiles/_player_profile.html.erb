@@ -25,24 +25,48 @@
                     <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
                 <% end %>
             </div>
-            <!-- player Name and follow buttons -->
-            <div class="flex-1">
-                <div class="flex items-center gap-4">
-                    <h2 class="text-2xl md:text-3xl font-bold py-1"><%= player_profile.name %></h2>
-                </div>
-                <!-- Botão editar campos -->
-                <div class="flex items-center gap-4 mt-4">
-                    <% if current_user && current_user.id == player_profile.user_id %>
-                        <%= link_to edit_player_profile_path(player_profile), class: "flex items-center gap-2 px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg transition" do %>
-                            <i data-feather="edit"></i>
-                            <span>Editar Perfil</span>
-                        <% end %>
-                    <% else %>
-                        <button id="followBtn" onclick="toggleFollow()" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
-                            <i data-feather="user-plus"></i>
-                            <span id="followText">Seguir</span>
-                        </button>
-                    <% end %>
+            <!-- player Name, follow buttons and Stats -->
+            <div class="flex-1 w-full">
+                <div class="flex flex-col items-center text-center md:flex-row md:text-left justify-between md:items-end w-full">
+                    <!-- Name and buttons -->
+                    <div class="flex flex-col items-center md:items-start">
+                        <h2 class="text-2xl md:text-3xl font-bold py-1"><%= player_profile.name %></h2>
+                        <!-- Botão editar campos -->
+                        <div class="flex items-center gap-4 mt-2">
+                            <% if current_user && current_user.id == player_profile.user_id %>
+                                <%= link_to edit_player_profile_path(player_profile), class: "flex items-center gap-2 px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg transition" do %>
+                                    <i data-feather="edit"></i>
+                                    <span>Editar Perfil</span>
+                                <% end %>
+                            <% else %>
+                                <button id="followBtn" onclick="toggleFollow()" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
+                                    <i data-feather="user-plus"></i>
+                                    <span id="followText">Seguir</span>
+                                </button>
+                            <% end %>
+                        </div>
+                    </div>
+
+                    <!-- Profile Stats -->
+                    <div class="mt-4 md:mt-0 bg-gray-800 rounded-xl p-3 shadow-lg">
+                        <div class="flex justify-center text-center gap-3">
+                            <div class="bg-gray-700 rounded-lg px-4 py-2">
+                                <%# TODO: Substituir com a contagem real de publicações, ex: player_profile.posts.size %>
+                                <span class="font-bold text-lg">5</span>
+                                <span class="text-gray-400 block text-xs">Publicações</span>
+                            </div>
+                            <div class="bg-gray-700 rounded-lg px-4 py-2">
+                                <%# TODO: Substituir com a contagem real de seguidores, ex: player_profile.followers.size %>
+                                <span class="font-bold text-lg">1.2K</span>
+                                <span class="text-gray-400 block text-xs">Seguidores</span>
+                            </div>
+                            <div class="bg-gray-700 rounded-lg px-4 py-2">
+                                <%# TODO: Substituir com a contagem real de perfis seguidos, ex: player_profile.following.size %>
+                                <span class="font-bold text-lg">56</span>
+                                <span class="text-gray-400 block text-xs">A Seguir</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -50,22 +74,22 @@
 
     <!-- Biography Section -->
     <div class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Biography -->
-            <div class="lg:col-span-2 bg-gray-800 rounded-xl p-6 shadow-lg fade-in">
-                <h3 class="text-xl font-bold mb-4">Biografia</h3>
-                <div class="bg-gray-700 rounded-xl px-8 py-1 shadow-lg fade-in whitespace-pre-wrap">
-<% if player_profile.bio.present? -%>
-<%= player_profile.bio %>
-<%- else -%>
-<p class="text-gray-300 mb-4">Ainda sem biografia</p>
-<%- end -%>
-                </div>
+        <!-- Biography -->
+        <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in mb-8">
+            <h3 class="text-xl font-bold mb-4">Biografia</h3>
+            <div class="bg-gray-700 rounded-xl py-1 shadow-lg fade-in whitespace-pre-wrap">
+                <% if player_profile.bio.present? -%>
+                    <%= player_profile.bio %>
+                <%- else -%>
+                    <p class="text-gray-300 mb-4">Ainda sem biografia</p>
+                <%- end -%>
             </div>
-            
+        </div>  
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">    
             <!-- Biography Details -->
-            <div class="bg-gray-800 rounded-xl p-4 shadow-lg fade-in h-36"> 
-                <div class="space-y-4 mt-1"> 
+            <div class="bg-gray-800 rounded-xl p-4 shadow-lg fade-in"> 
+                <div class="space-y-6 mt-3"> 
                     <div class="flex items-center gap-3"> 
                         <i data-feather="calendar" class="text-gray-400"></i> 
                         <span class="text-gray-300">Data de Nascimento: <%= l(player_profile.birth_date, format: :long, locale: :pt) %></span> 
@@ -87,7 +111,7 @@
 
         <!-- Club Section -->
         <div class="mt-1">
-            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in min-w-fit w-fit">
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in min-w-full w-fit">
                 <h2 class="text-xl font-bold mb-4">Clube</h2>
                 <% if player_profile.club_profile.present? %>
                     <div class="flex items-center gap-8 ">
