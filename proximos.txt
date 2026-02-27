@@ -1,10 +1,10 @@
 Problemas a arranjar:
-days and minutes atrás para dias e minutos atrás
+apagar posts funciona, mas não dá mensagem de sucesso e volta para a página com um fundo no inicio
 dar para apagar posts se for admin, superadmin ou proprio dono do post (mesma coisa para os comentários)
 adicionar botão de report (publicações, comentários e perfis)
-voltar a adicionar barra de guardar (falta fazer a tabela, parecido com os likes)
+voltar a adicionar barra de guardar (falta fazer a tabela, parecido com os likes -> opção aparece no menu dos 3 pontos )
 adicionar possibilidade para mostrar quem deu like (esperar pelo modal que o tomás vai fazer)
-sugestões não estão a aparecer
+sugestões têm de estar funcionais
 carregar mais só pode aparecer se houver algo mais a carregar
 falta dar para mudar email e palavra passe nos perfis (quando tiverem finalizados adiciona-se)
 falta adicionar foto no hero quando não há login feito
@@ -24,7 +24,7 @@ quando se tenta publicar sem ter nada dá erro (não um erro de mensagem, erro n
 
 Depois:
 
-Adicionar estatistica de clicks nos perfis para depois coocar nos perfis populares
+Adicionar estatistica de clicks nos perfis para depois colocar nos perfis populares
 Colocar posts nos perfis funcional
 fazer pesquisa da página principal (a redirecionar para página de pesquisa)
 fazer material no dashboard do clube (poder adicionar e gerir stock de material do clube, dar para associar material a um ct, campo ou balneário ou a equipa)
@@ -35,6 +35,7 @@ fazer admin dashboard (estatisticas da aplicação, parte de super admin para cr
 Se der tempo, preferencialmente:
 
 adicionar verificações ao criar conta (verificar email, etc.)
+adicionar possibilidade de apagar o perfil (confirmação com password)
 adicionar possíbilidade de jogador pertencer a mais que um escalão
 criar avisos de avarias e manutenções nas infraestruturas (estas teriam um tipo, descrição e se estão resolvidas ou não)
 fazer player dashboard

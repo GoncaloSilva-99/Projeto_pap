@@ -4,7 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  validates :role, presence: true, inclusion: {in: ["User", "Player", "Coach", "Club", "Board", "Admin"]}
+  validates :role, presence: true, inclusion: {in: ["User", "Player", "Coach", "Club", "Board", "Admin", "SuperAdmin"]}
   validates_presence_of :email, :password, :password_confirmation
 
   has_one :user_profile, dependent: :destroy
@@ -47,6 +47,10 @@ class User < ApplicationRecord
 
   def admin?
     role == "Admin"
+  end
+
+  def super_admin?
+    role == "SuperAdmin"
   end
 
   REGEX_EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
