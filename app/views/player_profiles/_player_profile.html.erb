@@ -74,14 +74,14 @@
         <!-- Biography -->
         <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in mb-8">
             <h3 class="text-xl font-bold mb-4">Biografia</h3>
-            <div class="bg-gray-700 rounded-xl py-1 shadow-lg fade-in whitespace-pre-wrap">
+            <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
                 <% if player_profile.bio.present? -%>
-                    <%= player_profile.bio %>
+<%= player_profile.bio %>
                 <%- else -%>
-                    <p class="text-gray-300 mb-4">Ainda sem biografia</p>
-                <%- end -%>
+                        <p class="text-gray-300 mb-4">Ainda sem biografia</p>
+                <%- end -%>                    
             </div>
-        </div>  
+        </div>    
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">    
             <!-- Biography Details -->

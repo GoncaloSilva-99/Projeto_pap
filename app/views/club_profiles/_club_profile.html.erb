@@ -48,68 +48,81 @@
                     <% end %>
                 </div>
             </div>
+            <!-- Profile Stats -->
+            <div class="mt-5 md:mt-0 rounded-xl p-6">
+                <div class="flex justify-center text-center gap-8">
+                    <div onclick="openFollowersModal()" class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
+                        <span class="font-bold text-xl text-gray-100">1.2K</span>
+                        <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">Seguidores</span>
+                    </div>
+                    <div class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
+                        <span class="font-bold text-xl text-gray-100">56</span>
+                        <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">A Seguir</span>
+                    </div>
+                    <div class="rounded-lg px-4 py-2 transition cursor-pointer">
+                        <span class="font-bold text-xl text-gray-100">5</span>
+                        <span class="text-gray-400 transition-colors block text-sm">Publicações</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Biography Section -->
     <div class="container mx-auto px-4 py-8">
-        <!-- Profile Stats -->
-        <div class="bg-gray-800 rounded-xl p-4 shadow-lg fade-in mb-8">
-            <div class="flex justify-around text-center">
-                <div>
-                    <%# TODO: Substituir com a contagem real de publicações, ex: club_profile.posts.size %>
-                    <span class="font-bold text-xl">5</span>
-                    <span class="text-gray-400 block text-sm">Publicações</span>
-                </div>
-                <div>
-                    <%# TODO: Substituir com a contagem real de seguidores, ex: club_profile.followers.size %>
-                    <span class="font-bold text-xl">1.2K</span>
-                    <span class="text-gray-400 block text-sm">Seguidores</span>
-                </div>
-                <div>
-                    <%# TODO: Substituir com a contagem real de perfis seguidos, ex: club_profile.following.size %>
-                    <span class="font-bold text-xl">56</span>
-                    <span class="text-gray-400 block text-sm">A Seguir</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Biography -->
-            <div class="lg:col-span-2 bg-gray-800 rounded-xl p-6 shadow-lg fade-in">
+        <!-- Biography -->
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in mb-8">
                 <h3 class="text-xl font-bold mb-4">Biografia</h3>
-                <div class="bg-gray-700 rounded-xl px-8 py-1 shadow-lg fade-in whitespace-pre-wrap">
-<% if club_profile.bio.present? -%>
+                <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
+                    <% if club_profile.bio.present? -%>
 <%= club_profile.bio %>
-<%- else -%>
-<p class="text-gray-300 mb-4">Ainda sem biografia</p>
-<%- end -%>
+                    <%- else -%>
+                            <p class="text-gray-300 mb-4">Ainda sem biografia</p>
+                    <%- end -%>                    
+                </div>
+            </div>  
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Biography Details -->
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in space-y-4">
+                <h3 class="text-xl font-bold mb-4">Info</h3>
+                <div class="space-y-6 mt-1"> 
+                    <div class="flex items-center gap-3"> 
+                        <i data-feather="calendar" class="text-gray-400"></i>
+                        <span class="text-gray-300">Data de Fundação: <%= l(club_profile.foundation_date, format: :long, locale: :pt) %></span>
+                    </div> 
+                </div> 
+                <div class="flex items-start gap-3"> 
+                    <i data-feather="award" class="text-gray-400"></i>
+                    <div class="text-gray-300">
+                        <span>Modalidade(s):</span>
+                        <% if club_profile.has_both_sports? %>
+                            <span>Futebol | Andebol</span>
+                        <% else %>
+                            <% if club_profile.has_football? %>
+                                <span>Futebol</span>
+                            <% elsif club_profile.has_handball? %>
+                                <span>Andebol</span>
+                            <% end %>
+                        <% end %>
+                    </div>
+                </div> 
+            </div>
+
+            <!-- Contact Details -->
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in">
+                <h3 class="text-xl font-bold mb-4">Contactos</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <i data-feather="phone" class="text-gray-400"></i>
+                        <span class="text-gray-300"><%= club_profile.contact || "Contacto não disponível" %></span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i data-feather="mail" class="text-gray-400"></i>
+                        <span class="text-gray-300"><%= club_profile.user.email || "Email não disponível" %></span>
+                    </div>
                 </div>
             </div>
-            
-            <!-- Biography Details -->
-            <div class="bg-gray-800 rounded-xl p-4 shadow-lg fade-in h-28">
-                <div class="space-y-6 mt-1">
-                    <div class="flex items-center gap-3">
-                        <i data-feather="calendar" class="text-gray-400"></i>
-                        <span class="text-gray-300">Fundado em: 24 de Julho, 1980</span>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <i data-feather="award" class="text-gray-400"></i>
-                        <div class="text-gray-300">
-                            <span>Modalidade(s):</span>
-                            <% if club_profile.has_both_sports? %>
-                                <span>Futebol | Andebol</span>
-                            <% else %>
-                                <% if club_profile.has_football? %>
-                                    <span>Futebol</span>
-                                <% elsif club_profile.has_handball? %>
-                                    <span>Andebol</span>
-                                <% end %>
-                            <% end %>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -796,28 +809,4 @@
         }
     </style>
 
-
-    <div id="<%= dom_id club_profile %>">
-        <p>
-            <strong>User:</strong>
-            <%= club_profile.id %>
-        </p>
-<!-- 
-        <p>
-            <strong>Name:</strong>
-            <%= club_profile.name %>
-        </p>
-
-        <p>
-            <strong>Status:</strong>
-            <%= club_profile.status %>
-        </p>
-
-        <p>
-            <strong>Approved by:</strong>
-            <%= club_profile.approved_by %>
-        </p>
-        <br>
-    </div>
--->
 </body> 
