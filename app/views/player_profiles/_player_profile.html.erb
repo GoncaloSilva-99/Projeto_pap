@@ -48,22 +48,19 @@
                     </div>
 
                     <!-- Profile Stats -->
-                    <div class="mt-4 md:mt-0 bg-gray-800 rounded-xl p-3 shadow-lg">
-                        <div class="flex justify-center text-center gap-3">
-                            <div class="bg-gray-700 rounded-lg px-4 py-2">
-                                <%# TODO: Substituir com a contagem real de publicações, ex: player_profile.posts.size %>
-                                <span class="font-bold text-lg">5</span>
-                                <span class="text-gray-400 block text-xs">Publicações</span>
+                    <div class="mt-5 md:mt-0 rounded-xl p-6">
+                        <div class="flex justify-center text-center gap-8">
+                            <div onclick="openFollowersModal()" class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
+                                <span class="font-bold text-xl text-gray-100">1.2K</span>
+                                <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">Seguidores</span>
                             </div>
-                            <div class="bg-gray-700 rounded-lg px-4 py-2">
-                                <%# TODO: Substituir com a contagem real de seguidores, ex: player_profile.followers.size %>
-                                <span class="font-bold text-lg">1.2K</span>
-                                <span class="text-gray-400 block text-xs">Seguidores</span>
+                            <div class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
+                                <span class="font-bold text-xl text-gray-100">56</span>
+                                <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">A Seguir</span>
                             </div>
-                            <div class="bg-gray-700 rounded-lg px-4 py-2">
-                                <%# TODO: Substituir com a contagem real de perfis seguidos, ex: player_profile.following.size %>
-                                <span class="font-bold text-lg">56</span>
-                                <span class="text-gray-400 block text-xs">A Seguir</span>
+                            <div class="rounded-lg px-4 py-2 transition cursor-pointer">
+                                <span class="font-bold text-xl text-gray-100">5</span>
+                                <span class="text-gray-400 transition-colors block text-sm">Publicações</span>
                             </div>
                         </div>
                     </div>
@@ -110,7 +107,7 @@
         </div>
 
         <!-- Club Section -->
-        <div class="mt-1">
+        <div>
             <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in min-w-full w-fit">
                 <h2 class="text-xl font-bold mb-4">Clube</h2>
                 <% if player_profile.club_profile.present? %>
@@ -128,10 +125,6 @@
                         <div class="flex-1 ">
                             <div class="flex items-center gap-4">
                                 <%= link_to player_profile.club_profile.name, club_profile_path(player_profile.club_profile), class: "text-2xl font-bold text-indigo-400 hover:text-indigo-300 transition whitespace-nowrap" %>
-                                <button id="followClubBtn" onclick="toggleFollowClub()" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition flex-shrink-0 whitespace-nowrap">
-                                    <i data-feather="user-plus" id="followClubIcon" class="w-5 h-5"></i>
-                                    <span id="followClubText">Seguir</span>
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -495,6 +488,72 @@
         </div>
     </div>
 
+    <!-- Followers Modal -->
+    <div id="followers-modal" class="fixed inset-0 z-[60] hidden flex justify-center items-center py-12" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop (Click outside to close) -->
+        <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity backdrop-blur-sm" onclick="closeFollowersModal()"></div>
+
+        <!-- Modal Panel -->
+        <div class="relative bg-gray-800 rounded-xl shadow-2xl w-11/12 md:w-1/3 h-full flex flex-col border border-gray-700 transform transition-all overflow-hidden">
+            
+            <!-- Header -->
+            <div class="relative flex items-center justify-center p-4 border-b border-gray-700 bg-gray-800 z-10">
+                <h3 class="text-lg font-bold text-white">Seguidores(12)</h3>
+                <button onclick="closeFollowersModal()" class="absolute right-4 text-gray-400 hover:text-white p-1 rounded-full hover:bg-gray-700 transition">
+                    <i data-feather="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- List of Followers -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-4 thin-scrollbar">
+                
+                <!-- Item 1 -->
+                <div class="flex items-center justify-between hover:bg-gray-700 p-2 rounded-lg transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-600 overflow-hidden">
+                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                        </div>
+                        <span class="font-semibold text-gray-200 text-sm">João Silva</span>
+                    </div>
+                    <button onclick="toggleFollowItem(this)" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-sm font-medium rounded-md transition flex items-center gap-1">
+                        <i data-feather="user-check" class="w-4 h-4"></i>
+                        <span>A Seguir</span>
+                    </button>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="flex items-center justify-between hover:bg-gray-700 p-2 rounded-lg transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-600 overflow-hidden">
+                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                        </div>
+                        <span class="font-semibold text-gray-200 text-sm">Maria Santos</span>
+                    </div>
+                    <button onclick="toggleFollowItem(this)" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-md transition flex items-center gap-1">
+                        <i data-feather="user-plus" class="w-4 h-4"></i>
+                        <span>Seguir</span>
+                    </button>
+                </div>
+                
+                <!-- Item 3 (Repetido para exemplo de scroll) -->
+                <% 10.times do |i| %>
+                <div class="flex items-center justify-between hover:bg-gray-700 p-2 rounded-lg transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-600 overflow-hidden">
+                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                        </div>
+                        <span class="font-semibold text-gray-200 text-sm">Utilizador <%= i + 1 %></span>
+                    </div>
+                    <button onclick="toggleFollowItem(this)" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-sm font-medium rounded-md transition flex items-center gap-1">
+                        <i data-feather="user-check" class="w-4 h-4"></i>
+                        <span>A Seguir</span>
+                    </button>
+                </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+
     <!-- Back to Top Button -->
     <a href="#" id="back-to-top" class="hidden fixed bottom-8 right-5 bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-full shadow-lg transition-opacity duration-300 z-50" title="Voltar ao topo e recarregar">
         <i data-feather="arrow-up" class="w-5 h-5"></i>
@@ -536,42 +595,54 @@
                 feather.replace();
             }
         }
+        
+        // --- Lógica do Modal de Seguidores ---
+        const followersModal = document.getElementById('followers-modal');
 
-        // Função que controla o botão de Seguir/Deixar de Seguir Clube
-        function toggleFollowClub() {
-            // Encontra o botão de seguir clube na página
-            const btn = document.getElementById('followClubBtn');
-            // Encontra o texto dentro do botão
-            const text = document.getElementById('followClubText');
-            // Encontra o ícone dentro do botão
-            const icon = document.getElementById('followClubIcon');
-            
-            // Se o texto atual for "Seguir"
-            if (text.innerText === 'Seguir') {
-                // Muda o texto para "Deixar de Seguir" em duas linhas
-                text.innerHTML = 'Deixar de<br>Seguir';
-                // Remove a cor azul (indigo) do botão
-                btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
-                // Adiciona a cor cinzenta ao botão
-                btn.classList.add('bg-gray-600', 'hover:bg-gray-700');
-                // Muda o ícone de user-plus para user-minus
-                icon.setAttribute('data-feather', 'user-minus');
-                feather.replace();
-            } else {
-                // Se já estiver a seguir, volta o texto para "Seguir"
-                text.innerHTML = 'Seguir';
-                // Remove a cor cinzenta
-                btn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
-                // Adiciona a cor azul de volta
-                btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
-                // Muda o ícone de user-minus para user-plus
-                icon.setAttribute('data-feather', 'user-plus');
-                feather.replace();
+        function openFollowersModal() {
+            if (followersModal) {
+                followersModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Impede scroll na página principal
+                feather.replace(); // Garante que ícones dentro do modal carreguem
             }
         }
 
-        // --- Lógica do Modal de Imagem (Visualizar foto de perfil em ecrã inteiro) ---
-        
+        function closeFollowersModal() {
+            if (followersModal) {
+                followersModal.classList.add('hidden');
+                document.body.style.overflow = ''; // Restaura scroll
+            }
+        }
+
+        // Função para alternar seguir/deixar de seguir dentro da lista
+        function toggleFollowItem(btn) {
+            const span = btn.querySelector('span');
+            const isFollowing = span.innerText === 'A Seguir';
+
+            if (isFollowing) {
+                // Mudar para estado "Seguir" (azul)
+                span.innerText = 'Seguir';
+                btn.classList.remove('bg-gray-600', 'hover:bg-gray-500');
+                btn.classList.add('bg-indigo-600', 'hover:bg-indigo-500');
+                
+                // Atualizar ícone para user-plus
+                const icon = btn.querySelector('svg, i');
+                if(icon) icon.remove();
+                btn.insertAdjacentHTML('afterbegin', '<i data-feather="user-plus" class="w-4 h-4"></i>');
+            } else {
+                // Mudar para estado "A Seguir" (cinza)
+                span.innerText = 'A Seguir';
+                btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
+                btn.classList.add('bg-gray-600', 'hover:bg-gray-500');
+                
+                // Atualizar ícone para user-check
+                const icon = btn.querySelector('svg, i');
+                if(icon) icon.remove();
+                btn.insertAdjacentHTML('afterbegin', '<i data-feather="user-check" class="w-4 h-4"></i>');
+            }
+            feather.replace(); // Renderiza o novo ícone
+        }
+
         // Encontra o contentor da foto de perfil pequena
         const profilePicContainer = document.getElementById('profile-pic-container');
         // Encontra o modal (janela flutuante) que vai mostrar a imagem grande
