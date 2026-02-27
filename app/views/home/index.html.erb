@@ -778,9 +778,10 @@
                                                         <button data-modal-hide="modal-apagar-post-<%= post.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
                                                             Cancelar
                                                         </button>
-                                                        <%= button_to post_path(post), method: :delete, data: { 
-                                                            turbo_frame: "_top",
-                                                            }, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                                        <%= button_to post_path(post), method: :delete, 
+                                                            onclick: "document.body.style.overflow=''",
+                                                            data: { turbo_frame: "_top" },
+                                                            class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
                                                             Apagar Publicação
                                                         <% end %>
                                                     </div>
@@ -1685,6 +1686,10 @@
                     // Inicializa
                     updateCarousel();
                 });
+                
+                document.addEventListener('turbo:before-stream-render', function() {
+                    document.body.style.overflow = '';
+                });
 
                 });
             </script>
@@ -1692,8 +1697,8 @@
 
         <!------------------------------------ Logged-out Main Page ----------------------------------->
         <!-- Hero Section -->
-        <section  id="inicio" class="relative py-16 px-6 bg-cover bg-center" style="scroll-margin-top: 72px;">
-            <%= image_tag "default_banner.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-20 z-0", alt: "Hero Background" %>
+        <section  id="inicio" class="relative p-24 bg-cover bg-center padding-" style="scroll-margin-top: 72px;">
+            <%= image_tag "hero.png", class: "absolute inset-0 w-full h-full object-cover opacity-20 z-0", alt: "Hero Background" %>
             <!-- overlay to keep text readable -->
             <div class="container mx-auto relative z-10">
                 <div class="flex flex-col md:flex-row items-center">

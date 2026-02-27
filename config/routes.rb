@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :post_saves
   resources :post_views
   resources :follows
   resources :posts do

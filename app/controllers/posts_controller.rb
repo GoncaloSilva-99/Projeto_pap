@@ -25,17 +25,6 @@ class PostsController < ApplicationController
   def edit
   end
 
-  def destroy
-    @post.destroy
-
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.remove("post_#{@post.id}")
-      end
-      format.html notice: 'Post eliminado com sucesso!' 
-    end
-  end
-
   # POST /posts or /posts.json
   
   def create
@@ -102,7 +91,7 @@ class PostsController < ApplicationController
       format.turbo_stream do
         render turbo_stream: turbo_stream.remove("post_#{@post.id}")
       end
-      format.html { redirect_to root_path, notice: 'Post eliminado.' }
+      format.html { redirect_to root_path, notice: 'Post eliminado com sucesso!' }
     end
   end
 

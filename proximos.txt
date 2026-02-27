@@ -1,4 +1,6 @@
 Problemas a arranjar:
+mostrar post só devia mostrar o tamanho suposto
+passar mensagens de confirmação e etc. para temporárias
 apagar posts funciona, mas não dá mensagem de sucesso e volta para a página com um fundo no inicio
 dar para apagar posts se for admin, superadmin ou proprio dono do post (mesma coisa para os comentários)
 adicionar botão de report (publicações, comentários e perfis)
