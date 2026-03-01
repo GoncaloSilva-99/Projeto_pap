@@ -6,7 +6,7 @@ class Post < ApplicationRecord
 
   has_many_attached :images
 
-  validates :content, presence: true, length: { minimum: 1, maximum: 5000 }
+  validates :content, presence: { message: "não pode ficar em branco" }, length: { minimum: 1, maximum: 5000, too_short: "é demasiado curto (mínimo de 1 caractere)", too_long: "é demasiado grande (máximo 500 caracteres)" }
   validate :acceptable_images
 
 

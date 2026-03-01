@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show edit update destroy ]
+  before_action :set_post, only: %i[ show destroy ]
   before_action :authenticate_user!
 
   # GET /posts or /posts.json
@@ -21,9 +21,6 @@ class PostsController < ApplicationController
     @post = Post.new
   end
 
-  # GET /posts/1/edit
-  def edit
-  end
 
   # POST /posts or /posts.json
   
@@ -49,47 +46,27 @@ class PostsController < ApplicationController
           partial: "posts/form",
           locals: { post: @post }
           ), status: :unprocessable_entity
+          flash.now[:alert] = @post.errors.full_messages.to_sentence(words_connector: ", ", two_words_connector: "e", last_word_connector: "e")
+          render turbo_stream: turbo_stream.replace("flash", partial: "shared/flash")
         end
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { redirect_to root_path, alert: @post.errors.full_messages.to_sentence }
       end
     end
   end
 
 
-  # PATCH/PUT /posts/1 or /posts/1.json
-  def update
-    if @post.update(post_params)
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-          "post_#{@post.id}",
-          partial: "posts/post",
-          locals: { post: @post }
-          )
-        end
-        format.html { redirect_to @post, notice: 'Post atualizado com sucesso.' }
-      end
-    else
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-          "post_form_#{@post.id}",
-          partial: "posts/edit_form",
-          locals: { post: @post }
-          ), status: :unprocessable_entity
-        end
-        format.html { render :edit, status: :unprocessable_entity }
-      end
-    end
-  end
+
 
   # DELETE /posts/1 or /posts/1.json
   def destroy
     @post.destroy
-
+    flash.now[:notice] = "Post eliminado com sucesso!"
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.remove("post_#{@post.id}")
+         render turbo_stream: [
+          turbo_stream.remove("post_#{@post.id}"),
+          turbo_stream.replace("flash", partial: "shared/flash")
+        ]
       end
       format.html { redirect_to root_path, notice: 'Post eliminado com sucesso!' }
     end
