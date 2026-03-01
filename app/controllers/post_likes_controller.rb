@@ -49,25 +49,19 @@ class PostLikesController < ApplicationController
 
   # DELETE /post_likes/1 or /post_likes/1.json
   def destroy
-    @like = @post.post_likes.find_by(user: current_user)
-    @like&.destroy
+    @post.destroy
+
+    flash.now[:notice] = "Post eliminado com sucesso!"
 
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
-          turbo_stream.replace(
-            "like_section_#{@post.id}",
-            partial: "posts/like_section",
-            locals: { post: @post }
-          ),
-          turbo_stream.replace(
-            "like_section_modal_#{@post.id}",
-            partial: "posts/like_section_modal",
-            locals: { post: @post }
-          )
+          turbo_stream.remove("post_#{@post.id}"),
+          turbo_stream.replace("flash", partial: "shared/flash")
         ]
       end
-      format.html { redirect_to posts_path }
+
+      format.html { redirect_to root_path, notice: "Post eliminado com sucesso!" }
     end
   end
 

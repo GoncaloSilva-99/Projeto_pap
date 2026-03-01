@@ -665,59 +665,61 @@
                         <!-- Create Post -->
                         <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg">
 
-                            <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
-                                <div class="flex items-start space-x-4">
-                                    <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                        <% if current_profile && current_profile.profile_picture.attached? %>
-                                            <%= image_tag url_for(current_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
-                                        <% else %>
-                                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
-                                        <% end %>
-                                    </div>
-                                    <div class="flex-1">
-                                        <%= f.text_area :content, 
-                                            rows: 3,
-                                            placeholder: "O que estás a pensar?",
-                                            class: "w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" %>
+                            <%= turbo_frame_tag "post_form" do %>
+                                <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "post_form", class: "space-y-4" do |f| %>
+                                    <div class="flex items-start space-x-4">
 
-                                        <!-- Image Preview -->
-                                        <div id="image-preview-container" class="hidden mt-3 relative">
-                                            <div id="image-carousel" class="flex overflow-x-auto scroll-smooth rounded-lg no-scrollbar gap-2">
-                                                <!-- Images will be injected here by JS -->
-                                            </div>
-                                            <button id="prev-image-btn" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
-                                                <i data-feather="chevron-left" class="w-6 h-6"></i>
-                                            </button>
-                                            <button id="next-image-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
-                                                <i data-feather="chevron-right" class="w-6 h-6"></i>
-                                            </button>
-                                            <div id="image-dots" class="flex justify-center items-center space-x-2 mt-2">
-                                                <!-- Dots will be injected here by JS -->
-                                            </div>
+                                        <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                            <% if current_profile && current_profile.profile_picture.attached? %>
+                                                <%= image_tag url_for(current_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                            <% else %>
+                                                <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                            <% end %>
                                         </div>
-                                        
-                                        <div class="flex justify-between items-center mt-3">
-                                            <div class="flex items-center space-x-2">
-                                                <%= f.file_field :images, 
-                                                    multiple: true,
-                                                    accept: "image/*",
-                                                    class: "hidden",
-                                                    id: "post-image-upload" %>
-                                                <label for="post_images_input" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 cursor-pointer" id="btn-upload-image">
-                                                    <i data-feather="image" class="w-5 h-5"></i>
-                                                </label>
+                                        <div class="flex-1">
+                                            <%= f.text_area :content, 
+                                                rows: 3,
+                                                placeholder: "O que estás a pensar?",
+                                                class: "w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" %>
+
+                                            <!-- Image Preview -->
+                                            <div id="image-preview-container" class="hidden mt-3 relative">
+                                                <div id="image-carousel" class="flex overflow-x-auto scroll-smooth rounded-lg no-scrollbar gap-2">
+                                                    <!-- Images will be injected here by JS -->
+                                                </div>
+                                                <button id="prev-image-btn" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                                    <i data-feather="chevron-left" class="w-6 h-6"></i>
+                                                </button>
+                                                <button id="next-image-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                                    <i data-feather="chevron-right" class="w-6 h-6"></i>
+                                                </button>
+                                                <div id="image-dots" class="flex justify-center items-center space-x-2 mt-2">
+                                                    <!-- Dots will be injected here by JS -->
+                                                </div>
                                             </div>
                                             
-                                            <%= f.submit "Publicar", 
-                                                class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer" %>
+                                            <div class="flex justify-between items-center mt-3">
+                                                <div class="flex items-center space-x-2">
+                                                    <%= f.file_field :images, 
+                                                        multiple: true,
+                                                        accept: "image/*",
+                                                        class: "hidden",
+                                                        id: "post-image-upload" %>
+                                                    <label for="post_images_input" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 cursor-pointer" id="btn-upload-image">
+                                                        <i data-feather="image" class="w-5 h-5"></i>
+                                                    </label>
+                                                </div>
+                                                
+                                                <%= f.submit "Publicar", 
+                                                    class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer" %>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                <% end %>
                             <% end %>
 
                         </div>
 
-                        
 
                         <div id="posts_list" class="space-y-6">
                             <% if @posts.present? %>
@@ -779,8 +781,7 @@
                                                             Cancelar
                                                         </button>
                                                         <%= button_to post_path(post), method: :delete, 
-                                                            onclick: "document.body.style.overflow=''",
-                                                            data: { turbo_frame: "_top" },
+                                                            data: { turbo_frame: "_top", modal_hide: "modal-apagar-post-#{post.id}" },
                                                             class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
                                                             Apagar Publicação
                                                         <% end %>
@@ -1290,6 +1291,7 @@
                         // Abre o modal visualmente
                         openModal(modal);
                     };
+                    
 
                     // --- Gestão de Cliques (Event Delegation) ---
                     // Em vez de adicionar um evento a cada botão, adicionamos um ao 'body' e vemos onde foi o clique.
@@ -1314,6 +1316,8 @@
                         if (!target.closest('.post-options-dropdown')) {
                             document.querySelectorAll('.post-options-dropdown').forEach(d => d.classList.add('hidden'));
                         }
+
+
 
                         // 2. Botão de Comentário - Abre modal
                         const commentBtn = target.closest('.comment-btn');

@@ -51,6 +51,8 @@ pt:
       sport: "Desporto"
       user_profile: "Perfil de Adepto"
     attributes:
+      post:
+        content: "Conteúdo"
       admin_profile:
         name: "Nome"
       board_profile:
