@@ -1,0 +1,73 @@
+<div class="flex items-start space-x-3" id="comment_<%= comment.id %>">
+  <div class="w-8 h-8 rounded-full bg-gray-600 flex-shrink-0 overflow-hidden flex items-center justify-center">
+    <% 
+      commenter_profile = nil
+      if comment.user.club?
+        commenter_profile = comment.user.club_profile
+      elsif comment.user.player?
+        commenter_profile = comment.user.player_profile
+      elsif comment.user.coach?
+        commenter_profile = comment.user.coach_profile
+      elsif comment.user.board?
+        commenter_profile = comment.user.board_profile
+      end
+    %>
+    
+    <% if commenter_profile && commenter_profile.profile_picture.attached? %>
+      <%= image_tag url_for(commenter_profile.profile_picture), class: "w-full h-full object-cover" %>
+    <% else %>
+      <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+    <% end %>
+  </div>
+  
+  <div class="bg-gray-700 rounded-lg pt-2 pb-3 px-3 flex-1">
+    <div class="flex justify-between items-center mb-1 relative">
+      <div class="flex items-center space-x-2">
+        <p class="text-sm font-semibold text-white mt-0 leading-none">
+          <% if comment.user.club? %>
+            <%= link_to club_profile_path(comment.user.club_profile), 
+              data: { turbo_frame: "_top" }, 
+              class: "hover:underline" do %>
+              <%= comment.user.club_profile.name %>
+            <% end %>
+          <% elsif comment.user.player? %>
+            <%= link_to player_profile_path(comment.user.play_profile), 
+              data: { turbo_frame: "_top" }, 
+              class: "hover:underline" do %>
+              <%= comment.user.player_profile.name %>
+            <% end %>
+          <% elsif comment.user.coach? %>
+            <%= link_to coach_profile_path(comment.user.coach_profile), 
+              data: { turbo_frame: "_top" }, 
+              class: "hover:underline" do %>
+              <%= comment.user.coach_profile.name %>
+            <% end %>
+          <% elsif comment.user.board? %>
+            <%= link_to board_profile_path(comment.user.board_profile), 
+              data: { turbo_frame: "_top" }, 
+              class: "hover:underline" do %>
+              <%= comment.user.coach_profile.name %>
+            <% end %>
+          <% else %>
+            <%= comment.user.email %>
+          <% end %>
+        </p>
+        <span class="text-xs text-gray-400 leading-none"><%= time_ago_in_words(comment.created_at) %> atrás</span>
+      </div>
+
+      <% if comment.user == current_user or current_user.admin? or current_user.super_admin? %>
+        <div data-modal-target="modal-apagar-comment-<%= comment.id %>" data-modal-toggle="modal-apagar-comment-<%= comment.id %>" class="flex items-center justify-center w-9 h-9 text-gray-400 hover:text-red-500 hover:bg-gray-600 rounded-full transition clickable" > 
+          <i data-feather="trash-2" class="w-4 h-4"></i>
+        </div>
+      <% else %>
+        <div data-modal-target="modal-report-comment-<%= comment.id %>" data-modal-toggle="modal-report-comment-<%= comment.id %>" class="flex items-center justify-center w-9 h-9 text-gray-400 hover:text-red-500 hover:bg-gray-600 rounded-full transition clickable" > 
+          <i data-feather="trash-2" class="w-4 h-4"></i>
+        </div>
+        <%= button_to post_post_comments_path(comment.post, id: comment.id), method: :delete, form: { data: { turbo_confirm: 'Tens a certeza que queres apagar este comentário?' } }, class: 'flex items-center justify-center w-8 h-8 text-gray-400 hover:text-red-500 hover:bg-gray-600 rounded-full transition' do %>
+          <i data-feather="trash-2" class="w-4 h-4"></i>
+        <% end %>
+      <% end %>
+    </div>
+    <p class="text-sm text-gray-300"><%= comment.content %></p>
+  </div>
+</div>

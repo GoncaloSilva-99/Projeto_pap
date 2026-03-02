@@ -1,0 +1,50 @@
+<%= turbo_frame_tag "post_form" do %>
+  <%= form_with model: post, url: posts_path, local: false, multipart: true, class: "space-y-4" do |f| %>
+    
+
+    <div class="flex items-start space-x-4">
+      <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+        <% current_profile = nil
+           if current_user.club?
+             current_profile = current_user.club_profile
+           elsif current_user.player?
+             current_profile = current_user.player_profile
+           elsif current_user.board?
+             current_profile = current_user.board_profile
+           elsif current_user.coach?
+             current_profile = current_user.coach_profile
+           elsif current_user.admin?
+             current_profile = current_user.admin_profile
+           elsif current_user.user?
+             current_profile = current_user.user_profile
+           end %>
+        <% if current_profile && current_profile.profile_picture.attached? %>
+          <%= image_tag url_for(current_profile.profile_picture), class: "w-full h-full object-cover" %>
+        <% else %>
+          <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+        <% end %>
+      </div>
+      <div class="flex-1">
+        <%= f.text_area :content,
+            rows: 3,
+            placeholder: "O que estás a pensar?",
+            class: "w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none #{'border border-red-500' if post.errors[:content].any?}" %>
+
+        <div class="flex justify-between items-center mt-3">
+          <div class="flex items-center space-x-2">
+            <%= f.file_field :images,
+                multiple: true,
+                accept: "image/*",
+                class: "hidden",
+                id: "post-image-upload" %>
+            <label for="post_images_input" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 cursor-pointer" id="btn-upload-image">
+              <i data-feather="image" class="w-5 h-5"></i>
+            </label>
+          </div>
+          <%= f.submit "Publicar",
+              class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>

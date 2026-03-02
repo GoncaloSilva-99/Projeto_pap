@@ -1,7 +1,6 @@
 class ClubTeamTrainingsController < ApplicationController
   before_action :set_club_team_training, only: %i[ show edit update destroy ]
   before_action :build_club_team_training, only: [:create]
-  before_action :no_zone_overlap_on_pitch, only: [:create, :update]
 
   # GET /club_team_trainings or /club_team_trainings.json
   def index
@@ -23,15 +22,38 @@ class ClubTeamTrainingsController < ApplicationController
 
   # POST /club_team_trainings or /club_team_trainings.json
   def create
+
+      duration = params[:club_team_training][:duration_minutes].to_i
+      training_params = club_team_training_params.except(:duration_minutes)
+      @club_team_training = ClubTeamTraining.new(training_params) 
+      @club_team_training.end_time = @club_team_training.start_time + duration.minutes
+
     if @club_team_training.recurring
       @club_team_training.weekday = @club_team_training.start_time.wday
+    end
+
+    if has_zone_overlap?
+      @selected_sport = params[:sport]
+      @selected_pitch = params[:pitch]
+      @selected_ct = params[:ct]
+      
+      respond_to do |format|
+        if @selected_ct.present?
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), alert: "Não foi possível criar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
+        else
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), alert: "Não foi possível criar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
+        end
+        format.json { render json: { error: "Sobreposição de treinos" }, status: :unprocessable_entity }
+      end
+      return
     end
 
     respond_to do |format|
       if @club_team_training.save
         @selected_sport = params[:sport]
         @selected_pitch = params[:pitch]
-        if params[:ct].present?
+        @selected_ct = params[:ct]
+        if @selected_ct.present?
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), notice: "Treino criado com sucesso!" }
         else
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), notice: "Treino criado com sucesso!" }
@@ -46,12 +68,41 @@ class ClubTeamTrainingsController < ApplicationController
 
   # PATCH/PUT /club_team_trainings/1 or /club_team_trainings/1.json
   def update
+    training_params = club_team_training_params.to_h
+    
+    if params[:club_team_training][:end_time].present?
+      duration = params[:club_team_training][:end_time].to_i
+      training_params[:end_time] = training_params[:start_time].to_time + duration.minutes
+    end
+    
+    if training_params[:recurring] == "1" || training_params[:recurring] == true
+      training_params[:weekday] = training_params[:start_time].to_time.wday
+    end
+    
+    @club_team_training.assign_attributes(training_params)
+
+    if has_zone_overlap?
+      @selected_sport = params[:sport]
+      @selected_pitch = params[:pitch]
+      @selected_ct = params[:ct]
+      
+      respond_to do |format|
+        if @selected_ct.present?
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), alert: "Não foi possível atualizar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
+        else
+          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), alert: "Não foi possível atualizar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
+        end
+        format.json { render json: { error: "Sobreposição de treinos" }, status: :unprocessable_entity }
+      end
+      return
+    end
+
     respond_to do |format|
-      if @club_team_training.update(club_team_training_params)
+      if @club_team_training.update(training_params)
         @selected_sport = params[:sport]
         @selected_pitch = params[:pitch]
-        if params[:ct].present?
-          @selected_ct = params[:ct]
+        @selected_ct = params[:ct]
+        if @selected_ct.present?
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), notice: "Treino atualizado com sucesso!" }
         else
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), notice: "Treino atualizado com sucesso!" }
@@ -71,8 +122,8 @@ class ClubTeamTrainingsController < ApplicationController
     respond_to do |format|
         @selected_sport = params[:sport]
         @selected_pitch = params[:pitch]
-        if params[:ct].present?
-          @selected_ct = params[:ct]
+        @selected_ct = params[:ct]
+        if @selected_ct.present?
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), notice: "Treino apagado com sucesso!" }
         else
           format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), notice: "Treino apagado com sucesso!" }
@@ -97,11 +148,27 @@ class ClubTeamTrainingsController < ApplicationController
     end
 
     def times_overlap_with?(training1, training2)
-      t1_start = training1.start_time.hour * 60 + training1.start_time.min
-      t1_end = training1.end_time.hour * 60 + training1.end_time.min
-      t2_start = training2.start_time.hour * 60 + training2.start_time.min
-      t2_end = training2.end_time.hour * 60 + training2.end_time.min
-      t1_start < t2_end and t2_start < t1_end
+      t1_start = training1.start_time
+      t1_end = training1.end_time
+      t2_start = training2.start_time
+      t2_end = training2.end_time
+
+      t1_start < t2_end and t2_start < t1_end 
+    end
+
+    def locker_rooms_conflict?(training1, training2)
+
+      return false if training1.club_locker_room_id.nil? or training2.club_locker_room_id.nil?
+      return false if training1.club_locker_room_id != training2.club_locker_room_id
+      
+
+      t1_locker_start = training1.start_time - training1.locker_room_time_before.minutes
+      t1_locker_end = training1.end_time + training1.locker_room_time_after.minutes
+      
+      t2_locker_start = training2.start_time - training2.locker_room_time_before.minutes
+      t2_locker_end = training2.end_time + training2.locker_room_time_after.minutes
+      
+      t1_locker_start < t2_locker_end and t2_locker_start < t1_locker_end
     end
 
     def zones_conflict?(zone1, zone2)
@@ -119,12 +186,15 @@ class ClubTeamTrainingsController < ApplicationController
       if zone2.include?("Zona C") and (zone1.include?("Zona F") or zone1.include?("Zona G"))
         return true
       end
-
       false
     end
 
-    def no_zone_overlap_on_pitch
-      overlapping = ClubTeamTraining.where(club_pitch_id: @club_team_training.club_pitch_id).where.not(id: @club_team_training.id)
+    def has_zone_overlap?
+      if @club_team_training.id.present?
+        overlapping = ClubTeamTraining.where(club_pitch_id: @club_team_training.club_pitch_id).where.not(id: @club_team_training.id)
+      else
+        overlapping = ClubTeamTraining.where(club_pitch_id: @club_team_training.club_pitch_id)
+      end
       
       if @club_team_training.recurring
         overlapping = overlapping.where(recurring: true, weekday: @club_team_training.start_time.wday)
@@ -134,21 +204,15 @@ class ClubTeamTrainingsController < ApplicationController
 
       overlapping.each do |training|
         if times_overlap_with?(@club_team_training, training) and zones_conflict?(@club_team_training.pitch_zone, training.pitch_zone)
-          @selected_sport = params[:sport]
-          @selected_pitch = params[:pitch]
-          @selected_ct = params[:ct]
-          
-          if @selected_ct.present?
-            redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), alert: "As alterações não foram guardadas! Existe uma sobreposição de treinos na zona selecionada"
-          else
-            redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), alert: "As alterações não foram guardadas! Existe uma sobreposição de treinos na zona selecionada"
-          end
-          return
+          return true
         end
-      end
 
+        if locker_rooms_conflict?(@club_team_training, training)
+          return true
+        end
 
-
+      end 
+    false
   end
 
 

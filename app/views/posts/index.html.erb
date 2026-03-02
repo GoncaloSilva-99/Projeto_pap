@@ -1,0 +1,38 @@
+<body class="bg-gray-900 text-gray-100 min-h-screen">
+
+  <% if user_signed_in? %>
+  <div class="container mx-auto pt-24 pb-12 px-6">
+  <div class="flex flex-col lg:flex-row gap-8">
+
+  <div class="flex-1 space-y-6">
+  <%= render 'posts/form_inline' %>
+
+  <div id="posts_list" class="space-y-6">
+  <% @posts.each do |post| %>
+  <%= render 'posts/post', post: post %>
+  <% end %>
+
+  <% if @posts.empty? %>
+  <div class="bg-gray-800 rounded-xl p-12 text-center">
+  <i data-feather="inbox" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+  <h3 class="text-xl font-bold text-gray-400 mb-2">Ainda não há posts</h3>
+  <p class="text-gray-500">Sê o primeiro a publicar!</p>
+  </div>
+  <% end %>
+  </div>
+
+  <% if @page && @posts.any? %>
+  <div class="text-center mt-8">
+  <%= link_to "Carregar mais", posts_path(page: @page + 1),
+  class: "bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg" %>
+  </div>
+  <% end %>
+  </div>
+  <%= render 'posts/sidebar_suggestions', suggested_users: @suggested_users %>
+
+  </div>
+  </div>
+  <% else %>
+  <%= render 'shared/logged_out' %>
+  <% end %>
+  </body>
