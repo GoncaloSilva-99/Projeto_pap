@@ -83,21 +83,46 @@
                 <%- end -%>                    
             </div>
         </div>    
-        
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">    
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <!-- Contact Details -->
             <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in">
                 <h3 class="text-xl font-bold mb-4">Contactos</h3>
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
                         <i data-feather="phone" class="text-gray-400"></i>
-                        <span class="text-gray-300"><%= board_profile.contact || "Contacto não disponível" %></span>
+                        <span class="text-gray-300"><%= board_profile.contact || 'Contacto não disponível' %></span>
                     </div>
                     <div class="flex items-center gap-3">
                         <i data-feather="mail" class="text-gray-400"></i>
-                        <span class="text-gray-300"><%= board_profile.user.email || "Email não disponível" %></span>
+                        <span class="text-gray-300"><%= board_profile.user.email || 'Email não disponível' %></span>
                     </div>
                 </div>
+            </div>
+            <!-- Club Section -->
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in">
+                <h2 class="text-xl font-bold mb-4">Clube</h2>
+                <% if board_profile.club_profile_id.present? %>
+                    <div class="flex items-center gap-8">
+                        <!-- Club Profile Picture -->
+                        <div class="w-20 h-20 rounded-full bg-gray-700 overflow-hidden border-4 border-gray-700 shadow-lg flex-shrink-0">
+                            <% if board_profile.club_profile.profile_picture.attached? %>
+                                <%= image_tag url_for(board_profile.club_profile.profile_picture), class: 'w-full h-full object-cover' %>
+                            <% else %>
+                                <%= image_tag 'default_pp.jpg', class: 'w-full h-full object-cover' %>
+                            <% end %>
+                        </div>
+
+                        <!-- Club Info -->
+                        <div class="flex-1">
+                            <div class="flex items-center gap-4">
+                                <%= link_to board_profile.club_profile.name, club_profile_path(board_profile.club_profile), class: 'text-2xl font-bold text-indigo-400 hover:text-indigo-300 transition whitespace-nowrap' %>
+                            </div>
+                        </div>
+                    </div>
+                <% else %>
+                    <p class="text-gray-400">Este jogador não pertence a nenhum clube no momento.</p>
+                <% end %>
             </div>
         </div>
     </div>

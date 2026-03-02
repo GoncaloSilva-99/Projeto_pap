@@ -7,7 +7,7 @@
   </div>
 
   <div class="bg-gray-800 p-8 rounded-xl shadow-lg max-w-2xl w-full mx-auto">
-    <%= form_with(model: player_profile, class: "space-y-6") do |form| %>
+    <%= form_with(model: player_profile, class: "space-y-6"u) do |form| %>
       <% if player_profile.errors.any? %>
         <div id="error_explanation" class="bg-red-900 bg-opacity-50 border border-red-700 text-red-300 px-4 py-3 rounded-lg" role="alert">
           <h2 class="font-bold text-lg mb-2"><%= pluralize(player_profile.errors.count, "erro") %> impediu que as alterações fossem guardadas:</h2>
