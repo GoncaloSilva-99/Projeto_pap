@@ -25,7 +25,7 @@ class BoardProfilesController < ApplicationController
 
     respond_to do |format|
       if @board_profile.save
-        format.html { redirect_to club_board_dashboard_path, notice: "Conta de direção criada com sucesso!" }
+        format.html { redirect_to @board_profile, notice: "Board profile was successfully created." }
         format.json { render :show, status: :created, location: @board_profile }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -36,9 +36,19 @@ class BoardProfilesController < ApplicationController
 
   # PATCH/PUT /board_profiles/1 or /board_profiles/1.json
   def update
+    # Handle image removal
+    @board_profile.profile_picture.purge if params[:board_profile][:remove_profile_picture] == '1'
+    @board_profile.banner_picture.purge if params[:board_profile][:remove_banner_picture] == '1'
+    
+    # Clean bio - remove indentation spaces but keep user-inserted line breaks
+    bio_params = board_profile_params
+    if bio_params[:bio].present?
+      bio_params[:bio] = bio_params[:bio].strip.lines.map(&:strip).join("\n")
+    end
+    
     respond_to do |format|
-      if @board_profile.update(board_profile_params)
-        format.html { redirect_to club_board_dashboard_path, notice: "Perfil atualizado com sucesso!", status: :see_other }
+      if @board_profile.update(bio_params)
+        format.html { redirect_to @board_profile, notice: "Board profile was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @board_profile }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -50,8 +60,9 @@ class BoardProfilesController < ApplicationController
   # DELETE /board_profiles/1 or /board_profiles/1.json
   def destroy
     @board_profile.destroy!
+
     respond_to do |format|
-      format.html { redirect_to club_board_dashboard_path, notice: "Membro da direção apagado com sucesso!", status: :see_other }
+      format.html { redirect_to board_profiles_path, notice: "Board profile was successfully destroyed.", status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -64,6 +75,7 @@ class BoardProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def board_profile_params
-      params.expect(board_profile: [ :user_id, :name, :bio, :birth_date, :club_profile_id, :role ])
+      params.expect(board_profile: [ :user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture ])
     end
 end
+

@@ -1,27 +1,927 @@
-<div id="<%= dom_id coach_profile %>">
-  <p>
-    <strong>User:</strong>
-    <%= coach_profile.user_id %>
-  </p>
 
-  <p>
-    <strong>Name:</strong>
-    <%= coach_profile.name %>
-  </p>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
 
-  <p>
-    <strong>Birth date:</strong>
-    <%= coach_profile.birth_date %>
-  </p>
+    <!-- Banner -->
+    <div class="relative h-64 bg-gradient-to-r from-indigo-900 to-purple-900 overflow-hidden">
+        <button onclick="window.location.href='/'" class="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white">
+            <i data-feather="arrow-left"></i>
+            <span>Voltar</span>
+        </button>
+        <div class="absolute inset-0 bg-black opacity-30"></div>
+        <div class="relative h-full flex items-center justify-center">
+            <% if coach_profile.banner_picture.attached? %>
+                <%= image_tag url_for(coach_profile.banner_picture), class: "w-full h-full object-cover" %>
+            <% else %>
+                <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+            <% end %>
+        </div>
+    </div>
+    <!-- Profile Picture -->
+    <div class="container mx-auto px-4 -mt-12 relative z-10">
+        <div class="flex flex-col md:flex-row items-center md:items-end gap-6">
+            <div id="profile-pic-container" class="profile-pic w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-800 overflow-hidden border-4 border-gray-700 shadow-xl cursor-pointer group relative">
+                <% if coach_profile.profile_picture.attached? %>
+                    <%= image_tag url_for(coach_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                <% end %>
+            </div>
+            <!-- coach Name, follow buttons and Stats -->
+            <div class="flex-1 w-full">
+                <div class="flex flex-col items-center text-center md:flex-row md:text-left justify-between md:items-end w-full">
+                    <!-- Name and buttons -->
+                    <div class="flex flex-col items-center md:items-start">
+                        <h2 class="text-2xl md:text-3xl font-bold py-1"><%= coach_profile.name %></h2>
+                        <!-- Botão editar campos -->
+                        <div class="flex items-center gap-4 mt-2">
+                            <% if current_user && current_user.id == coach_profile.user_id %>
+                                <%= link_to edit_coach_profile_path(coach_profile), class: "flex items-center gap-2 px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg transition" do %>
+                                    <i data-feather="edit"></i>
+                                    <span>Editar Perfil</span>
+                                <% end %>
+                            <% else %>
+                                <button id="followBtn" onclick="toggleFollow()" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
+                                    <i data-feather="user-plus"></i>
+                                    <span id="followText">Seguir</span>
+                                </button>
+                            <% end %>
+                        </div>
+                    </div>
 
-  <p>
-    <strong>Club:</strong>
-    <%= coach_profile.club_id %>
-  </p>
+                    <!-- Profile Stats -->
+                    <div class="mt-5 md:mt-0 rounded-xl p-6">
+                        <div class="flex justify-center text-center gap-8">
+                            <div onclick="openFollowersModal()" class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
+                                <span class="font-bold text-xl text-gray-100">1.2K</span>
+                                <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">Seguidores</span>
+                            </div>
+                            <div class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
+                                <span class="font-bold text-xl text-gray-100">56</span>
+                                <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">A Seguir</span>
+                            </div>
+                            <div class="rounded-lg px-4 py-2 transition cursor-pointer">
+                                <span class="font-bold text-xl text-gray-100">5</span>
+                                <span class="text-gray-400 transition-colors block text-sm">Publicações</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <p>
-    <strong>Coach type:</strong>
-    <%= coach_profile.coach_type %>
-  </p>
+    <!-- Biography Section -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Biography -->
+        <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in mb-8">
+            <h3 class="text-xl font-bold mb-4">Biografia</h3>
+            <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
+                <% if coach_profile.bio.present? -%>
+<%= coach_profile.bio %>
+                <%- else -%>
+                        <p class="text-gray-300 mb-4">Ainda sem biografia</p>
+                <%- end -%>                    
+            </div>
+        </div>    
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">    
+            <!-- Biography Details -->
+            <div class="bg-gray-800 rounded-xl p-4 shadow-lg fade-in"> 
+                <div class="space-y-6 mt-3"> 
+                    <div class="flex items-center gap-3"> 
+                        <i data-feather="calendar" class="text-gray-400"></i> 
+                        <span class="text-gray-300">Data de Nascimento: <%= l(coach_profile.birth_date, format: :long, locale: :pt) %></span> 
+                    </div> 
+                    <div class="flex items-start gap-3"> 
+                        <i data-feather="award" class="text-gray-400"></i> 
+                        <div class="text-gray-300"> <span>Modalidade: <%= t("sports.#{coach_profile.sport}", default: coach_profile.sport.titleize) %></span> 
+                    </div> 
+                </div> 
+                <div class="flex items-start gap-3"> 
+                    <i data-feather="map-pin" class="text-gray-400"></i> 
+                    <div class="text-gray-300"> 
+                        <span>Função: <%= coach_profile.coach_type.titleize %></span>
+                    </div> 
+                </div> 
+            </div>
+        </div>
 
-</div>
+        <!-- Club Section -->
+        <div>
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in min-w-full w-fit">
+                <h2 class="text-xl font-bold mb-4">Clube</h2>
+                <% if coach_profile.club_profile.present? %>
+                    <div class="flex items-center gap-8 ">
+                        <!-- Club Profile Picture -->
+                        <div class="w-20 h-20 rounded-full bg-gray-700 overflow-hidden border-4 border-gray-700 shadow-lg flex-shrink-0">
+                            <% if coach_profile.club_profile.profile_picture.attached? %>
+                                <%= image_tag url_for(coach_profile.club_profile.profile_picture), class: "w-full h-full object-cover" %>
+                            <% else %>
+                                <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                            <% end %>
+                        </div>
+
+                        <!-- Club Info -->
+                        <div class="flex-1 ">
+                            <div class="flex items-center gap-4">
+                                <%= link_to coach_profile.club_profile.name, club_profile_path(coach_profile.club_profile), class: "text-2xl font-bold text-indigo-400 hover:text-indigo-300 transition whitespace-nowrap" %>
+                            </div>
+                        </div>
+                    </div>
+                <% else %>
+                    <p class="text-gray-400">Este treinador não pertence a nenhum clube no momento.</p>
+                <% end %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-2">
+        <div class="lg:col-span-3 space-y-8">
+            
+            <!-- Posts Section -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-bold">Publicações</h3>
+                    <button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
+                        <i data-feather="plus"></i>
+                        <span>Publicar</span>
+                    </button>
+                </div>
+                
+                <!-- Post 1 -->
+                <div class="post-card bg-gray-800 rounded-xl p-6 shadow-lg" data-post-id="1">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                <% if coach_profile.profile_picture.attached? %>
+                                    <%= image_tag url_for(coach_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                <% else %>
+                                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                <% end %>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white"><%= coach_profile.name %></h3>
+                                <span class="text-gray-400 text-sm">Há 2 horas</span>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <button class="post-options-btn text-gray-400 hover:text-white">
+                                <i data-feather="more-vertical"></i>
+                            </button>
+                            <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600 overflow-hidden">
+                                <a href="#" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition-colors">
+                                    <div class="flex items-center"><i data-feather="bookmark" class="w-4 h-4 mr-2"></i><span class="save-text">Guardar publicação</span></div>
+                                </a>
+                                <a href="#" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition-colors">
+                                    <div class="flex items-center"><i data-feather="download" class="w-4 h-4 mr-2"></i><span>Descarregar imagem</span></div>
+                                </a>
+                                <% if current_user && current_user.id == coach_profile.user_id %>
+                                    <a href="#" class="delete-post-btn block px-4 py-2 text-sm text-red-400 hover:bg-gray-600 transition-colors">
+                                        <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span>Remover publicação</span></div>
+                                    </a>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="post-text text-gray-300 mb-4">
+                        Grande vitória da equipa hoje! O esforço nos treinos está finalmente a dar frutos. Continuamos focados para o próximo desafio. ⚽💪 #Futebol #Vitória #Equipa
+                    </p>
+                    <div class="post-media rounded-lg overflow-hidden mb-4 bg-gray-700 flex items-center justify-center">
+                        <img src="http://static.photos/sport/320x240/20" alt="Post" class="w-full h-full object-cover">
+                    </div>
+                    <div class="post-actions flex items-center justify-between pt-4 border-t border-gray-700">
+                        <div class="flex items-center gap-[15px]">
+                            <button class="like-btn flex items-center space-x-2 text-gray-400 hover:text-red-500 transition group">
+                                <i data-feather="heart" class="w-5 h-5 group-hover:fill-current"></i>
+                                <span class="like-count">0 likes</span>
+                            </button>
+                            <button class="comment-btn flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                <i data-feather="message-circle" class="w-5 h-5"></i>
+                                <span class="comment-count">1 comentário</span>
+                            </button>
+                        </div>
+                        <button class="share-btn flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                            <i data-feather="share-2" class="w-5 h-5"></i>
+                            <span>Partilhar</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Post 2 -->
+                <div class="post-card bg-gray-800 rounded-xl p-6 shadow-lg" data-post-id="2">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                <% if coach_profile.profile_picture.attached? %>
+                                    <%= image_tag url_for(coach_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                <% else %>
+                                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                <% end %>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white"><%= coach_profile.name %></h3>
+                                <span class="text-gray-400 text-sm">Há 2 dias</span>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <button class="post-options-btn text-gray-400 hover:text-white">
+                                <i data-feather="more-vertical"></i>
+                            </button>
+                            <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600 overflow-hidden">
+                                <a href="#" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition-colors">
+                                    <div class="flex items-center"><i data-feather="bookmark" class="w-4 h-4 mr-2"></i><span class="save-text">Guardar publicação</span></div>
+                                </a>
+                                <a href="#" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition-colors">
+                                    <div class="flex items-center"><i data-feather="download" class="w-4 h-4 mr-2"></i><span>Descarregar imagem</span></div>
+                                </a>
+                                <% if current_user && current_user.id == coach_profile.user_id %>
+                                    <a href="#" class="delete-post-btn block px-4 py-2 text-sm text-red-400 hover:bg-gray-600 transition-colors">
+                                        <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span>Remover publicação</span></div>
+                                    </a>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="post-text text-gray-300 mb-4">
+                        Grande vitória da equipa hoje! O esforço nos treinos está finalmente a dar frutos. Continuamos focados para o próximo desafio. ⚽💪 #Futebol #Vitória #Equipa
+                    </p>
+                    <div class="post-media rounded-lg overflow-hidden mb-4 bg-gray-700 flex items-center justify-center">
+                        <img src="http://static.photos/sport/320x240/21" alt="Post" class="w-full h-full object-cover">
+                    </div>
+                    <div class="post-actions flex items-center justify-between pt-4 border-t border-gray-700">
+                        <div class="flex items-center gap-[15px]">
+                            <button class="like-btn flex items-center space-x-2 text-gray-400 hover:text-red-500 transition group">
+                                <i data-feather="heart" class="w-5 h-5 group-hover:fill-current"></i>
+                                <span class="like-count">0 likes</span>
+                            </button>
+                            <button class="comment-btn flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                <i data-feather="message-circle" class="w-5 h-5"></i>
+                                <span class="comment-count">0 comentários</span>
+                            </button>
+                        </div>
+                        <button class="share-btn flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                            <i data-feather="share-2" class="w-5 h-5"></i>
+                            <span>Partilhar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Post 3 -->
+                <div class="post-card bg-gray-800 rounded-xl p-6 shadow-lg" data-post-id="2">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                <% if coach_profile.profile_picture.attached? %>
+                                    <%= image_tag url_for(coach_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                <% else %>
+                                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                <% end %>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white"><%= coach_profile.name %></h3>
+                                <span class="text-gray-400 text-sm">Há 2 dias</span>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <button class="post-options-btn text-gray-400 hover:text-white">
+                                <i data-feather="more-vertical"></i>
+                            </button>
+                            <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600 overflow-hidden">
+                                <a href="#" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition-colors">
+                                    <div class="flex items-center"><i data-feather="bookmark" class="w-4 h-4 mr-2"></i><span class="save-text">Guardar publicação</span></div>
+                                </a>
+                                <a href="#" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition-colors">
+                                    <div class="flex items-center"><i data-feather="download" class="w-4 h-4 mr-2"></i><span>Descarregar imagem</span></div>
+                                </a>
+                                <% if current_user && current_user.id == coach_profile.user_id %>
+                                    <a href="#" class="delete-post-btn block px-4 py-2 text-sm text-red-400 hover:bg-gray-600 transition-colors">
+                                        <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span>Remover publicação</span></div>
+                                    </a>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="post-text text-gray-300 mb-4">
+                        Grande vitória da equipa hoje! O esforço nos treinos está finalmente a dar frutos. Continuamos focados para o próximo desafio. ⚽💪 #Futebol #Vitória #Equipa
+                    </p>
+                    <div class="post-media rounded-lg overflow-hidden mb-4 bg-gray-700 flex items-center justify-center">
+                        <img src="http://static.photos/sport/320x240/21" alt="Post" class="w-full h-full object-cover">
+                    </div>
+                    <div class="post-actions flex items-center justify-between pt-4 border-t border-gray-700">
+                        <div class="flex items-center gap-[15px]">
+                            <button class="like-btn flex items-center space-x-2 text-gray-400 hover:text-red-500 transition group">
+                                <i data-feather="heart" class="w-5 h-5 group-hover:fill-current"></i>
+                                <span class="like-count">0 likes</span>
+                            </button>
+                            <button class="comment-btn flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                <i data-feather="message-circle" class="w-5 h-5"></i>
+                                <span class="comment-count">0 comentários</span>
+                            </button>
+                        </div>
+                        <button class="share-btn flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                            <i data-feather="share-2" class="w-5 h-5"></i>
+                            <span>Partilhar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Post 4 -->
+                <div class="post-card bg-gray-800 rounded-xl p-6 shadow-lg" data-post-id="2">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                <% if coach_profile.profile_picture.attached? %>
+                                    <%= image_tag url_for(coach_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                <% else %>
+                                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                <% end %>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white"><%= coach_profile.name %></h3>
+                                <span class="text-gray-400 text-sm">Há 2 dias</span>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <button class="post-options-btn text-gray-400 hover:text-white">
+                                <i data-feather="more-vertical"></i>
+                            </button>
+                            <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600 overflow-hidden">
+                                <a href="#" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition-colors">
+                                    <div class="flex items-center"><i data-feather="bookmark" class="w-4 h-4 mr-2"></i><span class="save-text">Guardar publicação</span></div>
+                                </a>
+                                <a href="#" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition-colors">
+                                    <div class="flex items-center"><i data-feather="download" class="w-4 h-4 mr-2"></i><span>Descarregar imagem</span></div>
+                                </a>
+                                <% if current_user && current_user.id == coach_profile.user_id %>
+                                    <a href="#" class="delete-post-btn block px-4 py-2 text-sm text-red-400 hover:bg-gray-600 transition-colors">
+                                        <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span>Remover publicação</span></div>
+                                    </a>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="post-text text-gray-300 mb-4">
+                        Grande vitória da equipa hoje! O esforço nos treinos está finalmente a dar frutos. Continuamos focados para o próximo desafio. ⚽💪 #Futebol #Vitória #Equipa
+                    </p>
+                    <div class="post-media rounded-lg overflow-hidden mb-4 bg-gray-700 flex items-center justify-center">
+                        <img src="http://static.photos/sport/320x240/21" alt="Post" class="w-full h-full object-cover">
+                    </div>
+                    <div class="post-actions flex items-center justify-between pt-4 border-t border-gray-700">
+                        <div class="flex items-center gap-[15px]">
+                            <button class="like-btn flex items-center space-x-2 text-gray-400 hover:text-red-500 transition group">
+                                <i data-feather="heart" class="w-5 h-5 group-hover:fill-current"></i>
+                                <span class="like-count">0 likes</span>
+                            </button>
+                            <button class="comment-btn flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                <i data-feather="message-circle" class="w-5 h-5"></i>
+                                <span class="comment-count">0 comentários</span>
+                            </button>
+                        </div>
+                        <button class="share-btn flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                            <i data-feather="share-2" class="w-5 h-5"></i>
+                            <span>Partilhar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Post 5 -->
+                <div class="post-card bg-gray-800 rounded-xl p-6 shadow-lg" data-post-id="2">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                <% if coach_profile.profile_picture.attached? %>
+                                    <%= image_tag url_for(coach_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                <% else %>
+                                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                <% end %>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white"><%= coach_profile.name %></h3>
+                                <span class="text-gray-400 text-sm">Há 2 dias</span>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <button class="post-options-btn text-gray-400 hover:text-white">
+                                <i data-feather="more-vertical"></i>
+                            </button>
+                            <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600 overflow-hidden">
+                                <a href="#" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition-colors">
+                                    <div class="flex items-center"><i data-feather="bookmark" class="w-4 h-4 mr-2"></i><span class="save-text">Guardar publicação</span></div>
+                                </a>
+                                <a href="#" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 transition-colors">
+                                    <div class="flex items-center"><i data-feather="download" class="w-4 h-4 mr-2"></i><span>Descarregar imagem</span></div>
+                                </a>
+                                <% if current_user && current_user.id == coach_profile.user_id %>
+                                    <a href="#" class="delete-post-btn block px-4 py-2 text-sm text-red-400 hover:bg-gray-600 transition-colors">
+                                        <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span>Remover publicação</span></div>
+                                    </a>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="post-text text-gray-300 mb-4">
+                        Grande vitória da equipa hoje! O esforço nos treinos está finalmente a dar frutos. Continuamos focados para o próximo desafio. ⚽💪 #Futebol #Vitória #Equipa
+                    </p>
+                    <div class="post-media rounded-lg overflow-hidden mb-4 bg-gray-700 flex items-center justify-center">
+                        <img src="http://static.photos/sport/320x240/21" alt="Post" class="w-full h-full object-cover">
+                    </div>
+                    <div class="post-actions flex items-center justify-between pt-4 border-t border-gray-700">
+                        <div class="flex items-center gap-[15px]">
+                            <button class="like-btn flex items-center space-x-2 text-gray-400 hover:text-red-500 transition group">
+                                <i data-feather="heart" class="w-5 h-5 group-hover:fill-current"></i>
+                                <span class="like-count">0 likes</span>
+                            </button>
+                            <button class="comment-btn flex items-center space-x-2 text-gray-400 hover:text-blue-400 transition">
+                                <i data-feather="message-circle" class="w-5 h-5"></i>
+                                <span class="comment-count">0 comentários</span>
+                            </button>
+                        </div>
+                        <button class="share-btn flex items-center space-x-2 text-gray-400 hover:text-green-400 transition">
+                            <i data-feather="share-2" class="w-5 h-5"></i>
+                            <span>Partilhar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Screen Comment Modal -->
+    <div id="comment-modal" class="fixed inset-0 z-[100] bg-gray-900 hidden">
+        <div class="flex flex-col lg:flex-row w-full h-full">
+            <!-- Left: Post Content (Visible on Desktop) -->
+            <div class="hidden lg:flex lg:w-2/3 h-full bg-black items-center justify-center p-8 overflow-y-auto relative">
+                <div id="modal-post-container" class="max-w h-full w-full bg-gray-800 rounded-xl p-6 shadow-2xl flex flex-col">
+                    <!-- Content injected via JS -->
+                </div>
+            </div>
+
+            <!-- Right: Comments -->
+            <div class="w-full lg:w-1/3 h-full bg-gray-800 border-l border-gray-700 flex flex-col">
+                <!-- Header -->
+                <div class="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-800 z-10">
+                    <h3 class="text-xl font-bold text-white">Comentários</h3>
+                    <button id="close-modal-btn" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-medium">Voltar</span>
+                            <i data-feather="x" class="w-5 h-5"></i>
+                        </div>
+                    </button>
+                </div>
+                
+                <!-- Comments List -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-4" id="modal-comments-list">
+                    <!-- Comments injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4">
+        <div id="modal-image-container" class="relative">
+            <img id="modal-image" src="" alt="Profile Picture Fullscreen" class="max-w-full max-h-full rounded-lg">
+            <button id="close-image-modal">
+                <i data-feather="x" class="w-3 h-3"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Followers Modal -->
+    <div id="followers-modal" class="fixed inset-0 z-[60] hidden flex justify-center items-center py-12" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop (Click outside to close) -->
+        <div class="fixed inset-0 bg-black bg-opacity-75 transition-opacity backdrop-blur-sm" onclick="closeFollowersModal()"></div>
+
+        <!-- Modal Panel -->
+        <div class="relative bg-gray-800 rounded-xl shadow-2xl w-11/12 md:w-1/3 h-full flex flex-col border border-gray-700 transform transition-all overflow-hidden">
+            
+            <!-- Header -->
+            <div class="relative flex items-center justify-center p-4 border-b border-gray-700 bg-gray-800 z-10">
+                <h3 class="text-lg font-bold text-white">Seguidores(12)</h3>
+                <button onclick="closeFollowersModal()" class="absolute right-4 text-gray-400 hover:text-white p-1 rounded-full hover:bg-gray-700 transition">
+                    <i data-feather="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- List of Followers -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-4 thin-scrollbar">
+                
+                <!-- Item 1 -->
+                <div class="flex items-center justify-between hover:bg-gray-700 p-2 rounded-lg transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-600 overflow-hidden">
+                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                        </div>
+                        <span class="font-semibold text-gray-200 text-sm">João Silva</span>
+                    </div>
+                    <button onclick="toggleFollowItem(this)" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-sm font-medium rounded-md transition flex items-center gap-1">
+                        <i data-feather="user-check" class="w-4 h-4"></i>
+                        <span>A Seguir</span>
+                    </button>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="flex items-center justify-between hover:bg-gray-700 p-2 rounded-lg transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-600 overflow-hidden">
+                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                        </div>
+                        <span class="font-semibold text-gray-200 text-sm">Maria Santos</span>
+                    </div>
+                    <button onclick="toggleFollowItem(this)" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-md transition flex items-center gap-1">
+                        <i data-feather="user-plus" class="w-4 h-4"></i>
+                        <span>Seguir</span>
+                    </button>
+                </div>
+                
+                <!-- Item 3 (Repetido para exemplo de scroll) -->
+                <% 10.times do |i| %>
+                <div class="flex items-center justify-between hover:bg-gray-700 p-2 rounded-lg transition">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gray-600 overflow-hidden">
+                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                        </div>
+                        <span class="font-semibold text-gray-200 text-sm">Utilizador <%= i + 1 %></span>
+                    </div>
+                    <button onclick="toggleFollowItem(this)" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-sm font-medium rounded-md transition flex items-center gap-1">
+                        <i data-feather="user-check" class="w-4 h-4"></i>
+                        <span>A Seguir</span>
+                    </button>
+                </div>
+                <% end %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <a href="#" id="back-to-top" class="hidden fixed bottom-8 right-5 bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-full shadow-lg transition-opacity duration-300 z-50" title="Voltar ao topo e recarregar">
+        <i data-feather="arrow-up" class="w-5 h-5"></i>
+    </a>
+
+    <script>
+        // Inicializa os ícones da biblioteca Feather (substitui as tags <i> pelos ícones SVG)
+        feather.replace();
+
+        // Função que controla o botão de Seguir/Deixar de Seguir
+        function toggleFollow() {
+            // Encontra o botão de seguir na página
+            const btn = document.getElementById('followBtn');
+            // Encontra o texto dentro do botão
+            const text = document.getElementById('followText');
+            // Encontra o ícone dentro do botão
+            const icon = document.querySelector('#followBtn i');
+            
+            // Se o texto atual for "Seguir"
+            if (text.innerText === 'Seguir') {
+                // Muda o texto para "Deixar de Seguir"
+                text.innerText = 'Deixar de Seguir';
+                // Remove a cor azul (indigo) do botão
+                btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                // Adiciona a cor cinzenta ao botão
+                btn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                // Muda o ícone de user-plus para user-minus
+                icon.setAttribute('data-feather', 'user-minus');
+                feather.replace();
+            } else {
+                // Se já estiver a seguir, volta o texto para "Seguir"
+                text.innerText = 'Seguir';
+                // Remove a cor cinzenta
+                btn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
+                // Adiciona a cor azul de volta
+                btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                // Muda o ícone de user-minus para user-plus
+                icon.setAttribute('data-feather', 'user-plus');
+                feather.replace();
+            }
+        }
+        
+        // --- Lógica do Modal de Seguidores ---
+        const followersModal = document.getElementById('followers-modal');
+
+        function openFollowersModal() {
+            if (followersModal) {
+                followersModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Impede scroll na página principal
+                feather.replace(); // Garante que ícones dentro do modal carreguem
+            }
+        }
+
+        function closeFollowersModal() {
+            if (followersModal) {
+                followersModal.classList.add('hidden');
+                document.body.style.overflow = ''; // Restaura scroll
+            }
+        }
+
+        // Função para alternar seguir/deixar de seguir dentro da lista
+        function toggleFollowItem(btn) {
+            const span = btn.querySelector('span');
+            const isFollowing = span.innerText === 'A Seguir';
+
+            if (isFollowing) {
+                // Mudar para estado "Seguir" (azul)
+                span.innerText = 'Seguir';
+                btn.classList.remove('bg-gray-600', 'hover:bg-gray-500');
+                btn.classList.add('bg-indigo-600', 'hover:bg-indigo-500');
+                
+                // Atualizar ícone para user-plus
+                const icon = btn.querySelector('svg, i');
+                if(icon) icon.remove();
+                btn.insertAdjacentHTML('afterbegin', '<i data-feather="user-plus" class="w-4 h-4"></i>');
+            } else {
+                // Mudar para estado "A Seguir" (cinza)
+                span.innerText = 'A Seguir';
+                btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
+                btn.classList.add('bg-gray-600', 'hover:bg-gray-500');
+                
+                // Atualizar ícone para user-check
+                const icon = btn.querySelector('svg, i');
+                if(icon) icon.remove();
+                btn.insertAdjacentHTML('afterbegin', '<i data-feather="user-check" class="w-4 h-4"></i>');
+            }
+            feather.replace(); // Renderiza o novo ícone
+        }
+
+        // Encontra o contentor da foto de perfil pequena
+        const profilePicContainer = document.getElementById('profile-pic-container');
+        // Encontra o modal (janela flutuante) que vai mostrar a imagem grande
+        const imageModal = document.getElementById('image-modal');
+        // Encontra o elemento de imagem dentro do modal
+        const modalImage = document.getElementById('modal-image');
+        // Encontra o botão de fechar o modal
+        const closeImageModalBtn = document.getElementById('close-image-modal');
+
+        // Verifica se todos os elementos existem na página antes de adicionar eventos
+        if (profilePicContainer && imageModal && modalImage && closeImageModalBtn) {
+            // Quando se clica na foto de perfil pequena
+            profilePicContainer.addEventListener('click', () => {
+                // Encontra a imagem real dentro do contentor
+                const profilePicImg = document.getElementById('profile-pic-img');
+                // Se a imagem existir
+                if (profilePicImg) {
+                    // Copia o endereço da imagem pequena para a imagem grande do modal
+                    modalImage.src = profilePicImg.src;
+                    // Remove a classe que esconde o modal
+                    imageModal.classList.remove('hidden');
+                    // Adiciona a classe para centrar o conteúdo (flex)
+                    imageModal.classList.add('flex');
+                    // Impede que a página por trás faça scroll
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+
+            // Função para fechar o modal
+            const closeModal = () => {
+                // Esconde o modal novamente
+                imageModal.classList.add('hidden');
+                // Remove a formatação de flex
+                imageModal.classList.remove('flex');
+                // Permite que a página volte a fazer scroll
+                document.body.style.overflow = '';
+            };
+
+            // Quando se clica no botão de fechar, executa a função de fechar
+            closeImageModalBtn.addEventListener('click', closeModal);
+            
+            // Quando se clica na área escura à volta da imagem, também fecha
+            imageModal.addEventListener('click', (e) => {
+                // Verifica se o clique foi exatamente no fundo escuro e não na imagem
+                if (e.target === imageModal) closeModal();
+            });
+        }
+
+        // --- Lógica do Modal de Comentários (Abrir post e ver comentários) ---
+        
+        // Encontra o modal de comentários
+        const modal = document.getElementById('comment-modal');
+        // Encontra o botão de fechar este modal
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        // Encontra a área onde o conteúdo do post vai ser mostrado dentro do modal
+        const modalPostContainer = document.getElementById('modal-post-container');
+        // Encontra a lista onde os comentários vão aparecer
+        const modalCommentsList = document.getElementById('modal-comments-list');
+
+        // Função para abrir o modal de um post específico
+        const openPostModal = (postCard) => {
+            // Pega o ID do post clicado
+            const postId = postCard.dataset.postId;
+            // Guarda o ID do post atual no modal
+            modal.dataset.currentPostId = postId;
+            // Adiciona a classe de estilo de cartão ao contentor do modal
+            modalPostContainer.classList.add('post-card');
+            // Define o ID no contentor também
+            modalPostContainer.dataset.postId = postId;
+
+            // Clona (copia) o cabeçalho do post original (nome, foto, data)
+            const header = postCard.querySelector('.flex.items-center.justify-between.mb-4').cloneNode(true);
+            // Clona o texto do post
+            const text = postCard.querySelector('.post-text').cloneNode(true);
+            // Clona a imagem/media do post
+            const media = postCard.querySelector('.post-media').cloneNode(true);
+            // Clona os botões de ação (like, comentar, partilhar)
+            const actions = postCard.querySelector('.post-actions').cloneNode(true);
+
+            // Ajusta o estilo da imagem para caber bem no modal (remove altura fixa)
+            media.classList.remove('h-64', 'mb-4');
+            media.classList.add('flex-1', 'w-full');
+
+            // Limpa qualquer conteúdo antigo do modal
+            modalPostContainer.innerHTML = '';
+            // Adiciona as cópias dos elementos ao modal
+            modalPostContainer.appendChild(header);
+            modalPostContainer.appendChild(text);
+            modalPostContainer.appendChild(media);
+            modalPostContainer.appendChild(actions);
+
+            // Reinicializa os ícones nos elementos copiados
+            feather.replace();
+
+            // Se for o post número 1, adiciona um comentário de exemplo manualmente
+            if (postId === "1") {
+                modalCommentsList.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-gray-600 flex-shrink-0 flex items-center justify-center text-xs text-white">U</div>
+                        <div class="bg-gray-700 rounded-lg p-3 flex-1">
+                            <div class="flex justify-between items-center mb-1">
+                                <p class="text-sm font-semibold text-white">Utilizador Exemplo</p>
+                                <span class="text-xs text-gray-400">Há 2 horas</span>
+                            </div>
+                            <p class="text-sm text-gray-300">Grande jogo! Parabéns à equipa. 👏</p>
+                        </div>
+                    </div>`;
+            } else {
+                // Para outros posts, mantém a mensagem de vazio
+                modalCommentsList.innerHTML = '<p class="text-gray-400 text-sm text-center">Ainda não há comentários.</p>';
+            }
+
+            // Mostra o modal removendo a classe 'hidden'
+            modal.classList.remove('hidden');
+            // Bloqueia o scroll da página principal
+            document.body.style.overflow = 'hidden';
+        };
+
+        // Se o botão de fechar existir, adiciona o evento de clique
+        if (closeModalBtn) {
+            closeModalBtn.addEventListener('click', () => {
+                // Esconde o modal
+                modal.classList.add('hidden');
+                // Restaura o scroll da página
+                document.body.style.overflow = '';
+            });
+        }
+
+        // --- Delegação de Eventos para os Posts (Gerir cliques em qualquer post) ---
+        // Adiciona um "ouvinte" de cliques na página inteira
+        document.body.addEventListener('click', (e) => {
+            // Identifica onde foi o clique
+            const target = e.target;
+
+            // --- Botão de Opções (três pontinhos) ---
+            // Verifica se clicou no botão de opções ou dentro dele
+            const optionsBtn = target.closest('.post-options-btn');
+            if (optionsBtn) {
+                // Impede que o clique se propague para outros elementos
+                e.stopPropagation();
+                // Fecha todos os outros menus dropdown abertos
+                document.querySelectorAll('.post-options-dropdown').forEach(d => {
+                    if (d !== optionsBtn.nextElementSibling) d.classList.add('hidden');
+                });
+                // Alterna (abre/fecha) o menu dropdown deste botão específico
+                optionsBtn.nextElementSibling.classList.toggle('hidden');
+                return; // Para a execução aqui
+            }
+            // Se clicou fora de qualquer menu dropdown, fecha todos
+            if (!target.closest('.post-options-dropdown')) {
+                document.querySelectorAll('.post-options-dropdown').forEach(d => d.classList.add('hidden'));
+            }
+
+            // --- Botão de Comentar ---
+            // Verifica se clicou no botão de comentar
+            const commentBtn = target.closest('.comment-btn');
+            if (commentBtn) {
+                e.stopPropagation();
+                // Encontra o cartão do post a que este botão pertence
+                const postCard = commentBtn.closest('.post-card');
+                // Abre o modal desse post
+                openPostModal(postCard);
+                return;
+            }
+
+            // --- Clique Geral no Post ---
+            // Verifica se clicou em qualquer parte do cartão do post
+            const postCard = target.closest('.post-card');
+            // Garante que não clicou num link, botão ou campo de texto (para não abrir o modal sem querer)
+            if (postCard && !target.closest('a') && !target.closest('button') && !target.closest('input') && !target.closest('textarea')) {
+                // Abre o modal do post
+                openPostModal(postCard);
+            }
+        });
+
+        // --- Lógica do Botão "Voltar ao Topo" ---
+        // Encontra o botão de voltar ao topo
+        const backToTopBtn = document.getElementById('back-to-top');
+        // Encontra todos os posts na página
+        const posts = document.querySelectorAll('.post-card');
+
+        // Só ativa se o botão existir e houver mais de 1 post
+        if (backToTopBtn && posts.length > 1) {
+            // Define que o botão aparece depois de passar pelo segundo post
+            const secondPost = posts[1];
+            const showAt = secondPost.offsetTop;
+
+            // Ouve o evento de scroll da janela
+            window.addEventListener('scroll', () => {
+                // Se a posição do scroll for maior que a posição do segundo post
+                if (window.scrollY > showAt) {
+                    // Mostra o botão
+                    backToTopBtn.classList.remove('hidden');
+                } else {
+                    // Esconde o botão
+                    backToTopBtn.classList.add('hidden');
+                }
+            });
+
+            // Quando clica no botão de voltar ao topo
+            backToTopBtn.addEventListener('click', (e) => {
+                e.preventDefault(); // Previne comportamento padrão do link
+                // Rola suavemente até ao topo da página
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                // Espera um pouco (200ms) e recarrega a página (simulando atualização)
+                setTimeout(() => {
+                    location.reload();
+                }, 200);
+            });
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-pic {
+            border: 4px solid #1e293b;
+            transition: transform 0.3s ease;
+        }
+        
+        .profile-pic:hover {
+            transform: scale(1.05);
+        }
+        
+        .post-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Thin Scrollbar for Emoji Picker */
+        .thin-scrollbar::-webkit-scrollbar {
+            height: 2px;
+        }
+        .thin-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .thin-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 20px;
+        }
+
+        #modal-image-container #close-image-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: rgba(41, 41, 51, 0.5); /* cinza quase transparente */
+            color: white;
+            border-radius: 9999px; /* rounded-full */
+            padding: 0.5rem; /* p-2 */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, background-color 0.3s ease, visibility 0.3s ease;
+        }
+
+        #modal-image-container:hover #close-image-modal {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #modal-image-container #close-image-modal:hover {
+            background-color: #ef4444; /* red-500 */
+        }
+    </style>
+</body> 
