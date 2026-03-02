@@ -31,7 +31,7 @@
               <%= comment.user.club_profile.name %>
             <% end %>
           <% elsif comment.user.player? %>
-            <%= link_to player_profile_path(comment.user.play_profile), 
+            <%= link_to player_profile_path(comment.user.player_profile), 
               data: { turbo_frame: "_top" }, 
               class: "hover:underline" do %>
               <%= comment.user.player_profile.name %>
@@ -63,9 +63,6 @@
         <div data-modal-target="modal-report-comment-<%= comment.id %>" data-modal-toggle="modal-report-comment-<%= comment.id %>" class="flex items-center justify-center w-9 h-9 text-gray-400 hover:text-red-500 hover:bg-gray-600 rounded-full transition clickable" > 
           <i data-feather="trash-2" class="w-4 h-4"></i>
         </div>
-        <%= button_to post_post_comments_path(comment.post, id: comment.id), method: :delete, form: { data: { turbo_confirm: 'Tens a certeza que queres apagar este comentário?' } }, class: 'flex items-center justify-center w-8 h-8 text-gray-400 hover:text-red-500 hover:bg-gray-600 rounded-full transition' do %>
-          <i data-feather="trash-2" class="w-4 h-4"></i>
-        <% end %>
       <% end %>
     </div>
     <p class="text-sm text-gray-300"><%= comment.content %></p>

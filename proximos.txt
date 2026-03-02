@@ -1,5 +1,7 @@
 Problemas a arranjar:
+ao fazer o primeiro comentário convém que saia logo que não há comentários
 dar para apagar posts se for admin, superadmin ou proprio dono do post (mesma coisa para os comentários)
+foto de perfil e banner saem ao dar erro ao criar conta
 adicionar botão de report (publicações, comentários e perfis)
 voltar a adicionar barra de guardar (falta fazer a tabela, parecido com os likes -> opção aparece no menu dos 3 pontos )
 adicionar possibilidade para mostrar quem deu like (esperar pelo modal que o tomás vai fazer)
