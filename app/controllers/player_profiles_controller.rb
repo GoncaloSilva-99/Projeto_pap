@@ -1,16 +1,6 @@
 class PlayerProfilesController < ApplicationController
   before_action :set_player_profile, only: %i[ show edit update destroy ]
 
-  def remove_from_club
-    @sport = params[:sport]
-    @player_profile = PlayerProfile.find(params[:id])
-    @player_profile.update(club_profile_id: nil)
-    respond_to do |format|
-      format.html { redirect_to club_teams_dashboard_path(sport: @sport), notice: "Jogador removido do clube com sucesso.", status: :see_other }
-      format.json { head :no_content }
-    end
-  end
-
   # GET /player_profiles or /player_profiles.json
   def index
     @player_profiles = PlayerProfile.all
@@ -46,8 +36,18 @@ class PlayerProfilesController < ApplicationController
 
   # PATCH/PUT /player_profiles/1 or /player_profiles/1.json
   def update
+    # Handle image removal
+    @player_profile.profile_picture.purge if params[:player_profile][:remove_profile_picture] == '1'
+    @player_profile.banner_picture.purge if params[:player_profile][:remove_banner_picture] == '1'
+    
+    # Clean bio - remove indentation spaces but keep user-inserted line breaks
+    bio_params = player_profile_params
+    if bio_params[:bio].present?
+      bio_params[:bio] = bio_params[:bio].strip.lines.map(&:strip).join("\n")
+    end
+    
     respond_to do |format|
-      if @player_profile.update(player_profile_params)
+      if @player_profile.update(bio_params)
         format.html { redirect_to @player_profile, notice: "Player profile was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @player_profile }
       else
@@ -69,13 +69,13 @@ class PlayerProfilesController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    
     def set_player_profile
       @player_profile = PlayerProfile.find(params.expect(:id))
     end
 
     # Only allow a list of trusted parameters through.
     def player_profile_params
-      params.expect(player_profile: [ :user_id, :name, :birth_date, :position, :bio, :contact, :parents_contact, :club_profile_id ])
+      params.expect(player_profile: [ :user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture ])
     end
 end
+
