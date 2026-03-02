@@ -1,15 +1,10 @@
 Problemas a arranjar:
-mostrar post só devia mostrar o tamanho suposto
-passar mensagens de confirmação e etc. para temporárias
-apagar posts funciona, mas não dá mensagem de sucesso e volta para a página com um fundo no inicio
 dar para apagar posts se for admin, superadmin ou proprio dono do post (mesma coisa para os comentários)
 adicionar botão de report (publicações, comentários e perfis)
 voltar a adicionar barra de guardar (falta fazer a tabela, parecido com os likes -> opção aparece no menu dos 3 pontos )
 adicionar possibilidade para mostrar quem deu like (esperar pelo modal que o tomás vai fazer)
 sugestões têm de estar funcionais
-carregar mais só pode aparecer se houver algo mais a carregar
 falta dar para mudar email e palavra passe nos perfis (quando tiverem finalizados adiciona-se)
-falta adicionar foto no hero quando não há login feito
 redirecionamentos depois de marcar treino não estão a dar direito
 mensagens ao atualizar perfis estão default
 falta adicionar as estatisticas reais da plataforma e algo mais apelativo e demonstrativo da aplicação quando não há login feito
@@ -17,15 +12,12 @@ perfis populares convém aparecer mesmo os perfis populares
 deve dar para mudar foto dos ct's campos e balneários
 colocar estatisticas reais no dashboard
 arranjar membros da direção apagar no membro+1
-abulir o público do dashboard
 data de criar clube dá para ser depois de hoje
-as imagens dos posts estão maiores do que no preview (aparecem esticadas para cobrir tudo)
-quando se tenta publicar sem ter nada dá erro (não um erro de mensagem, erro na aplicação)
-
 
 
 Depois:
 
+Mudar texto da escolha de conta para algo realista
 Adicionar estatistica de clicks nos perfis para depois colocar nos perfis populares
 Colocar posts nos perfis funcional
 fazer pesquisa da página principal (a redirecionar para página de pesquisa)

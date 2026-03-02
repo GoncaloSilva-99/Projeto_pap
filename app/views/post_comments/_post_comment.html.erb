@@ -52,6 +52,9 @@
         <% end %>
       </p>
       <span class="text-xs text-gray-400"><%= time_ago_in_words(comment.created_at) %> atrás</span>
+      <% if comment.user == current_user %>
+        <%= button_to 'Apagar', post_post_comments_path(comment.post, id: comment.id), method: :delete, form: { data: { turbo_confirm: 'Tens a certeza que queres apagar este comentário?' } }, class: 'ml-2 text-xs text-red-400 hover:text-red-600' %>
+      <% end %>
     </div>
     <p class="text-sm text-gray-300"><%= comment.content %></p>
   </div>

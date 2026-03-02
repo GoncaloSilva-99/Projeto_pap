@@ -139,20 +139,15 @@
                             <!-- Dashboard -->
                             <%= link_to club_dashboard_path, class: "block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600" do %>
                                 <i data-feather="shield" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
-                                <div class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</div>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</p>
                             <% end %>
-                        
-                            <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
-                                <i data-feather="users" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
-                                <div class="text-sm font-medium text-gray-900 dark:text-white">Equipa</div>
-                            </a>
-                            <a href="#" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
-                                <i data-feather="message-square" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
-                                <div class="text-sm font-medium text-gray-900 dark:text-white">Menssagens</div>
-                            </a>
                             <a href="#" id="favorites-app-link" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
                                 <i data-feather="heart" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
-                                <div class="text-sm font-medium text-gray-900 dark:text-white">Favoritos</div>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">Likes</p>
+                            </a>
+                            <a href="#" id="favorites-app-link" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600 hover:text-green-400">
+                                <i data-feather="bookmark" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">Guardados</p>
                             </a>
                         </div>
                     </div>
@@ -664,55 +659,56 @@
                     <div class="flex-1 space-y-6 h-[calc(100vh-100px)] overflow-y-auto pr-2 scroll-smooth no-scrollbar" id="feed-container">
                         <!-- Create Post -->
                         <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg">
-
-                            <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
-                                <div class="flex items-start space-x-4">
-                                    <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                        <% if current_profile && current_profile.profile_picture.attached? %>
-                                            <%= image_tag url_for(current_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
-                                        <% else %>
-                                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
-                                        <% end %>
-                                    </div>
-                                    <div class="flex-1">
-                                        <%= f.text_area :content, 
-                                            rows: 3,
-                                            placeholder: "O que estás a pensar?",
-                                            class: "w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" %>
-
-                                        <!-- Image Preview -->
-                                        <div id="image-preview-container" class="hidden mt-3 relative">
-                                            <div id="image-carousel" class="flex overflow-x-auto scroll-smooth rounded-lg no-scrollbar gap-2">
-                                                <!-- Images will be injected here by JS -->
-                                            </div>
-                                            <button id="prev-image-btn" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
-                                                <i data-feather="chevron-left" class="w-6 h-6"></i>
-                                            </button>
-                                            <button id="next-image-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
-                                                <i data-feather="chevron-right" class="w-6 h-6"></i>
-                                            </button>
-                                            <div id="image-dots" class="flex justify-center items-center space-x-2 mt-2">
-                                                <!-- Dots will be injected here by JS -->
-                                            </div>
+                            <% if !current_user.admin? and !current_user.super_admin? %>
+                                <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                            <% if current_profile && current_profile.profile_picture.attached? %>
+                                                <%= image_tag url_for(current_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                            <% else %>
+                                                <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                            <% end %>
                                         </div>
-                                        
-                                        <div class="flex justify-between items-center mt-3">
-                                            <div class="flex items-center space-x-2">
-                                                <%= f.file_field :images, 
-                                                    multiple: true,
-                                                    accept: "image/*",
-                                                    class: "hidden",
-                                                    id: "post-image-upload" %>
-                                                <label for="post_images_input" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 cursor-pointer" id="btn-upload-image">
-                                                    <i data-feather="image" class="w-5 h-5"></i>
-                                                </label>
+                                        <div class="flex-1">
+                                            <%= f.text_area :content, 
+                                                rows: 3,
+                                                placeholder: "O que estás a pensar?",
+                                                class: "w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" %>
+
+                                            <!-- Image Preview -->
+                                            <div id="image-preview-container" class="hidden mt-3 relative">
+                                                <div id="image-carousel" class="flex overflow-x-auto scroll-smooth rounded-lg no-scrollbar gap-2">
+                                                    <!-- Images will be injected here by JS -->
+                                                </div>
+                                                <button id="prev-image-btn" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                                    <i data-feather="chevron-left" class="w-6 h-6"></i>
+                                                </button>
+                                                <button id="next-image-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                                    <i data-feather="chevron-right" class="w-6 h-6"></i>
+                                                </button>
+                                                <div id="image-dots" class="flex justify-center items-center space-x-2 mt-2">
+                                                    <!-- Dots will be injected here by JS -->
+                                                </div>
                                             </div>
                                             
-                                            <%= f.submit "Publicar", 
-                                                class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer" %>
+                                            <div class="flex justify-between items-center mt-3">
+                                                <div class="flex items-center space-x-2">
+                                                    <%= f.file_field :images, 
+                                                        multiple: true,
+                                                        accept: "image/*",
+                                                        class: "hidden",
+                                                        id: "post-image-upload" %>
+                                                    <label for="post_images_input" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 cursor-pointer" id="btn-upload-image">
+                                                        <i data-feather="image" class="w-5 h-5"></i>
+                                                    </label>
+                                                </div>
+                                                
+                                                <%= f.submit "Publicar", 
+                                                    class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer" %>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                <% end %>
                             <% end %>
 
                         </div>
@@ -876,7 +872,7 @@
                                         <div id="modal-post-<%=post.id%>" class="fixed inset-0 z-[100] bg-black bg-opacity-50 hidden ">
                                             <div class="flex flex-col lg:flex-row w-full h-full">
                                                 <!-- Left: Post Content (Visible on Desktop) -->
-                                                <div class="hidden lg:flex lg:w-2/3 h-full bg-black items-center justify-center p-8 overflow-y-auto relative">
+                                                <div class="hidden lg:flex lg:w-2/3 h-full bg-transparent bg-opacity-50 items-center justify-center p-8 overflow-y-auto relative">
                                                     <div id="modal-post-container" class="w-full bg-gray-800 rounded-xl p-6 shadow-2xl flex flex-col" style="max-width: 800px; max-height: 90vh;">
                                                             <div class="flex items-center justify-between mb-4">
                                                                 <div class="flex items-center space-x-3">
