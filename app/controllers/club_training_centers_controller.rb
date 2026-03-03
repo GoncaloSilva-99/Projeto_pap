@@ -25,7 +25,9 @@ class ClubTrainingCentersController < ApplicationController
 
     respond_to do |format|
       if @club_training_center.save
-        format.html { redirect_to club_infrastructures_dashboard_path, notice: "Centro de treinos criado com sucesso!" }
+        @selected_sport = params[:sport]
+        redirect_params = { sport: @selected_sport }.compact
+        format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Centro de treinos criado com sucesso!" }
         format.json { render :show, status: :created, location: @club_training_center }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +40,9 @@ class ClubTrainingCentersController < ApplicationController
   def update
     respond_to do |format|
       if @club_training_center.update(club_training_center_params)
-        format.html { redirect_to club_infrastructures_dashboard_path, notice: "Centro de treinos editado com sucesso!", status: :see_other }
+        @selected_sport = params[:sport]
+        redirect_params = { sport: @selected_sport }.compact
+        format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Centro de treinos editado com sucesso!", status: :see_other }
         format.json { render :show, status: :ok, location: @club_training_center }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -52,7 +56,9 @@ class ClubTrainingCentersController < ApplicationController
     @club_training_center.destroy!
 
     respond_to do |format|
-      format.html { redirect_to club_infrastructures_dashboard_path, notice: "Centro de treinos apagado com sucesso!", status: :see_other }
+      @selected_sport = params[:sport]
+      redirect_params = { sport: @selected_sport }.compact
+      format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Centro de treinos apagado com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end
