@@ -593,9 +593,11 @@
                                 
                                 <%= form_with(url: club_team_trainings_path, method: :post, local: true, scope: :club_team_training) do |f| %>
                                     <%= f.hidden_field :club_pitch_id, value: @selected_pitch %>
-                                    <%= f.hidden_field :sport, value: @selected_sport %>
+                                    <%= hidden_field_tag :sport, @selected_sport %>
+                                    <%= hidden_field_tag :pitch, @selected_pitch %>
+                                    <%= hidden_field_tag :locker_room, @selected_locker_room %>
                                     <% if @selected_ct %>
-                                    <%= f.hidden_field :ct, value: @selected_ct %>
+                                    <%= hidden_field_tag :ct, @selected_ct %>
                                     <% end %>
 
                                     <div class="mb-4">
@@ -689,10 +691,12 @@
                                 </div>
 
                                 <%= form_with(url: club_team_training_path(training), method: :patch, local: true, scope: :club_team_training) do |f| %>
+                                <%= hidden_field_tag :pitch, @selected_pitch %>
+                                <%= hidden_field_tag :locker_room, @selected_locker_room %>
                                 <%= f.hidden_field :club_pitch_id, value: @selected_pitch %>
-                                <%= f.hidden_field :sport, value: @selected_sport %>
+                                <%= hidden_field_tag :sport, @selected_sport %>
                                 <% if @selected_ct %>
-                                    <%= f.hidden_field :ct, value: @selected_ct %>
+                                    <%= hidden_field_tag :ct, @selected_ct %>
                                 <% end %>
 
                                 <div class="mb-4">
@@ -1251,6 +1255,7 @@
                                 <%= form.hidden_field :club_profile_id, value: current_user.club_profile.id %>
                             <% elsif current_user.board? %>
                                 <%= form.hidden_field :club_profile_id, value: current_user.board_profile.club_profile.id %>
+                                        <%= hidden_field_tag :sport, @selected_sport %>
                             <% end %>
 
                             <label class="block text-sm font-medium text-gray-400 mb-1">Foto do CT</label>
@@ -1317,6 +1322,10 @@
                     <div class="p-4 md:p-5">
                         <ul class="space-y-4 mb-4">
                         <%= form_with(url: club_pitches_path, method: :post, scope: :club_pitch, local: true) do |form| %>
+                                        <%= hidden_field_tag :sport, @selected_sport %>
+                                        <%= hidden_field_tag :ct, @selected_ct %>
+                                        <%= hidden_field_tag :pitch, @selected_pitch %>
+                                        <%= hidden_field_tag :locker_room, @selected_locker_room %>
                             <% if current_user.club? %>
                                 <%= form.hidden_field :club_profile_id, value: current_user.club_profile.id %>
                             <% elsif current_user.board? %>
@@ -1398,6 +1407,10 @@
                     <div class="p-4 md:p-5">
                         <ul class="space-y-4 mb-4">
                         <%= form_with(url: club_locker_rooms_path, method: :post, scope: :club_locker_room, local: true) do |form| %>
+                                        <%= hidden_field_tag :sport, @selected_sport %>
+                                        <%= hidden_field_tag :ct, @selected_ct %>
+                                        <%= hidden_field_tag :pitch, @selected_pitch %>
+                                        <%= hidden_field_tag :locker_room, @selected_locker_room %>
                             <% if current_user.club? %>
                                 <%= form.hidden_field :club_profile_id, value: current_user.club_profile.id %>
                             <% elsif current_user.board? %>

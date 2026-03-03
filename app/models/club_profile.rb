@@ -8,6 +8,7 @@ class ClubProfile < ApplicationRecord
   has_many :club_sports, dependent: :destroy
 
   REGEX_NUM_TELEMOVEL = /\A9\d{8}\z/
+  MIN_DATE = 1.day.ago.to_date
 
   validates_presence_of :name, :foundation_date, :verification_document
 

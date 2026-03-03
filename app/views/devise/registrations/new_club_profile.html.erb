@@ -146,6 +146,7 @@
                     <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Data de fundação</label>
                     <%= cp.date_field :foundation_date,
                         class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                        max: ClubProfile::MIN_DATE,
                         required: true %>
                 </div>
                 <!-- Biografia -->
