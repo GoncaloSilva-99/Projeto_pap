@@ -1,6 +1,16 @@
 class CoachProfilesController < ApplicationController
   before_action :set_coach_profile, only: %i[ show edit update destroy ]
 
+  def remove_from_club
+    @sport = params[:sport]
+    @coach_profile = CoachProfile.find(params[:id])
+    @coach_profile.update(club_profile_id: nil)
+    respond_to do |format|
+      format.html { redirect_to club_teams_dashboard_path(sport: @sport), notice: "Treinador removido do clube com sucesso.", status: :see_other }
+      format.json { head :no_content }
+    end
+  end
+
   # GET /coach_profiles or /coach_profiles.json
   def index
     @coach_profiles = CoachProfile.all
@@ -25,7 +35,7 @@ class CoachProfilesController < ApplicationController
 
     respond_to do |format|
       if @coach_profile.save
-        format.html { redirect_to @coach_profile, notice: "Coach profile was successfully created." }
+        format.html { redirect_to @coach_profile, notice: "Conta de Treinador criada com sucesso!" }
         format.json { render :show, status: :created, location: @coach_profile }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -36,19 +46,9 @@ class CoachProfilesController < ApplicationController
 
   # PATCH/PUT /coach_profiles/1 or /coach_profiles/1.json
   def update
-    # Handle image removal
-    @coach_profile.profile_picture.purge if params[:coach_profile][:remove_profile_picture] == '1'
-    @coach_profile.banner_picture.purge if params[:coach_profile][:remove_banner_picture] == '1'
-    
-    # Clean bio - remove indentation spaces but keep user-inserted line breaks
-    bio_params = coach_profile_params
-    if bio_params[:bio].present?
-      bio_params[:bio] = bio_params[:bio].strip.lines.map(&:strip).join("\n")
-    end
-    
     respond_to do |format|
-      if @coach_profile.update(bio_params)
-        format.html { redirect_to @coach_profile, notice: "Coach profile was successfully updated.", status: :see_other }
+      if @coach_profile.update(coach_profile_params)
+        format.html { redirect_to @coach_profile, notice: "Conta de Treinador atualizada com sucesso!", status: :see_other }
         format.json { render :show, status: :ok, location: @coach_profile }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -75,6 +75,6 @@ class CoachProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def coach_profile_params
-      params.expect(coach_profile: [ :user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture ])
+      params.expect(coach_profile: [ :user_id, :name, :birth_date, :club_id, :coach_type, :banner_picture, :profile_picture ])
     end
 end

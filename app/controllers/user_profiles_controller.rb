@@ -36,18 +36,8 @@ class UserProfilesController < ApplicationController
 
   # PATCH/PUT /user_profiles/1 or /user_profiles/1.json
   def update
-    # Handle image removal
-    @user_profile.profile_picture.purge if params[:user_profile][:remove_profile_picture] == '1'
-    @user_profile.banner.purge if params[:user_profile][:remove_banner] == '1'
-    
-    # Clean bio - remove indentation spaces but keep user-inserted line breaks
-    bio_params = user_profile_params
-    if bio_params[:bio].present?
-      bio_params[:bio] = bio_params[:bio].strip.lines.map(&:strip).join("\n")
-    end
-    
     respond_to do |format|
-      if @user_profile.update(bio_params)
+      if @user_profile.update(user_profile_params)
         format.html { redirect_to @user_profile, notice: "User profile was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @user_profile }
       else
@@ -75,7 +65,6 @@ class UserProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_profile_params
-      params.expect(user_profile: [ :user_id, :name, :status, :approved_by, :bio, :banner, :profile_picture ])
+      params.expect(user_profile: [ :user_id, :name, :bio, :banner_picture, :profile_picture ])
     end
 end
-
