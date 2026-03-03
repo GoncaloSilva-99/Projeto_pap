@@ -65,6 +65,6 @@ class UserProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_profile_params
-      params.expect(user_profile: [ :user_id, :name, :bio ])
+      params.expect(user_profile: [ :user_id, :name, :bio, :banner_picture, :profile_picture ])
     end
 end

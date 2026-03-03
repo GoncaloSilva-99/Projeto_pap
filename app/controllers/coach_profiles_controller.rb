@@ -35,7 +35,7 @@ class CoachProfilesController < ApplicationController
 
     respond_to do |format|
       if @coach_profile.save
-        format.html { redirect_to @coach_profile, notice: "Coach profile was successfully created." }
+        format.html { redirect_to @coach_profile, notice: "Conta de Treinador criada com sucesso!" }
         format.json { render :show, status: :created, location: @coach_profile }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -48,7 +48,7 @@ class CoachProfilesController < ApplicationController
   def update
     respond_to do |format|
       if @coach_profile.update(coach_profile_params)
-        format.html { redirect_to @coach_profile, notice: "Coach profile was successfully updated.", status: :see_other }
+        format.html { redirect_to @coach_profile, notice: "Conta de Treinador atualizada com sucesso!", status: :see_other }
         format.json { render :show, status: :ok, location: @coach_profile }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -75,6 +75,6 @@ class CoachProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def coach_profile_params
-      params.expect(coach_profile: [ :user_id, :name, :birth_date, :club_id, :coach_type ])
+      params.expect(coach_profile: [ :user_id, :name, :birth_date, :club_id, :coach_type, :banner_picture, :profile_picture ])
     end
 end

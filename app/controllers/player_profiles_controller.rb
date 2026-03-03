@@ -76,6 +76,6 @@ class PlayerProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def player_profile_params
-      params.expect(player_profile: [ :user_id, :name, :birth_date, :position, :bio, :contact, :parents_contact, :club_profile_id ])
+      params.expect(player_profile: [ :user_id, :name, :birth_date, :position, :bio, :contact, :parents_contact, :club_profile_id, :banner_picture, :profile_picture ])
     end
 end
