@@ -199,6 +199,8 @@
                                     <span class="block text-sm text-gray-900 dark:text-white"> <%= current_user.player_profile.name %> </span>
                                 <% elsif current_user.admin? %>
                                     <span class="block text-sm text-gray-900 dark:text-white"> <%= current_user.admin_profile.name %> </span>
+                                <% elsif current_user.user? %>
+                                    <span class="block text-sm text-gray-900 dark:text-white"> <%= current_user.user_profile.name %> </span>
                                 <% end %>
                                 <span class="block text-sm  text-gray-500 truncate dark:text-gray-400"> <%= current_user.email %> </span>
                             </div>
@@ -807,6 +809,9 @@
                                                             data: { turbo_frame: "_top" }, class: "hover:underline" %>
                                                     <% elsif post.user.board? %>
                                                         <%= link_to post.user.board_profile.name, board_profile_path(post.user.board_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif post.user.user? %>
+                                                        <%= link_to post.user.user_profile.name, user_profile_path(post.user.user_profile), 
                                                             data: { turbo_frame: "_top" }, class: "hover:underline" %>
                                                     <% end %>
                                                     </h3>
