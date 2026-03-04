@@ -13,7 +13,6 @@ perfis populares convém aparecer mesmo os perfis populares
 deve dar para mudar foto dos ct's campos e balneários
 colocar estatisticas reais no dashboard
 arranjar membros da direção apagar no membro+1
-data de criar clube dá para ser depois de hoje
 
 
 Depois:

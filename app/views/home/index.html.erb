@@ -199,6 +199,8 @@
                                     <span class="block text-sm text-gray-900 dark:text-white"> <%= current_user.player_profile.name %> </span>
                                 <% elsif current_user.admin? %>
                                     <span class="block text-sm text-gray-900 dark:text-white"> <%= current_user.admin_profile.name %> </span>
+                                <% elsif current_user.user? %>
+                                    <span class="block text-sm text-gray-900 dark:text-white"> <%= current_user.user_profile.name %> </span>
                                 <% end %>
                                 <span class="block text-sm  text-gray-500 truncate dark:text-gray-400"> <%= current_user.email %> </span>
                             </div>
@@ -807,6 +809,9 @@
                                                             data: { turbo_frame: "_top" }, class: "hover:underline" %>
                                                     <% elsif post.user.board? %>
                                                         <%= link_to post.user.board_profile.name, board_profile_path(post.user.board_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif post.user.user? %>
+                                                        <%= link_to post.user.user_profile.name, user_profile_path(post.user.user_profile), 
                                                             data: { turbo_frame: "_top" }, class: "hover:underline" %>
                                                     <% end %>
                                                     </h3>
@@ -1688,50 +1693,6 @@
                             currentIndex = index;
                             updateCarousel();
                         });
-                    });
-                }
-
-                // --- Modal de Favoritos ---
-                const favoritesLink = document.getElementById('favorites-app-link');
-                const favoritesModal = document.getElementById('favorites-modal');
-                const closeFavoritesBtn = document.getElementById('close-favorites-modal');
-                const favoritesList = document.getElementById('favorites-list');
-
-                if (favoritesLink && favoritesModal) {
-                    favoritesLink.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        // Limpa a lista e mostra mensagem estática, já que a funcionalidade de guardar foi removida
-                        favoritesList.innerHTML = '<div class="h-full flex items-center justify-center text-gray-400">Ainda não tens publicações guardadas.</div>';
-                        openModal(favoritesModal);
-                    });
-
-                    closeFavoritesBtn.addEventListener('click', () => closeModal(favoritesModal));
-                }
-
-                // --- BOTÃO DE SEGUIR (GERAL) ---
-                document.querySelectorAll('.follow-btn').forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        e.stopPropagation();
-                        const icon = this.querySelector('i');
-                        const text = this.querySelector('span');
-                        
-                        if (text.innerText === 'Seguir') {
-                            text.innerText = 'Deixar de Seguir';
-                            this.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
-                            this.classList.add('bg-gray-600', 'hover:bg-gray-700');
-                            if (icon) {
-                                icon.setAttribute('data-feather', 'user-minus');
-                                feather.replace();
-                            }
-                        } else {
-                            text.innerText = 'Seguir';
-                            this.classList.remove('bg-gray-600', 'hover:bg-gray-700');
-                            this.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
-                            if (icon) {
-                                icon.setAttribute('data-feather', 'user-plus');
-                                feather.replace();
-                            }
-                        }
                     });
                     
                     // Inicializa

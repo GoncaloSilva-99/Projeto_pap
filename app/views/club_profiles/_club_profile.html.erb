@@ -92,7 +92,13 @@
                 <div class="space-y-6 mt-1"> 
                     <div class="flex items-center gap-3"> 
                         <i data-feather="calendar" class="text-gray-400"></i>
-                        <span class="text-gray-300">Data de Fundação: <%= l(club_profile.foundation_date, format: :long, locale: :pt) %></span>
+                        <span class="text-gray-300">Data de Fundação: 
+                            <% if club_profile.foundation_date.present? -%>
+                                <%= l(club_profile.foundation_date, format: :long, locale: :pt) %>
+                            <% else -%>
+                                <span class="text-gray-400">Não disponível</span>
+                            <% end -%>
+                        </span>
                     </div> 
                 </div> 
                 <div class="flex items-start gap-3"> 
