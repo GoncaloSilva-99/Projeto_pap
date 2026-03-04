@@ -15,7 +15,13 @@
 
                 
             </div>
-            <h1 class="text-lg font-bold text-center text-white"> <%= current_user.club_profile.name %> </h1>
+            <h1 class="text-lg font-bold text-center text-white">
+                <% if current_user.club? %>
+                    <%= current_user.club_profile.name %>
+                <% elsif current_user.board? %>
+                    <%= current_user.board_profile.club_profile.name %>
+                <% end %>
+            </h1>
         </div>
 <!---------------------------------------------------- OPÇÕES DO SIDEBAR ---------------------------------------------------->
         <nav class="flex-1 p-4 space-y-2">
@@ -84,7 +90,7 @@
             <div class="flex items-center space-x-3">
                 <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
                     <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
-                <% elsif (current_user.board? and current_user.profile_picture.attached?) %>
+                <% elsif (current_user.board? and current_user.board_profile.profile_picture.attached?) %>
                     <%= image_tag url_for(current_user.board_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
                 <% else %>
                     <%= image_tag "default_pp.jpg", class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
@@ -354,7 +360,3 @@
         box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
     }
 </style>
-
-
-
-

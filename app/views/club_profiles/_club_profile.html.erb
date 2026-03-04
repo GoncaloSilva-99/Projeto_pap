@@ -2,10 +2,10 @@
 
     <!-- Banner -->
     <div class="relative h-64 bg-gradient-to-r from-indigo-900 to-purple-900 overflow-hidden">
-        <%= link_to root_path, class: "absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white" do %>
+        <button onclick="window.location.href='/'" class="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white">
             <i data-feather="arrow-left"></i>
             <span>Voltar</span>
-        <% end %>
+        </button>
         <div class="absolute inset-0 bg-black opacity-30"></div>
         <div class="relative h-full flex items-center justify-center">
             <% if club_profile.banner_picture.attached? %>
@@ -16,7 +16,7 @@
         </div>
     </div>
     <!-- Profile Picture -->
-    <div class="container mx-auto px-4 -mt-16 relative z-10">
+    <div class="container mx-auto px-4 -mt-12 relative z-10">
         <div class="flex flex-col md:flex-row items-center md:items-end gap-6">
             <div id="profile-pic-container" class="profile-pic w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-800 overflow-hidden border-4 border-gray-700 shadow-xl cursor-pointer group relative">
                 <% if club_profile.profile_picture.attached? %>
@@ -29,23 +29,43 @@
             <div class="flex-1">
                 <div class="flex items-center gap-4">
                     <h2 class="text-2xl md:text-3xl font-bold py-1"><%= club_profile.name %></h2>
-                    <% if club_profile.status == false %>
+                    <% if club_profile.status == false && current_user && current_user.id == club_profile.user_id %>
                         <span class="text-sm text-red-500 font-semibold">A aguardar aprovação de um administrador</span>
                     <% end %>
                 </div>
                 <!-- Botão editar campos -->
                 <div class="flex items-center gap-4 mt-4">
                     <% if current_user && current_user.id == club_profile.user_id %>
-                        <%= link_to edit_club_profile_path(club_profile), class: "flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition" do %>
+                        <%= link_to edit_club_profile_path(club_profile), class: "flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition" do %>
                             <i data-feather="edit"></i>
                             <span>Editar Perfil</span>
                         <% end %>
                     <% else %>
                         <button id="followBtn" onclick="toggleFollow()" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
-                            <i data-feather="user-plus"></i>
+                            <i data-feather="user-plus" id="followIcon"></i>
                             <span id="followText">Seguir</span>
                         </button>
+                        <button class="flex items-center justify-center px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition text-white" title="Denunciar">
+                            <i data-feather="flag"></i>
+                        </button>
                     <% end %>
+                </div>
+            </div>
+            <!-- Profile Stats -->
+            <div class="mt-5 md:mt-0 rounded-xl p-6">
+                <div class="flex justify-center text-center gap-8">
+                    <div onclick="openFollowersModal()" class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
+                        <span class="font-bold text-xl text-gray-100">1.2K</span>
+                        <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">Seguidores</span>
+                    </div>
+                    <div class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
+                        <span class="font-bold text-xl text-gray-100">56</span>
+                        <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">A Seguir</span>
+                    </div>
+                    <div class="rounded-lg px-4 py-2 transition cursor-pointer">
+                        <span class="font-bold text-xl text-gray-100">5</span>
+                        <span class="text-gray-400 transition-colors block text-sm">Publicações</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,40 +73,62 @@
 
     <!-- Biography Section -->
     <div class="container mx-auto px-4 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Biography -->
-            <div class="lg:col-span-2 bg-gray-800 rounded-xl p-6 shadow-lg fade-in">
+        <!-- Biography -->
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in mb-8">
                 <h3 class="text-xl font-bold mb-4">Biografia</h3>
-                <div class="bg-gray-700 rounded-xl px-8 py-1 shadow-lg fade-in whitespace-pre-wrap">
-<% if club_profile.bio.present? -%>
+                <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
+                    <% if club_profile.bio.present? -%>
 <%= club_profile.bio %>
-<%- else -%>
-<p class="text-gray-300 mb-4">Ainda sem biografia</p>
-<%- end -%>
+                    <%- else -%>
+                            <p class="text-gray-300 mb-4">Ainda sem biografia</p>
+                    <%- end -%>                    
                 </div>
-            </div>
+            </div>  
             
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <!-- Biography Details -->
-            <div class="bg-gray-800 rounded-xl p-4 shadow-lg fade-in h-28">
-                <div class="space-y-6 mt-1">
-                    <div class="flex items-center gap-3">
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in space-y-4">
+                <h3 class="text-xl font-bold mb-4">Info</h3>
+                <div class="space-y-6 mt-1"> 
+                    <div class="flex items-center gap-3"> 
                         <i data-feather="calendar" class="text-gray-400"></i>
-                        <span class="text-gray-300">Fundado em: 24 de Julho, 1980</span>
-                    </div>
-                    <div class="flex items-start gap-3">
-                        <i data-feather="award" class="text-gray-400"></i>
-                        <div class="text-gray-300">
-                            <span>Modalidade(s):</span>
-                            <% if club_profile.has_both_sports? %>
-                                <span>Futebol | Andebol</span>
-                            <% else %>
-                                <% if club_profile.has_football? %>
-                                    <span>Futebol</span>
-                                <% elsif club_profile.has_handball? %>
-                                    <span>Andebol</span>
-                                <% end %>
+                        <span class="text-gray-300">Data de Fundação: 
+                            <% if club_profile.foundation_date.present? -%>
+                                <%= l(club_profile.foundation_date, format: :long, locale: :pt) %>
+                            <% else -%>
+                                <span class="text-gray-400">Não disponível</span>
+                            <% end -%>
+                        </span>
+                    </div> 
+                </div> 
+                <div class="flex items-start gap-3"> 
+                    <i data-feather="award" class="text-gray-400"></i>
+                    <div class="text-gray-300">
+                        <span>Modalidade(s):</span>
+                        <% if club_profile.has_both_sports? %>
+                            <span>Futebol | Andebol</span>
+                        <% else %>
+                            <% if club_profile.has_football? %>
+                                <span>Futebol</span>
+                            <% elsif club_profile.has_handball? %>
+                                <span>Andebol</span>
                             <% end %>
-                        </div>
+                        <% end %>
+                    </div>
+                </div> 
+            </div>
+
+            <!-- Contact Details -->
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in">
+                <h3 class="text-xl font-bold mb-4">Contactos</h3>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <i data-feather="phone" class="text-gray-400"></i>
+                        <span class="text-gray-300"><%= club_profile.contact || "Contacto não disponível" %></span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <i data-feather="mail" class="text-gray-400"></i>
+                        <span class="text-gray-300"><%= club_profile.user.email || "Email não disponível" %></span>
                     </div>
                 </div>
             </div>
@@ -101,10 +143,12 @@
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-bold">Publicações</h3>
-                    <button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
-                        <i data-feather="plus"></i>
-                        <span>Publicar</span>
-                    </button>
+                    <% if current_user && current_user.id == club_profile.user_id %>
+                        <button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
+                            <i data-feather="plus"></i>
+                            <span>Publicar</span>
+                        </button>
+                    <% end %>
                 </div>
                 
                 <!-- Post 1 -->
@@ -455,12 +499,15 @@
         // Inicializa os ícones da biblioteca Feather (substitui as tags <i> pelos ícones SVG)
         feather.replace();
 
+
         // Função que controla o botão de Seguir/Deixar de Seguir
         function toggleFollow() {
             // Encontra o botão de seguir na página
             const btn = document.getElementById('followBtn');
             // Encontra o texto dentro do botão
             const text = document.getElementById('followText');
+            // Encontra o ícone dentro do botão
+            const icon = document.getElementById('followIcon');
             
             // Se o texto atual for "Seguir"
             if (text.innerText === 'Seguir') {
@@ -470,6 +517,9 @@
                 btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
                 // Adiciona a cor cinzenta ao botão
                 btn.classList.add('bg-gray-600', 'hover:bg-gray-700');
+                // Muda o ícone de user-plus para user-minus
+                icon.setAttribute('data-feather', 'user-minus');
+                feather.replace();
             } else {
                 // Se já estiver a seguir, volta o texto para "Seguir"
                 text.innerText = 'Seguir';
@@ -477,6 +527,9 @@
                 btn.classList.remove('bg-gray-600', 'hover:bg-gray-700');
                 // Adiciona a cor azul de volta
                 btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                // Muda o ícone de user-minus para user-plus
+                icon.setAttribute('data-feather', 'user-plus');
+                feather.replace();
             }
         }
 
@@ -764,28 +817,4 @@
         }
     </style>
 
-<!-- 
-    <div id="<%= dom_id club_profile %>">
-        <p>
-            <strong>User:</strong>
-            <%= club_profile.user_id %>
-        </p>
-
-        <p>
-            <strong>Name:</strong>
-            <%= club_profile.name %>
-        </p>
-
-        <p>
-            <strong>Status:</strong>
-            <%= club_profile.status %>
-        </p>
-
-        <p>
-            <strong>Approved by:</strong>
-            <%= club_profile.approved_by %>
-        </p>
-        <br>
-    </div>
--->
 </body> 

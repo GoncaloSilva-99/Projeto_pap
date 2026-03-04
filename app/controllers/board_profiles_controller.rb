@@ -64,6 +64,6 @@ class BoardProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def board_profile_params
-      params.expect(board_profile: [ :user_id, :name, :bio, :birth_date, :club_profile_id, :role ])
+      params.expect(board_profile: [ :user_id, :name, :bio, :birth_date, :club_profile_id, :role, :profile_picture, :banner_picture ])
     end
 end

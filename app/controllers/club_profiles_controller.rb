@@ -75,6 +75,6 @@ class ClubProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_profile_params
-      params.expect(club_profile: [ :user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture ])
+      params.expect(club_profile: [ :user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date ])
     end
 end

@@ -36,13 +36,11 @@ class ClubTeamTrainingsController < ApplicationController
       @selected_sport = params[:sport]
       @selected_pitch = params[:pitch]
       @selected_ct = params[:ct]
+      @selected_locker_room = params[:locker_room]
       
       respond_to do |format|
-        if @selected_ct.present?
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), alert: "Não foi possível criar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
-        else
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), alert: "Não foi possível criar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
-        end
+        redirect_params = { sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, locker_room: @selected_locker_room }.compact
+        format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), alert: "Não foi possível criar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
         format.json { render json: { error: "Sobreposição de treinos" }, status: :unprocessable_entity }
       end
       return
@@ -53,11 +51,9 @@ class ClubTeamTrainingsController < ApplicationController
         @selected_sport = params[:sport]
         @selected_pitch = params[:pitch]
         @selected_ct = params[:ct]
-        if @selected_ct.present?
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), notice: "Treino criado com sucesso!" }
-        else
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), notice: "Treino criado com sucesso!" }
-        end
+        @selected_locker_room = params[:locker_room]
+        redirect_params = { sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, locker_room: @selected_locker_room }.compact
+        format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Treino criado com sucesso!" }
         format.json { render :show, status: :created, location: @club_team_training }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -85,13 +81,11 @@ class ClubTeamTrainingsController < ApplicationController
       @selected_sport = params[:sport]
       @selected_pitch = params[:pitch]
       @selected_ct = params[:ct]
+      @selected_locker_room = params[:locker_room]
       
       respond_to do |format|
-        if @selected_ct.present?
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), alert: "Não foi possível atualizar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
-        else
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), alert: "Não foi possível atualizar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
-        end
+        redirect_params = { sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, locker_room: @selected_locker_room }.compact
+        format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), alert: "Não foi possível atualizar o treino! Existe uma sobreposição de treinos na zona selecionada neste horário ou o balneário selecionado já está em uso." }
         format.json { render json: { error: "Sobreposição de treinos" }, status: :unprocessable_entity }
       end
       return
@@ -102,11 +96,9 @@ class ClubTeamTrainingsController < ApplicationController
         @selected_sport = params[:sport]
         @selected_pitch = params[:pitch]
         @selected_ct = params[:ct]
-        if @selected_ct.present?
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), notice: "Treino atualizado com sucesso!" }
-        else
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), notice: "Treino atualizado com sucesso!" }
-        end
+        @selected_locker_room = params[:locker_room]
+        redirect_params = { sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, locker_room: @selected_locker_room }.compact
+        format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Treino atualizado com sucesso!" }
         format.json { render :show, status: :ok, location: @club_team_training }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -123,11 +115,9 @@ class ClubTeamTrainingsController < ApplicationController
         @selected_sport = params[:sport]
         @selected_pitch = params[:pitch]
         @selected_ct = params[:ct]
-        if @selected_ct.present?
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct), notice: "Treino apagado com sucesso!" }
-        else
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, pitch: @selected_pitch), notice: "Treino apagado com sucesso!" }
-        end
+        @selected_locker_room = params[:locker_room]
+        redirect_params = { sport: @selected_sport, pitch: @selected_pitch, ct: @selected_ct, locker_room: @selected_locker_room }.compact
+        format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Treino apagado com sucesso!" }
       format.json { head :no_content }
     end
   end

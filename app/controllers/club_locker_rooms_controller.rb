@@ -47,12 +47,10 @@ class ClubLockerRoomsController < ApplicationController
     respond_to do |format|
       if @club_locker_room.save
         @selected_sport = params[:sport]
-        if params[:ct].present?
-            @selected_ct = params[:ct]
-            format.html { redirect_to club_infrastructures_dashboard_path(ct: @selected_ct, sport: @selected_sport), notice: "Balneário criado com sucesso!" }
-        else
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Balneário criado com sucesso!" }
-        end
+        @selected_ct = params[:ct]
+        @selected_locker_room = params[:locker_room]
+        redirect_params = { sport: @selected_sport, ct: @selected_ct, locker_room: @selected_locker_room }.compact
+        format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Balneário criado com sucesso!" }
         
         format.json { render :show, status: :created, location: @club_locker_room }
       else
@@ -67,12 +65,10 @@ class ClubLockerRoomsController < ApplicationController
     respond_to do |format|
       if @club_locker_room.update(club_locker_room_params)
         @selected_sport = params[:sport]
-        if params[:ct].present?
-          @selected_ct = params[:ct]
-          format.html { redirect_to club_infrastructures_dashboard_path(ct: @selected_ct, sport: @selected_sport), notice: "Balneário atualizado com sucesso!", status: :see_other }
-        else
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Balneário atualizado com sucesso!", status: :see_other }
-        end
+        @selected_ct = params[:ct]
+        @selected_locker_room = params[:locker_room]
+        redirect_params = { sport: @selected_sport, ct: @selected_ct, locker_room: @selected_locker_room }.compact
+        format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Balneário atualizado com sucesso!", status: :see_other }
         format.json { render :show, status: :ok, location: @club_locker_room }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -93,12 +89,10 @@ class ClubLockerRoomsController < ApplicationController
     @club_locker_room.destroy!
     respond_to do |format|
       @selected_sport = params[:sport]
-      if params[:ct].present?
-        @selected_ct = params[:ct]
-        format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct), notice: "Balneário apagado com sucesso!", status: :see_other }
-      else
-        format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Balneário apagado com sucesso!", status: :see_other }
-      end
+      @selected_ct = params[:ct]
+      @selected_locker_room = params[:locker_room]
+      redirect_params = { sport: @selected_sport, ct: @selected_ct, locker_room: @selected_locker_room }.compact
+      format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Balneário apagado com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end

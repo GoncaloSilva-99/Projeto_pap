@@ -47,12 +47,11 @@ class ClubPitchesController < ApplicationController
     respond_to do |format|
       if @club_pitch.save
         @selected_sport = params[:sport]
-        if params[:ct].present?
-          @selected_ct = params[:ct]
-          format.html { redirect_to club_infrastructures_dashboard_path(ct: @selected_ct, sport: @selected_sport), notice: "Campo criado com sucesso!"}
-        else
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Campo criado com sucesso!" }
-        end
+        @selected_ct = params[:ct]
+        @selected_pitch = params[:pitch]
+        @selected_locker_room = params[:locker_room]
+        redirect_params = { sport: @selected_sport, ct: @selected_ct, pitch: @selected_pitch, locker_room: @selected_locker_room }.compact
+        format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Campo criado com sucesso!"}
         format.json { render :show, status: :created, location: @club_pitch }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -66,12 +65,11 @@ class ClubPitchesController < ApplicationController
     respond_to do |format|
       if @club_pitch.update(club_pitch_params)
         @selected_sport = params[:sport]
-        if params[:ct].present?
-          @selected_ct = params[:ct]
-          format.html { redirect_to club_infrastructures_dashboard_path(ct: @selected_ct, sport: @selected_sport), notice: "Campo atualizado com sucesso!", status: :see_other }
-        else
-          format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Campo atualizado com sucesso!", status: :see_other }
-        end
+        @selected_ct = params[:ct]
+        @selected_pitch = params[:pitch]
+        @selected_locker_room = params[:locker_room]
+        redirect_params = { sport: @selected_sport, ct: @selected_ct, pitch: @selected_pitch, locker_room: @selected_locker_room }.compact
+        format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Campo atualizado com sucesso!", status: :see_other }
         format.json { render :show, status: :ok, location: @club_pitch }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -85,12 +83,11 @@ class ClubPitchesController < ApplicationController
     @club_pitch.destroy!
     respond_to do |format|
       @selected_sport = params[:sport]
-      if params[:ct].present?
-        @selected_ct = params[:ct]
-        format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport, ct: @selected_ct), notice: "Campo apagado com sucesso!", status: :see_other }
-      else
-        format.html { redirect_to club_infrastructures_dashboard_path(sport: @selected_sport), notice: "Campo apagado com sucesso!", status: :see_other }
-      end
+      @selected_ct = params[:ct]
+      @selected_pitch = params[:pitch]
+      @selected_locker_room = params[:locker_room]
+      redirect_params = { sport: @selected_sport, ct: @selected_ct, pitch: @selected_pitch, locker_room: @selected_locker_room }.compact
+      format.html { redirect_to club_infrastructures_dashboard_path(redirect_params), notice: "Campo apagado com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end
