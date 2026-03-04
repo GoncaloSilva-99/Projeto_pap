@@ -750,9 +750,7 @@
                                                             <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
                                                         </a>
                                                     <% end %>
-                                                    <a href="#" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-t-md transition-colors hover:text-green-400 clickable">
-                                                        <div class="flex items-center"><i data-feather="bookmark" class="w-4 h-4 mr-2"></i><span class="save-text">Guardar publicação</span></div>
-                                                    </a>
+                                                    <%= render "posts/save_section", post: post %>
                                                     <% if post.user != current_user %>
                                                         <a href="#" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-b-md transition-colors clickable">
                                                             <div class="flex items-center"><i data-feather="alert-triangle" class="w-4 h-4 mr-2"></i><span>Reportar publicação</span></div>
@@ -1191,18 +1189,10 @@
                 </div>
             </div>
 
-            <!-- Favorites Modal -->
-            <div id="favorites-modal" class="fixed inset-0 z-[100] bg-gray-900 bg-opacity-95 hidden flex items-center justify-center">
-                <div class="bg-gray-800 rounded-xl p-8 w-full max-w-4xl relative shadow-2xl mx-4 h-[80vh] flex flex-col">
-                    <button id="close-favorites-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
-                        <i data-feather="x" class="w-6 h-6"></i>
-                    </button>
-                    <h2 class="text-2xl font-bold text-white mb-6 text-center">Publicações Favoritas</h2>
-                    <div id="favorites-list" class="flex-1 overflow-y-auto space-y-6 pr-2 no-scrollbar">
-                        <!-- Liked posts injected here -->
-                    </div>
-                </div>
-            </div>
+            <!-- Modal publicações guardadas -->
+
+            <%= render "posts/save_section_modal" %>
+            
 
             <script>
                 // --- Lógica Principal da Página ---

@@ -3,6 +3,7 @@ class Post < ApplicationRecord
   has_many :post_likes, dependent: :destroy
   has_many :post_comments, dependent: :destroy
   has_many :post_views, dependent: :destroy
+  has_many :post_saves
 
   has_many_attached :images
 
@@ -25,6 +26,11 @@ class Post < ApplicationRecord
   def liked_by?(user)
     return false unless user
     post_likes.exists?(user: user)
+  end
+
+  def saved_by?(user)
+    return false unless user
+    post_saves.exists?(user: user)
   end
 
   def mark_as_viewed_by(user)
