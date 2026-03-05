@@ -5,8 +5,10 @@
                     form: { class: "inline" },
                     class: "save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-t-md transition-colors hover:text-red-400 clickable",
                     data: { turbo_frame: "save_section_#{post.id}" } do %>
-                    <i data-feather="bookmark" class="w-5 h-5 fill-current"></i>
-                    <span> Retirar publicação dos guardados </span>
+                    <div class="flex items-center">
+                        <i data-feather="bookmark" class="w-4 h-4 mr-2 fill-current"></i>
+                        <span class="save-text">Retirar dos guardados</span>
+                    </div>
                 <% end %>
             <% else %>
                 <%= button_to post_post_saves_path(post),
@@ -14,8 +16,10 @@
                     form: { class: "inline" },
                     class: "save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-t-md transition-colors hover:text-green-400 clickable",
                     data: { turbo_frame: "save_section_#{post.id}" } do %>
-                    <i data-feather="bookmark" class="w-5 h-5"></i>
-                    <span> Guardar publicação </span>
+                    <div class="flex items-center">
+                        <i data-feather="bookmark" class="w-4 h-4 mr-2"></i>
+                        <span class="save-text">Guardar publicação</span>
+                    </div>
                 <% end %>
             <% end %>
     <script>

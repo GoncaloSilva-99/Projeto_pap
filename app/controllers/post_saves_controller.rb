@@ -3,7 +3,7 @@ class PostSavesController < ApplicationController
 
   def create
     @save = @post.post_saves.build(user: current_user)
-
+    flash.now[:notice] = "Post guardado com sucesso!"
     if @save.save
       respond_to do |format|
         format.turbo_stream do
@@ -14,10 +14,10 @@ class PostSavesController < ApplicationController
               locals: { post: @post }
             ),
             turbo_stream.replace(
-              "save_section_modal_#{@post.id}",
-              partial: "posts/save_section_modal",
-              locals: { post: @post }
+              "save_section_modal_#{current_user.id}",
+              partial: "posts/save_section_modal"
             )
+            turbo_stream.replace("flash", partial: "shared/flash")
           ]
         end
         format.html { redirect_to root_path }
@@ -31,11 +31,30 @@ class PostSavesController < ApplicationController
 
   # DELETE /post_saves/1 or /post_saves/1.json
   def destroy
-    @post_safe.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to root_path, notice: "Post safe was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+    @save = @post.post_saves.find_by(user: current_user)
+    flash.now[:notice] = "Post removido dos guardados!"
+    if @save&.destroy
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace(
+              "save_section_#{@post.id}",
+              partial: "posts/save_section",
+              locals: { post: @post }
+            ),
+            turbo_stream.replace(
+              "save_section_modal_#{@post.id}",
+              partial: "posts/save_section_modal",
+            ),
+            turbo_stream.replace("flash", partial: "shared/flash")
+          ]
+        end
+        format.html { redirect_to root_path, notice: "Post removido dos guardados" }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to root_path, alert: "Erro ao remover" }
+      end
     end
   end
 

@@ -37,11 +37,11 @@ class PostLikesController < ApplicationController
             )
           ]
         end
-        format.html { redirect_to posts_path }
+        format.html { redirect_to root_path }
       end
     else
       respond_to do |format|
-        format.html { redirect_to posts_path }
+        format.html { redirect_to root_path }
       end
     end
   end
@@ -67,7 +67,7 @@ class PostLikesController < ApplicationController
           )
         ]
       end
-      format.html { redirect_to posts_path }
+      format.html { redirect_to root_path }
     end
   end
 

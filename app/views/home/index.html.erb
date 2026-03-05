@@ -137,15 +137,17 @@
                         </div>
                         <div class="grid grid-cols-2 gap-3 p-4">
                             <!-- Dashboard -->
-                            <%= link_to club_dashboard_path, class: "block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600" do %>
-                                <i data-feather="shield" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</p>
+                            <% if current_user.club? %>
+                                <%= link_to club_dashboard_path, class: "block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600" do %>
+                                    <i data-feather="shield" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</p>
+                                <% end %>
                             <% end %>
                             <a href="#" id="favorites-app-link" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
                                 <i data-feather="heart" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">Likes</p>
                             </a>
-                            <a href="#" id="favorites-app-link" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600 hover:text-green-400">
+                            <a data-modal-target="saved-modal" data-modal-toggle="saved-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600 hover:text-green-400">
                                 <i data-feather="bookmark" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">Guardados</p>
                             </a>

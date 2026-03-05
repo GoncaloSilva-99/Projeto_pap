@@ -1,13 +1,13 @@
 <% @saved_posts = current_user.saved_posts %>
-<div id="favorites-modal" class="fixed inset-0 z-[100] bg-gray-900 bg-opacity-95 hidden flex items-center justify-center">
+<div id="saved-modal" class="fixed inset-0 z-[100] bg-gray-900 bg-opacity-95 hidden flex items-center justify-center">
     <div class="bg-gray-800 rounded-xl p-8 w-full max-w-4xl relative shadow-2xl mx-4 h-[80vh] flex flex-col">
-        <button id="close-favorites-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+        <button data-modal-hide="saved-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
             <i data-feather="x" class="w-6 h-6"></i>
         </button>
         <h2 class="text-2xl font-bold text-white mb-6 text-center">Publicações Favoritas</h2>
         <div id="favorites-list" class="flex-1 overflow-y-auto space-y-6 pr-2 no-scrollbar">
 
-            <%= turbo_frame_tag "save_section_#{current_user.id}", style: "display: contents;" do %>
+            <%= turbo_frame_tag "save_section_modal_#{current_user.id}", style: "display: contents;" do %>
                 <div id="saved_posts_list" class="space-y-6">
                     <% if @saved_posts.present? %>
                         <% @saved_posts.each do |post| %>
