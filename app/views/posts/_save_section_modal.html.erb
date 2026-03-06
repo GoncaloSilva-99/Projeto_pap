@@ -3,11 +3,7 @@
         <button data-modal-hide="saved-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
             <i data-feather="x" class="w-6 h-6"></i>
         </button>
-        <h2 class="text-2xl font-bold text-white mb-6 text-center">Publicações Guardadas ( 
-            <%= turbo_frame_tag "saved_count#{current_user.id}" do %>
-                <%= render "posts/saved_count" %> 
-            <% end %>
-         )</h2>
+        <h2 class="text-2xl font-bold text-white mb-6 text-center">Publicações Guardadas</h2>
         
         <div id="favorites-list" class="flex-1 overflow-y-auto space-y-6 pr-2 no-scrollbar">
             <div id="saved_posts_list" class="space-y-6">
