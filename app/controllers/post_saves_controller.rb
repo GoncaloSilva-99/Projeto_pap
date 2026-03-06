@@ -13,10 +13,14 @@ class PostSavesController < ApplicationController
               partial: "posts/save_section",
               locals: { post: @post }
             ),
-            turbo_stream.replace(
-              "save_section_modal_#{current_user.id}",
-              partial: "posts/save_section_modal"
-            )
+            turbo_stream.update(
+              "saved_posts_list",
+              partial: "posts/saved_posts_list"
+            ),
+            turbo_stream.update(
+              "saved_count_#{current_user.id}",
+              partial: "posts/saved_count"
+            ),
             turbo_stream.replace("flash", partial: "shared/flash")
           ]
         end
@@ -42,9 +46,13 @@ class PostSavesController < ApplicationController
               partial: "posts/save_section",
               locals: { post: @post }
             ),
-            turbo_stream.replace(
-              "save_section_modal_#{@post.id}",
-              partial: "posts/save_section_modal",
+            turbo_stream.update(
+              "saved_posts_list",
+              partial: "posts/saved_posts_list"
+            ),
+            turbo_stream.update(
+              "saved_count_#{current_user.id}",
+              partial: "posts/saved_count"
             ),
             turbo_stream.replace("flash", partial: "shared/flash")
           ]

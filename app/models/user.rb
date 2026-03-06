@@ -67,7 +67,7 @@ class User < ApplicationRecord
   has_many :follower_relationships, class_name: 'Follow', foreign_key: :followed_id, dependent: :destroy
   has_many :followers, through: :follower_relationships, source: :follower
 
-  has_many :post_saves
+  has_many :post_saves, dependent: :destroy
   has_many :saved_posts, through: :post_saves, source: :post
 
   def following?(other_user)
