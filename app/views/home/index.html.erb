@@ -941,13 +941,7 @@
                                                     
                                                     <!-- Comments List -->
                                                     <div class="flex-1 overflow-y-auto p-4 space-y-4" id="comments_list_<%= post.id %>">
-                                                        <% if post.post_comments.any? %>
-                                                            <% post.post_comments.newest_first.each do |comment| %>
-                                                                <%= render "post_comments/post_comment", comment: comment %>
-                                                            <% end %>
-                                                        <% else %>
-                                                            <p class="text-gray-400 text-sm text-center">Ainda não há comentários. Sê o primeiro!</p>
-                                                        <% end %>
+                                                        <%= render "post_comments/comments_list", post: post %>
                                                     </div>
 
                                                     <!-- Input Area -->

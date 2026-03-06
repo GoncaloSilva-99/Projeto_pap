@@ -83,10 +83,14 @@
             <button data-modal-hide="modal-apagar-comment-<%= comment.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
                 Cancelar
             </button>
-            <%= button_to post_post_comments_path(comment.post, id: comment.id), method: :delete,
-              data: { turbo_frame: "_top", modal_hide: "modal-apagar-comment-#{comment.id}" },
-              class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
-              Apagar Comentário
+            <%= button_to post_post_comment_path(comment.post, comment), 
+                method: :delete, 
+                data: { 
+                  turbo_frame: "_top", 
+                  modal_hide: "modal-apagar-comment-#{comment.id}"
+                },
+                class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                Apagar Comentário
             <% end %>
         </div>
     </div>

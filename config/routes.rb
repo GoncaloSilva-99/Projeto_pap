@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :follows
   resources :posts do
     resource :post_likes, only: [:create, :destroy]
-    resource :post_comments, only: [:create, :destroy]
+    resources :post_comments, only: [:create, :destroy]
     resource :post_saves, only: [:create, :destroy]
   end
   resources :club_team_trainings

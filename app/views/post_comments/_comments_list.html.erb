@@ -1,0 +1,7 @@
+<% if post.post_comments.any? %>
+    <% post.post_comments.newest_first.each do |comment| %>
+        <%= render "post_comments/post_comment", comment: comment %>
+    <% end %>
+<% else %>
+    <p class="text-gray-400 text-sm text-center">Ainda não há comentários. Sê o primeiro!</p>
+<% end %>

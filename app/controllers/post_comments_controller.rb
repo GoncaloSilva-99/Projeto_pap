@@ -57,7 +57,7 @@ class PostCommentsController < ApplicationController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.append(
+            turbo_stream.update(
             "comments_list_#{@post.id}",
             partial: "post_comments/post_comment",
             locals: { comment: @comment }
