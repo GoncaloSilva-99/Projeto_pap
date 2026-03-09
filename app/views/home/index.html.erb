@@ -992,7 +992,7 @@
                     
                 <div class="hidden lg:block w-80 space-y-6 flex-shrink-0">
                     <div class="bg-gray-800 rounded-xl p-6 shadow-lg sticky top-24">
-                        <h3 class="text-xl font-bold text-white mb-6">Sugestões para seguir</h3>
+                        <h3 class="text-xl font-bold text-white mb-6">Sugestões para si</h3>
                         <div class="space-y-6">
                             <% if @suggested_users.present? %>
                                 <% @suggested_users.each do |user| %>
@@ -1050,8 +1050,8 @@
                                     </div>
                                 <% end %>
                                 <div class="mt-6 pt-4 border-t border-gray-700 text-center">
-                                            <a href="#" id="view-all-suggestions-btn" class="text-sm text-blue-400 hover:text-blue-300">Ver mais sugestões</a>
-                                        </div>
+                                    <a data-modal-toggle="suggestions-modal" data-modal-target="suggestions-modal" class=" clickable text-sm text-blue-400 hover:text-blue-300">Ver mais sugestões</a>
+                                </div>
                             <% else %>
                                 <p class="text-gray-400 text-sm text-center">Sem sugestões disponíveis</p>
                             <% end %>
@@ -1064,7 +1064,7 @@
             <!-- Suggestions Carousel Modal -->
             <div id="suggestions-modal" class="fixed inset-0 z-[100] bg-gray-900 bg-opacity-95 hidden flex items-center justify-center">
                 <div class="bg-gray-800 rounded-xl p-8 w-full max-w-6xl relative shadow-2xl mx-4">
-                    <button id="close-suggestions-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                    <button data-modal-hide="suggestions-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
                         <i data-feather="x" class="w-6 h-6"></i>
                     </button>
                     <h2 class="text-2xl font-bold text-white mb-8 text-center">Sugestões para si</h2>
@@ -1072,66 +1072,69 @@
                     <div class="relative px-12">
                         <div class="overflow-hidden" id="suggestions-carousel-container">
                             <div class="flex transition-transform duration-500 ease-in-out" id="suggestions-track">
-                                <!-- Profile 1 -->
-                                <div class="w-1/3 flex-shrink-0 px-3">
-                                    <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
-                                        <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
-                                        <h3 class="text-lg font-bold text-white">Karen Nelson</h3>
-                                        <span class="text-blue-400 text-sm mb-3 font-medium">Andebol • Guarda-Redes</span>
-                                        <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Atleta dedicada com foco em reflexos rápidos e liderança defensiva. À procura de novos desafios na liga profissional.</p>
-                                        <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
-                                            Seguir
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Profile 2 -->
-                                <div class="w-1/3 flex-shrink-0 px-3">
-                                    <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
-                                        <div class="w-24 h-24 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-2xl mb-4 border-4 border-gray-800">AFC</div>
-                                        <h3 class="text-lg font-bold text-white">Arsenal FC</h3>
-                                        <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Londres</span>
-                                        <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Um dos clubes mais históricos de Inglaterra, focado no desenvolvimento de jovens talentos e futebol ofensivo.</p>
-                                        <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
-                                            Seguir
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Profile 3 -->
-                                <div class="w-1/3 flex-shrink-0 px-3">
-                                    <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
-                                        <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
-                                        <h3 class="text-lg font-bold text-white">Thomas Lean</h3>
-                                        <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Médio</span>
-                                        <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Criativo no meio-campo com excelente visão de jogo. Especialista em bolas paradas e passes longos.</p>
-                                        <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
-                                            Seguir
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Profile 4 -->
-                                <div class="w-1/3 flex-shrink-0 px-3">
-                                    <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
-                                        <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
-                                        <h3 class="text-lg font-bold text-white">Michael Gough</h3>
-                                        <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Treinador • Tático</span>
-                                        <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Treinador experiente com certificação UEFA Pro. Focado em análise de dados e desenvolvimento de equipas.</p>
-                                        <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
-                                            Seguir
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Profile 5 -->
-                                <div class="w-1/3 flex-shrink-0 px-3">
-                                    <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
-                                        <div class="w-24 h-24 rounded-full bg-yellow-500 flex items-center justify-center text-white font-bold text-2xl mb-4 border-4 border-gray-800">BVB</div>
-                                        <h3 class="text-lg font-bold text-white">Dortmund</h3>
-                                        <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Alemanha</span>
-                                        <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Conhecidos pela "Muralha Amarela" e pela paixão intensa dos adeptos. Formação de classe mundial.</p>
-                                        <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
-                                            Seguir
-                                        </button>
-                                    </div>
-                                </div>
+                                <% if @suggested_users_modal.present? %>
+                                    <% @suggested_users_modal.each do |user| %>
+                                        <div class="w-1/3 flex-shrink-0 px-3">
+                                            <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 transition-colors">
+                                                <% 
+                                                    suggested_user_profile = nil
+                                                    if user.club?
+                                                        suggested_user_profile = user.club_profile
+                                                    elsif user.player?
+                                                        suggested_user_profile = user.player_profile
+                                                    elsif user.board?
+                                                        suggested_user_profile = user.board_profile
+                                                    elsif user.coach?
+                                                        suggested_user_profile = user.coach_profile
+                                                    elsif user.admin?
+                                                        suggested_user_profile = user.admin_profile
+                                                    elsif user.user?
+                                                        suggested_user_profile = user.user_profile
+                                                    end
+                                                %>
+                                                <% if suggested_user_profile && suggested_user_profile.profile_picture.attached? %>
+                                                    <%= image_tag url_for(suggested_user_profile.profile_picture), class: "w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800", id: "profile-pic-img" %>
+                                                <% else %>
+                                                    <%= image_tag "default_pp.jpg", class: "w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800", id: "profile-pic-img" %>
+                                                <% end %>
+                                                <h3 class="text-lg font-bold text-white">
+                                                    <% if user.club? %>
+                                                        <%= link_to user.club_profile.name, club_profile_path(user.club_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.player? %>
+                                                        <%= link_to user.player_profile.name, player_profile_path(user.player_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.coach? %>
+                                                        <%= link_to user.coach_profile.name, coach_profile_path(user.coach_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.board? %>
+                                                        <%= link_to user.board_profile.name, board_profile_path(user.board_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.user? %>
+                                                        <%= link_to user.user_profile.name, user_profile_path(user.user_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% end %>
+                                                </h3>
+                                                <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">
+                                                    <% if user.club? %>
+                                                        <%= user.club_profile.bio %>
+                                                    <% elsif user.player? %>
+                                                        <%= user.player_profile.bio %>
+                                                    <% elsif user.coach? %>
+                                                        <%= user.coach_profile.bio %>
+                                                    <% elsif user.board? %>
+                                                        <%= user.board_profile.bio %>
+                                                    <% elsif user.user? %>
+                                                        <%= user.user_profile.bio %>
+                                                    <% end %>
+                                                </p>
+                                                <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
+                                                    Seguir
+                                                </button>
+                                            </div>
+                                        </div>
+                                    <% end %>
+                                <% end %>
                             </div>
                         </div>
                         
