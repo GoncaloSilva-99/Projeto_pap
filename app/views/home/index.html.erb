@@ -988,63 +988,77 @@
                     </div>
 
                     <!-- Sidebar Suggestions -->
-                    <div class="hidden lg:block w-80 space-y-6 flex-shrink-0">
-                        <div class="bg-gray-800 rounded-xl p-6 shadow-lg sticky top-24">
-                            <h3 class="text-xl font-bold text-white mb-6">Sugestões para seguir</h3>
-                            <div class="space-y-6">
-                                <!-- Suggestion 1 -->
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                                            SLB
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-white hover:underline cursor-pointer">SL Benfica</div>
-                                            <div class="text-xs text-gray-400">Futebol • Lisboa</div>
-                                        </div>
-                                    </div>
-                                    <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
-                                        <i data-feather="user-plus" class="w-5 h-5"></i>
-                                    </button>
-                                </div>
 
-                                <!-- Suggestion 2 -->
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold">
-                                            SCP
+                    
+                <div class="hidden lg:block w-80 space-y-6 flex-shrink-0">
+                    <div class="bg-gray-800 rounded-xl p-6 shadow-lg sticky top-24">
+                        <h3 class="text-xl font-bold text-white mb-6">Sugestões para seguir</h3>
+                        <div class="space-y-6">
+                            <% if @suggested_users.present? %>
+                                <% @suggested_users.each do |user| %>
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex items-center space-x-3 flex-1 min-w-0">
+                                            <div class="w-12 h-12 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center text-white font-bold">
+                                                <% 
+                                                    suggested_user_profile = nil
+                                                    if user.club?
+                                                        suggested_user_profile = user.club_profile
+                                                    elsif user.player?
+                                                        suggested_user_profile = user.player_profile
+                                                    elsif user.board?
+                                                        suggested_user_profile = user.board_profile
+                                                    elsif user.coach?
+                                                        suggested_user_profile = user.coach_profile
+                                                    elsif user.admin?
+                                                        suggested_user_profile = user.admin_profile
+                                                    elsif user.user?
+                                                        suggested_user_profile = user.user_profile
+                                                    end
+                                                %>
+                                                <% if suggested_user_profile && suggested_user_profile.profile_picture.attached? %>
+                                                    <%= image_tag url_for(suggested_user_profile.profile_picture), class: "w-full h-full object-cover rounded-full", id: "profile-pic-img" %>
+                                                <% else %>
+                                                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover rounded-full", id: "profile-pic-img" %>
+                                                <% end %>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="font-semibold text-white truncate">
+                                                    <% if user.club? %>
+                                                        <%= link_to user.club_profile.name, club_profile_path(user.club_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.player? %>
+                                                        <%= link_to user.player_profile.name, player_profile_path(user.player_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.coach? %>
+                                                        <%= link_to user.coach_profile.name, coach_profile_path(user.coach_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.board? %>
+                                                        <%= link_to user.board_profile.name, board_profile_path(user.board_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.user? %>
+                                                        <%= link_to user.user_profile.name, user_profile_path(user.user_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% end %>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <div class="font-semibold text-white hover:underline cursor-pointer">Sporting CP</div>
-                                            <div class="text-xs text-gray-400">Futebol • Andebol • Lisboa</div>
-                                        </div>
-                                    </div>
-                                    <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
-                                        <i data-feather="user-plus" class="w-5 h-5"></i>
-                                    </button>
-                                </div>
+                                        
+                                        <button class="follow-btn-suggestion bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap w-20 flex-shrink-0">
+                                            Seguir
+                                        </button>
 
-                                <!-- Suggestion 3 -->
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <img class="w-10 h-10 rounded-full object-contain" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png" alt="User">
-                                        <div>
-                                            <div class="font-semibold text-white hover:underline cursor-pointer">Joseph McFall</div>
-                                            <div class="text-xs text-gray-400">Treinador</div>
-                                        </div>
                                     </div>
-                                    <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
-                                        <i data-feather="user-plus" class="w-5 h-5"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-gray-700 text-center">
-                                <a href="#" id="view-all-suggestions-btn" class="text-sm text-blue-400 hover:text-blue-300">Ver mais sugestões</a>
-                            </div>
+                                <% end %>
+                                <div class="mt-6 pt-4 border-t border-gray-700 text-center">
+                                            <a href="#" id="view-all-suggestions-btn" class="text-sm text-blue-400 hover:text-blue-300">Ver mais sugestões</a>
+                                        </div>
+                            <% else %>
+                                <p class="text-gray-400 text-sm text-center">Sem sugestões disponíveis</p>
+                            <% end %>
                         </div>
                     </div>
                 </div>
-            </div>
+
 
 
             <!-- Suggestions Carousel Modal -->
