@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   get "dashboard/club_board", as: :club_board_dashboard
   get "dashboard/club_equipment", as: :club_equipment_dashboard
   get "dashboard/club_infrastructures", as: :club_infrastructures_dashboard
+  get "dashboard/club_finances", as: :club_finances_dashboard
   
 
   post "dashboard/create_sport", to: "dashboard#create_sport", as: :create_club_sport
