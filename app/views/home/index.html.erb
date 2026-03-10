@@ -1671,6 +1671,24 @@
                     });
                 }
 
+                // Re-inicializa após Turbo Stream atualizar (já tens este evento)
+                    document.addEventListener('turbo:frame-load', () => {
+                        if (typeof feather !== 'undefined') feather.replace();
+                        initializeCarousels();
+                        
+                        // ADICIONA ESTA LINHA:
+                        if (typeof initFlowbite !== 'undefined') initFlowbite();
+                    });
+
+                    // ADICIONA TAMBÉM ESTE EVENTO NOVO (para Turbo Stream updates):
+                    document.addEventListener('turbo:before-stream-render', (event) => {
+                        // Depois do Turbo Stream renderizar, re-inicializa o Flowbite
+                        setTimeout(() => {
+                            if (typeof initFlowbite !== 'undefined') initFlowbite();
+                            if (typeof feather !== 'undefined') feather.replace();
+                        }, 50);
+                    });
+
             </script>
         <% else %>
 
