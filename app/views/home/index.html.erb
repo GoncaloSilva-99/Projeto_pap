@@ -1043,15 +1043,13 @@
                                             </div>
                                         </div>
                                         
-                                        <button class="follow-btn-suggestion bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap w-20 flex-shrink-0">
-                                            Seguir
-                                        </button>
+                                        <%= render "follows/follow_button_suggestions", user: user %>
 
                                     </div>
                                 <% end %>
-                                <div class="mt-6 pt-4 border-t border-gray-700 text-center">
-                                    <a data-modal-toggle="suggestions-modal" data-modal-target="suggestions-modal" class=" clickable text-sm text-blue-400 hover:text-blue-300">Ver mais sugestões</a>
-                                </div>
+                                    <div class="mt-6 pt-4 border-t border-gray-700 text-center">
+                                        <a data-modal-toggle="suggestions-modal" data-modal-target="suggestions-modal" class=" clickable text-sm text-blue-400 hover:text-blue-300">Ver sugestões</a>
+                                    </div>
                             <% else %>
                                 <p class="text-gray-400 text-sm text-center">Sem sugestões disponíveis</p>
                             <% end %>
@@ -1127,9 +1125,7 @@
                                                         <%= user.user_profile.bio %>
                                                     <% end %>
                                                 </p>
-                                                <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
-                                                    Seguir
-                                                </button>
+                                                <%= render "follows/follow_button_suggestions", user: user %>
                                             </div>
                                         </div>
                                     <% end %>

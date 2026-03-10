@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :post_views
-  resources :follows
+  resources :follows, only: [:create, :destroy], param: :user_id
   resources :posts do
     resource :post_likes, only: [:create, :destroy]
     resources :post_comments, only: [:create, :destroy]

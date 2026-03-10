@@ -70,6 +70,17 @@ class User < ApplicationRecord
   has_many :post_saves, dependent: :destroy
   has_many :saved_posts, through: :post_saves, source: :post
 
+  def follow(other_user)
+    return false if self == other_user || following?(other_user)
+    following_relationships.create(followed: other_user)
+  end
+
+  def unfollow(other_user)
+    relationship = following_relationships.find_by(followed: other_user)
+    relationship&.destroy
+  end
+
+
   def following?(other_user)
     following.include?(other_user)
   end
@@ -112,5 +123,7 @@ class User < ApplicationRecord
     .order('COUNT(follows.id) DESC')
     .limit(limit)
   end
+
+  
 
 end
