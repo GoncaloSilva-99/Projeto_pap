@@ -1069,12 +1069,11 @@
                     </button>
                     <h2 class="text-2xl font-bold text-white mb-8 text-center">Sugestões para si</h2>
                     
-                    <div class="relative px-12">
-                        <div class="overflow-hidden" id="suggestions-carousel-container">
-                            <div class="flex transition-transform duration-500 ease-in-out" id="suggestions-track">
+                    <div class="relative">
+                        <div class="overflow-x-auto snap-x snap-mandatory scroll-smooth flex gap-4 px-12 py-4 no-scrollbar" id="suggestions-track">
                                 <% if @suggested_users_modal.present? %>
                                     <% @suggested_users_modal.each do |user| %>
-                                        <div class="w-1/3 flex-shrink-0 px-3">
+                                        <div class="snap-start flex-shrink-0 w-[calc(33.333%-1rem)]">
                                             <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 transition-colors">
                                                 <% 
                                                     suggested_user_profile = nil
@@ -1135,7 +1134,7 @@
                                         </div>
                                     <% end %>
                                 <% end %>
-                            </div>
+
                         </div>
                         
                         <button id="prev-suggestion" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-3 rounded-full text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
@@ -1688,6 +1687,32 @@
                             if (typeof feather !== 'undefined') feather.replace();
                         }, 50);
                     });
+
+                    // --- Setas do Carrossel de Sugestões ---
+                    const suggestionsTrack = document.getElementById('suggestions-track');
+                    const prevBtn = document.getElementById('prev-suggestion');
+                    const nextBtn = document.getElementById('next-suggestion');
+
+                    if (suggestionsTrack && prevBtn && nextBtn) {
+                        // Botão anterior
+                        prevBtn.addEventListener('click', () => {
+                            suggestionsTrack.scrollBy({ left: -suggestionsTrack.offsetWidth / 3, behavior: 'smooth' });
+                        });
+                        
+                        // Botão seguinte
+                        nextBtn.addEventListener('click', () => {
+                            suggestionsTrack.scrollBy({ left: suggestionsTrack.offsetWidth / 3, behavior: 'smooth' });
+                        });
+                        
+                        // Atualiza estado dos botões ao fazer scroll
+                        const updateButtons = () => {
+                            prevBtn.disabled = suggestionsTrack.scrollLeft <= 0;
+                            nextBtn.disabled = suggestionsTrack.scrollLeft >= suggestionsTrack.scrollWidth - suggestionsTrack.offsetWidth;
+                        };
+                        
+                        suggestionsTrack.addEventListener('scroll', updateButtons);
+                        updateButtons(); // Inicializa
+                    }
 
             </script>
         <% else %>

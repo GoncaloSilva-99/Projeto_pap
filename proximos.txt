@@ -1,7 +1,5 @@
 Proximos:
-comentário não dá para apagar logo ao criar (e ao criar apenas aparece o comentário criado)
 adicionar botão de report (publicações, comentários e perfis)
-mostrar quem deu like
 sugestões têm de estar funcionais
 falta dar para mudar email e palavra passe nos perfis (quando tiverem finalizados adiciona-se)
 mensagens ao atualizar perfis estão default
