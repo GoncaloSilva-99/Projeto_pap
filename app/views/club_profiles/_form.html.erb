@@ -19,6 +19,7 @@
         </div>
       <% end %>
 
+      <!-- Imagens de Perfil e Banner -->
       <div class="relative w-full max-w-2xl">
 
                       <!-- Banner -->
@@ -94,6 +95,42 @@
             rows: 6,
             class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
             placeholder:"Escreva uma breve descrição sobre o clube. A informação estará visível para todos no perfil" %>
+      </div>
+
+      <div class="mt-8 border-t border-gray-700 pt-6 space-y-6">
+        <div>
+          <h3 class="text-lg font-medium leading-6 text-white">Detalhes da Conta</h3>
+          <p class="mt-1 text-sm text-gray-400">Altere o seu email e palavra-passe. Deixe os campos em branco se não pretender alterar.</p>
+        </div>
+
+        <%= form.fields_for :user do |user_form| %>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <%= user_form.label :email, "Endereço de Email", class: "block text-sm font-medium text-gray-400 mb-1" %>
+              <%= user_form.email_field :email,
+                  class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                  placeholder:"novo@email.com" %>
+            </div>
+            <div>
+              <%= user_form.label :email_confirmation, "Confirmação de Email", class: "block text-sm font-medium text-gray-400 mb-1" %>
+              <%= user_form.email_field :email_confirmation,
+                  class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                  placeholder:"Confirme o seu email" %>
+            </div>
+            <div>
+              <%= user_form.label :password, "Nova Palavra-passe", class: "block text-sm font-medium text-gray-400 mb-1" %>
+              <%= user_form.password_field :password,
+                  class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                  placeholder:"Nova palavra-passe" %>
+            </div>
+            <div>
+              <%= user_form.label :password_confirmation, "Confirmação da Palavra-passe", class: "block text-sm font-medium text-gray-400 mb-1" %>
+              <%= user_form.password_field :password_confirmation,
+                  class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                  placeholder:"Confirme a nova palavra-passe" %>
+            </div>
+          </div>
+        <% end %>
       </div>
 
       <div class="flex gap-4 pt-4">

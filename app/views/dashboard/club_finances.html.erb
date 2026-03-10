@@ -130,24 +130,26 @@
                     <h3 class="text-lg font-semibold text-white">Carteira</h3>
                     <i data-feather="briefcase" class="text-blue-400"></i>
                 </div>
-                <%# Substituir '0' por uma variável real como @wallet_balance %>
-                <% if 0 > 0 %>
-                    <div class="flex-grow flex flex-col justify-between">
-                        <div>
-                            <p class="text-3xl font-bold text-white">5.250,00 €</p>
-                            <p class="text-sm text-slate-400 mb-6">Valor em caixa</p>
+                
+                <!-- Vista com Saldo (Inicialmente oculta) -->
+                <div id="wallet-balance-view" class="flex-grow flex flex-col justify-between hidden">
+                    <div class="flex-grow">
+                        <div class="flex items-center mb-1">
+                            <p id="wallet-balance-amount" class="text-3xl font-bold text-white">0,00 €</p>
+                            <button class="add-money-trigger ml-3 p-1.5 bg-slate-700 hover:bg-blue-600 rounded-lg text-white transition-colors" title="Adicionar Dinheiro">
+                                <i data-feather="edit-3" class="w-5 h-5"></i>
+                            </button>
                         </div>
-                        <button class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                            Adicionar Dinheiro
-                        </button>
+                        <p class="text-sm text-slate-400">Valor em caixa</p>
                     </div>
-                <% else %>
-                    <div class="flex-grow flex items-center justify-center">
-                        <button class="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 px-4 py-3 rounded-lg font-medium transition-colors opacity-80 hover:opacity-100">
-                            Adicionar Dinheiro à Conta
-                        </button>
-                    </div>
-                <% end %>
+                </div>
+
+                <!-- Vista Vazia (Inicialmente visível) -->
+                <div id="wallet-empty-view" class="flex-grow flex items-center justify-center">
+                    <button class="add-money-trigger w-full bg-slate-700 hover:bg-slate-600 text-slate-300 px-4 py-3 rounded-lg font-medium transition-colors opacity-80 hover:opacity-100">
+                        Adicionar Dinheiro à Conta
+                    </button>
+                </div>
             </div>
 
             <!-- Receitas -->
@@ -180,11 +182,11 @@
         <div class="flex justify-between items-center mb-8">
             <!-- Searchbar -->
             <div class="relative w-1/3">
-                <i data-feather="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                <input type="text" placeholder="Pesquisar transações..." class="bg-slate-800 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-white w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <i id="search-icon" data-feather="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-white transition-colors"></i>
+                <input id="search-input" type="text" placeholder="Pesquisar transações..." class="bg-slate-800 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-white w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
 
-            <!-- Butões de Add Receitas/Despesas -->
+            <!-- Botões de Add Receitas/Despesas -->
             <div class="flex space-x-4">
                 <button id="add-revenue-button" title="Adicionar Receita" class="p-2 bg-green-600 hover:bg-green-700 rounded-lg text-white transition-colors">
                     <i data-feather="plus-circle"></i>
@@ -201,6 +203,7 @@
             <div class="md:pr-4">
                 <h3 class="text-2xl font-semibold text-green-400 mb-4">Receitas</h3>
                 <div class="pr-2 max-h-72 overflow-y-auto no-scrollbar" id="revenue-scroll-container">
+                    <!-- Exemplos de Receitas -->
                     <div class="space-y-4" id="revenue-list">
                         <!-- Item de receita -->
                         <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
@@ -294,6 +297,7 @@
             <div class="border-t border-slate-700 md:border-t-0 md:border-l md:border-slate-700 md:pl-8 pt-8 md:pt-0 mt-8 md:mt-0">
                 <h3 class="text-2xl font-semibold text-red-400 mb-4">Despesas</h3>
                 <div class="pr-2 max-h-72 overflow-y-auto no-scrollbar" id="expense-scroll-container">
+                    <!-- Exemplos de Despesas -->
                     <div class="space-y-4" id="expense-list">
                         <!-- Item de despesa -->
                         <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
@@ -364,7 +368,7 @@
                 <form>
                     <div class="mb-4">
                         <label for="revenue-amount" class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
-                        <input type="number" id="revenue-amount" name="amount" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="0,00 €">
+                        <input type="number" step="0.01" id="revenue-amount" name="amount" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="0,00 €">
                     </div>
                     <div class="mb-4">
                         <label for="revenue-description" class="block text-sm font-medium text-slate-300 mb-2">Descrição</label>
@@ -393,7 +397,7 @@
                 <form>
                     <div class="mb-4">
                         <label for="expense-amount" class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
-                        <input type="number" id="expense-amount" name="amount" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="0,00 €">
+                        <input type="number" step="0.01" id="expense-amount" name="amount" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="0,00 €">
                     </div>
                     <div class="mb-4">
                         <label for="expense-description" class="block text-sm font-medium text-slate-300 mb-2">Descrição</label>
@@ -409,6 +413,27 @@
                 </form>
             </div>
         </div>
+
+        <!-- Modal Add Dinheiro -->
+        <div id="add-money-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-md border border-slate-700">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-blue-400">Alterar Saldo da Conta</h2>
+                    <button id="close-add-money-modal" class="text-slate-400 hover:text-white">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <form id="add-money-form">
+                    <div class="mb-6">
+                        <label for="add-money-amount" class="block text-sm font-medium text-slate-300 mb-2">Quantia</label>
+                        <input type="number" step="0.01" id="add-money-amount" name="amount" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0,00 €" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                        Alterar
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -417,10 +442,15 @@
 
             // --- MODAL LOGIC ---
             const openModal = (modal) => {
-                if (!modal) return;
+                console.log('openModal called with:', modal); // Log the modal element received
+                if (!modal) {
+                    console.error('Error: Modal element is null or undefined. Cannot open modal.');
+                    return;
+                }
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
-                feather.replace(); // Re-render icons for the modal
+                console.log('Modal classes after opening:', modal.classList); // Log classes after modification
+                feather.replace(); // Re-render icons for the modal (if any new icons are in the modal)
             };
 
             const closeModal = (modal) => {
@@ -441,15 +471,69 @@
             addExpenseBtn?.addEventListener('click', () => openModal(expenseModal));
             closeExpenseBtn?.addEventListener('click', () => closeModal(expenseModal));
 
+                const addMoneyModal = document.getElementById('add-money-modal');
+            const addMoneyTriggers = document.querySelectorAll('.add-money-trigger');
+            const closeAddMoneyBtn = document.getElementById('close-add-money-modal');
+            const addMoneyForm = document.getElementById('add-money-form');
+
+            addMoneyTriggers.forEach(button => {
+                button.addEventListener('click', () => openModal(addMoneyModal));
+            });
+
+            closeAddMoneyBtn?.addEventListener('click', () => closeModal(addMoneyModal));
+
+            addMoneyForm?.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const amountInput = document.getElementById('add-money-amount');
+                const amount = parseFloat(amountInput.value);
+
+                if (isNaN(amount) || amount <= 0) {
+                    alert('Por favor, insira uma quantia válida.');
+                    return;
+                }
+
+                if (confirm(`Tem a certeza que quer alterar o saldo da conta para ${amount.toFixed(2)} €?`)) {
+                    // Atualizar UI
+                    const balanceView = document.getElementById('wallet-balance-view');
+                    const emptyView = document.getElementById('wallet-empty-view');
+                    const balanceText = document.getElementById('wallet-balance-amount');
+
+                    // Substitui o saldo atual pelo novo valor inserido
+                    const newBalance = amount;
+                    
+                    balanceText.innerText = newBalance.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+                    
+                    emptyView.classList.add('hidden');
+                    balanceView.classList.remove('hidden');
+
+                    closeModal(addMoneyModal);
+                    amountInput.value = ''; // Limpa o campo do formulário para a próxima utilização
+                }
+            });
+
+            // --- SEARCH LOGIC ---
+            const searchIcon = document.getElementById('search-icon');
+            const searchInput = document.getElementById('search-input');
+
+            searchIcon?.addEventListener('click', performSearch);
+
+            searchInput?.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
             window.addEventListener('click', (event) => {
                 if (event.target === revenueModal) closeModal(revenueModal);
                 if (event.target === expenseModal) closeModal(expenseModal);
+                if (event.target === addMoneyModal) closeModal(addMoneyModal);
             });
 
             window.addEventListener('keydown', (event) => {
                 if (event.key === 'Escape') {
                     if (revenueModal && !revenueModal.classList.contains('hidden')) closeModal(revenueModal);
                     if (expenseModal && !expenseModal.classList.contains('hidden')) closeModal(expenseModal);
+                    if (addMoneyModal && !addMoneyModal.classList.contains('hidden')) closeModal(addMoneyModal);
                 }
             });
 
@@ -533,5 +617,15 @@
     .no-scrollbar {
         -ms-overflow-style: none;  /* IE and Edge */
         scrollbar-width: none;  /* Firefox */
+    }
+
+    /* Remover setas dos inputs number */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none; 
+        margin: 0; 
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
     }
 </style>
