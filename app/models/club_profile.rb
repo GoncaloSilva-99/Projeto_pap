@@ -1,5 +1,6 @@
 class ClubProfile < ApplicationRecord
   belongs_to :user
+  accepts_nested_attributes_for :user
   has_many :board_profiles, dependent: :destroy
   has_one_attached :profile_picture
   has_one_attached :banner_picture

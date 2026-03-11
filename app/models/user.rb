@@ -5,7 +5,21 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :role, presence: true, inclusion: {in: ["User", "Player", "Coach", "Club", "Board", "Admin", "SuperAdmin"]}
-  validates_presence_of :email, :password, :password_confirmation
+  validates :email, presence: true
+
+  # Allow email confirmation in forms.
+  attr_accessor :email_confirmation
+  validates :email, confirmation: true, if: -> { email_confirmation.present? }
+  validates :email_confirmation, presence: true, if: -> { email_changed? }
+
+  # Devise already validates password presence on create.
+  # These validations allow updating other attributes without requiring a password change.
+  validates :password, confirmation: true, if: :password_required?
+  validates :password_confirmation, presence: true, if: :password_required?
+
+  def password_required?
+    new_record? || password.present? || password_confirmation.present?
+  end
 
   has_one :user_profile, dependent: :destroy
   accepts_nested_attributes_for :user_profile
