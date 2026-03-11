@@ -1,10 +1,14 @@
 Rails.application.routes.draw do
+  resources :report_profiles
+  resources :report_comments
+  resources :report_posts
   resources :post_views
   resources :follows, only: [:create, :destroy], param: :user_id
   resources :posts do
     resource :post_likes, only: [:create, :destroy]
     resources :post_comments, only: [:create, :destroy]
     resource :post_saves, only: [:create, :destroy]
+    resource :report_posts, only: [:create]
   end
   resources :club_team_trainings
   resources :club_training_centers

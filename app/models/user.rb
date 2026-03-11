@@ -56,7 +56,7 @@ class User < ApplicationRecord
   REGEX_EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
   has_many :posts, dependent: :destroy
-  has_many :post_likes, dependent: :destroy
+  
   has_many :post_comments, dependent: :destroy
   has_many :post_views, dependent: :destroy
   has_many :liked_posts, through: :likes, source: :post
@@ -69,6 +69,13 @@ class User < ApplicationRecord
 
   has_many :post_saves, dependent: :destroy
   has_many :saved_posts, through: :post_saves, source: :post
+
+  has_many :post_likes, dependent: :destroy
+  has_many :liked_posts, through: :post_likes, source: :post
+
+  has_many :report_posts, dependent: :destroy
+  has_many :report_profiles, dependent: :destroy
+  has_many :report_comments, dependent: :destroy
 
   def follow(other_user)
     return false if self == other_user || following?(other_user)

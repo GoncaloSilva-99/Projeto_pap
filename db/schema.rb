@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_27_111421) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_11_153608) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -258,6 +258,39 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_27_111421) do
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
+  create_table "report_comments", force: :cascade do |t|
+    t.bigint "post_comment_id", null: false
+    t.text "content"
+    t.boolean "resolved"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["post_comment_id"], name: "index_report_comments_on_post_comment_id"
+    t.index ["user_id"], name: "index_report_comments_on_user_id"
+  end
+
+  create_table "report_posts", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.text "content"
+    t.boolean "resolved"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["post_id"], name: "index_report_posts_on_post_id"
+    t.index ["user_id"], name: "index_report_posts_on_user_id"
+  end
+
+  create_table "report_profiles", force: :cascade do |t|
+    t.bigint "users_id", null: false
+    t.text "content"
+    t.boolean "resolved"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_report_profiles_on_user_id"
+    t.index ["users_id"], name: "index_report_profiles_on_users_id"
+  end
+
   create_table "sports", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -336,5 +369,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_27_111421) do
   add_foreign_key "post_views", "posts"
   add_foreign_key "post_views", "users"
   add_foreign_key "posts", "users"
+  add_foreign_key "report_comments", "post_comments"
+  add_foreign_key "report_comments", "users"
+  add_foreign_key "report_posts", "posts"
+  add_foreign_key "report_posts", "users"
+  add_foreign_key "report_profiles", "users"
+  add_foreign_key "report_profiles", "users", column: "users_id"
   add_foreign_key "user_profiles", "users"
 end

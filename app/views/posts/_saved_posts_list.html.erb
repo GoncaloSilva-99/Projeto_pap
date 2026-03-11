@@ -1,4 +1,4 @@
-<% @saved_posts = current_user.saved_posts %>
+<% @saved_posts = current_user.liked_posts %>
 
 <% if @saved_posts.present? %>
     <% @saved_posts.each do |post| %>

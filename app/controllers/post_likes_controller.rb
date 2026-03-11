@@ -34,6 +34,10 @@ class PostLikesController < ApplicationController
               "like_section_modal_#{@post.id}",
               partial: "posts/like_section_modal",
               locals: { post: @post }
+            ),
+            turbo_stream.update(
+              "liked_posts_list",
+              partial: "posts/liked_posts_list"
             )
           ]
         end
@@ -64,6 +68,10 @@ class PostLikesController < ApplicationController
             "like_section_modal_#{@post.id}",
             partial: "posts/like_section_modal",
             locals: { post: @post }
+          ),
+          turbo_stream.update(
+            "liked_posts_list",
+            partial: "posts/liked_posts_list"
           )
         ]
       end
