@@ -6,11 +6,18 @@ class FollowsController < ApplicationController
     if current_user.follow(@user)
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            "follow_button_suggestion_#{@user.id}",
-            partial: "follows/follow_button_suggestions",
-            locals: { user: @user }
-          )
+          render turbo_stream: [
+            turbo_stream.replace(
+              "follow_button_suggestion_#{@user.id}",
+              partial: "follows/follow_button_suggestions",
+              locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "follow_button_suggestion_modal_#{@user.id}",
+              partial: "follows/follow_button_suggestions_modal",
+              locals: { user: @user }
+            )
+          ] 
         end
         format.html { redirect_back(fallback_location: root_path, notice: "A seguir #{@user.email}" ) }
       end
@@ -28,11 +35,18 @@ class FollowsController < ApplicationController
     if @follow&.destroy
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(
-            "follow_button_suggestion_#{@user.id}",
-            partial: "follows/follow_button_suggestions",
-            locals: { user: @user }
-          )
+          render turbo_stream: [
+            turbo_stream.replace(
+              "follow_button_suggestion_#{@user.id}",
+              partial: "follows/follow_button_suggestions",
+              locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "follow_button_suggestion_modal_#{@user.id}",
+              partial: "follows/follow_button_suggestions_modal",
+              locals: { user: @user }
+            )
+          ] 
         end
         format.html { redirect_back(fallback_location: root_path, notice: "Deixaste de seguir #{@user.email}") }
       end
