@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show destroy ]
+  before_action :set_post, only: %i[ destroy ]
   before_action :authenticate_user!
 
   # GET /posts or /posts.json
@@ -10,11 +10,6 @@ class PostsController < ApplicationController
     @suggested_users = current_user.suggested_users_to_follow(limit: 6)
   end
 
-  # GET /posts/1 or /posts/1.json
-  def show
-    @post.mark_as_viewed_by(current_user)
-    @comments = @post.comments.newest_first.includes(:user)
-  end
 
   # GET /posts/new
   def new
@@ -36,7 +31,7 @@ class PostsController < ApplicationController
           locals: { post: @post }
           )
         end
-        format.html { redirect_to root_path, notice: 'Post criado com sucesso.' }
+        format.html { redirect_back fallback_location: root_path, notice: 'Post criado com sucesso.' }
       end
     else
       respond_to do |format|
@@ -49,7 +44,7 @@ class PostsController < ApplicationController
           flash.now[:alert] = @post.errors.full_messages.to_sentence(words_connector: ", ", two_words_connector: "e", last_word_connector: "e")
           render turbo_stream: turbo_stream.replace("flash", partial: "shared/flash")
         end
-        format.html { redirect_to root_path, alert: @post.errors.full_messages.to_sentence }
+        format.html { redirect_back fallback_location: root_path, alert: @post.errors.full_messages.to_sentence }
       end
     end
   end
@@ -63,12 +58,12 @@ class PostsController < ApplicationController
     flash.now[:notice] = "Post eliminado com sucesso!"
     respond_to do |format|
       format.turbo_stream do
-         render turbo_stream: [
+        render turbo_stream: [
           turbo_stream.remove("post_#{@post.id}"),
           turbo_stream.replace("flash", partial: "shared/flash")
         ]
       end
-      format.html { redirect_to root_path, notice: 'Post eliminado com sucesso!' }
+      format.html {redirect_back fallback_location: root_path, notice: 'Post eliminado com sucesso!' }
     end
   end
 

@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     resource :post_likes, only: [:create, :destroy]
     resources :post_comments, only: [:create, :destroy]
     resource :post_saves, only: [:create, :destroy]
-    resource :report_posts, only: [:create]
+    resources :report_posts, only: [:create]
   end
   resources :club_team_trainings
   resources :club_training_centers
