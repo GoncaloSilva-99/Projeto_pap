@@ -1,6 +1,5 @@
 <%= form_with model: [post, comment], 
-    data: { turbo_frame: "comment_form_#{post.id}" },
-    class: "flex items-center space-x-2" do |f| %>
+    class: "flex items-center space-x-2 w-full" do |f| %>
   
   <div class="flex-1 relative flex items-center">
     <%= f.text_field :content, 
