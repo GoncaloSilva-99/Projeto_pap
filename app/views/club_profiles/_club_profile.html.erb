@@ -147,12 +147,6 @@
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
                     <h3 class="text-xl font-bold">Publicações</h3>
-                    <% if current_user && current_user.id == club_profile.user_id %>
-                        <button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
-                            <i data-feather="plus"></i>
-                            <span>Publicar</span>
-                        </button>
-                    <% end %>
                 </div>
                 
                         <!-- Create Post -->
@@ -553,7 +547,6 @@
                                 <div class="bg-gray-800 rounded-xl p-12 text-center">
                                     <i data-feather="inbox" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
                                     <h3 class="text-xl font-bold text-gray-400 mb-2">Ainda não há posts</h3>
-                                    <p class="text-gray-500">Sê o primeiro a publicar!</p>
                                 </div>
                             <% end %>
                         </div>
