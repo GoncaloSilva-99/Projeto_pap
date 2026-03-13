@@ -41,10 +41,7 @@
                             <span>Editar Perfil</span>
                         <% end %>
                     <% else %>
-                        <button id="followBtn" onclick="toggleFollow()" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition">
-                            <i data-feather="user-plus" id="followIcon"></i>
-                            <span id="followText">Seguir</span>
-                        </button>
+                        <%= render "follows/follow_button_suggestions", user: club_profile.user %>
                         <button class="flex items-center justify-center px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition text-white" title="Denunciar">
                             <i data-feather="flag"></i>
                         </button>
@@ -55,10 +52,9 @@
             <div class="mt-5 md:mt-0 rounded-xl p-6">
                 <div class="flex justify-center text-center gap-8">
                     <div data-modal-target="modal-followers" data-modal-toggle="modal-followers" class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
-                        <span class="font-bold text-xl text-gray-100"><%= club_profile.user.followers.count %></span>
-                        <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">Seguidores</span>
+                            <%= render "follows/followers_count", user: club_profile.user%>
                     </div>
-                    <div data-modal-target="modal-followers" data-modal-toggle="modal-followers" class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
+                    <div data-modal-target="modal-following" data-modal-toggle="modal-following" class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
                         <span class="font-bold text-xl text-gray-100"> <%= club_profile.user.following.count %> </span> 
                         <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">A Seguir</span>
                     </div>
@@ -150,60 +146,62 @@
                 </div>
                 
                         <!-- Create Post -->
-                        <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg">
-                            <% if current_user.id == club_profile.user_id %>
-                                <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
-                                    <div class="flex items-start space-x-4">
-                                        <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                            <% if current_user.club_profile.profile_picture.attached? %>
-                                                <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
-                                            <% else %>
-                                                <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
-                                            <% end %>
-                                        </div>
-                                        <div class="flex-1">
-                                            <%= f.text_area :content, 
-                                                rows: 3,
-                                                placeholder: "O que estás a pensar?",
-                                                class: "w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" %>
-
-                                            <!-- Image Preview -->
-                                            <div id="image-preview-container" class="hidden mt-3 relative">
-                                                <div id="image-carousel" class="flex overflow-x-auto scroll-smooth rounded-lg no-scrollbar gap-2">
-                                                    <!-- Images will be injected here by JS -->
-                                                </div>
-                                                <button id="prev-image-btn" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
-                                                    <i data-feather="chevron-left" class="w-6 h-6"></i>
-                                                </button>
-                                                <button id="next-image-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
-                                                    <i data-feather="chevron-right" class="w-6 h-6"></i>
-                                                </button>
-                                                <div id="image-dots" class="flex justify-center items-center space-x-2 mt-2">
-                                                    <!-- Dots will be injected here by JS -->
-                                                </div>
+                        <% if current_user.id == club_profile.user_id %>
+                            <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg">
+                                
+                                    <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                <% if current_user.club_profile.profile_picture.attached? %>
+                                                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                                <% else %>
+                                                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                                <% end %>
                                             </div>
-                                            
-                                            <div class="flex justify-between items-center mt-3">
-                                                <div class="flex items-center space-x-2">
-                                                    <%= f.file_field :images, 
-                                                        multiple: true,
-                                                        accept: "image/*",
-                                                        class: "hidden",
-                                                        id: "post-image-upload" %>
-                                                    <label for="post_images_input" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 cursor-pointer" id="btn-upload-image">
-                                                        <i data-feather="image" class="w-5 h-5"></i>
-                                                    </label>
+                                            <div class="flex-1">
+                                                <%= f.text_area :content, 
+                                                    rows: 3,
+                                                    placeholder: "O que estás a pensar?",
+                                                    class: "w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" %>
+
+                                                <!-- Image Preview -->
+                                                <div id="image-preview-container" class="hidden mt-3 relative">
+                                                    <div id="image-carousel" class="flex overflow-x-auto scroll-smooth rounded-lg no-scrollbar gap-2">
+                                                        <!-- Images will be injected here by JS -->
+                                                    </div>
+                                                    <button id="prev-image-btn" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                                        <i data-feather="chevron-left" class="w-6 h-6"></i>
+                                                    </button>
+                                                    <button id="next-image-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                                        <i data-feather="chevron-right" class="w-6 h-6"></i>
+                                                    </button>
+                                                    <div id="image-dots" class="flex justify-center items-center space-x-2 mt-2">
+                                                        <!-- Dots will be injected here by JS -->
+                                                    </div>
                                                 </div>
                                                 
-                                                <%= f.submit "Publicar", 
-                                                    class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer" %>
+                                                <div class="flex justify-between items-center mt-3">
+                                                    <div class="flex items-center space-x-2">
+                                                        <%= f.file_field :images, 
+                                                            multiple: true,
+                                                            accept: "image/*",
+                                                            class: "hidden",
+                                                            id: "post-image-upload" %>
+                                                        <label for="post_images_input" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 cursor-pointer" id="btn-upload-image">
+                                                            <i data-feather="image" class="w-5 h-5"></i>
+                                                        </label>
+                                                    </div>
+                                                    
+                                                    <%= f.submit "Publicar", 
+                                                        class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer" %>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                <% end %>
-                            <% end %>
+                                    <% end %>
+                                
 
-                        </div>
+                            </div>
+                        <% end %>
 
                         <div id="posts_list" class="space-y-6">
                             <% if @posts.present? %>
@@ -615,10 +613,7 @@
         </div>
     </div>
 
-    <!-- Back to Top Button -->
-    <a href="#" id="back-to-top" class="hidden fixed bottom-8 right-5 bg-indigo-600 hover:bg-indigo-700 text-white p-3 rounded-full shadow-lg transition-opacity duration-300 z-50" title="Voltar ao topo e recarregar">
-        <i data-feather="arrow-up" class="w-5 h-5"></i>
-    </a>
+    <%= render "follows/followers_list_modal", user: club_profile.user %>
 
     <script>
         // Inicializa os ícones da biblioteca Feather (substitui as tags <i> pelos ícones SVG)

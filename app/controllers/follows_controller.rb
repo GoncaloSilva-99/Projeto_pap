@@ -16,6 +16,21 @@ class FollowsController < ApplicationController
               "follow_button_suggestion_modal_#{@user.id}",
               partial: "follows/follow_button_suggestions_modal",
               locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "follow_button_profiles_#{@user.id}",
+              partial: "follows/follow_button_profiles",
+              locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "followers_count_#{@user.id}",
+              partial: "follows/followers_count",
+              locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "followers_list_#{@user.id}",
+              partial: "follows/followers_list",
+              locals: { user: @user }
             )
           ] 
         end
@@ -44,6 +59,21 @@ class FollowsController < ApplicationController
             turbo_stream.replace(
               "follow_button_suggestion_modal_#{@user.id}",
               partial: "follows/follow_button_suggestions_modal",
+              locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "follow_button_profiles_#{@user.id}",
+              partial: "follows/follow_button_profiles",
+              locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "followers_count_#{@user.id}",
+              partial: "follows/followers_count",
+              locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "followers_list_#{@user.id}",
+              partial: "follows/followers_list",
               locals: { user: @user }
             )
           ] 
