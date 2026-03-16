@@ -1,4 +1,4 @@
-            <%= turbo_frame_tag "followings_list_#{user.id}" do %>
+            <%= turbo_frame_tag "following_list_#{user.id}" do %>
                 <% if user.following.any? %>
                     <% user.following.each do |following| %>
                         <% 
@@ -18,7 +18,7 @@
                             end
                         %>
 
-                        <div class="flex items-center justify-between hover:bg-gray-700 p-2 rounded-lg transition">
+                        <div class="flex items-center justify-between  p-2 rounded-lg transition">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-full bg-gray-600 overflow-hidden flex-shrink-0">
                                     <% if following_profile && following_profile.profile_picture.attached? %>
@@ -48,10 +48,6 @@
                                 </div>
                             </div>
 
-                            <button class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-sm font-medium rounded-md transition flex items-center gap-1 flex-shrink-0">
-                                <i data-feather="user-check" class="w-4 h-4"></i>
-                                <span>Seguir</span>
-                            </button>
                         </div>
                     <% end %>
                 <% else %>

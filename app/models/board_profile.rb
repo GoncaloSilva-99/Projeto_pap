@@ -1,5 +1,5 @@
 class BoardProfile < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, dependent: :destroy
   belongs_to :club_profile
   has_one_attached :profile_picture
   has_one_attached :banner_picture

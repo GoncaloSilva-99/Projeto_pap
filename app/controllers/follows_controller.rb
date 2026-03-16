@@ -31,6 +31,16 @@ class FollowsController < ApplicationController
               "followers_list_#{@user.id}",
               partial: "follows/followers_list",
               locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "following_count_#{@user.id}",
+              partial: "follows/following_count",
+              locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "following_list_#{@user.id}",
+              partial: "follows/following_list",
+              locals: { user: @user }
             )
           ] 
         end
@@ -74,6 +84,16 @@ class FollowsController < ApplicationController
             turbo_stream.replace(
               "followers_list_#{@user.id}",
               partial: "follows/followers_list",
+              locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "following_count_#{@user.id}",
+              partial: "follows/following_count",
+              locals: { user: @user }
+            ),
+            turbo_stream.replace(
+              "following_list_#{@user.id}",
+              partial: "follows/following_list",
               locals: { user: @user }
             )
           ] 

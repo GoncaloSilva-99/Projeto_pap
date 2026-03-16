@@ -42,9 +42,7 @@
                         <% end %>
                     <% else %>
                         <%= render "follows/follow_button_suggestions", user: club_profile.user %>
-                        <button class="flex items-center justify-center px-3 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition text-white" title="Denunciar">
-                            <i data-feather="flag"></i>
-                        </button>
+                        
                     <% end %>
                 </div>
             </div>
@@ -52,11 +50,10 @@
             <div class="mt-5 md:mt-0 rounded-xl p-6">
                 <div class="flex justify-center text-center gap-8">
                     <div data-modal-target="modal-followers" data-modal-toggle="modal-followers" class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
-                            <%= render "follows/followers_count", user: club_profile.user%>
+                        <%= render "follows/followers_count", user: club_profile.user %>
                     </div>
                     <div data-modal-target="modal-following" data-modal-toggle="modal-following" class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
-                        <span class="font-bold text-xl text-gray-100"> <%= club_profile.user.following.count %> </span> 
-                        <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">A Seguir</span>
+                        <%= render "follows/following_count", user: club_profile.user %>
                     </div>
                     <div class="rounded-lg px-4 py-2 transition">
                         <span class="font-bold text-xl text-gray-100"><%= @posts.count %></span>
@@ -77,11 +74,11 @@
             <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in mb-8">
                 <h3 class="text-xl font-bold mb-4">Biografia</h3>
                 <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
-                    <% if club_profile.bio.present? -%>
+                    <% if club_profile.bio.present? %>
                         <%= club_profile.bio %>
-                    <%- else -%>
+                    <% else %>
                             <p class="text-gray-300 mb-4">Ainda sem biografia</p>
-                    <%- end -%>                    
+                    <% end %>                    
                 </div>
             </div>  
             
@@ -152,8 +149,8 @@
                                     <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
                                         <div class="flex items-start space-x-4">
                                             <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                                <% if current_user.club_profile.profile_picture.attached? %>
-                                                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                                <% if club_profile.profile_picture.attached? %>
+                                                    <%= image_tag url_for(club_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
                                                 <% else %>
                                                     <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
                                                 <% end %>
@@ -238,8 +235,8 @@
                                             <div class="flex items-center justify-between mb-4">
                                                 <div class="flex items-center space-x-3">
                                                     <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                                        <% if current_user.club_profile.profile_picture.attached? %>
-                                                            <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-full h-full object-cover" %>
+                                                        <% if club_profile.profile_picture.attached? %>
+                                                            <%= image_tag url_for(club_profile.profile_picture), class: "w-full h-full object-cover" %>
                                                         <% else %>
                                                             <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
                                                         <% end %>
@@ -614,6 +611,9 @@
     </div>
 
     <%= render "follows/followers_list_modal", user: club_profile.user %>
+    <%= render "follows/following_list_modal", user: club_profile.user %>
+
+    
 
     <script>
         // Inicializa os ícones da biblioteca Feather (substitui as tags <i> pelos ícones SVG)
@@ -687,25 +687,11 @@
                     }
                 });
 
-                // Re-inicializa o Flowbite após qualquer Turbo Stream atualizar o DOM
-                    document.addEventListener('turbo:before-stream-render', () => {
-                        setTimeout(() => {
-                            // Só reinicializa o Flowbite se não houver modais abertos
-                            const hasOpenModal = document.querySelector('[id^="modal-post-"]:not(.hidden)');
-                            if (!hasOpenModal) {
-                                if (typeof initFlowbite !== 'undefined') initFlowbite();
-                            }
-                            if (typeof feather !== 'undefined') feather.replace();
-                        }, 50);
-                    });
-
-                    document.addEventListener('turbo:frame-load', () => {
-                        const hasOpenModal = document.querySelector('[id^="modal-post-"]:not(.hidden)');
-                        if (!hasOpenModal) {
-                            if (typeof initFlowbite !== 'undefined') initFlowbite();
-                        }
+                document.addEventListener('turbo:before-stream-render', (event) => {
+                    setTimeout(() => {
                         if (typeof feather !== 'undefined') feather.replace();
-                    });
+                    }, 50);
+                })
         }
 
     </script>
