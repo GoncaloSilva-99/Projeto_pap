@@ -29,7 +29,7 @@
             <div class="flex-1">
                 <div class="flex items-center gap-4">
                     <h2 class="text-2xl md:text-3xl font-bold py-1"><%= club_profile.name %></h2>
-                    <% if club_profile.status == false && current_user && current_user.id == club_profile.user_id %>
+                    <% if club_profile.status == nil %>
                         <span class="text-sm text-red-500 font-semibold">A aguardar aprovação de um administrador</span>
                     <% end %>
                 </div>
@@ -569,36 +569,7 @@
         </div>
     </div>
 
-    <!-- Full Screen Comment Modal -->
-    <div id="comment-modal" class="fixed inset-0 z-[100] bg-gray-900 hidden">
-        <div class="flex flex-col lg:flex-row w-full h-full">
-            <!-- Left: Post Content (Visible on Desktop) -->
-            <div class="hidden lg:flex lg:w-2/3 h-full bg-black items-center justify-center p-8 overflow-y-auto relative">
-                <div id="modal-post-container" class="max-w h-full w-full bg-gray-800 rounded-xl p-6 shadow-2xl flex flex-col">
-                    <!-- Content injected via JS -->
-                </div>
-            </div>
-
-            <!-- Right: Comments -->
-            <div class="w-full lg:w-1/3 h-full bg-gray-800 border-l border-gray-700 flex flex-col">
-                <!-- Header -->
-                <div class="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-800 z-10">
-                    <h3 class="text-xl font-bold text-white">Comentários</h3>
-                    <button id="close-modal-btn" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
-                        <div class="flex items-center gap-2">
-                            <span class="text-sm font-medium">Voltar</span>
-                            <i data-feather="x" class="w-5 h-5"></i>
-                        </div>
-                    </button>
-                </div>
-                
-                <!-- Comments List -->
-                <div class="flex-1 overflow-y-auto p-4 space-y-4" id="modal-comments-list">
-                    <!-- Comments injected via JS -->
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
     <!-- Image Modal -->
     <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4">
@@ -687,11 +658,22 @@
                     }
                 });
 
+                document.addEventListener('turbo:frame-load', () => {
+                    if (typeof feather !== 'undefined') feather.replace();
+                    initializeCarousels();
+                    
+                    // ADICIONA ESTA LINHA:
+                    if (typeof initFlowbite !== 'undefined') initFlowbite();
+                });
+
+                // ADICIONA TAMBÉM ESTE EVENTO NOVO (para Turbo Stream updates):
                 document.addEventListener('turbo:before-stream-render', (event) => {
+                    // Depois do Turbo Stream renderizar, re-inicializa o Flowbite
                     setTimeout(() => {
+                        if (typeof initFlowbite !== 'undefined') initFlowbite();
                         if (typeof feather !== 'undefined') feather.replace();
                     }, 50);
-                })
+                });
         }
 
     </script>

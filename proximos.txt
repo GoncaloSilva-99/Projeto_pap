@@ -1,6 +1,7 @@
 Proximos:
 aparece uma barra mais clara em cima dos modals
-Fazer perfis
+Fazer perfis de board e adepto
+Dar fix ao modal bugado dos likes nos perfis
 adicionar botão de report (publicações, comentários e perfis) -> não funcionam
 falta adicionar as estatisticas reais da plataforma e algo mais apelativo e demonstrativo da aplicação quando não há login feito
 perfis populares convém aparecer mesmo os perfis populares
