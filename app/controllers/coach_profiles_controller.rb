@@ -62,7 +62,7 @@ class CoachProfilesController < ApplicationController
     @coach_profile.destroy!
 
     respond_to do |format|
-      format.html { redirect_to coach_profiles_path, notice: "Coach profile was successfully destroyed.", status: :see_other }
+      format.html { redirect_to coach_profiles_path, notice: "Conta de treinador apagada com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end

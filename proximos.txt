@@ -1,9 +1,7 @@
 Proximos:
-barra de comentário está a ficar mais pequena ao comentar
 aparece uma barra mais clara em cima dos modals
 Fazer perfis
 adicionar botão de report (publicações, comentários e perfis) -> não funcionam
-mensagens ao atualizar perfis estão default
 falta adicionar as estatisticas reais da plataforma e algo mais apelativo e demonstrativo da aplicação quando não há login feito
 perfis populares convém aparecer mesmo os perfis populares
 colocar estatisticas reais no dashboard

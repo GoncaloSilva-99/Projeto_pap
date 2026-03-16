@@ -35,7 +35,7 @@ class PlayerProfilesController < ApplicationController
 
     respond_to do |format|
       if @player_profile.save
-        format.html { redirect_to @player_profile, notice: "Player profile was successfully created." }
+        format.html { redirect_to @player_profile, notice: "Perfil de jogador criado com sucesso!" }
         format.json { render :show, status: :created, location: @player_profile }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -48,7 +48,7 @@ class PlayerProfilesController < ApplicationController
   def update
     respond_to do |format|
       if @player_profile.update(player_profile_params)
-        format.html { redirect_to @player_profile, notice: "Player profile was successfully updated.", status: :see_other }
+        format.html { redirect_to @player_profile, notice: "Perfil editado com sucesso!", status: :see_other }
         format.json { render :show, status: :ok, location: @player_profile }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -62,7 +62,7 @@ class PlayerProfilesController < ApplicationController
     @player_profile.destroy!
 
     respond_to do |format|
-      format.html { redirect_to player_profiles_path, notice: "Player profile was successfully destroyed.", status: :see_other }
+      format.html { redirect_to player_profiles_path, notice: "Perfil de jogador apagado com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end

@@ -79,7 +79,7 @@
             <h3 class="text-xl font-bold mb-4">Biografia</h3>
             <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
                 <% if player_profile.bio.present? -%>
-<%= player_profile.bio %>
+                    <%= player_profile.bio %>
                 <%- else -%>
                         <p class="text-gray-300 mb-4">Ainda sem biografia</p>
                 <%- end -%>                    
@@ -518,10 +518,7 @@
                         </div>
                         <span class="font-semibold text-gray-200 text-sm">João Silva</span>
                     </div>
-                    <button onclick="toggleFollowItem(this)" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-white text-sm font-medium rounded-md transition flex items-center gap-1">
-                        <i data-feather="user-check" class="w-4 h-4"></i>
-                        <span>A Seguir</span>
-                    </button>
+
                 </div>
 
                 <!-- Item 2 -->

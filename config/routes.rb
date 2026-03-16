@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :report_profiles
   resources :report_comments
   resources :report_posts
   resources :post_views
@@ -23,6 +22,8 @@ Rails.application.routes.draw do
       patch :remove_from_club
     end
   end
+
+  post 'report_profile', to: 'report_profiles#create', as: :report_profile
 
   resources :player_profiles do
     member do
