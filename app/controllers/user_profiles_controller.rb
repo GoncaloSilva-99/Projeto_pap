@@ -8,6 +8,15 @@ class UserProfilesController < ApplicationController
 
   # GET /user_profiles/1 or /user_profiles/1.json
   def show
+      @page = params[:page]&.to_i || 1
+      posts_per_page = 25
+      
+      @posts = Post.where(user_id: @user_profile.user.id).recent.offset((@page - 1) * posts_per_page)
+
+      @has_more_posts = @posts.length == posts_per_page
+
+      @post_comments = PostComment.where(post_id: @post)
+      @num_post_comments = @post_comments.count
   end
 
   # GET /user_profiles/new
