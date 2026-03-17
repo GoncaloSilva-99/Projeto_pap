@@ -203,21 +203,27 @@
                 <div class="relative w-full max-w-2xl">
 
                 <!-- Banner -->
-                <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg group">
                     <%= image_tag "default_banner.jpg",
-                        id: "club_banner_preview",
+                        id: "board_banner_preview",
                         alt: "Pré-visualização do banner",
                         class: "w-full h-full object-cover cursor-pointer" %>
 
                     <%= bp.file_field :banner_picture,
-                        id: "club_banner_picture",
+                        id: "board_banner_picture",
                         class: "file-upload-input sr-only",
                         accept: "image/*" %>
                     
-                    <button type="button" id="remove-banner-btn" class="hidden absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    <button type="button" id="add-banner-btn" class="absolute inset-0 bg-blue-500 bg-opacity-0 group-hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                      </svg>
+                    </button>
+
+                    <button type="button" id="remove-banner-btn" class="hidden absolute inset-0 bg-red-500 bg-opacity-0 group-hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
                     </button>
                 </div>
 
@@ -233,10 +239,16 @@
                         class: "file-upload-input sr-only",
                         accept: "image/*" %>
                     
-                    <button type="button" id="remove-profile-btn" class="absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    <button type="button" id="add-profile-btn" class="absolute inset-0 bg-blue-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                      </svg>
+                    </button>
+
+                    <button type="button" id="remove-profile-btn" class="hidden absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
                     </button>
                 </div>
                 </div>
@@ -330,77 +342,83 @@
 
         <!-- Script foto de perfil e banner -->
         <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const profileInput = document.getElementById('pp_profile_picture');
-                const profilePreview = document.getElementById('pp_profile_preview');
-                const removeProfileBtn = document.getElementById('remove-profile-btn');
-                const originalProfileSrc = profilePreview ? profilePreview.src : '';
-                let hasProfileImage = false;
+          document.addEventListener('DOMContentLoaded', function() {
+              const profileInput = document.getElementById('pp_profile_picture');
+              const profilePreview = document.getElementById('pp_profile_preview');
+              const removeProfileBtn = document.getElementById('remove-profile-btn');
+              const addProfileBtn = document.getElementById('add-profile-btn');
+              const originalProfileSrc = profilePreview ? profilePreview.src : '';
 
-                if (profileInput && profilePreview && removeProfileBtn) {
-                // Inicializar: garantir que o botão está hidden
-                removeProfileBtn.classList.add('hidden');
+              if (profileInput && profilePreview && addProfileBtn && removeProfileBtn) {
+                  addProfileBtn.addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      profileInput.click();
+                  });
 
-                profileInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        profilePreview.src = ev.target.result;
-                        hasProfileImage = true;
-                        removeProfileBtn.classList.remove('hidden');
-                    };
-                    reader.readAsDataURL(file);
-                    }
-                });
+                  profileInput.addEventListener('change', (e) => {
+                      const file = e.target.files[0];
+                      if (file && file.type.startsWith('image/')) {
+                      const reader = new FileReader();
+                      reader.onload = (ev) => {
+                          profilePreview.src = ev.target.result;
+                          removeProfileBtn.classList.remove('hidden');
+                          addProfileBtn.classList.add('hidden');
+                      };
+                      reader.readAsDataURL(file);
+                      }
+                  });
 
-                profilePreview.addEventListener('click', () => {
-                    if (!hasProfileImage) {
-                    profileInput.click();
-                    }
-                });
+                  profilePreview.addEventListener('click', () => {
+                      profileInput.click();
+                  });
 
-                removeProfileBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    profileInput.value = '';
-                    profilePreview.src = originalProfileSrc;
-                    hasProfileImage = false;
-                    removeProfileBtn.classList.add('hidden');
-                });
-                }
+                  removeProfileBtn.addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      profileInput.value = '';
+                      profilePreview.src = originalProfileSrc;
+                      removeProfileBtn.classList.add('hidden');
+                      addProfileBtn.classList.remove('hidden');
+                  });
+              }
 
-                const bannerInput = document.getElementById('club_banner_picture');
-                const bannerPreview = document.getElementById('club_banner_preview');
-                const removeBannerBtn = document.getElementById('remove-banner-btn');
-                const originalBannerSrc = bannerPreview ? bannerPreview.src : '';
+              const bannerInput = document.getElementById('board_banner_picture');
+              const bannerPreview = document.getElementById('board_banner_preview');
+              const removeBannerBtn = document.getElementById('remove-banner-btn');
+              const addBannerBtn = document.getElementById('add-banner-btn');
+              const originalBannerSrc = bannerPreview ? bannerPreview.src : '';
 
-                if (bannerInput && bannerPreview) {
-                bannerInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        bannerPreview.src = ev.target.result;
-                        removeBannerBtn.classList.remove('hidden');
-                    };
-                    reader.readAsDataURL(file);
-                    }
-                });
+              if (bannerInput && bannerPreview && addBannerBtn && removeBannerBtn) {
+                  addBannerBtn.addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      bannerInput.click();
+                  });
 
-                bannerPreview.addEventListener('click', () => {
-                    bannerInput.click();
-                });
+                  bannerInput.addEventListener('change', (e) => {
+                      const file = e.target.files[0];
+                      if (file && file.type.startsWith('image/')) {
+                      const reader = new FileReader();
+                      reader.onload = (ev) => {
+                          bannerPreview.src = ev.target.result;
+                          removeBannerBtn.classList.remove('hidden');
+                          addBannerBtn.classList.add('hidden');
+                      };
+                      reader.readAsDataURL(file);
+                      }
+                  });
 
-                if (removeBannerBtn) {
-                    removeBannerBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    bannerInput.value = '';
-                    bannerPreview.src = originalBannerSrc;
-                    removeBannerBtn.classList.add('hidden');
-                    });
-                }
-                }
-            });
+                  bannerPreview.addEventListener('click', () => {
+                      bannerInput.click();
+                  });
+
+                  removeBannerBtn.addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      bannerInput.value = '';
+                      bannerPreview.src = originalBannerSrc;
+                      removeBannerBtn.classList.add('hidden');
+                      addProfileBtn.classList.remove('hidden');
+                  });
+              }
+          });
         </script>
 
         <!-- Script de mostrar password -->
@@ -506,7 +524,3 @@
             top: -20px; 
         }
     </style>
-
-
-
-

@@ -26,6 +26,7 @@ class ClubProfilesController < ApplicationController
 
   # GET /club_profiles/1/edit
   def edit
+    @club_profile.build_user if @club_profile.user.nil?
   end
 
   # POST /club_profiles or /club_profiles.json
@@ -48,16 +49,50 @@ class ClubProfilesController < ApplicationController
     # Handle image removal
     @club_profile.profile_picture.purge if params[:club_profile][:remove_profile_picture] == '1'
     @club_profile.banner_picture.purge if params[:club_profile][:remove_banner_picture] == '1'
-    
+
+    # Extract user-related fields (email / password) so we can update the Devise user separately.
+    profile_params = club_profile_params.dup
+    user_attrs = profile_params.delete(:user_attributes)
+
     # Clean bio - remove indentation spaces but keep user-inserted line breaks
-    bio_params = club_profile_params
-    if bio_params[:bio].present?
-      bio_params[:bio] = bio_params[:bio].strip.lines.map(&:strip).join("\n")
+    if profile_params[:bio].present?
+      profile_params[:bio] = profile_params[:bio].strip.lines.map(&:strip).join("\n")
     end
-    
+
+    user_update_success = true
+    if user_attrs.present?
+      user_attrs = user_attrs.to_h
+      # Keep confirmation fields around so validations can run even if blank.
+      user_attrs = user_attrs.reject do |k, v|
+        v.blank? && !%w[email_confirmation password_confirmation].include?(k.to_s)
+      end
+
+      if user_attrs.present? && @club_profile.user.present?
+        user = @club_profile.user
+
+        # If changing email or password, require current password for security.
+        email_being_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
+        password_being_changed = user_attrs[:password].present?
+
+        if (email_being_changed || password_being_changed) && user_attrs[:current_password].blank?
+          @club_profile.errors.add(:base, "É necessário introduzir a palavra-passe atual para alterar email ou palavra-passe.")
+          user_update_success = false
+        elsif user_attrs[:current_password].present?
+          user_update_success = user.update_with_password(user_attrs)
+        else
+          user_update_success = user.update_without_password(user_attrs.except(:current_password))
+        end
+
+        # Surface Devise errors in the form
+        if user.errors.any?
+          user.errors.full_messages.each { |msg| @club_profile.errors.add(:base, msg) }
+        end
+      end
+    end
+
     respond_to do |format|
-      if @club_profile.update(bio_params)
-        format.html { redirect_to @club_profile, notice: "Perfil editado com sucesso!", status: :see_other }
+      if @club_profile.update(profile_params) && user_update_success
+        format.html { redirect_to @club_profile, notice: "Club profile was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @club_profile }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -79,11 +114,14 @@ class ClubProfilesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_club_profile
-      @club_profile = ClubProfile.find(params.expect(:id))
+      @club_profile = ClubProfile.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def club_profile_params
-      params.expect(club_profile: [ :user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date ])
+      params.require(:club_profile).permit(
+        :user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date,
+        user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation]
+      )
     end
 end

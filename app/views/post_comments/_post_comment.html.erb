@@ -46,7 +46,7 @@
             <%= link_to board_profile_path(comment.user.board_profile), 
               data: { turbo_frame: "_top" }, 
               class: "hover:underline" do %>
-              <%= comment.user.coach_profile.name %>
+              <%= comment.user.board_profile.name %>
             <% end %>
           <% else %>
             <%= comment.user.email %>
