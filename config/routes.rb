@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  resources :club_incomes
+  resources :club_expenses
+  resource :club_current_balance, only: [:update]
   resources :report_comments
   resources :report_posts
   resources :post_views
@@ -48,6 +51,8 @@ Rails.application.routes.draw do
   resources :club_profiles
   resources :user_profiles
   resources :sports
+
+
 
 
   devise_for :users, controllers: {

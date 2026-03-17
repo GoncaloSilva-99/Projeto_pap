@@ -1,4 +1,5 @@
 Proximos:
+post de guardados está igual ao dos likes (não está a guardar bem)
 aparece uma barra mais clara em cima dos modals
 Fazer perfis de board e adepto
 Dar fix ao modal bugado dos likes nos perfis

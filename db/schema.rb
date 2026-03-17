@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_11_153608) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_17_160750) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -61,6 +61,34 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_153608) do
     t.integer "contact"
     t.index ["club_profile_id"], name: "index_board_profiles_on_club_profile_id"
     t.index ["user_id"], name: "index_board_profiles_on_user_id"
+  end
+
+  create_table "club_balances", force: :cascade do |t|
+    t.bigint "club_profile_id", null: false
+    t.decimal "value", default: "0.0"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["club_profile_id"], name: "index_club_balances_on_club_profile_id"
+  end
+
+  create_table "club_expenses", force: :cascade do |t|
+    t.bigint "club_profile_id", null: false
+    t.decimal "value", null: false
+    t.string "description"
+    t.date "date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["club_profile_id"], name: "index_club_expenses_on_club_profile_id"
+  end
+
+  create_table "club_incomes", force: :cascade do |t|
+    t.bigint "club_profile_id", null: false
+    t.decimal "value", null: false
+    t.string "description"
+    t.date "date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["club_profile_id"], name: "index_club_incomes_on_club_profile_id"
   end
 
   create_table "club_locker_rooms", force: :cascade do |t|
@@ -334,6 +362,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_11_153608) do
   add_foreign_key "admin_profiles", "users"
   add_foreign_key "board_profiles", "club_profiles"
   add_foreign_key "board_profiles", "users"
+  add_foreign_key "club_balances", "club_profiles"
+  add_foreign_key "club_expenses", "club_profiles"
+  add_foreign_key "club_incomes", "club_profiles"
   add_foreign_key "club_locker_rooms", "club_profiles"
   add_foreign_key "club_locker_rooms", "club_training_centers"
   add_foreign_key "club_locker_rooms", "sports"

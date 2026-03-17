@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  club_profile: one
+  value: 9.99
+  description: MyString
+  date: 2026-03-17
+
+two:
+  club_profile: two
+  value: 9.99
+  description: MyString
+  date: 2026-03-17

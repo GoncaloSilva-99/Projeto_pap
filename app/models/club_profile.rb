@@ -7,6 +7,9 @@ class ClubProfile < ApplicationRecord
   has_one_attached :verification_document
   has_many :club_teams, dependent: :destroy
   has_many :club_sports, dependent: :destroy
+  has_one :club_balance, dependent: :destroy
+  has_many :club_expenses, dependent: :destroy
+  has_many :club_incomes, dependent: :destroy
 
   REGEX_NUM_TELEMOVEL = /\A9\d{8}\z/
   MIN_DATE = 1.day.ago.to_date
