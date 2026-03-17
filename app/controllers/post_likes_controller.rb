@@ -34,14 +34,18 @@ class PostLikesController < ApplicationController
               "like_section_modal_#{@post.id}",
               partial: "posts/like_section_modal",
               locals: { post: @post }
+            ),
+            turbo_stream.update(
+              "liked_posts_list",
+              partial: "posts/liked_posts_list"
             )
           ]
         end
-        format.html { redirect_to posts_path }
+        format.html { redirect_to root_path }
       end
     else
       respond_to do |format|
-        format.html { redirect_to posts_path }
+        format.html { redirect_to root_path }
       end
     end
   end
@@ -64,10 +68,14 @@ class PostLikesController < ApplicationController
             "like_section_modal_#{@post.id}",
             partial: "posts/like_section_modal",
             locals: { post: @post }
+          ),
+          turbo_stream.update(
+            "liked_posts_list",
+            partial: "posts/liked_posts_list"
           )
         ]
       end
-      format.html { redirect_to posts_path }
+      format.html { redirect_to root_path }
     end
   end
 

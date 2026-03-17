@@ -163,7 +163,7 @@
                                 <i data-feather="edit" class="w-4 h-4"></i>
                             <% end %>
                             <% if current_user.club? %>
-                                <button data-modal-target="modal-remover-board" data-modal-toggle="modal-remover-board" class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
+                                <button data-modal-target="modal-remover-board-<%= board.id %>" data-modal-toggle="modal-remover-board-<%= board.id %>" class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
                                     <i data-feather="trash-2" class="w-4 h-4"></i>
                                 </button>
                             <% end %>
@@ -198,7 +198,7 @@
                 
                     <!-------------------------------------------------------------------------------- MODAL CONFIRMAÇÃO REMOVER BOARD ------------------------------------------------------------------------->
 
-                    <div id="modal-remover-board" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div id="modal-remover-board-<%= board.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
                         <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
                             <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
                                 <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -8,6 +8,15 @@ class ClubProfilesController < ApplicationController
 
   # GET /club_profiles/1 or /club_profiles/1.json
   def show
+      @page = params[:page]&.to_i || 1
+      posts_per_page = 25
+      
+      @posts = Post.where(user_id: @club_profile.user.id).recent.offset((@page - 1) * posts_per_page)
+
+      @has_more_posts = @posts.length == posts_per_page
+
+      @post_comments = PostComment.where(post_id: @post)
+      @num_post_comments = @post_comments.count
   end
 
   # GET /club_profiles/new
@@ -26,7 +35,7 @@ class ClubProfilesController < ApplicationController
 
     respond_to do |format|
       if @club_profile.save
-        format.html { redirect_to @club_profile, notice: "Club profile was successfully created." }
+        format.html { redirect_to @club_profile, notice: "Perfil criado com sucesso!" }
         format.json { render :show, status: :created, location: @club_profile }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -97,7 +106,7 @@ class ClubProfilesController < ApplicationController
     @club_profile.destroy!
 
     respond_to do |format|
-      format.html { redirect_to club_profiles_path, notice: "Club profile was successfully destroyed.", status: :see_other }
+      format.html { redirect_to club_profiles_path, notice: "Perfil apagado com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end

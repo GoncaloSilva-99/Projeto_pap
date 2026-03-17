@@ -1,0 +1,59 @@
+            <%= turbo_frame_tag "followers_list_#{user.id}" do %>
+                <% if user.followers.any? %>
+                    <% user.followers.each do |follower| %>
+                        <% 
+                            follower_profile = nil
+                            if follower.club?
+                                follower_profile = follower.club_profile
+                            elsif follower.player?
+                                follower_profile = follower.player_profile
+                            elsif follower.board?
+                                follower_profile = follower.board_profile
+                            elsif follower.coach?
+                                follower_profile = follower.coach_profile
+                            elsif follower.admin?
+                                follower_profile = follower.admin_profile
+                            elsif follower.user?
+                                follower_profile = follower.user_profile
+                            end
+                        %>
+
+                        <div class="flex items-center justify-between p-2 rounded-lg transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-600 overflow-hidden flex-shrink-0">
+                                    <% if follower_profile && follower_profile.profile_picture.attached? %>
+                                        <%= image_tag url_for(follower_profile.profile_picture), class: "w-full h-full object-cover" %>
+                                    <% else %>
+                                        <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                                    <% end %>
+                                </div>
+
+                                <div>
+                                    <% if follower.club? %>
+                                        <%= link_to follower.club_profile.name, club_profile_path(follower.club_profile), 
+                                            data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
+                                    <% elsif follower.player? %>
+                                        <%= link_to follower.player_profile.name, player_profile_path(follower.player_profile), 
+                                            data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
+                                    <% elsif follower.coach? %>
+                                        <%= link_to follower.coach_profile.name, coach_profile_path(follower.coach_profile), 
+                                            data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
+                                    <% elsif follower.board? %>
+                                        <%= link_to follower.board_profile.name, board_profile_path(follower.board_profile), 
+                                            data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
+                                    <% elsif follower.user? %>
+                                        <%= link_to follower.user_profile.name, user_profile_path(follower.user_profile), 
+                                            data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
+                                    <% end %>
+                                </div>
+                            </div>
+
+                        </div>
+                    <% end %>
+                <% else %>
+                    <div class="text-center py-12">
+                        <i data-feather="inbox" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                        <h3 class="text-xl font-bold text-gray-400 mb-2">Este perfil ainda não tem nenhum seguidor!</h3>
+                    </div>
+                <% end %>
+            <% end %>

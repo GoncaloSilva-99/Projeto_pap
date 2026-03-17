@@ -1,0 +1,2 @@
+module ReportPostsHelper
+end

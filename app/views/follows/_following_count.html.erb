@@ -1,0 +1,4 @@
+<%= turbo_frame_tag "following_count_#{user.id}" do %>
+    <span class="font-bold text-xl text-gray-100"><%= user.following.count %></span>
+    <span class="text-gray-400 group-hover:text-indigo-400 transition-colors block text-sm">A Seguir</span>
+<% end %>

@@ -1,0 +1,14 @@
+<div id="<%= dom_id report_post %>" class="w-full sm:w-auto my-5 space-y-5">
+  <div>
+    <strong class="block font-medium mb-1">Post:</strong>
+    <%= report_post.post_id %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Content:</strong>
+    <%= report_post.content %>
+  </div>
+  <div>
+    <strong class="block font-medium mb-1">Resolved:</strong>
+    <%= report_post.resolved? ? "Yes" : "No" %>
+  </div>
+</div>

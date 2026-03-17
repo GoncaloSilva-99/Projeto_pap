@@ -70,7 +70,7 @@ class User < ApplicationRecord
   REGEX_EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
   has_many :posts, dependent: :destroy
-  has_many :post_likes, dependent: :destroy
+  
   has_many :post_comments, dependent: :destroy
   has_many :post_views, dependent: :destroy
   has_many :liked_posts, through: :likes, source: :post
@@ -80,6 +80,27 @@ class User < ApplicationRecord
 
   has_many :follower_relationships, class_name: 'Follow', foreign_key: :followed_id, dependent: :destroy
   has_many :followers, through: :follower_relationships, source: :follower
+
+  has_many :post_saves, dependent: :destroy
+  has_many :saved_posts, through: :post_saves, source: :post
+
+  has_many :post_likes, dependent: :destroy
+  has_many :liked_posts, through: :post_likes, source: :post
+
+  has_many :report_posts, dependent: :destroy
+  has_many :report_profiles, dependent: :destroy
+  has_many :report_comments, dependent: :destroy
+
+  def follow(other_user)
+    return false if self == other_user || following?(other_user)
+    following_relationships.create(followed: other_user)
+  end
+
+  def unfollow(other_user)
+    relationship = following_relationships.find_by(followed: other_user)
+    relationship&.destroy
+  end
+
 
   def following?(other_user)
     following.include?(other_user)
@@ -123,5 +144,7 @@ class User < ApplicationRecord
     .order('COUNT(follows.id) DESC')
     .limit(limit)
   end
+
+  
 
 end

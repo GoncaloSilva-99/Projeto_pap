@@ -44,83 +44,6 @@
                 <!-- Right Side -->
                 <div class="flex items-center space-x-4 right-overlap">
                 <% if user_signed_in? %>    
-                    <!-- Notifications -->
-                    <button type="button" data-dropdown-toggle="notification-dropdown" class="p-2 mr-1 text-gray-500 rounded-lg hover:text-gray-900  dark:text-gray-400 dark:hover:text-white  focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
-                        <span class="sr-only">View notifications</span>
-                        <!-- Bell icon -->
-                        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 20"><path d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z"/></svg>
-                    </button>
-                    <!-- Notifications menu -->
-                    <div class="rounded-lg hidden overflow-hidden z-50 my-4 max-w-sm text-base list-none" id="notification-dropdown">
-                        <div class="p-2">
-                            <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
-                                <div class="flex-shrink-0">
-                                    <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" alt="Bonnie Green avatar">
-                                    <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white bg-primary-700 dark:border-gray-700">
-                                        <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
-                                    </div>
-                                </div>
-                                <div class="pl-3 w-full">
-                                    <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400">New message from <span class="font-semibold text-gray-900 dark:text-white">Bonnie Green</span>: "Hey, what's up? All set for the presentation?"</div>
-                                    <div class="text-xs font-medium text-primary-700 dark:text-primary-400">a few moments ago</div>
-                                </div>
-                            </a>
-                            <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
-                                <div class="flex-shrink-0">
-                                    <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/jese-leos.png" alt="Jese Leos avatar">
-                                    <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-red-500 rounded-full border border-white dark:border-gray-700">
-                                        <svg class="text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24"><path fill="currentColor" d="M12 20.962q-3.013-.895-5.007-3.651Q5 14.554 5 11.1V5.692l7-2.615l7 2.615V11.1q0 3.454-1.993 6.21q-1.994 2.757-5.007 3.652Z"/></svg>
-                                    </div>
-                                </div>
-                                <div class="pl-3 w-full">
-                                    <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Jese leos</span> and <span class="font-medium text-gray-900 dark:text-white">5 others</span> started following you.</div>
-                                    <div class="text-xs font-medium text-primary-700 dark:text-primary-400">10 minutes ago</div>
-                                </div>
-                            </a>
-                            <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
-                                <div class="flex-shrink-0">
-                                    <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png" alt="Joseph McFall avatar">
-                                    <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white dark:border-gray-700">
-                                        <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
-                                    </div>
-                                    </div>
-                                <div class="pl-3 w-full">
-                                    <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Joseph Mcfall</span> and <span class="font-medium text-gray-900 dark:text-white">141 others</span> love your story. See it and view more stories.</div>
-                                    <div class="text-xs font-medium text-primary-700 dark:text-primary-400">44 minutes ago</div>
-                                </div>
-                            </a>
-                            <a href="#" class="flex py-3 px-4 mb-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
-                                <div class="flex-shrink-0">
-                                    <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/roberta-casas.png" alt="Roberta Casas image">
-                                    <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white dark:border-gray-700">
-                                        <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
-                                    </div>
-                                </div>
-                                <div class="pl-3 w-full">
-                                    <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Leslie Livingston</span> mentioned you in a comment: <span class="font-medium text-primary-700 dark:text-primary-500">@bonnie.green</span> what do you say?</div>
-                                    <div class="text-xs font-medium text-primary-700 dark:text-primary-400">1 hour ago</div>
-                                </div>
-                            </a>
-                            <a href="#" class="flex py-3 px-4 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600">
-                                <div class="flex-shrink-0">
-                                    <img class="w-11 h-11 rounded-full" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/robert-brown.png" alt="Robert image">
-                                    <div class="flex absolute justify-center items-center ml-6 -mt-5 w-5 h-5 bg-blue-500 rounded-full border border-white dark:border-gray-700">
-                                        <svg class="w-2 h-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18"><path d="M15.977.783A1 1 0 0 0 15 0H3a1 1 0 0 0-.977.783L.2 9h4.239a2.99 2.99 0 0 1 2.742 1.8 1.977 1.977 0 0 0 3.638 0A2.99 2.99 0 0 1 13.561 9H17.8L15.977.783ZM6 2h6a1 1 0 1 1 0 2H6a1 1 0 0 1 0-2Zm7 5H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Z"/><path d="M1 18h16a1 1 0 0 0 1-1v-6h-4.439a.99.99 0 0 0-.908.6 3.978 3.978 0 0 1-7.306 0 .99.99 0 0 0-.908-.6H0v6a1 1 0 0 0 1 1Z"/></svg>
-                                    </div>
-                                </div>
-                                <div class="pl-3 w-full">
-                                    <div class="text-gray-500 font-normal text-sm mb-1.5 dark:text-gray-400"><span class="font-semibold text-gray-900 dark:text-white">Robert Brown</span> posted a new video: Glassmorphism - learn how to implement the new design trend.</div>
-                                    <div class="text-xs font-medium text-primary-700 dark:text-primary-400">3 hours ago</div>
-                                </div>
-                            </a>
-                            <a href="#" class="block py-2 rounded-lg text-base font-medium text-center text-gray-900 bg-gray-500 hover:bg-gray-100 dark:hover:bg-gray-500 bg-gray-600 dark:text-white dark:hover:underline mt-1.5">
-                                <div class="inline-flex items-center ">
-                                    <svg aria-hidden="true" class="mr-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>
-                                    Ver Todas
-                                </div>
-                            </a>
-                        </div>
-                    </div> 
 
                     <!-- Apps -->
                     <button type="button" data-dropdown-toggle="apps-dropdown" class="p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600">
@@ -137,15 +60,17 @@
                         </div>
                         <div class="grid grid-cols-2 gap-3 p-4">
                             <!-- Dashboard -->
-                            <%= link_to club_dashboard_path, class: "block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600" do %>
-                                <i data-feather="shield" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</p>
+                            <% if current_user.club? %>
+                                <%= link_to club_dashboard_path, class: "block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600" do %>
+                                    <i data-feather="shield" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</p>
+                                <% end %>
                             <% end %>
-                            <a href="#" id="favorites-app-link" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                            <a data-modal-target="liked-modal" data-modal-toggle="liked-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
                                 <i data-feather="heart" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">Likes</p>
                             </a>
-                            <a href="#" id="favorites-app-link" class="block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600 hover:text-green-400">
+                            <a data-modal-target="saved-modal" data-modal-toggle="saved-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600 hover:text-green-400">
                                 <i data-feather="bookmark" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">Guardados</p>
                             </a>
@@ -693,7 +618,7 @@
             <div class="container mx-auto pt-24 pb-12 px-6">
                 <div class="flex flex-col lg:flex-row gap-8">
                     <!-- Main Feed -->
-                    <div class="flex-1 space-y-6 h-[calc(100vh-100px)] overflow-y-auto pr-2 scroll-smooth no-scrollbar" id="feed-container">
+                    <div class="flex-1 space-y-6  pr-2 scroll-smooth no-scrollbar" id="feed-container">
                         <!-- Create Post -->
                         <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg">
                             <% if !current_user.admin? and !current_user.super_admin? %>
@@ -785,11 +710,9 @@
                                                             <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
                                                         </a>
                                                     <% end %>
-                                                    <a href="#" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 rounded-t-md transition-colors hover:text-green-400 clickable">
-                                                        <div class="flex items-center"><i data-feather="bookmark" class="w-4 h-4 mr-2"></i><span class="save-text">Guardar publicação</span></div>
-                                                    </a>
+                                                    <%= render "posts/save_section", post: post %>
                                                     <% if post.user != current_user %>
-                                                        <a href="#" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-b-md transition-colors clickable">
+                                                        <a data-modal-toggle="modal-report-post-<%= post.id %>" data-modal-target="modal-report-post-<%= post.id %>" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-b-md transition-colors clickable">
                                                             <div class="flex items-center"><i data-feather="alert-triangle" class="w-4 h-4 mr-2"></i><span>Reportar publicação</span></div>
                                                         </a>
                                                     <% end %>
@@ -798,7 +721,7 @@
 
                                             <!-- Modal confirmação apagar publicação -->
 
-                                            <div id="modal-apagar-post-<%= post.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                            <div id="modal-apagar-post-<%= post.id %>" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black bg-opacity-50">
                                                 <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
                                                     <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
                                                         <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -820,6 +743,8 @@
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            
 
                                             <div class="clickable" data-modal-target="modal-post-<%=post.id%>" data-modal-toggle="modal-post-<%=post.id%>">
                                             <div class="flex items-center justify-between mb-4">
@@ -949,7 +874,12 @@
                                                                                     class: "hover:underline" do %>
                                                                                     <%= post.user.board_profile.name %>
                                                                                 <% end %>
-                                                                                <%= post.user.board_profile.name %>
+                                                                            <% elsif post.user.user? %>
+                                                                                <%= link_to user_profile_path(post.user.user_profile), 
+                                                                                    data: { turbo_frame: "_top" }, 
+                                                                                    class: "hover:underline" do %>
+                                                                                    <%= post.user.user_profile.name %>
+                                                                                <% end %>
                                                                             <% end %>
                                                                         </h3>
                                                                         <span class="text-gray-400 text-sm">
@@ -958,6 +888,24 @@
                                                                     </div>
                                                                 </div>
                                                                 
+                                                                <div class="relative">
+                                                                    <button class="post-options-btn p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition">
+                                                                        <i data-feather="more-vertical"></i>
+                                                                    </button>
+                                                                    <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
+                                                                        <% if post.user == current_user or current_user.admin? or current_user.super_admin? %>
+                                                                            <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
+                                                                                <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
+                                                                            </a>
+                                                                        <% end %>
+                                                                        <%= render "posts/save_options_modal", post: post %>
+                                                                        <% if post.user != current_user %>
+                                                                            <a data-modal-toggle="modal-report-post-<%= post.id %>" data-modal-target="modal-report-post-<%= post.id %>" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-b-md transition-colors clickable">
+                                                                                <div class="flex items-center"><i data-feather="alert-triangle" class="w-4 h-4 mr-2"></i><span>Reportar publicação</span></div>
+                                                                            </a>
+                                                                        <% end %>
+                                                                    </div>
+                                                                </div>
                                                             </div>
 
                                                             
@@ -1030,13 +978,7 @@
                                                     
                                                     <!-- Comments List -->
                                                     <div class="flex-1 overflow-y-auto p-4 space-y-4" id="comments_list_<%= post.id %>">
-                                                        <% if post.post_comments.any? %>
-                                                            <% post.post_comments.newest_first.each do |comment| %>
-                                                                <%= render "post_comments/post_comment", comment: comment %>
-                                                            <% end %>
-                                                        <% else %>
-                                                            <p class="text-gray-400 text-sm text-center">Ainda não há comentários. Sê o primeiro!</p>
-                                                        <% end %>
+                                                        <%= render "post_comments/comments_list", post: post %>
                                                     </div>
 
                                                     <!-- Input Area -->
@@ -1053,6 +995,38 @@
 
 
                                     <% end %>
+                                    <!-- Modal confirmação reportar publicação -->
+
+                                    <div id="modal-report-post-<%= post.id %>" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black bg-opacity-50">
+                                        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700">
+                                            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                                </svg>
+                                            </div>
+                                            <h3 class="text-xl font-semibold text-white text-center mb-2">Reportar publicação</h3>
+                                            <p class="text-gray-300 text-center mb-6">Descreve o motivo do report (mínimo 10 caracteres)</p>
+                                            
+                                            <%= form_with model: ReportPost.new, url: post_report_posts_path(post), local: false, class: "space-y-4" do |f| %>
+                                                <%= f.text_area :content, 
+                                                    rows: 4,
+                                                    class: "w-full bg-gray-700 rounded-lg px-4 py-3 text-white border border-gray-600 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none", 
+                                                    placeholder: "Ex: Conteúdo ofensivo, spam, discurso de ódio...",
+                                                    required: true,
+                                                    minlength: 10,
+                                                    maxlength: 500 %>
+                                                
+                                                <div class="flex gap-3">
+                                                    <button type="button" data-modal-hide="modal-report-post-<%= post.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                                        Cancelar
+                                                    </button>
+                                                    <%= f.submit "Reportar", 
+                                                        data: { modal_hide: "modal-report-post-#{post.id}" },
+                                                        class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium cursor-pointer" %>
+                                                </div>  
+                                            <% end %>
+                                        </div>
+                                    </div>
                                 <% end %>
                             <% else %>
                                 <div class="bg-gray-800 rounded-xl p-12 text-center">
@@ -1083,137 +1057,149 @@
                     </div>
 
                     <!-- Sidebar Suggestions -->
-                    <div class="hidden lg:block w-80 space-y-6 flex-shrink-0">
-                        <div class="bg-gray-800 rounded-xl p-6 shadow-lg sticky top-24">
-                            <h3 class="text-xl font-bold text-white mb-6">Sugestões para seguir</h3>
-                            <div class="space-y-6">
-                                <!-- Suggestion 1 -->
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                                            SLB
-                                        </div>
-                                        <div>
-                                            <div class="font-semibold text-white hover:underline cursor-pointer">SL Benfica</div>
-                                            <div class="text-xs text-gray-400">Futebol • Lisboa</div>
-                                        </div>
-                                    </div>
-                                    <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
-                                        <i data-feather="user-plus" class="w-5 h-5"></i>
-                                    </button>
-                                </div>
 
-                                <!-- Suggestion 2 -->
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold">
-                                            SCP
+                    
+                <div class="hidden lg:block w-80 space-y-6 flex-shrink-0">
+                    <div class="bg-gray-800 rounded-xl p-6 shadow-lg sticky top-24">
+                        <h3 class="text-xl font-bold text-white mb-6">Sugestões para si</h3>
+                        <div class="space-y-6">
+                            <% if @suggested_users.present? %>
+                                <% @suggested_users.each do |user| %>
+                                    <div class="flex items-center gap-3">
+                                        <div class="flex items-center space-x-3 flex-1 min-w-0">
+                                            <div class="w-12 h-12 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center text-white font-bold">
+                                                <% 
+                                                    suggested_user_profile = nil
+                                                    if user.club?
+                                                        suggested_user_profile = user.club_profile
+                                                    elsif user.player?
+                                                        suggested_user_profile = user.player_profile
+                                                    elsif user.board?
+                                                        suggested_user_profile = user.board_profile
+                                                    elsif user.coach?
+                                                        suggested_user_profile = user.coach_profile
+                                                    elsif user.admin?
+                                                        suggested_user_profile = user.admin_profile
+                                                    elsif user.user?
+                                                        suggested_user_profile = user.user_profile
+                                                    end
+                                                %>
+                                                <% if suggested_user_profile && suggested_user_profile.profile_picture.attached? %>
+                                                    <%= image_tag url_for(suggested_user_profile.profile_picture), class: "w-full h-full object-cover rounded-full", id: "profile-pic-img" %>
+                                                <% else %>
+                                                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover rounded-full", id: "profile-pic-img" %>
+                                                <% end %>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="font-semibold text-white truncate">
+                                                    <% if user.club? %>
+                                                        <%= link_to user.club_profile.name, club_profile_path(user.club_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.player? %>
+                                                        <%= link_to user.player_profile.name, player_profile_path(user.player_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.coach? %>
+                                                        <%= link_to user.coach_profile.name, coach_profile_path(user.coach_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.board? %>
+                                                        <%= link_to user.board_profile.name, board_profile_path(user.board_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.user? %>
+                                                        <%= link_to user.user_profile.name, user_profile_path(user.user_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% end %>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <div class="font-semibold text-white hover:underline cursor-pointer">Sporting CP</div>
-                                            <div class="text-xs text-gray-400">Futebol • Andebol • Lisboa</div>
-                                        </div>
-                                    </div>
-                                    <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
-                                        <i data-feather="user-plus" class="w-5 h-5"></i>
-                                    </button>
-                                </div>
+                                        
+                                        <%= render "follows/follow_button_suggestions", user: user %>
 
-                                <!-- Suggestion 3 -->
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-3">
-                                        <img class="w-10 h-10 rounded-full object-contain" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/joseph-mcfall.png" alt="User">
-                                        <div>
-                                            <div class="font-semibold text-white hover:underline cursor-pointer">Joseph McFall</div>
-                                            <div class="text-xs text-gray-400">Treinador</div>
-                                        </div>
                                     </div>
-                                    <button class="follow-btn text-blue-400 hover:text-white text-sm font-semibold transition">
-                                        <i data-feather="user-plus" class="w-5 h-5"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="mt-6 pt-4 border-t border-gray-700 text-center">
-                                <a href="#" id="view-all-suggestions-btn" class="text-sm text-blue-400 hover:text-blue-300">Ver mais sugestões</a>
-                            </div>
+                                <% end %>
+                                    <div class="mt-6 pt-4 border-t border-gray-700 text-center">
+                                        <a data-modal-toggle="suggestions-modal" data-modal-target="suggestions-modal" class=" clickable text-sm text-blue-400 hover:text-blue-300">Ver sugestões</a>
+                                    </div>
+                            <% else %>
+                                <p class="text-gray-400 text-sm text-center">Sem sugestões disponíveis</p>
+                            <% end %>
                         </div>
                     </div>
                 </div>
-            </div>
+
 
 
             <!-- Suggestions Carousel Modal -->
             <div id="suggestions-modal" class="fixed inset-0 z-[100] bg-gray-900 bg-opacity-95 hidden flex items-center justify-center">
                 <div class="bg-gray-800 rounded-xl p-8 w-full max-w-6xl relative shadow-2xl mx-4">
-                    <button id="close-suggestions-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                    <button data-modal-hide="suggestions-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
                         <i data-feather="x" class="w-6 h-6"></i>
                     </button>
                     <h2 class="text-2xl font-bold text-white mb-8 text-center">Sugestões para si</h2>
                     
-                    <div class="relative px-12">
-                        <div class="overflow-hidden" id="suggestions-carousel-container">
-                            <div class="flex transition-transform duration-500 ease-in-out" id="suggestions-track">
-                                <!-- Profile 1 -->
-                                <div class="w-1/3 flex-shrink-0 px-3">
-                                    <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
-                                        <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/karen-nelson.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
-                                        <h3 class="text-lg font-bold text-white">Karen Nelson</h3>
-                                        <span class="text-blue-400 text-sm mb-3 font-medium">Andebol • Guarda-Redes</span>
-                                        <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Atleta dedicada com foco em reflexos rápidos e liderança defensiva. À procura de novos desafios na liga profissional.</p>
-                                        <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
-                                            Seguir
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Profile 2 -->
-                                <div class="w-1/3 flex-shrink-0 px-3">
-                                    <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
-                                        <div class="w-24 h-24 rounded-full bg-red-600 flex items-center justify-center text-white font-bold text-2xl mb-4 border-4 border-gray-800">AFC</div>
-                                        <h3 class="text-lg font-bold text-white">Arsenal FC</h3>
-                                        <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Londres</span>
-                                        <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Um dos clubes mais históricos de Inglaterra, focado no desenvolvimento de jovens talentos e futebol ofensivo.</p>
-                                        <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
-                                            Seguir
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Profile 3 -->
-                                <div class="w-1/3 flex-shrink-0 px-3">
-                                    <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
-                                        <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/thomas-lean.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
-                                        <h3 class="text-lg font-bold text-white">Thomas Lean</h3>
-                                        <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Médio</span>
-                                        <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Criativo no meio-campo com excelente visão de jogo. Especialista em bolas paradas e passes longos.</p>
-                                        <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
-                                            Seguir
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Profile 4 -->
-                                <div class="w-1/3 flex-shrink-0 px-3">
-                                    <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
-                                        <img src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png" class="w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800">
-                                        <h3 class="text-lg font-bold text-white">Michael Gough</h3>
-                                        <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Treinador • Tático</span>
-                                        <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Treinador experiente com certificação UEFA Pro. Focado em análise de dados e desenvolvimento de equipas.</p>
-                                        <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
-                                            Seguir
-                                        </button>
-                                    </div>
-                                </div>
-                                <!-- Profile 5 -->
-                                <div class="w-1/3 flex-shrink-0 px-3">
-                                    <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 hover:border-blue-500 transition-colors">
-                                        <div class="w-24 h-24 rounded-full bg-yellow-500 flex items-center justify-center text-white font-bold text-2xl mb-4 border-4 border-gray-800">BVB</div>
-                                        <h3 class="text-lg font-bold text-white">Dortmund</h3>
-                                        <span class="text-blue-400 text-sm mb-3 font-medium">Futebol • Alemanha</span>
-                                        <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">Conhecidos pela "Muralha Amarela" e pela paixão intensa dos adeptos. Formação de classe mundial.</p>
-                                        <button class="follow-btn-carousel bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition w-full shadow-lg">
-                                            Seguir
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="relative">
+                        <div class="overflow-x-auto snap-x snap-mandatory scroll-smooth flex gap-4 px-12 py-4 no-scrollbar" id="suggestions-track">
+                                <% if @suggested_users_modal.present? %>
+                                    <% @suggested_users_modal.each do |user| %>
+                                        <div class="snap-start flex-shrink-0 w-[calc(33.333%-1rem)]">
+                                            <div class="bg-gray-700 rounded-lg p-6 flex flex-col items-center text-center h-full border border-gray-600 transition-colors">
+                                                <% 
+                                                    suggested_user_profile = nil
+                                                    if user.club?
+                                                        suggested_user_profile = user.club_profile
+                                                    elsif user.player?
+                                                        suggested_user_profile = user.player_profile
+                                                    elsif user.board?
+                                                        suggested_user_profile = user.board_profile
+                                                    elsif user.coach?
+                                                        suggested_user_profile = user.coach_profile
+                                                    elsif user.admin?
+                                                        suggested_user_profile = user.admin_profile
+                                                    elsif user.user?
+                                                        suggested_user_profile = user.user_profile
+                                                    end
+                                                %>
+                                                <% if suggested_user_profile && suggested_user_profile.profile_picture.attached? %>
+                                                    <%= image_tag url_for(suggested_user_profile.profile_picture), class: "w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800", id: "profile-pic-img" %>
+                                                <% else %>
+                                                    <%= image_tag "default_pp.jpg", class: "w-24 h-24 rounded-full object-cover mb-4 border-4 border-gray-800", id: "profile-pic-img" %>
+                                                <% end %>
+                                                <h3 class="text-lg font-bold text-white">
+                                                    <% if user.club? %>
+                                                        <%= link_to user.club_profile.name, club_profile_path(user.club_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.player? %>
+                                                        <%= link_to user.player_profile.name, player_profile_path(user.player_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.coach? %>
+                                                        <%= link_to user.coach_profile.name, coach_profile_path(user.coach_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.board? %>
+                                                        <%= link_to user.board_profile.name, board_profile_path(user.board_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif user.user? %>
+                                                        <%= link_to user.user_profile.name, user_profile_path(user.user_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% end %>
+                                                </h3>
+                                                <p class="text-gray-400 text-sm mb-6 flex-grow line-clamp-3">
+                                                    <% if user.club? %>
+                                                        <%= user.club_profile.bio %>
+                                                    <% elsif user.player? %>
+                                                        <%= user.player_profile.bio %>
+                                                    <% elsif user.coach? %>
+                                                        <%= user.coach_profile.bio %>
+                                                    <% elsif user.board? %>
+                                                        <%= user.board_profile.bio %>
+                                                    <% elsif user.user? %>
+                                                        <%= user.user_profile.bio %>
+                                                    <% end %>
+                                                </p>
+                                                <%= render "follows/follow_button_suggestions_modal", user: user %>
+                                            </div>
+                                        </div>
+                                    <% end %>
+                                <% end %>
+
                         </div>
                         
                         <button id="prev-suggestion" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-gray-700 p-3 rounded-full text-white hover:bg-blue-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
@@ -1226,18 +1212,14 @@
                 </div>
             </div>
 
-            <!-- Favorites Modal -->
-            <div id="favorites-modal" class="fixed inset-0 z-[100] bg-gray-900 bg-opacity-95 hidden flex items-center justify-center">
-                <div class="bg-gray-800 rounded-xl p-8 w-full max-w-4xl relative shadow-2xl mx-4 h-[80vh] flex flex-col">
-                    <button id="close-favorites-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
-                        <i data-feather="x" class="w-6 h-6"></i>
-                    </button>
-                    <h2 class="text-2xl font-bold text-white mb-6 text-center">Publicações Favoritas</h2>
-                    <div id="favorites-list" class="flex-1 overflow-y-auto space-y-6 pr-2 no-scrollbar">
-                        <!-- Liked posts injected here -->
-                    </div>
-                </div>
-            </div>
+            <!-- Modal publicações guardadas -->
+
+            <%= render "posts/save_section_modal" %>
+
+            <!-- Modal publicações liked -->
+
+            <%= render "posts/liked_posts_modal" %>
+            
 
             <script>
                 // --- Lógica Principal da Página ---
@@ -1387,185 +1369,12 @@
                     });
 
                     // Botão de fechar modal
-                    closeModalBtn.addEventListener('click', () => closeModal(modal));
+                    closeModalBtn.addEventListener('click', () => {
+                        // Fecha os dropdowns dos 3 pontinhos antes de fechar o modal
+                        document.querySelectorAll('.post-options-dropdown').forEach(d => d.classList.add('hidden'));
+                        closeModal(modal);
+                    });
 
-                    // --- Lógica de Upload de Imagem e Carrossel (Criação de Post) ---
-                    const btnUploadImage = document.getElementById('btn-upload-image');
-                    const fileInput = document.getElementById('post-image-upload');
-                    const previewContainer = document.getElementById('image-preview-container');
-                    const imageCarousel = document.getElementById('image-carousel');
-                    const imageDots = document.getElementById('image-dots');
-                    const prevImageBtn = document.getElementById('prev-image-btn');
-                    const nextImageBtn = document.getElementById('next-image-btn');
-                    let uploadedFiles = [];
-                    
-                    if (btnUploadImage && fileInput && previewContainer && imageCarousel && imageDots) {
-                        // Botões de navegação do carrossel
-                        if (prevImageBtn && nextImageBtn) {
-                            prevImageBtn.addEventListener('click', (e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                // Rola para a esquerda
-                                imageCarousel.scrollBy({ left: -imageCarousel.offsetWidth, behavior: 'smooth' });
-                            });
-
-                            nextImageBtn.addEventListener('click', (e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                // Rola para a direita
-                                imageCarousel.scrollBy({ left: imageCarousel.offsetWidth, behavior: 'smooth' });
-                            });
-                        }
-
-                        // Clicar no ícone de imagem abre o seletor de ficheiros
-                        btnUploadImage.addEventListener('click', () => {
-                            fileInput.click();
-                        });
-
-                        // Atualiza os pontinhos (indicadores) do carrossel
-                        const updateDots = () => {
-                            if (uploadedFiles.length === 0) return;
-
-                            let currentIndex = 0;
-                            if (uploadedFiles.length > 1) {
-                                const scrollLeft = imageCarousel.scrollLeft;
-                                const width = imageCarousel.offsetWidth;
-                                // Calcula qual imagem está visível
-                                currentIndex = Math.round(scrollLeft / width);
-                            }
-                            
-                            // Garante que o índice é válido
-                            currentIndex = Math.min(Math.max(currentIndex, 0), uploadedFiles.length - 1);
-                            
-                            const dots = imageDots.children;
-                            for (let i = 0; i < dots.length; i++) {
-                                if (i === currentIndex) {
-                                    dots[i].classList.remove('bg-gray-600');
-                                    dots[i].classList.add('bg-blue-500'); // Ativo
-                                } else {
-                                    dots[i].classList.add('bg-gray-600');
-                                    dots[i].classList.remove('bg-blue-500'); // Inativo
-                                }
-                            }
-                        };
-
-                        // Renderiza (desenha) o carrossel com as imagens
-                        const renderCarousel = () => {
-                            imageCarousel.innerHTML = '';
-                            imageDots.innerHTML = '';
-                            
-                            if (uploadedFiles.length === 0) {
-                                previewContainer.classList.add('hidden');
-                                return;
-                            }
-
-                            previewContainer.classList.remove('hidden');
-                            
-                            // Configura classes para snap (rolagem magnética) se houver mais de 1 imagem
-                            if (uploadedFiles.length > 1) {
-                                imageCarousel.classList.add('snap-x', 'snap-mandatory');
-                                if (prevImageBtn) prevImageBtn.classList.remove('hidden');
-                                if (nextImageBtn) nextImageBtn.classList.remove('hidden');
-                            } else {
-                                imageCarousel.classList.remove('snap-x', 'snap-mandatory');
-                                if (prevImageBtn) prevImageBtn.classList.add('hidden');
-                                if (nextImageBtn) nextImageBtn.classList.add('hidden');
-                            }
-
-                            // Cria os elementos para cada ficheiro
-                            uploadedFiles.forEach((file, index) => {
-                                const wrapper = document.createElement('div');
-                                wrapper.className = `relative group flex-shrink-0 h-64 bg-gray-900 rounded-lg flex items-center justify-center ${uploadedFiles.length > 1 ? 'snap-center w-full' : 'w-full'}`;
-                                
-                                const img = document.createElement('img');
-                                img.src = URL.createObjectURL(file); // Cria URL temporário para preview
-                                img.alt = `Image preview ${index + 1}`;
-                                img.className = "max-h-full max-w-full object-contain";
-                                
-                                // Botão de remover imagem
-                                const btn = document.createElement('button');
-                                btn.innerHTML = '<i data-feather="x" class="w-4 h-4"></i>';
-                                btn.className = "absolute top-2 right-2 bg-gray-800 bg-opacity-75 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-red-600";
-                                btn.onclick = (e) => {
-                                    e.stopPropagation();
-                                    uploadedFiles.splice(index, 1); // Remove do array
-
-                                    const dataTransfer = new DataTransfer();
-                                    uploadedFiles.forEach(file => dataTransfer.items.add(file));
-                                    fileInput.files = dataTransfer.files;
-
-                                    renderCarousel(); // Redesenha
-                                };
-                                
-                                wrapper.appendChild(img);
-                                wrapper.appendChild(btn);
-                                imageCarousel.appendChild(wrapper);
-
-                                // Cria o ponto indicador
-                                const dot = document.createElement('div');
-                                dot.className = 'w-2 h-2 rounded-full transition-colors duration-200 bg-gray-600';
-                                imageDots.appendChild(dot);
-                            });
-                            
-                            feather.replace();
-                            updateDots();
-                        };
-
-                        imageCarousel.addEventListener('scroll', () => {
-                            updateDots();
-                        });
-
-                        // --- Lógica de Arrastar para Rolar (Drag to Scroll) ---
-                        let isDown = false;
-                        let startX;
-                        let scrollLeft;
-
-                        imageCarousel.addEventListener('mousedown', (e) => {
-                            if (uploadedFiles.length <= 1) return;
-                            isDown = true;
-                            imageCarousel.classList.add('cursor-grabbing');
-                            // Remove snap temporariamente para o arrasto ser suave
-                            imageCarousel.classList.remove('cursor-grab', 'snap-x', 'snap-mandatory', 'scroll-smooth');
-                            startX = e.pageX - imageCarousel.offsetLeft;
-                            scrollLeft = imageCarousel.scrollLeft;
-                        });
-
-                        const stopDragging = () => {
-                            if (!isDown) return;
-                            isDown = false;
-                            imageCarousel.classList.remove('cursor-grabbing');
-                            imageCarousel.classList.add('cursor-grab', 'scroll-smooth');
-                            // Reativa o snap
-                            if (uploadedFiles.length > 1) imageCarousel.classList.add('snap-x', 'snap-mandatory');
-                        };
-
-                        imageCarousel.addEventListener('mouseleave', stopDragging);
-                        imageCarousel.addEventListener('mouseup', stopDragging);
-
-                        imageCarousel.addEventListener('mousemove', (e) => {
-                            if (!isDown) return;
-                            e.preventDefault();
-                            const x = e.pageX - imageCarousel.offsetLeft;
-                            const walk = (x - startX) * 2; // Velocidade do scroll
-                            imageCarousel.scrollLeft = scrollLeft - walk;
-                        });
-
-                        // Quando o utilizador seleciona ficheiros
-                        fileInput.addEventListener('change', function() {
-                            if (this.files.length > 0) {
-                                // Adiciona novos ficheiros ao array
-                                const newFiles = Array.from(this.files);
-                                uploadedFiles.push(...newFiles);
-                                
-                                // Atualiza o input com TODOS os ficheiros
-                                const dataTransfer = new DataTransfer();
-                                uploadedFiles.forEach(file => dataTransfer.items.add(file));
-                                fileInput.files = dataTransfer.files;
-                                
-                                renderCarousel();
-                            }
-                        });
-                    }
 
                     // --- Modal de Sugestões (Carrossel) ---
                     const viewAllSuggestionsBtn = document.getElementById('view-all-suggestions-btn');
@@ -1668,77 +1477,135 @@
 
 
                 // --- CARROSSEL DE IMAGENS NOS POSTS PUBLICADOS ---
-                document.querySelectorAll('.post-images-carousel').forEach(carousel => {
-                    const container = carousel.querySelector('.carousel-images');
-                    const images = carousel.querySelectorAll('.carousel-image');
-                    const prevBtn = carousel.querySelector('.carousel-prev');
-                    const nextBtn = carousel.querySelector('.carousel-next');
-                    const dots = carousel.querySelectorAll('.carousel-dot');
-                    
-                    if (images.length <= 1) return; // Se só há 1 imagem, não faz nada
-                    
-                    let currentIndex = 0;
-                    
-                    // Função para atualizar o carrossel
-                    const updateCarousel = () => {
-                        // Move o container
-                        container.style.transform = `translateX(-${currentIndex * 100}%)`;
-                        
-                        // Atualiza os dots
-                        dots.forEach((dot, i) => {
-                            if (i === currentIndex) {
-                                dot.classList.add('bg-blue-500');
-                                dot.classList.remove('bg-gray-600');
-                            } else {
-                                dot.classList.add('bg-gray-600');
-                                dot.classList.remove('bg-blue-500');
-                            }
-                        });
-                        
-                        // Ativa/desativa botões
-                        prevBtn.disabled = currentIndex === 0;
-                        nextBtn.disabled = currentIndex === images.length - 1;
-                        
-                        prevBtn.classList.toggle('opacity-50', currentIndex === 0);
-                        nextBtn.classList.toggle('opacity-50', currentIndex === images.length - 1);
-                    };
-                    
-                    // Botão anterior
-                    prevBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        if (currentIndex > 0) {
-                            currentIndex--;
-                            updateCarousel();
-                        }
-                    });
-                    
-                    // Botão seguinte
-                    nextBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        if (currentIndex < images.length - 1) {
-                            currentIndex++;
-                            updateCarousel();
-                        }
-                    });
-                    
-                    // Clique nos dots
-                    dots.forEach((dot, index) => {
-                        dot.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            currentIndex = index;
-                            updateCarousel();
-                        });
-                    });
-                    
-                    // Inicializa
-                    updateCarousel();
-                });
-                
+                initializeCarousels();
+
+
                 document.addEventListener('turbo:before-stream-render', function() {
                     document.body.style.overflow = '';
                 });
 
                 });
+
+                // --- Re-inicializar funcionalidades após Turbo Stream atualizar ---
+                document.addEventListener('turbo:frame-load', () => {
+                    // Reinicializa os ícones Feather
+                    if (typeof feather !== 'undefined') feather.replace();
+                    
+                    // Reinicializa os carrosséis de imagens
+                    initializeCarousels();
+                });
+
+                // --- Função para inicializar carrosséis (MOVE O CÓDIGO QUE JÁ TENS) ---
+                function initializeCarousels() {
+                    document.querySelectorAll('.post-images-carousel').forEach(carousel => {
+                        const container = carousel.querySelector('.carousel-images');
+                        const images = carousel.querySelectorAll('.carousel-image');
+                        const prevBtn = carousel.querySelector('.carousel-prev');
+                        const nextBtn = carousel.querySelector('.carousel-next');
+                        const dots = carousel.querySelectorAll('.carousel-dot');
+                        
+                        if (images.length <= 1) return;
+                        
+                        let currentIndex = 0;
+                        
+                        const updateCarousel = () => {
+                            container.style.transform = `translateX(-${currentIndex * 100}%)`;
+                            
+                            dots.forEach((dot, i) => {
+                                if (i === currentIndex) {
+                                    dot.classList.add('bg-blue-500');
+                                    dot.classList.remove('bg-gray-600');
+                                } else {
+                                    dot.classList.add('bg-gray-600');
+                                    dot.classList.remove('bg-blue-500');
+                                }
+                            });
+                            
+                            prevBtn.disabled = currentIndex === 0;
+                            nextBtn.disabled = currentIndex === images.length - 1;
+                            
+                            prevBtn.classList.toggle('opacity-50', currentIndex === 0);
+                            nextBtn.classList.toggle('opacity-50', currentIndex === images.length - 1);
+                        };
+                        
+                        // Remove event listeners antigos (clona os botões)
+                        const newPrevBtn = prevBtn.cloneNode(true);
+                        const newNextBtn = nextBtn.cloneNode(true);
+                        prevBtn.replaceWith(newPrevBtn);
+                        nextBtn.replaceWith(newNextBtn);
+                        
+                        newPrevBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            if (currentIndex > 0) {
+                                currentIndex--;
+                                updateCarousel();
+                            }
+                        });
+                        
+                        newNextBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            if (currentIndex < images.length - 1) {
+                                currentIndex++;
+                                updateCarousel();
+                            }
+                        });
+                        
+                        dots.forEach((dot, index) => {
+                            dot.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                currentIndex = index;
+                                updateCarousel();
+                            });
+                        });
+                        
+                        updateCarousel();
+                    });
+                }
+
+                // Re-inicializa após Turbo Stream atualizar (já tens este evento)
+                    document.addEventListener('turbo:frame-load', () => {
+                        if (typeof feather !== 'undefined') feather.replace();
+                        initializeCarousels();
+                        
+                        // ADICIONA ESTA LINHA:
+                        if (typeof initFlowbite !== 'undefined') initFlowbite();
+                    });
+
+                    // ADICIONA TAMBÉM ESTE EVENTO NOVO (para Turbo Stream updates):
+                    document.addEventListener('turbo:before-stream-render', (event) => {
+                        // Depois do Turbo Stream renderizar, re-inicializa o Flowbite
+                        setTimeout(() => {
+                            if (typeof initFlowbite !== 'undefined') initFlowbite();
+                            if (typeof feather !== 'undefined') feather.replace();
+                        }, 50);
+                    });
+
+                    // --- Setas do Carrossel de Sugestões ---
+                    const suggestionsTrack = document.getElementById('suggestions-track');
+                    const prevBtn = document.getElementById('prev-suggestion');
+                    const nextBtn = document.getElementById('next-suggestion');
+
+                    if (suggestionsTrack && prevBtn && nextBtn) {
+                        // Botão anterior
+                        prevBtn.addEventListener('click', () => {
+                            suggestionsTrack.scrollBy({ left: -suggestionsTrack.offsetWidth / 3, behavior: 'smooth' });
+                        });
+                        
+                        // Botão seguinte
+                        nextBtn.addEventListener('click', () => {
+                            suggestionsTrack.scrollBy({ left: suggestionsTrack.offsetWidth / 3, behavior: 'smooth' });
+                        });
+                        
+                        // Atualiza estado dos botões ao fazer scroll
+                        const updateButtons = () => {
+                            prevBtn.disabled = suggestionsTrack.scrollLeft <= 0;
+                            nextBtn.disabled = suggestionsTrack.scrollLeft >= suggestionsTrack.scrollWidth - suggestionsTrack.offsetWidth;
+                        };
+                        
+                        suggestionsTrack.addEventListener('scroll', updateButtons);
+                        updateButtons(); // Inicializa
+                    }
+
             </script>
         <% else %>
 

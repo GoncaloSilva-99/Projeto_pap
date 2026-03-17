@@ -8,6 +8,15 @@ class UserProfilesController < ApplicationController
 
   # GET /user_profiles/1 or /user_profiles/1.json
   def show
+      @page = params[:page]&.to_i || 1
+      posts_per_page = 25
+      
+      @posts = Post.where(user_id: @user_profile.user.id).recent.offset((@page - 1) * posts_per_page)
+
+      @has_more_posts = @posts.length == posts_per_page
+
+      @post_comments = PostComment.where(post_id: @post)
+      @num_post_comments = @post_comments.count
   end
 
   # GET /user_profiles/new
@@ -25,7 +34,7 @@ class UserProfilesController < ApplicationController
 
     respond_to do |format|
       if @user_profile.save
-        format.html { redirect_to @user_profile, notice: "User profile was successfully created." }
+        format.html { redirect_to @user_profile, notice: "Perfil de adepto criado com sucesso!" }
         format.json { render :show, status: :created, location: @user_profile }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -38,7 +47,7 @@ class UserProfilesController < ApplicationController
   def update
     respond_to do |format|
       if @user_profile.update(user_profile_params)
-        format.html { redirect_to @user_profile, notice: "User profile was successfully updated.", status: :see_other }
+        format.html { redirect_to @user_profile, notice: "Perfil atualizado com sucesso!", status: :see_other }
         format.json { render :show, status: :ok, location: @user_profile }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -52,7 +61,7 @@ class UserProfilesController < ApplicationController
     @user_profile.destroy!
 
     respond_to do |format|
-      format.html { redirect_to user_profiles_path, notice: "User profile was successfully destroyed.", status: :see_other }
+      format.html { redirect_to user_profiles_path, notice: "Perfil de adepto apagado com sucesso!", status: :see_other }
       format.json { head :no_content }
     end
   end

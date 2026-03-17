@@ -1,0 +1,5 @@
+<%= turbo_frame_tag "saved_count#{current_user.id}" do %>
+    <span>
+        <%= current_user.post_saves.count %>
+    </span>
+<% end %>

@@ -25,7 +25,7 @@ class PostCommentsController < ApplicationController
             )
           ]
         end
-        format.html { redirect_to post_path(@post), notice: 'Comentário eliminado com sucesso!' }
+        format.html { redirect_back fallback_location: root_path, notice: 'Comentário eliminado com sucesso!' }
       end
     end
   before_action :authenticate_user!
@@ -79,7 +79,7 @@ class PostCommentsController < ApplicationController
           )
           ]
         end
-        format.html { redirect_to post_path(@post) }
+        format.html {redirect_back fallback_location: root_path }
       end
     else
       respond_to do |format|
@@ -90,7 +90,7 @@ class PostCommentsController < ApplicationController
             locals: { post: @post, comment: @comment }
           ), status: :unprocessable_entity
         end
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { redirect_back fallback_location: root_path, status: :unprocessable_entity }
       end
     end
   end

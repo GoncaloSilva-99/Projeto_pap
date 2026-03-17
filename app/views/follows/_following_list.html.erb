@@ -1,0 +1,59 @@
+            <%= turbo_frame_tag "following_list_#{user.id}" do %>
+                <% if user.following.any? %>
+                    <% user.following.each do |following| %>
+                        <% 
+                            following_profile = nil
+                            if following.club?
+                                following_profile = following.club_profile
+                            elsif following.player?
+                                following_profile = following.player_profile
+                            elsif following.board?
+                                following_profile = following.board_profile
+                            elsif following.coach?
+                                following_profile = following.coach_profile
+                            elsif following.admin?
+                                following_profile = following.admin_profile
+                            elsif following.user?
+                                following_profile = following.user_profile
+                            end
+                        %>
+
+                        <div class="flex items-center justify-between  p-2 rounded-lg transition">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-600 overflow-hidden flex-shrink-0">
+                                    <% if following_profile && following_profile.profile_picture.attached? %>
+                                        <%= image_tag url_for(following_profile.profile_picture), class: "w-full h-full object-cover" %>
+                                    <% else %>
+                                        <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                                    <% end %>
+                                </div>
+
+                                <div>
+                                    <% if following.club? %>
+                                        <%= link_to following.club_profile.name, club_profile_path(following.club_profile), 
+                                            data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
+                                    <% elsif following.player? %>
+                                        <%= link_to following.player_profile.name, player_profile_path(following.player_profile), 
+                                            data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
+                                    <% elsif following.coach? %>
+                                        <%= link_to following.coach_profile.name, coach_profile_path(following.coach_profile), 
+                                            data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
+                                    <% elsif following.board? %>
+                                        <%= link_to following.board_profile.name, board_profile_path(following.board_profile), 
+                                            data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
+                                    <% elsif following.user? %>
+                                        <%= link_to following.user_profile.name, user_profile_path(following.user_profile), 
+                                            data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
+                                    <% end %>
+                                </div>
+                            </div>
+
+                        </div>
+                    <% end %>
+                <% else %>
+                    <div class="text-center py-12">
+                        <i data-feather="inbox" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                        <h3 class="text-xl font-bold text-gray-400 mb-2">Este perfil ainda não segue ninguém!</h3>
+                    </div>
+                <% end %>
+            <% end %>

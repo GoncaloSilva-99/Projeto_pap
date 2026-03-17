@@ -1,6 +1,6 @@
 <div id="flash">
   <% if flash.any? %>
-    <div class="fixed top-4 right-4 z-50 space-y-3 transition-opacity duration-500"
+    <div class="fixed top-4 right-4 z-[150] space-y-3 transition-opacity duration-500"
         id="flash-container">
 
       <% flash.each do |type, message| %>
@@ -48,7 +48,7 @@
     </div>
 
     <script>
-      // Espera 5 segundos (5000 milissegundos)
+      // Espera 3 segundos (3000 milissegundos)
       setTimeout(() => {
 
         // Vai buscar o container do flash
@@ -66,10 +66,10 @@
             // Remove completamente do DOM
             flash.remove();
 
-          }, 500);
+          }, 300);
         }
 
-      }, 5000); // 5000ms = 5 segundos
+      }, 3000); // 5000ms = 5 segundos
     </script>
 
   <% end %>
