@@ -539,11 +539,21 @@
                     // Obtém o novo comprimento do texto
                     const len = searchBar.value.length;
                     // Se o comprimento mudou (cresceu ou diminuiu)
-                    if (len !== prevLen) { 
+                    if (len !== prevLen) {
                         // Reajusta a largura da barra de pesquisa
-                        adjustSearchWidth(); 
+                        adjustSearchWidth();
                         // Atualiza o comprimento anterior
-                        prevLen = len; 
+                        prevLen = len;
+                    }
+                });
+
+                // Submeter pesquisa ao pressionar Enter
+                searchBar.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        const query = searchBar.value.trim();
+                        if (query.length > 0) {
+                            window.location.href = "<%= home_search_path %>?query=" + encodeURIComponent(query);
+                        }
                     }
                 });
 

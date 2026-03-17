@@ -20,4 +20,23 @@ class HomeController < ApplicationController
       @num_post_comments = @post_comments.count
     end
   end
+
+  def search
+    @query = params[:query].to_s.strip
+    @selected_category = params[:category].presence_in(%w[perfis publicacoes]) || 'perfis'
+
+    if @query.present?
+      @profile_results = []
+      @profile_results += CoachProfile.search_by_name(@query) if defined?(CoachProfile)
+      @profile_results += PlayerProfile.search_by_name(@query) if defined?(PlayerProfile)
+      @profile_results += BoardProfile.search_by_name(@query) if defined?(BoardProfile)
+      @profile_results += ClubProfile.where("name ILIKE ?", "%#{@query}%") if defined?(ClubProfile)
+      @profile_results = @profile_results.uniq
+
+      @post_results = Post.where("caption ILIKE :q OR text ILIKE :q", q: "%#{@query}%")
+    else
+      @profile_results = []
+      @post_results = []
+    end
+  end
 end

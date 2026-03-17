@@ -1,5 +1,5 @@
 class UserProfile < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, dependent: :destroy
   has_one_attached :profile_picture
   has_one_attached :banner
 

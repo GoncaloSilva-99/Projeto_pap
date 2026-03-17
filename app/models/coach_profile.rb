@@ -1,5 +1,5 @@
 class CoachProfile < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, dependent: :destroy
   has_many :coach_teams
   belongs_to :club_profile, optional: true
   has_one_attached :profile_picture
