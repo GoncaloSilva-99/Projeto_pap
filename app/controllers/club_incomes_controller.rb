@@ -28,6 +28,6 @@ class ClubIncomesController < ApplicationController
   private
 
   def income_params
-    params.require(:club_income).permit(:value, :description, :date)
+    params.expect(club_income: [ :value, :description, :date ])
   end
 end

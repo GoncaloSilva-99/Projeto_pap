@@ -21,29 +21,25 @@ class ClubBalancesController < ApplicationController
 
   # POST /club_balances or /club_balances.json
   def create
-    @club_balance = ClubBalance.new(club_balance_params)
+      current_club = current_user.club? ? 
+        current_user.club_profile : 
+        current_user.board_profile.club_profile
 
-    respond_to do |format|
+      @club_balance = current_club.build_club_balance(club_balance_params)
+
       if @club_balance.save
-        format.html { redirect_to @club_balance, notice: "Club balance was successfully created." }
-        format.json { render :show, status: :created, location: @club_balance }
+        redirect_to club_finances_dashboard_path, notice: "Saldo criado."
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @club_balance.errors, status: :unprocessable_entity }
+        redirect_to club_finances_dashboard_path, alert: "Erro ao criar saldo."
       end
-    end
   end
 
   # PATCH/PUT /club_balances/1 or /club_balances/1.json
   def update
-    respond_to do |format|
-      if @club_balance.update(club_balance_params)
-        format.html { redirect_to @club_balance, notice: "Club balance was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @club_balance }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @club_balance.errors, status: :unprocessable_entity }
-      end
+    if @club_balance.update(club_balance_params)
+      redirect_to club_finances_dashboard_path, notice: "Saldo atualizado."
+    else
+      redirect_to club_finances_dashboard_path, alert: "Erro ao atualizar saldo."
     end
   end
 
@@ -59,12 +55,17 @@ class ClubBalancesController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_club_balance
-      @club_balance = ClubBalance.find(params.expect(:id))
-    end
+
+      def set_club_balance
+        current_club = current_user.club? ? 
+          current_user.club_profile : 
+          current_user.board_profile.club_profile
+        @club_balance = current_club.club_balance || current_club.build_club_balance
+      end
+
 
     # Only allow a list of trusted parameters through.
     def club_balance_params
-      params.expect(club_balance: [ :club_profile_id, :value ])
+      params.expect(club_balance: [ :value ])
     end
 end

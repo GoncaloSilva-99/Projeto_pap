@@ -6,8 +6,22 @@ class DashboardController < ApplicationController
   before_action :setup_search_board, only: [:club_board]
   before_action :sport, only: [:club_infrastructures]
   before_action :infrastructures, only: [:club_infrastructures]
+  before_action :finances, only: [:club_finances]
 
   protected
+
+  def finances
+      @club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
+      @first_of_month = params[:start_date] ?  Date.parse(params[:start_date]).beginning_of_month : Date.current.beginning_of_month
+      @last_of_month =  params[:start_date] ?  Date.parse(params[:start_date]).end_of_month : Date.current.end_of_month
+      @current_month = l(@first_of_month, format: "%B")
+      @current_year = @first_of_month.year
+      
+      @month_expenses = ClubExpense.where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
+      @month_incomes = ClubIncome.where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
+
+      @club_balance = ClubBalance.find_by(club_profile_id: @club_id)
+  end
 
   def infrastructures
     @selected_ct = params[:ct].present? ? params[:ct].to_i : nil

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :club_incomes
   resources :club_expenses
-  resource :club_current_balance, only: [:update]
+  resource :club_balances
   resources :report_comments
   resources :report_posts
   resources :post_views
