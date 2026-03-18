@@ -1,6 +1,6 @@
 <body class="bg-gray-900 text-gray-100 min-h-screen">
   <!-------------------------------------------- Navbar ------------------------------------------------>
-        <nav class="bg-gray-800 py-4 px-6 shadow-lg fixed w-full z-30 top-0 start-0" style="--nav-height:64px;"">
+        <nav class="bg-gray-800 py-4 px-6 shadow-lg fixed w-full z-30 top-0 start-0" style="--nav-height:64px;">
             <div class="container mx-auto flex items-center justify-between flex-wrap">
                 
                 <!-- Logo and Search -->
@@ -26,9 +26,9 @@
                 <% else %>
 
                 <div id="nav-links" class="w-full md:w-auto flex justify-center space-x-6 mt-4 md:mt-0 md:order-none order-3 nav-links-overlap">
-                    <a href="#inicio" class="hover:text-orange-400 transition">Início</a>
-                    <a href="#stats" class="hover:text-orange-400 transition">Estatísticas</a>
-                    <a href="#popular-profiles" class="hover:text-orange-400 transition">Perfis Populares</a>
+                    <a href="<%= root_path %>#inicio" class="hover:text-orange-400 transition">Início</a>
+                    <a href="<%= root_path %>#stats" class="hover:text-orange-400 transition">Estatísticas</a>
+                    <a href="<%= root_path %>#popular-profiles" class="hover:text-orange-400 transition">Perfis Populares</a>
                 </div>
 
                 <% end %>

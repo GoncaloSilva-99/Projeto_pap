@@ -13,6 +13,9 @@ class ClubProfile < ApplicationRecord
 
   validates_presence_of :name, :foundation_date, :verification_document
 
+  include PgSearch::Model
+  pg_search_scope :search_by_name, against: :name, using: { tsearch: { prefix: true } }
+
   def has_football?
     club_sports.exists?(sport_id: 2)
   end

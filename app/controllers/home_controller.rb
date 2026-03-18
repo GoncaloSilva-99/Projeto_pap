@@ -30,7 +30,7 @@ class HomeController < ApplicationController
       @profile_results += CoachProfile.search_by_name(@query) if defined?(CoachProfile)
       @profile_results += PlayerProfile.search_by_name(@query) if defined?(PlayerProfile)
       @profile_results += BoardProfile.search_by_name(@query) if defined?(BoardProfile)
-      @profile_results += ClubProfile.where("name ILIKE ?", "%#{@query}%") if defined?(ClubProfile)
+      @profile_results += ClubProfile.search_by_name(@query) if defined?(ClubProfile)
       @profile_results = @profile_results.uniq
 
       @post_results = Post.where("caption ILIKE :q OR text ILIKE :q", q: "%#{@query}%")

@@ -96,6 +96,58 @@
             placeholder:"Escreva uma breve descrição sobre o playere. A informação estará visível para todos no perfil" %>
       </div>
 
+      <div class="mt-8 border-t border-gray-700 pt-6">
+        <div class="flex items-center gap-2">
+          <h3 class="text-lg font-medium leading-6 text-white">Detalhes da Conta</h3>
+          <button type="button" id="toggle-account-details-btn" class="text-gray-400 hover:text-white transition-colors focus:outline-none p-1">
+            <i data-feather="chevron-down" id="account-details-icon" class="h-5 w-5 transform transition-transform duration-200"></i>
+          </button>
+        </div>
+        <div id="account-details-section" class="hidden">
+          <p class="mt-1 text-sm text-gray-400">Altere o seu email e palavra-passe. Deixe os campos em branco se não pretender alterar.</p>
+          <div id="account-details-error" class="hidden mt-3 rounded-md bg-red-900 bg-opacity-50 border border-red-700 text-red-200 px-4 py-3 text-sm" role="alert"></div>
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <%= form.fields_for :user do |user_form| %>
+              <div>
+                <%= user_form.label :email, "Novo Endereço de Email", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.email_field :email,
+                    id: "player_profile_email",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"novo@email.com", value: user_form.object.email %>
+              </div>
+              <div>
+                <%= user_form.label :email_confirmation, "Confirmação do Novo Email", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.email_field :email_confirmation,
+                    id: "player_profile_email_confirmation",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Confirme o seu email", value: user_form.object.email %>
+              </div>
+              <div>
+                <%= user_form.label :password, "Nova Palavra-passe", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.password_field :password,
+                    id: "player_profile_password",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Nova palavra-passe" %>
+              </div>
+              <div>
+                <%= user_form.label :password_confirmation, "Confirmação da Nova Palavra-passe", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.password_field :password_confirmation,
+                    id: "player_profile_password_confirmation",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Confirme a nova palavra-passe" %>
+              </div>
+              <div class="md:col-span-2">
+                <%= user_form.label :current_password, "Palavra-passe Atual (necessária para confirmar alterações)", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.password_field :current_password,
+                    id: "player_profile_current_password",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Digite a sua palavra-passe atual" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
       <div class="flex gap-4 pt-4">
         <%= link_to player_profile_path(player_profile), class: "w-full bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30 flex items-center justify-center gap-2" do %>
             <i data-feather="arrow-left"></i>
@@ -156,6 +208,92 @@
           document.querySelector('form').appendChild(hidden);
         }
         hidden.value = '1';
+      });
+    }
+
+    // Toggle account details
+    const toggleDetailsBtn = document.getElementById('toggle-account-details-btn');
+    const detailsSection = document.getElementById('account-details-section');
+    const detailsIcon = document.getElementById('account-details-icon');
+    if (toggleDetailsBtn && detailsSection && detailsIcon) {
+      toggleDetailsBtn.addEventListener('click', () => {
+        detailsSection.classList.toggle('hidden');
+        detailsIcon.classList.toggle('rotate-180');
+      });
+    }
+
+    const accountError = document.getElementById('account-details-error');
+    const form = document.querySelector('form');
+    const emailInput = document.getElementById('player_profile_email');
+    const emailConfirmInput = document.getElementById('player_profile_email_confirmation');
+    const passwordInput = document.getElementById('player_profile_password');
+    const passwordConfirmInput = document.getElementById('player_profile_password_confirmation');
+
+    if (emailInput && emailConfirmInput) {
+      const feedback = document.createElement('p');
+      feedback.className = 'text-xs mt-1 font-medium';
+      emailConfirmInput.parentElement.appendChild(feedback);
+      function checkEmail() {
+        const email = emailInput.value.trim();
+        const confirm = emailConfirmInput.value.trim();
+        if (!confirm) { feedback.textContent = ''; return; }
+        if (email !== confirm) {
+          feedback.textContent = 'Os emails não coincidem.';
+          feedback.className = 'text-xs mt-1 font-medium text-red-400';
+        } else {
+          feedback.textContent = 'Os emails coincidem.';
+          feedback.className = 'text-xs mt-1 font-medium text-green-400';
+        }
+      }
+      emailInput.addEventListener('input', checkEmail);
+      emailConfirmInput.addEventListener('input', checkEmail);
+    }
+
+    if (passwordInput && passwordConfirmInput) {
+      const feedback = document.createElement('p');
+      feedback.className = 'text-xs mt-1 font-medium';
+      passwordConfirmInput.parentElement.appendChild(feedback);
+      function checkPassword() {
+        const password = passwordInput.value;
+        const confirm = passwordConfirmInput.value;
+        if (!confirm) { feedback.textContent = ''; return; }
+        if (password !== confirm) {
+          feedback.textContent = 'As palavras-passe não coincidem.';
+          feedback.className = 'text-xs mt-1 font-medium text-red-400';
+        } else {
+          feedback.textContent = 'As palavras-passe coincidem.';
+          feedback.className = 'text-xs mt-1 font-medium text-green-400';
+        }
+      }
+      passwordInput.addEventListener('input', checkPassword);
+      passwordConfirmInput.addEventListener('input', checkPassword);
+    }
+
+    if (form && accountError && emailInput && emailConfirmInput && passwordInput && passwordConfirmInput) {
+      form.addEventListener('submit', (e) => {
+        const email = emailInput.value.trim();
+        const emailConfirm = emailConfirmInput.value.trim();
+        const password = passwordInput.value;
+        const passwordConfirm = passwordConfirmInput.value;
+        const currentPassword = document.getElementById('player_profile_current_password')?.value;
+
+        const changingEmail = email !== '';
+        const changingPassword = password !== '' || passwordConfirm !== '';
+        let error = '';
+
+        if (changingEmail && email !== emailConfirm) {
+          error = 'Os emails não coincidem.';
+        } else if (changingPassword && password !== passwordConfirm) {
+          error = 'As palavras-passe não coincidem.';
+        } else if ((changingEmail || changingPassword) && !currentPassword) {
+          error = 'Para alterar dados de conta é necessária a palavra-passe atual.';
+        }
+
+        if (error) {
+          e.preventDefault();
+          accountError.textContent = error;
+          accountError.classList.remove('hidden');
+        }
       });
     }
 

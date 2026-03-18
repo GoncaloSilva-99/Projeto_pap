@@ -36,6 +36,7 @@ class PlayerProfilesController < ApplicationController
 
   # GET /player_profiles/1/edit
   def edit
+    @player_profile.build_user if @player_profile.user.nil?
   end
 
   # POST /player_profiles or /player_profiles.json
@@ -55,9 +56,53 @@ class PlayerProfilesController < ApplicationController
 
   # PATCH/PUT /player_profiles/1 or /player_profiles/1.json
   def update
+    # Handle image removal
+    @player_profile.profile_picture.purge if params[:player_profile][:remove_profile_picture] == '1'
+    @player_profile.banner_picture.purge if params[:player_profile][:remove_banner_picture] == '1'
+
+    profile_params = player_profile_params.dup
+    user_attrs = profile_params.delete(:user_attributes)
+
+    user_update_success = true
+    account_details_changed = false
+
+    if user_attrs.present? && @player_profile.user.present?
+      user_attrs = user_attrs.to_h
+      user_attrs = user_attrs.reject do |k, v|
+        v.blank? && !%w[email_confirmation password_confirmation].include?(k.to_s)
+      end
+
+      if user_attrs.present?
+        user = @player_profile.user
+        account_details_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
+        account_details_changed ||= user_attrs[:password].present?
+
+        email_being_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
+        password_being_changed = user_attrs[:password].present?
+
+        if (email_being_changed || password_being_changed) && user_attrs[:current_password].blank?
+          @player_profile.errors.add(:base, "É necessário introduzir a palavra-passe atual para alterar email ou palavra-passe.")
+          user_update_success = false
+        elsif user_attrs[:current_password].present?
+          user_update_success = user.update_with_password(user_attrs)
+        else
+          user_update_success = user.update_without_password(user_attrs.except(:current_password))
+        end
+
+        if user.errors.any?
+          user.errors.full_messages.each { |msg| @player_profile.errors.add(:base, msg) }
+        end
+      end
+    end
+
     respond_to do |format|
-      if @player_profile.update(player_profile_params)
-        format.html { redirect_to @player_profile, notice: "Perfil editado com sucesso!", status: :see_other }
+      if @player_profile.update(profile_params) && user_update_success
+        if account_details_changed
+          sign_out(current_user) if current_user
+          format.html { redirect_to new_user_session_path, notice: "Dados de login alterados. Por favor, entre novamente.", status: :see_other }
+        else
+          format.html { redirect_to @player_profile, notice: "Perfil editado com sucesso!", status: :see_other }
+        end
         format.json { render :show, status: :ok, location: @player_profile }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -85,6 +130,7 @@ class PlayerProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def player_profile_params
-      params.expect(player_profile: [ :user_id, :name, :birth_date, :position, :bio, :contact, :parents_contact, :club_profile_id, :banner_picture, :profile_picture ])
+      params.expect(player_profile: [ :user_id, :name, :birth_date, :position, :bio, :contact, :parents_contact, :club_profile_id, :banner_picture, :profile_picture,
+        user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] ])
     end
 end

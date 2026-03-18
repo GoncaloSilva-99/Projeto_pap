@@ -105,7 +105,7 @@
           </button>
         </div>
 
-        <!-- Campos de Email e Palavra-passe -->
+        <!-- Campos de Email e Palavra-passe -->  
         <div id="account-details-section" class="hidden">
           <p class="mt-1 text-sm text-gray-400">Altere o seu email e palavra-passe. Deixe os campos em branco se não pretender alterar.</p>
           <div id="account-details-error" class="hidden mt-3 rounded-md bg-red-900 bg-opacity-50 border border-red-700 text-red-200 px-4 py-3 text-sm" role="alert"></div>
@@ -118,7 +118,7 @@
                 <%= user_form.email_field :email,
                     id: "club_profile_email",
                     class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
-                    placeholder:"novo@email.com" %>
+                    placeholder:"novo@email.com", value: "" %>
               </div>
 
               <!-- Email Confirmation -->
