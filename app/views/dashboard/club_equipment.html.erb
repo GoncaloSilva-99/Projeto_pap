@@ -35,17 +35,10 @@
             <% end %>
 
 
-            <%= link_to root_path do %>
+            <%= link_to club_finances_dashboard_path do %>
             <div  class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 rounded-xl border-l-4 border-transparent hover:border-yellow-500 transition-all duration-300">
                 <i data-feather="dollar-sign" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
                 <span class="font-medium">Finanças</span>
-            </div>
-            <% end %>
-
-            <%= link_to root_path do %>
-            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-red-400 rounded-xl border-l-4 border-transparent hover:border-red-500 transition-all duration-300">
-                <i data-feather="heart" class="sidebar-icon text-red-400 w-5 h-5 mr-3"></i>
-                <span class="font-medium">Adeptos</span>
             </div>
             <% end %>
 
@@ -121,7 +114,7 @@
             </h3>
 
             <div class="flex items-center gap-4">
-                <button data-modal-target="select-modal" data-modal-toggle="select-modal" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
+                <button data-modal-target="modal-add-material" data-modal-toggle="modal-add-material" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
                     <i data-feather="plus" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -135,14 +128,6 @@
                 <input type="text" placeholder="Search members..." class="bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
             </div>
             
-            <select class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                <option>Opções</option>
-                <option>Football</option>
-                <option>Basketball</option>
-                <option>Tennis</option>
-                <option>Swimming</option>
-                <option>Volleyball</option>
-            </select>
         </div>
 
 <!---------------------------------------------------- MATERIAIS ---------------------------------------------------->
@@ -243,6 +228,59 @@
             
             </div>
     </div>
+
+           <!-- Modal Add Receitas -->
+        <div id="modal-add-material" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+            <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-md border border-slate-700">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-green-400">Adicionar Material</h2>
+                    <button data-modal-hide="modal-add-material" class="text-slate-400 hover:text-white">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>  
+                    <%= form_with url: club_materials_path, method: :post, data: { turbo: false } do |f| %>
+
+                        <%= f.hidden_field :club_profile_id, value: @club_profile.id %>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Nome</label>
+                            <%= f.text_field :name, name: "club_material[name]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "Ex: Venda de Bilhetes" %>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Descrição</label>
+                            <%= f.text_field :description, name: "club_material[description]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "Ex: Venda de Bilhetes" %>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
+                            <%= f.number_field :quantity, name: "club_material[quantity]", step:"1", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "10" %>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Desporto</label>
+                            <% if @club_profile.has_both_sports? %>
+                                <%= f.select :sport,
+                                [["Futebol", "football"], ["Andebol", "handball"], ["Geral", "geral"]],
+                                {selected: "geral", include_blank: false},
+                                {class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
+                            <% elsif @club_profile.has_football? %>
+                                <%= f.select :sport,
+                                [["Futebol", "football"]],
+                                {selected: "football", include_blank: false},
+                                {class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
+                            <% elsif @club_profile.has_handball? %>
+                                <%= f.select :sport,
+                                [["Andebol", "handball"]],
+                                {selected: "handball", include_blank: false},
+                                {class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
+                            <% end %>
+                        </div>
+
+                        <%= f.submit "Confirmar", class:"w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"  %>
+                    <% end %>
+            </div>
+        </div> 
 
 <script>
     feather.replace();

@@ -8,8 +8,13 @@ class DashboardController < ApplicationController
   before_action :infrastructures, only: [:club_infrastructures]
   before_action :finances, only: [:club_finances]
   before_action :setup_search_transactions, only: [:club_finances]
+  before_action :set_profile
 
   protected
+
+  def set_profile
+    @club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
+  end
 
   def finances
       @club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
