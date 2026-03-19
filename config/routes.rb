@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :club_materials
   resources :club_incomes
   resources :club_expenses
   resource :club_balances
