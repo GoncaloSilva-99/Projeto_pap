@@ -7,6 +7,7 @@ class DashboardController < ApplicationController
   before_action :sport, only: [:club_infrastructures]
   before_action :infrastructures, only: [:club_infrastructures]
   before_action :finances, only: [:club_finances]
+  before_action :setup_search_transactions, only: [:club_finances]
 
   protected
 
@@ -243,6 +244,16 @@ end
 
     @board_results = board_query.page(params[:board_page]).per(4)
     @base_num_board = BoardProfile.where(club_profile_id: club_id).count
+  end
+
+  def setup_search_transactions
+    club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
+    @query = params[:query]
+
+    if @query.present?
+      @month_expenses = ClubExpense.search_by_description(@query).where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
+      @month_incomes = ClubIncome.search_by_description(@query).where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
+    end
   end
 
 

@@ -190,16 +190,18 @@
             <!-- Searchbar -->
             <% if @club_balance %>
                 <%= form_with url: club_finances_dashboard_path, method: :get, local: true, id: "search-form" do %>
-                    <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-6 pointer-events-none z-10"></i>
-                    <%= text_field_tag :query,
-                        params[:query],
-                        placeholder: "Pesquisar Transações",
-                        class: "bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-10 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
-                        oninput: "clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(() => this.form.requestSubmit(), 1000); toggleClearButton(this)",
-                        id: "search-input" %>
-                    <button type="button" id="clear-search" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition <%= 'hidden' unless params[:query].present? %>" onclick="clearSearch()">
-                        <i data-feather="x" class="w-4 h-4 text-red-400"></i>
-                    </button>
+                    <div class="relative w-80">
+                        <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-6 pointer-events-none z-10"></i>
+                        <%= text_field_tag :query,
+                            params[:query],
+                            placeholder: "Pesquisar Transações",
+                            class: "bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-10 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
+                            oninput: "clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(() => this.form.requestSubmit(), 1000); toggleClearButton(this)",
+                            id: "search-input" %>
+                        <button type="button" id="clear-search" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition <%= 'hidden' unless params[:query].present? %>" onclick="clearSearch()">
+                            <i data-feather="x" class="w-4 h-4 text-red-400"></i>
+                        </button>
+                    </div>
                 <% end %>
             <% end %>
 
@@ -234,7 +236,9 @@
                                     <span class="font-bold text-green-400"> <%= number_to_currency(income.value, unit: "€", separator: ",", delimiter: ".", format: "%n %u") %> </span>
                                 </div>
                             <% end %>
-                        <% else %>
+                        <% elsif params[:query].present? %>
+                            <p id="end-expenses-msg" class="text-slate-500 text-xl text-center "> A pesquisa "<%= params[:query] %>" não retornou nenhuma receita</p>
+                        <% elsif !params[:query].present? %>
                             <p id="end-expenses-msg" class="text-slate-500 text-xl text-center "> Ainda não há nenhuma receita neste mês </p>
                         <% end %>
                     </div>
@@ -261,7 +265,9 @@
                                     <span class="font-bold text-red-400">- <%= number_to_currency(expense.value, unit: "€", separator: ",", delimiter: ".", format: "%n %u") %> </span>
                                 </div>
                             <% end %>
-                        <% else %>
+                        <% elsif params[:query].present? %>
+                            <p id="end-expenses-msg" class="text-slate-500 text-xl text-center "> A pesquisa "<%= params[:query] %>" não retornou nenhuma despesa</p>
+                        <% elsif !params[:query].present? %>
                             <p id="end-expenses-msg" class="text-slate-500 text-xl text-center "> Ainda não há nenhuma despesa neste mês </p>
                         <% end %>
                     </div>
@@ -378,6 +384,22 @@
                 const valorFormatado = parseFloat(valor).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 document.getElementById('confirmar-valor').innerText = valorFormatado + ' €';
             });
+
+                function toggleClearButton(input) {
+                    const clearBtn = document.getElementById('clear-search');
+                    if (input.value.length > 0) {
+                        clearBtn.classList.remove('hidden');
+                    } else {
+                        clearBtn.classList.add('hidden');
+                    }
+                }
+
+                function clearSearch() {
+                    const input = document.getElementById('search-input');
+                    input.value = '';
+                    document.getElementById('clear-search').classList.add('hidden');
+                    document.getElementById('search-form').requestSubmit();
+                }
     </script>
 
 </body>
