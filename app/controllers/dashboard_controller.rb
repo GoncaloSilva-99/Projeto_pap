@@ -18,9 +18,18 @@ class DashboardController < ApplicationController
       @current_year = @first_of_month.year
       
       @month_expenses = ClubExpense.where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
+      @month_expenses_total = 0
+      @month_expenses.each do |expense|
+        @month_expenses_total = @month_expenses_total + expense.value
+      end
       @month_incomes = ClubIncome.where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
-
+      @month_incomes_total = 0
+      @month_incomes.each do |income|
+        @month_incomes_total = @month_incomes_total + income.value
+      end
       @club_balance = ClubBalance.find_by(club_profile_id: @club_id)
+
+
   end
 
   def infrastructures

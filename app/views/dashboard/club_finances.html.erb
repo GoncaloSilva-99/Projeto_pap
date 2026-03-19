@@ -165,7 +165,7 @@
                     <h3 class="text-lg font-semibold text-white">Receitas do Mês</h3>
                     <i data-feather="arrow-up-circle" class="text-green-400"></i>
                 </div>
-                <p class="text-3xl font-bold text-green-400">+ 1.200,00 €</p>
+                <p class="text-3xl font-bold text-green-400">+ <%= number_to_currency(@month_incomes_total, unit: "€", separator: ",", delimiter: ".", format: "%n %u") || 0 %></p>
                 <p class="text-sm text-slate-400">Total de entradas </p>
             </div>
 
@@ -175,7 +175,7 @@
                     <h3 class="text-lg font-semibold text-white">Despesas do Mês</h3>
                     <i data-feather="arrow-down-circle" class="text-red-400"></i>
                 </div>
-                <p class="text-3xl font-bold text-red-400">- 450,50 €</p>
+        <p class="text-3xl font-bold text-red-400">- <%= number_to_currency(@month_expenses_total, unit: "€", separator: ",", delimiter: ".", format: "%n %u") || 0 %> </p>
                 <p class="text-sm text-slate-400">Total de saídas</p>
             </div>
         </div>
@@ -189,10 +189,18 @@
         <div class="flex justify-between items-center mb-8">
             <!-- Searchbar -->
             <% if @club_balance %>
-                <div class="relative w-1/3">
-                    <i id="search-icon" data-feather="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-white transition-colors"></i>
-                    <input id="search-input" type="text" placeholder="Pesquisar transações..." class="bg-slate-800 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-white w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
+                <%= form_with url: club_finances_dashboard_path, method: :get, local: true, id: "search-form" do %>
+                    <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-6 pointer-events-none z-10"></i>
+                    <%= text_field_tag :query,
+                        params[:query],
+                        placeholder: "Pesquisar Transações",
+                        class: "bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-10 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
+                        oninput: "clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(() => this.form.requestSubmit(), 1000); toggleClearButton(this)",
+                        id: "search-input" %>
+                    <button type="button" id="clear-search" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition <%= 'hidden' unless params[:query].present? %>" onclick="clearSearch()">
+                        <i data-feather="x" class="w-4 h-4 text-red-400"></i>
+                    </button>
+                <% end %>
             <% end %>
 
             <!-- Botões de Add Receitas/Despesas -->
@@ -216,14 +224,19 @@
                 <div class="pr-2 max-h-72 overflow-y-auto no-scrollbar" id="revenue-scroll-container">
                     <!-- Exemplos de Receitas -->
                     <div class="space-y-4" id="revenue-list">
-                        <!-- Item de despesa -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Taxas de Inscrição em Torneio</p>
-                                <p class="text-sm text-slate-400">20 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-green-400">+ 100,00 €</span>
-                        </div>
+                        <% if @month_incomes.any? %>
+                            <% @month_incomes.each do |income| %>
+                                <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                    <div>
+                                        <p class="font-medium text-white"> <%= income.description %> </p>
+                                        <p class="text-sm text-slate-400"> <%= income.date.strftime("%d/%m/%Y") %> </p>
+                                    </div>
+                                    <span class="font-bold text-green-400"> <%= number_to_currency(income.value, unit: "€", separator: ",", delimiter: ".", format: "%n %u") %> </span>
+                                </div>
+                            <% end %>
+                        <% else %>
+                            <p id="end-expenses-msg" class="text-slate-500 text-xl text-center "> Ainda não há nenhuma receita neste mês </p>
+                        <% end %>
                     </div>
                 </div>
                 <div class="mt-4 text-center">
@@ -238,14 +251,19 @@
                 <div class="pr-2 max-h-72 overflow-y-auto no-scrollbar" id="expense-scroll-container">
                     <!-- Exemplos de Despesas -->
                     <div class="space-y-4" id="expense-list">
-                        <!-- Item de despesa -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Taxas de Inscrição em Torneio</p>
-                                <p class="text-sm text-slate-400">20 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-red-400">- 100,00 €</span>
-                        </div>
+                        <% if @month_expenses.any? %>
+                            <% @month_expenses.each do |expense| %>
+                                <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                    <div>
+                                        <p class="font-medium text-white"> <%= expense.description %> </p>
+                                        <p class="text-sm text-slate-400"> <%= expense.date.strftime("%d/%m/%Y") %> </p>
+                                    </div>
+                                    <span class="font-bold text-red-400">- <%= number_to_currency(expense.value, unit: "€", separator: ",", delimiter: ".", format: "%n %u") %> </span>
+                                </div>
+                            <% end %>
+                        <% else %>
+                            <p id="end-expenses-msg" class="text-slate-500 text-xl text-center "> Ainda não há nenhuma despesa neste mês </p>
+                        <% end %>
                     </div>
                 </div>
                 <div class="mt-4 text-center">
