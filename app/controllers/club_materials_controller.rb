@@ -21,16 +21,16 @@ class ClubMaterialsController < ApplicationController
 
   # POST /club_materials or /club_materials.json
   def create
-    @club_material = ClubMaterial.new(club_material_params)
+    current_club = current_user.club? ? 
+      current_user.club_profile : 
+      current_user.board_profile.club_profile
 
-    respond_to do |format|
-      if @club_material.save
-        format.html { redirect_to @club_material, notice: "Club material was successfully created." }
-        format.json { render :show, status: :created, location: @club_material }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @club_material.errors, status: :unprocessable_entity }
-      end
+    @club_material = current_club.club_materials.build(club_material_params)
+
+    if @club_material.save
+      redirect_to club_equipment_dashboard_path, notice: "Material adicionado."
+    else
+      redirect_to club_equipment_dashboard_path, alert: @club_material.errors.full_messages.join(", ")
     end
   end
 
@@ -65,6 +65,7 @@ class ClubMaterialsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_material_params
-      params.expect(club_material: [ :club_profile_id, :name, :quantity, :description ])
+      params.require(:club_material).permit(:name, :quantity, :description, :sport, :image)
     end
 end
+  

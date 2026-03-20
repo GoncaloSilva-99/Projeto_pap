@@ -103,133 +103,403 @@
                 </div>
             </div>
 
+<% if !@club_profile.has_no_sports? %>
+
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold text-indigo-400 flex items-center space-x-2">
                 <i data-feather="clipboard" class="w-6 h-6"></i>
-                <% if current_user.club? %>
-                    <span>Materiais ( <%= current_user.club_profile.board_profiles.count  %> )</span>
-                <% elsif current_user.board? %>
-                    <span>Materiais ( <%= current_user.board_profile.club_profile.board_profiles.count  %> )</span>
+                <% if @selected_sport == 'Geral' %>
+                    <span>Materiais ( <%= @num_geral_materials  %> )</span>
+                <% elsif @selected_sport == 'Futebol' %>
+                    <span>Materiais ( <%= @num_football_materials %> )</span>
+                <% elsif @selected_sport == 'Andebol' %>
+                    <span>Materiais ( <%= @num_handball_materials %> )</span>
                 <% end %>
             </h3>
-
+        <% if !@club_profile.has_no_sports? %>
             <div class="flex items-center gap-4">
                 <button data-modal-target="modal-add-material" data-modal-toggle="modal-add-material" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
                     <i data-feather="plus" class="w-4 h-4"></i>
                 </button>
             </div>
+        <% end %>
             
         </div>
 
 <!---------------------------------------------------- PESQUISAS ---------------------------------------------------->
         <div class="flex  items-center mb-6 gap-x-4">
-            <div class="relative w-64">
-                <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
-                <input type="text" placeholder="Search members..." class="bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-            </div>
-            
+            <%= form_with url: club_equipment_dashboard_path, method: :get, local: true, id: "search-form" do %>
+                <%= hidden_field_tag :sport, @selected_sport %>
+                <div class="relative w-80">
+                    <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none z-10"></i>
+                    <%= text_field_tag :query, params[:query], placeholder: "Pesquisar Materiais", class: "bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-10 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white", oninput: "clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(() => this.form.requestSubmit(), 1000); toggleClearButton(this)", id: "search-input" %>
+                    <button type="button" id="clear-search" onclick="clearSearch()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition <%= 'hidden' unless params[:query].present? %>">
+                        <i data-feather="x" class="w-4 h-4 text-red-400"></i>
+                    </button>
+                </div>
+            <% end %>
+        <% if @club_profile.has_both_sports? %>
+            <%= link_to club_equipment_dashboard_path(sport: 'Geral') do %>
+                <button class="px-6 py-2 rounded-full border transition-all duration-200 <%= @selected_sport == 'Geral' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-gray-800 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-blue-500/10' %>">
+                    Geral
+                </button>
+            <% end %>
+        <% end %>
+        <% if @club_profile.has_football? %>
+            <%= link_to club_equipment_dashboard_path(sport: 'Futebol') do %>
+                <button class="px-6 py-2 rounded-full border transition-all duration-200 <%= @selected_sport == 'Futebol' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-gray-800 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-blue-500/10' %>">
+                    Futebol
+                </button>
+            <% end %>
+        <% end %>
+        <% if @club_profile.has_handball? %>
+            <%= link_to club_equipment_dashboard_path(sport: 'Andebol') do %>
+                <button class="px-6 py-2 rounded-full border transition-all duration-200 <%= @selected_sport == 'Andebol' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-gray-800 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-blue-500/10' %>">
+                    Andebol
+                </button>
+            <% end %>
+        <% end %>
+
         </div>
 
 <!---------------------------------------------------- MATERIAIS ---------------------------------------------------->
             <div class="grid grid-cols-4 justify-center gap-6">
-                <!-- Card 1 -->
-                <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
-                    <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
-                        <img src="http://static.photos/sport/640x360/1" alt="Basketballs" class="w-full h-full object-cover">
-                        <div class="absolute top-2 right-2 flex space-x-1">
-                            <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
-                                <i data-feather="edit" class="w-4 h-4"></i>
-                            </button>
-                            <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
-                                <i data-feather="trash-2" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-bold text-lg">Basketballs (Set of 5)</h3>
-                                <p class="text-gray-400 text-sm">Sports Equipment</p>
-                            </div>
-                            <span class="bg-green-900/30 text-green-400 px-2 py-1 rounded-full text-xs">Available</span>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
-                            <div>
-                                <p class="text-xs text-gray-400">Quantity</p>
-                                <p class="font-medium">5</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400">Last Used</p>
-                                <p class="font-medium">2 days ago</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400">Condition</p>
-                                <p class="font-medium text-green-400">Good</p>
+            <% if @selected_sport == 'Geral' %>
+                <% if @geral_materials.any? %>
+                    <% @geral_materials.each do |geral| %>
+                        <div data-modal-target="modal-edit-material-geral-<%=geral.id%>" data-modal-toggle="modal-edit-material-geral-<%=geral.id%>" class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 clickable">
+                            <% if geral.image.attached? %>
+                                <div class="relative h-40 bg-gray-900 flex items-center justify-center">
+                                    <%= image_tag url_for(geral.image), class: "w-full h-full object-cover" %>
+                                </div>
+                            <% else %>
+                                <div class="relative h-40 bg-gray-900 flex items-center justify-center">
+                                    <i data-feather="box" class="w-16 h-16 text-gray-300"></i>
+                                </div>
+                            <% end %>
+                            <div class="p-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-bold text-lg"> <%= geral.name %> </h3>
+                                        <p class="text-gray-400 text-sm"> <%= geral.description %> </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-md text-gray-400">Qtd.</p>
+                                        <p class="font-medium text-center"> <%= geral.quantity %> </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
 
-                <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10">
-                    <div class="relative h-40 bg-gray-900 flex items-center justify-center">
-                        <i data-feather="box" class="w-16 h-16 text-gray-300"></i>
-                        <div class="absolute top-2 right-2 flex space-x-1">
-                            <button class="bg-gray-900 hover:bg-green-600 text-green-600 hover:text-white p-1.5 rounded-full transition">
-                                <i data-feather="edit" class="w-4 h-4"></i>
-                            </button>
-                            <button class="bg-gray-900 hover:bg-red-500 text-red-500 hover:text-white p-1.5 rounded-full transition">
-                                <i data-feather="trash-2" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-bold text-lg">Basketballs (Set of 5)</h3>
-                                <p class="text-gray-400 text-sm">Sports Equipment</p>
-                            </div>
-                            <span class="bg-green-900/30 text-green-400 px-2 py-1 rounded-full text-xs">Available</span>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-gray-700 flex justify-between">
-                            <div>
-                                <p class="text-xs text-gray-400">Quantity</p>
-                                <p class="font-medium">5</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400">Last Used</p>
-                                <p class="font-medium">2 days ago</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-gray-400">Condition</p>
-                                <p class="font-medium text-green-400">Good</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        <div id="modal-edit-material-geral-<%=geral.id%>" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+                            <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-md border border-slate-700">
+                                <div class="flex justify-between items-center mb-6">
+                                    <h2 class="text-2xl font-bold text-yellow-400">Editar Material</h2>
+                                    <button data-modal-hide="modal-edit-material-geral-<%=geral.id%>" class="text-slate-400 hover:text-white">
+                                        <i data-feather="x"></i>
+                                    </button>
+                                </div>  
+                                    <%= form_with url: club_materials_path, method: :patch, multipart: true,  data: { turbo: false } do |f| %>
 
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-slate-300 mb-2">Imagem</label>
+                                            <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                                                <%= image_tag "placeholder.jpg",
+                                                    id: "ct-picture-preview",
+                                                    alt: "Pré-visualização do banner",
+                                                    class: "w-full h-full object-cover cursor-pointer" %>
+
+                                                <%= f.file_field :image,
+                                                    name: "club_material[image]",
+                                                    id: "ct-picture",
+                                                    class: "file-upload-input sr-only",
+                                                    accept: "image/*" %>
+                                                
+                                                <button type="button" id="remove-ct-picture-btn" class="hidden absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-slate-300 mb-2">Nome</label>
+                                            <%= f.text_field :name, name: "club_material[name]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "Bolas Tamanho 5", value: geral.name %>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-slate-300 mb-2">Descrição</label>
+                                            <%= f.text_field :description, name: "club_material[description]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "Bolas de Nike", value: geral.description %>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
+                                            <%= f.number_field :quantity, name: "club_material[quantity]", step:"1", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "10", value: geral.quantity %>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label class="block text-sm font-medium text-slate-300 mb-2 ">Desporto</label>
+                                            <% if @club_profile.has_both_sports? %>
+                                                <%= f.select :sport,
+                                                [["Futebol", "Futebol"], ["Andebol", "Andebol"], ["Geral", "Geral"]],
+                                                {selected: geral.sport , include_blank: false},
+                                                {name: "club_material[sport]", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
+                                            <% elsif @club_profile.has_football? %>
+                                                <%= f.select :sport,
+                                                [["Futebol", "Futebol"]],
+                                                {selected: geral.sport, include_blank: false},
+                                                {name: "club_material[sport]", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
+                                            <% elsif @club_profile.has_handball? %>
+                                                <%= f.select :sport,
+                                                [["Andebol", "Andebol"]],
+                                                {selected: geral.sport, include_blank: false},
+                                                {name: "club_material[sport]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500" } %>
+                                            <% end %>
+                                        </div>
+
+                                        <%= f.submit "Editar", class:"w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"  %>
+                                    <% end %>
+
+                                    <button class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"> Apagar </button>
+                            </div>
+                        </div> 
+
+
+                    <% end %>
+                <% else %>
+                    <% if params[:query].present? %>
+                        <div class="col-span-4 flex flex-col items-center justify-center py-16">
+                            <p class="text-xl text-neutral-400">A pesquisa "<%= params[:query] %>" não retornou nenhum material </p>
+                        </div>
+                    <% else %>
+                        <div class="col-span-4 flex flex-col items-center justify-center py-16">
+                            <p class="text-xl text-neutral-400">Ainda não tem nenhum material criado</p>
+                        </div>
+                    <% end %>
+                <% end %>
+            <% elsif @selected_sport == 'Futebol' %>
+                <% if @football_materials.any? %>
+                    <% @football_materials.each do |football| %>
+                        <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 clickable">
+                            <% if football.image.attached? %>
+                                <div class="relative h-40 bg-gray-900 flex items-center justify-center">
+                                    <%= image_tag url_for(football.image), class: "w-full h-full object-cover" %>
+                                </div>
+                            <% else %>
+                                <div class="relative h-40 bg-gray-900 flex items-center justify-center">
+                                    <i data-feather="box" class="w-16 h-16 text-gray-300"></i>
+                                </div>
+                            <% end %>
+                            <div class="p-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-bold text-lg"> <%= football.name %> </h3>
+                                        <p class="text-gray-400 text-sm"> <%= football.description %> </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-md text-gray-400">Qtd.</p>
+                                        <p class="font-medium text-center"> <%= football.quantity %> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% end %>
+                <% else %>
+                    <% if params[:query].present? %>
+                        <div class="col-span-4 flex flex-col items-center justify-center py-16">
+                            <p class="text-xl text-neutral-400">A pesquisa "<%= params[:query] %>" não retornou nenhum material no Andebol</p>
+                        </div>
+                    <% else %>
+                        <div class="col-span-4 flex flex-col items-center justify-center py-16">
+                            <p class="text-xl text-neutral-400">Ainda não tem nenhum material criado para o Andebol</p>
+                        </div>
+                    <% end %>
+                <% end %>
+            <% elsif @selected_sport == 'Andebol' %>
+                <% if @handball_materials.any? %>
+                    <% @handball_materials.each do |handball| %>
+                        <div class="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 clickable">
+                            <% if handball.image.attached? %>
+                                <div class="relative h-40 bg-gray-900 flex items-center justify-center">
+                                    <%= image_tag url_for(handball.image), class: "w-full h-full object-cover" %>
+                                </div>
+                            <% else %>
+                                <div class="relative h-40 bg-gray-900 flex items-center justify-center">
+                                    <i data-feather="box" class="w-16 h-16 text-gray-300"></i>
+                                </div>
+                            <% end %>
+                            <div class="p-4">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="font-bold text-lg"> <%= handball.name %> </h3>
+                                        <p class="text-gray-400 text-sm"> <%= handball.description %> </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-md text-gray-400">Qtd.</p>
+                                        <p class="font-medium text-center"> <%= handball.quantity %> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% end %>
+                <% else %>
+                    <% if params[:query].present? %>
+                        <div class="col-span-4 flex flex-col items-center justify-center py-16">
+                            <p class="text-xl text-neutral-400">A pesquisa "<%= params[:query] %>" não retornou nenhum material no Futebol </p>
+                        </div>
+                    <% else %>
+                        <div class="col-span-4 flex flex-col items-center justify-center py-16">
+                            <p class="text-xl text-neutral-400">Ainda não tem nenhum material criado para o Futebol</p>
+                        </div>
+                    <% end %>
+                <% end %>
+            <% end %>
             </div>
-            <!-- Pagination -->
-            <div class="mt-8 flex justify-between items-center">
-                <div class="text-sm text-gray-400">
-                    Showing <span class="font-medium text-white">1</span> to <span class="font-medium text-white">4</span> of <span class="font-medium text-white">24</span> items
+
+
+        <% if @selected_sport == 'Geral' %>
+            <% if @geral_materials.total_pages > 1 %>
+                <div class="mt-8 flex justify-end">
+                    <div class="flex flex-col items-end gap-3">
+
+                    <div class="flex items-center gap-2">
+                        <% if @geral_materials.prev_page %>
+                        <%= link_to club_equipment_dashboard_path(sport: params[:sport], geral_page: @geral_materials.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        </div>
+                        <% end %>
+
+
+                        <div class="flex items-center gap-1">
+                        <% (1..@geral_materials.total_pages).each do |page| %>
+                            <% if page == @geral_materials.current_page %>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-indigo-500 text-white font-bold border-2 border-indigo-400 shadow-lg">
+                                <%= page %>
+                            </div>
+                            <% else %>
+                            <%= link_to page, club_equipment_dashboard_path(sport: params[:sport], geral_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                            <% end %>
+                        <% end %>
+                        </div>
+
+                        <% if @geral_materials.next_page %>
+                        <%= link_to club_equipment_dashboard_path(sport: params[:sport], geral_page: @geral_materials.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                        <% end %>
+                    </div>
+                    </div>
                 </div>
-                <div class="flex space-x-1">
-                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
-                        <i data-feather="chevron-left" class="w-4 h-4"></i>
-                    </button>
-                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary/90 transition">1</button>
-                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">2</button>
-                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">3</button>
-                    <button class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 border border-gray-700 hover:bg-gray-700 transition">
-                        <i data-feather="chevron-right" class="w-4 h-4"></i>
-                    </button>
+            <% end %>
+        <% elsif @selected_sport == 'Futebol' %>
+            <% if @football_materials.total_pages > 1 %>
+                <div class="mt-8 flex justify-end">
+                    <div class="flex flex-col items-end gap-3">
+
+                    <div class="flex items-center gap-2">
+                        <% if @football_materials.prev_page %>
+                        <%= link_to club_equipment_dashboard_path(sport: params[:sport], football_page: @football_materials.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        </div>
+                        <% end %>
+
+
+                        <div class="flex items-center gap-1">
+                        <% (1..@football_materials.total_pages).each do |page| %>
+                            <% if page == @football_materials.current_page %>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-indigo-500 text-white font-bold border-2 border-indigo-400 shadow-lg">
+                                <%= page %>
+                            </div>
+                            <% else %>
+                            <%= link_to page, club_equipment_dashboard_path(sport: params[:sport], football_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                            <% end %>
+                        <% end %>
+                        </div>
+
+                        <% if @football_materials.next_page %>
+                        <%= link_to club_equipment_dashboard_path(sport: params[:sport], football_page: @football_materials.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                        <% end %>
+                    </div>
+                    </div>
                 </div>
-            
-            </div>
+            <% end %>
+        <% elsif @selected_sport == 'Andebol' %>
+            <% if @football_materials.total_pages > 1 %>
+                <div class="mt-8 flex justify-end">
+                    <div class="flex flex-col items-end gap-3">
+
+                    <div class="flex items-center gap-2">
+                        <% if @football_materials.prev_page %>
+                        <%= link_to club_equipment_dashboard_path(sport: params[:sport], handball_page: @football_materials.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        </div>
+                        <% end %>
+
+
+                        <div class="flex items-center gap-1">
+                        <% (1..@football_materials.total_pages).each do |page| %>
+                            <% if page == @football_materials.current_page %>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-indigo-500 text-white font-bold border-2 border-indigo-400 shadow-lg">
+                                <%= page %>
+                            </div>
+                            <% else %>
+                            <%= link_to page, club_equipment_dashboard_path(sport: params[:sport], handball_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                            <% end %>
+                        <% end %>
+                        </div>
+
+                        <% if @football_materials.next_page %>
+                        <%= link_to club_equipment_dashboard_path(sport: params[:sport], handball_page: @football_materials.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                        <% end %>
+                    </div>
+                    </div>
+                </div>
+            <% end %>
+        <% end %>
     </div>
 
-           <!-- Modal Add Receitas -->
         <div id="modal-add-material" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
             <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-md border border-slate-700">
                 <div class="flex justify-between items-center mb-6">
@@ -238,18 +508,38 @@
                         <i data-feather="x"></i>
                     </button>
                 </div>  
-                    <%= form_with url: club_materials_path, method: :post, data: { turbo: false } do |f| %>
+                    <%= form_with url: club_materials_path, method: :post, multipart: true,  data: { turbo: false } do |f| %>
 
-                        <%= f.hidden_field :club_profile_id, value: @club_profile.id %>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Imagem</label>
+                            <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                                <%= image_tag "placeholder.jpg",
+                                    id: "ct-picture-preview",
+                                    alt: "Pré-visualização do banner",
+                                    class: "w-full h-full object-cover cursor-pointer" %>
+
+                                <%= f.file_field :image,
+                                    name: "club_material[image]",
+                                    id: "ct-picture",
+                                    class: "file-upload-input sr-only",
+                                    accept: "image/*" %>
+                                
+                                <button type="button" id="remove-ct-picture-btn" class="hidden absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 hover:opacity-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                </button>
+                            </div>
+                        </div>
 
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-slate-300 mb-2">Nome</label>
-                            <%= f.text_field :name, name: "club_material[name]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "Ex: Venda de Bilhetes" %>
+                            <%= f.text_field :name, name: "club_material[name]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "Bolas Tamanho 5" %>
                         </div>
 
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-slate-300 mb-2">Descrição</label>
-                            <%= f.text_field :description, name: "club_material[description]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "Ex: Venda de Bilhetes" %>
+                            <%= f.text_field :description, name: "club_material[description]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "Bolas de Nike" %>
                         </div>
 
                         <div class="mb-4">
@@ -258,22 +548,22 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-sm font-medium text-slate-300 mb-2">Desporto</label>
+                            <label class="block text-sm font-medium text-slate-300 mb-2 ">Desporto</label>
                             <% if @club_profile.has_both_sports? %>
                                 <%= f.select :sport,
-                                [["Futebol", "football"], ["Andebol", "handball"], ["Geral", "geral"]],
-                                {selected: "geral", include_blank: false},
-                                {class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
+                                [["Futebol", "Futebol"], ["Andebol", "Andebol"], ["Geral", "Geral"]],
+                                {selected: "Geral", include_blank: false},
+                                {name: "club_material[sport]", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
                             <% elsif @club_profile.has_football? %>
                                 <%= f.select :sport,
-                                [["Futebol", "football"]],
-                                {selected: "football", include_blank: false},
-                                {class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
+                                [["Futebol", "Futebol"]],
+                                {selected: "Futebol", include_blank: false},
+                                {name: "club_material[sport]", class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
                             <% elsif @club_profile.has_handball? %>
                                 <%= f.select :sport,
-                                [["Andebol", "handball"]],
-                                {selected: "handball", include_blank: false},
-                                {class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent" } %>
+                                [["Andebol", "Andebol"]],
+                                {selected: "Andebol", include_blank: false},
+                                {name: "club_material[sport]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500" } %>
                             <% end %>
                         </div>
 
@@ -282,35 +572,73 @@
             </div>
         </div> 
 
+        
+        
+
+<% else %>
+    <div class="flex justify-center items-center mb-8">
+        <div class="flex flex-col items-start">
+        <h1 class="text-2xl text-neutral-400 slide-in mx-auto">O clube ainda não tem nenhum desporto!</h1>
+        <h1 class="text-2xl text-neutral-400 slide-in">Adicione um desporto em "<%= link_to "Equipas", club_teams_dashboard_path, class: "hover:underline bold text-green-400 hover:text-green-500" %>" para começar a gerir o material</h1>
+        </div>
+    </div>
+<% end %>
+
 <script>
     feather.replace();
 </script>
 
+
 <script>
-    tailwind.config = {
-        darkMode: 'class',
-        theme: {
-            extend: {
-                colors: {
-                    primary: '#6366f1',
-                    secondary: '#8b5cf6',
-                },
-                animation: {
-                    'float': 'float 3s ease-in-out infinite',
-                    'glow': 'glow 2s ease-in-out infinite alternate',
-                },
-                keyframes: {
-                    float: {
-                        '0%, 100%': { transform: 'translateY(0)' },
-                        '50%': { transform: 'translateY(-5px)' },
-                    },
-                    glow: {
-                        '0%': { boxShadow: '0 0 5px rgba(99, 102, 241, 0.5)' },
-                        '100%': { boxShadow: '0 0 15px rgba(99, 102, 241, 0.8)' },
-                    }
-                }
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        const CtPicInput = document.getElementById('ct-picture');
+        const CtPicPreview = document.getElementById('ct-picture-preview');
+        const RemoveCtPicBtn = document.getElementById('remove-ct-picture-btn');
+        const originalBannerSrc = CtPicPreview ? CtPicPreview.src : '';
+
+        if (CtPicInput && CtPicPreview) {
+        CtPicInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                CtPicPreview.src = ev.target.result;
+                RemoveCtPicBtn.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
             }
+        });
+
+        CtPicPreview.addEventListener('click', () => {
+            CtPicInput.click();
+        });
+
+        if (RemoveCtPicBtn) {
+            RemoveCtPicBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            CtPicInput.value = '';
+            CtPicPreview.src = originalBannerSrc;
+            RemoveCtPicBtn.classList.add('hidden');
+            });
         }
+        }
+    });
+
+    function toggleClearButton(input) {
+        const clearBtn = document.getElementById('clear-search');
+        if (input.value.length > 0) {
+            clearBtn.classList.remove('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
+        }
+    }
+
+    function clearSearch() {
+        const input = document.getElementById('search-input');
+        input.value = '';
+        document.getElementById('clear-search').classList.add('hidden');
+        document.getElementById('search-form').requestSubmit();
     }
 </script>
 </body>

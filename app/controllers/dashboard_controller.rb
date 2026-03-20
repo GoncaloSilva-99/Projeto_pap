@@ -9,8 +9,56 @@ class DashboardController < ApplicationController
   before_action :finances, only: [:club_finances]
   before_action :setup_search_transactions, only: [:club_finances]
   before_action :set_profile
+  before_action :materials, only: [:club_equipment ]
+  before_action :setup_search_material, only: [:club_equipment]
 
   protected
+
+  def setup_search_material
+    @query = params[:query]
+
+    if @query.present?
+      @geral_materials_query = ClubMaterial.search_by_name(@query).where(club_profile_id: @club_id)
+      @football_materials_query = ClubMaterial.search_by_name(@query).where(club_profile_id: @club_id, sport: 'Futebol')
+      @handball_materials_query = ClubMaterial.search_by_name(@query).where(club_profile_id: @club_id, sport: 'Andebol')
+
+      @num_geral_materials = @geral_materials_query.count
+      @num_football_materials = @football_materials_query.count
+      @num_handball_materials = @handball_materials_query.count
+
+      @geral_materials = @geral_materials_query.page(params[:geral_page]).per(8)
+      @football_materials = @football_materials_query.page(params[:football_page]).per(8)
+      @handball_materials = @handball_materials_query.page(params[:handball_page]).per(8)
+    end
+  end
+
+  def materials
+    @selected_sport = params[:sport]
+    @club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
+    if !@selected_sport
+      if @club_profile.has_both_sports?
+        @selected_sport = 'Geral'
+      elsif @club_profile.has_football?
+        @selected_sport = 'Futebol'
+      elsif @club_profile.has_handball?
+        @selected_sport = 'Andebol'
+      end
+    end
+    @club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
+    @geral_materials_query = ClubMaterial.where(club_profile_id: @club_id)
+    @football_materials_query = ClubMaterial.where(club_profile_id: @club_id, sport: 'Futebol')
+    @handball_materials_query = ClubMaterial.where(club_profile_id: @club_id, sport: 'Andebol')
+
+    @num_geral_materials = @geral_materials_query.count
+    @num_football_materials = @football_materials_query.count
+    @num_handball_materials = @handball_materials_query.count
+
+    @geral_materials = @geral_materials_query.page(params[:geral_page]).per(8)
+    @football_materials = @football_materials_query.page(params[:football_page]).per(8)
+    @handball_materials = @handball_materials_query.page(params[:handball_page]).per(8)
+
+  end
+
 
   def set_profile
     @club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
