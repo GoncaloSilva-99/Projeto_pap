@@ -34,27 +34,20 @@ class ClubMaterialsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /club_materials/1 or /club_materials/1.json
   def update
-    respond_to do |format|
-      if @club_material.update(club_material_params)
-        format.html { redirect_to @club_material, notice: "Club material was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @club_material }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @club_material.errors, status: :unprocessable_entity }
-      end
+    if params[:club_material][:remove_image] == '1'
+      @club_material.image.purge
+    end
+    if @club_material.update(club_material_params)
+      redirect_to club_equipment_dashboard_path, notice: "Material atualizado."
+    else
+      redirect_to club_equipment_dashboard_path, alert: @club_material.errors.full_messages.join(", ")
     end
   end
 
-  # DELETE /club_materials/1 or /club_materials/1.json
   def destroy
     @club_material.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to club_materials_path, notice: "Club material was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
-    end
+    redirect_to club_equipment_dashboard_path, notice: "Material apagado."
   end
 
   private
@@ -65,7 +58,7 @@ class ClubMaterialsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_material_params
-      params.require(:club_material).permit(:name, :quantity, :description, :sport, :image)
+      params.require(:club_material).permit(:name, :quantity, :description, :sport, :image, :remove_image)
     end
 end
   

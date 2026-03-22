@@ -284,7 +284,7 @@
                     <%= form_with url: club_incomes_path, method: :post, data: { turbo: false } do |f| %>
                         <div class="mb-4">
                             <label for="revenue-amount" class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
-                            <%= f.number_field :value, name: "club_income[value]", step:"0.01", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "0,00 €" %>
+                            <%= f.number_field :value, name: "club_income[value]", step:"0.01", min: 0, class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "0,00 €" %>
 
                         </div>
                         <div class="mb-4">
@@ -312,7 +312,7 @@
                 <%= form_with url: club_expenses_path, method: :post, data: { turbo: false } do |f| %>
                     <div class="mb-4">
                         <label for="revenue-amount" class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
-                        <%= f.number_field :value, name: "club_expense[value]", step:"0.01", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "0,00 €" %>
+                        <%= f.number_field :value, name: "club_expense[value]", step:"0.01", min: 0, class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "0,00 €" %>
 
                     </div>
                     <div class="mb-4">
@@ -340,7 +340,7 @@
                 <%= form_with url: club_balances_path, method: :post, data: { turbo: false } do |f| %>
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-slate-300 mb-2">Quantia</label>
-                        <%= f.number_field :value, step: 0.01, name: "club_balance[value]", id: "balance-value-input", class: "w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500", placeholder: "0,00 €", required: true %>
+                        <%= f.number_field :value, step: 0.01, min: 0, name: "club_balance[value]", id: "balance-value-input", class: "w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500", placeholder: "0,00 €", required: true %>
                     </div>
                     <button type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors cursor-pointer" data-modal-toggle="modal-confirmar-start-money" data-modal-target="modal-confirmar-start-money"> <p > Adicionar <p> </button>
                     
