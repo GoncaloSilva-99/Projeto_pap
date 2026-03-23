@@ -102,7 +102,7 @@ class ClubProfilesController < ApplicationController
           sign_out(current_user) if current_user
           format.html { redirect_to new_user_session_path, notice: "Dados de login alterados. Por favor, entre novamente.", status: :see_other }
         else
-          format.html { redirect_to @club_profile, notice: "Club profile was successfully updated.", status: :see_other }
+          format.html { redirect_to @club_profile, notice: "Conta de clube atualizada com sucesso.", status: :see_other }
         end
         format.json { render :show, status: :ok, location: @club_profile }
       else
@@ -130,18 +130,6 @@ class ClubProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_profile_params
-      params.require(:club_profile).permit(
-        :user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date,
-        user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation]
-      )
-    end
-
-----------------------------------------
-
-    params.require(:club_profile).permit(
-        :user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date,
-        user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation]
-      )
       permitted_params = [:user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date]
 
       if action_name == 'update'
@@ -149,5 +137,5 @@ class ClubProfilesController < ApplicationController
       end
 
       params.require(:club_profile).permit(*permitted_params)
-------------------------------------------
     end
+end

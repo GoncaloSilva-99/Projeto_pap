@@ -356,7 +356,7 @@
                                                                 <div class="flex items-center space-x-3">
                                                                     <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
                                                                         <% if player_profile.profile_picture.attached? %>
-                                                                            <%= image_tag url_for(current_user.player_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                                                            <%= image_tag url_for(player_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
                                                                         <% else %>
                                                                             <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
                                                                         <% end %>

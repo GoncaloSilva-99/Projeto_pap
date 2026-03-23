@@ -123,14 +123,18 @@ class PlayerProfilesController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    
     def set_player_profile
-      @player_profile = PlayerProfile.find(params.expect(:id))
+      @player_profile = PlayerProfile.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def player_profile_params
-      params.expect(player_profile: [ :user_id, :name, :birth_date, :position, :bio, :contact, :parents_contact, :club_profile_id, :banner_picture, :profile_picture,
-        user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] ])
+      permitted_params = [:user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date]
+
+      if action_name == 'update'
+        permitted_params << { user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] }
+      end
+
+      params.require(:player_profile).permit(*permitted_params)
     end
 end

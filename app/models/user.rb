@@ -10,12 +10,12 @@ class User < ApplicationRecord
   # Allow email confirmation in forms.
   attr_accessor :email_confirmation
   validates :email, confirmation: true, if: -> { email_confirmation.present? }
-  validates :email_confirmation, presence: true, if: -> { email_changed? }
+  validates :email_confirmation, presence: true, on: :update, if: -> { email_changed? }
 
   # Devise already validates password presence on create.
   # These validations allow updating other attributes without requiring a password change.
   validates :password, confirmation: true, if: :password_required?
-  validates :password_confirmation, presence: true, if: :password_required?
+  validates :password_confirmation, presence: true, on: :update, if: :password_required?
 
   def password_required?
     new_record? || password.present? || password_confirmation.present?

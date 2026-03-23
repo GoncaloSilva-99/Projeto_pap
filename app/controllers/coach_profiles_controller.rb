@@ -124,12 +124,17 @@ class CoachProfilesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_coach_profile
-      @coach_profile = CoachProfile.find(params.expect(:id))
+      @coach_profile = CoachProfile.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def coach_profile_params
-      params.expect(coach_profile: [ :user_id, :name, :birth_date, :club_id, :coach_type, :banner_picture, :profile_picture,
-        user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] ])
+      permitted_params = [:user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date]
+
+      if action_name == 'update'
+        permitted_params << { user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] }
+      end
+
+      params.require(:coach_profile).permit(*permitted_params)
     end
 end

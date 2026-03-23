@@ -96,6 +96,7 @@
             placeholder:"Escreva uma breve descrição sobre o boarde. A informação estará visível para todos no perfil" %>
       </div>
 
+      <% if board_profile.persisted? %>
       <div class="mt-8 border-t border-gray-700 pt-6">
         <div class="flex items-center gap-2">
           <h3 class="text-lg font-medium leading-6 text-white">Detalhes da Conta</h3>
@@ -115,7 +116,7 @@
                 <%= user_form.email_field :email,
                     id: "board_profile_email",
                     class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
-                    placeholder:"novo@email.com", value: user_form.object.email %>
+                    placeholder:"novo@email.com", value: "" %>
               </div>
 
               <div>
@@ -123,8 +124,7 @@
                 <%= user_form.email_field :email_confirmation,
                     id: "board_profile_email_confirmation",
                     class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
-                    placeholder:"Confirme o seu email",
-                    value: user_form.object.email %>
+                    placeholder:"Confirme o seu email" %>
               </div>
 
               <div>
@@ -154,6 +154,7 @@
           </div>
         </div>
       </div>
+      <% end %>
 
       <div class="flex gap-4 pt-4">
         <%= link_to board_profile_path(board_profile), class: "w-full bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30 flex items-center justify-center gap-2" do %>

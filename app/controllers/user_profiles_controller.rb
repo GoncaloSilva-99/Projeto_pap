@@ -114,12 +114,17 @@ class UserProfilesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user_profile
-      @user_profile = UserProfile.find(params.expect(:id))
+      @user_profile = UserProfile.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def user_profile_params
-      params.expect(user_profile: [ :user_id, :name, :bio, :banner_picture, :profile_picture,
-        user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] ])
+      permitted_params = [:user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date]
+
+      if action_name == 'update'
+        permitted_params << { user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] }
+      end
+
+      params.require(:user_profile).permit(*permitted_params)
     end
 end

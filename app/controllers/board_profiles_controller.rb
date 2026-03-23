@@ -113,12 +113,17 @@ class BoardProfilesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_board_profile
-      @board_profile = BoardProfile.find(params.expect(:id))
+      @board_profile = BoardProfile.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def board_profile_params
-      params.expect(board_profile: [ :user_id, :name, :bio, :birth_date, :club_profile_id, :role, :profile_picture, :banner_picture,
-          user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] ])
+      permitted_params = [:user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date]
+
+      if action_name == 'update'
+        permitted_params << { user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] }
+      end
+
+      params.require(:board_profile).permit(*permitted_params)
     end
 end
