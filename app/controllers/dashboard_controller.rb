@@ -11,8 +11,103 @@ class DashboardController < ApplicationController
   before_action :set_profile
   before_action :materials, only: [:club_equipment ]
   before_action :setup_search_material, only: [:club_equipment]
+  before_action :dashboard, only: [:club_dashboard]
 
   protected
+
+  def dashboard
+    @club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
+    club_id = @club_profile.id
+
+    hoje = Date.current
+    fim_semana = hoje.end_of_week(:monday)
+
+
+    # MEMBROS
+    @total_jogadores = PlayerProfile.where(club_profile_id: club_id).count
+    @total_treinadores = CoachProfile.where(club_profile_id: club_id).count
+    @total_equipas = ClubTeam.where(club_profile_id: club_id).count
+    @jogadores_sem_equipa = PlayerProfile.where(club_profile_id: club_id).where.not(id: PlayerTeam.select(:player_profile_id)).count
+    @treinadores_sem_equipa = CoachProfile.where(club_profile_id: club_id).left_joins(:coach_teams).where(coach_teams: { id: nil }).count
+
+    # MEMBROS POR DESPORTO
+    @jogadores_futebol = PlayerProfile.where(club_profile_id: club_id, sport: 'football').count
+    @jogadores_andebol = PlayerProfile.where(club_profile_id: club_id, sport: 'handball').count
+    @treinadores_futebol = CoachProfile.where(club_profile_id: club_id, sport: 'football').count
+    @treinadores_andebol = CoachProfile.where(club_profile_id: club_id, sport: 'handball').count
+
+    # FINANÇAS
+    @saldo = ClubBalance.find_by(club_profile_id: club_id)
+    @receitas_mes = ClubIncome.where(club_profile_id: club_id).where(date: Date.current.beginning_of_month..Date.current.end_of_month).sum(:value)
+    @despesas_mes = ClubExpense.where(club_profile_id: club_id).where(date: Date.current.beginning_of_month..Date.current.end_of_month).sum(:value)
+    @balanco_mes = @receitas_mes - @despesas_mes
+
+    @top_despesas = ClubExpense
+      .where(club_profile_id: club_id)
+      .where(date: Date.current.beginning_of_month..Date.current.end_of_month)
+      .order(value: :desc)
+      .limit(4)
+
+    ultimas_despesas = ClubExpense.where(club_profile_id: club_id).order(date: :desc).limit(3)
+      .map { |d| { tipo: :despesa, descricao: d.description, valor: d.value, data: d.date } }
+    ultimas_receitas = ClubIncome.where(club_profile_id: club_id).order(date: :desc).limit(3)
+      .map { |r| { tipo: :receita, descricao: r.description, valor: r.value, data: r.date } }
+    @ultimas_transacoes = (ultimas_despesas + ultimas_receitas).sort_by { |t| t[:data] }.reverse.first(4)
+
+    # INFRAESTRUTURAS
+    @total_campos = ClubPitch.where(club_profile_id: club_id).count
+    @total_balnearios = ClubLockerRoom.where(club_profile_id: club_id).count
+    @total_cts = ClubTrainingCenter.where(club_profile_id: club_id).count
+
+    treinos_normais = ClubTeamTraining
+      .joins(club_team: :club_profile)
+      .where(club_profiles: { id: club_id })
+      .where(recurring: false)
+      .where(start_time: Time.current..fim_semana.end_of_day)
+      .order(:start_time)
+      .limit(5)
+
+    treinos_recorrentes = ClubTeamTraining
+      .joins(club_team: :club_profile)
+      .where(club_profiles: { id: club_id })
+      .where(recurring: true)
+
+    virtual_recorrentes = []
+    treinos_recorrentes.each do |treino|
+      (hoje..fim_semana).each do |dia|
+        next unless dia.wday == treino.weekday
+        next unless treino.start_time.present?
+        hora_inicio = dia.in_time_zone('Lisbon').change(hour: treino.start_time.hour, min: treino.start_time.min)
+        next unless hora_inicio > Time.current
+        virtual = treino.dup
+        virtual.start_time = hora_inicio
+        virtual_recorrentes << virtual
+      end
+    end
+
+    @proximos_treinos = (treinos_normais.to_a + virtual_recorrentes).sort_by(&:start_time).first(5)
+
+     treinos_normais_semana = ClubTeamTraining
+      .joins(club_team: :club_profile)
+      .where(club_profiles: { id: club_id })
+      .where(recurring: false)
+      .where(start_time: hoje.beginning_of_day..fim_semana.end_of_day)
+      .count
+
+    @treinos_esta_semana = treinos_normais_semana + virtual_recorrentes.count
+
+    @top_receitas = ClubIncome
+    .where(club_profile_id: club_id)
+    .where(date: Date.current.beginning_of_month..Date.current.end_of_month)
+    .order(value: :desc)
+    .limit(4)
+
+    # MATERIAL
+    @total_materiais = ClubMaterial.where(club_profile_id: club_id).count
+    @materiais_esgotados = ClubMaterial.where(club_profile_id: club_id).where("CAST(quantity AS INTEGER) = 0").count
+    @materiais_futebol = ClubMaterial.where(club_profile_id: club_id, sport: 'Futebol').count
+    @materiais_andebol = ClubMaterial.where(club_profile_id: club_id, sport: 'Andebol').count
+  end
 
   def setup_search_material
     @query = params[:query]
