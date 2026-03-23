@@ -48,13 +48,6 @@
             </div>
             <% end %>
 
-            <%= link_to root_path do %>
-            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-red-400 rounded-xl border-l-4 border-transparent hover:border-red-500 transition-all duration-300">
-                <i data-feather="heart" class="sidebar-icon text-red-400 w-5 h-5 mr-3"></i>
-                <span class="font-medium">Adeptos</span>
-            </div>
-            <% end %>
-
 
             <%= link_to club_infrastructures_dashboard_path do %>
             <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-xl border-l-4 border-transparent hover:border-orange-500 transition-all duration-300">
@@ -110,13 +103,18 @@
     <div class="flex-1 p-8 overflow-auto">
         <!-- Month Navigator -->
         <div class="flex justify-center items-center mb-8">
-            <button class="p-2 rounded-full hover:bg-slate-700 transition-colors">
+
+            <%= link_to club_finances_dashboard_path(start_date: (@first_of_month - 1.month).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
                 <i data-feather="chevron-left" class="w-8 h-8 text-slate-400"></i>
-            </button>
-            <h1 class="text-4xl font-bold mx-8 text-white tracking-wider">Março 2026</h1>
-            <button class="p-2 rounded-full hover:bg-slate-700 transition-colors">
+            <% end %>
+
+            <h1 class="text-4xl font-bold mx-8 text-white tracking-wider">  <%= @current_month %> <%= @current_year %> </h1>
+
+            
+            <%= link_to club_finances_dashboard_path(start_date: (@first_of_month + 1.month).to_s), class: "px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg" do %>
                 <i data-feather="chevron-right" class="w-8 h-8 text-slate-400"></i>
-            </button>
+            <% end %>
+            
         </div>
 
         <!-- Linha de Separador -->
@@ -131,26 +129,28 @@
                     <i data-feather="briefcase" class="text-blue-400"></i>
                 </div>
                 
-                <!-- Vista com Saldo (Inicialmente oculta) -->
-                <div id="wallet-balance-view" class="flex-grow flex flex-col justify-between hidden">
-                    <div class="flex-grow">
-                        <div class="flex items-center mb-1">
-                            <p id="wallet-balance-amount" class="text-3xl font-bold text-white">0,00 €</p>
-                            <button class="add-money-trigger ml-3 p-1.5 bg-slate-700 hover:bg-blue-600 rounded-lg text-white transition-colors" title="Adicionar Dinheiro">
-                                <i data-feather="edit-3" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-                        <p class="text-sm text-slate-400">Valor em caixa</p>
+                <% if @club_balance.nil? %>
+                    <div id="wallet-empty-view" class="flex-grow flex items-center justify-center">
+                        <button data-modal-toggle="modal-start-money" data-modal-target="modal-start-money" class="add-money-trigger w-full bg-slate-700 hover:bg-slate-600 text-slate-300 px-4 py-3 rounded-lg font-medium transition-colors opacity-80 hover:opacity-100">
+                            Adicionar Dinheiro à Conta
+                        </button>
                     </div>
-                </div>
-
-                <!-- Vista Vazia (Inicialmente visível) -->
-                <div id="wallet-empty-view" class="flex-grow flex items-center justify-center">
-                    <button class="add-money-trigger w-full bg-slate-700 hover:bg-slate-600 text-slate-300 px-4 py-3 rounded-lg font-medium transition-colors opacity-80 hover:opacity-100">
-                        Adicionar Dinheiro à Conta
-                    </button>
-                </div>
+                    
+                <% else %>
+                    <div id="wallet-balance-view" class="flex-grow flex flex-col justify-between ">
+                        <div class="flex-grow">
+                            <div class="flex items-center mb-1">
+                                <p id="wallet-balance-amount" class="text-3xl font-bold text-white">
+                                    <%= number_to_currency(@club_balance.value, unit: "€", separator: ",", delimiter: ".", format: "%n %u") %>
+                                </p>
+                            </div>
+                            <p class="text-sm text-slate-400">Valor em caixa</p>
+                        </div>
+                    </div>
+                <% end %>
             </div>
+
+
 
             <!-- Receitas -->
             <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
@@ -158,8 +158,8 @@
                     <h3 class="text-lg font-semibold text-white">Receitas do Mês</h3>
                     <i data-feather="arrow-up-circle" class="text-green-400"></i>
                 </div>
-                <p class="text-3xl font-bold text-green-400">+ 1.200,00 €</p>
-                <p class="text-sm text-slate-400">Total de entradas em Março</p>
+                <p class="text-3xl font-bold text-green-400">+ <%= number_to_currency(@month_incomes_total, unit: "€", separator: ",", delimiter: ".", format: "%n %u") || 0 %></p>
+                <p class="text-sm text-slate-400">Total de entradas </p>
             </div>
 
             <!-- Despesas -->
@@ -168,8 +168,8 @@
                     <h3 class="text-lg font-semibold text-white">Despesas do Mês</h3>
                     <i data-feather="arrow-down-circle" class="text-red-400"></i>
                 </div>
-                <p class="text-3xl font-bold text-red-400">- 450,50 €</p>
-                <p class="text-sm text-slate-400">Total de saídas em Março</p>
+        <p class="text-3xl font-bold text-red-400">- <%= number_to_currency(@month_expenses_total, unit: "€", separator: ",", delimiter: ".", format: "%n %u") || 0 %> </p>
+                <p class="text-sm text-slate-400">Total de saídas</p>
             </div>
         </div>
 
@@ -181,19 +181,33 @@
         <!-- Searchbar e Botões de Add-->
         <div class="flex justify-between items-center mb-8">
             <!-- Searchbar -->
-            <div class="relative w-1/3">
-                <i id="search-icon" data-feather="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-white transition-colors"></i>
-                <input id="search-input" type="text" placeholder="Pesquisar transações..." class="bg-slate-800 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-white w-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
+            <% if @club_balance %>
+                <%= form_with url: club_finances_dashboard_path, method: :get, local: true, id: "search-form" do %>
+                    <div class="relative w-80">
+                        <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-6 pointer-events-none z-10"></i>
+                        <%= text_field_tag :query,
+                            params[:query],
+                            placeholder: "Pesquisar Transações",
+                            class: "bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-10 py-2 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
+                            oninput: "clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(() => this.form.requestSubmit(), 1000); toggleClearButton(this)",
+                            id: "search-input" %>
+                        <button type="button" id="clear-search" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition <%= 'hidden' unless params[:query].present? %>" onclick="clearSearch()">
+                            <i data-feather="x" class="w-4 h-4 text-red-400"></i>
+                        </button>
+                    </div>
+                <% end %>
+            <% end %>
 
             <!-- Botões de Add Receitas/Despesas -->
             <div class="flex space-x-4">
-                <button id="add-revenue-button" title="Adicionar Receita" class="p-2 bg-green-600 hover:bg-green-700 rounded-lg text-white transition-colors">
-                    <i data-feather="plus-circle"></i>
-                </button>
-                <button id="add-expense-button" title="Adicionar Despesa" class="p-2 bg-red-600 hover:bg-red-700 rounded-lg text-white transition-colors">
-                    <i data-feather="plus-circle"></i>
-                </button>
+                <% if @club_balance %>
+                    <button data-modal-toggle="modal-add-income" data-modal-target="modal-add-income" title="Adicionar Receita" class="p-2 bg-green-600 hover:bg-green-700 rounded-lg text-white transition-colors">
+                        <i data-feather="plus-circle"></i>
+                    </button>
+                    <button data-modal-toggle="modal-add-expense" data-modal-target="modal-add-expense" title="Adicionar Despesa" class="p-2 bg-red-600 hover:bg-red-700 rounded-lg text-white transition-colors">
+                        <i data-feather="plus-circle"></i>
+                    </button>
+                <% end %>
             </div>
         </div>
 
@@ -205,91 +219,26 @@
                 <div class="pr-2 max-h-72 overflow-y-auto no-scrollbar" id="revenue-scroll-container">
                     <!-- Exemplos de Receitas -->
                     <div class="space-y-4" id="revenue-list">
-                        <!-- Item de receita -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Aluguer de Campo</p>
-                                <p class="text-sm text-slate-400">18 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-green-400">+ 150,00 €</span>
-                        </div>
-                        <!-- Item de receita -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Aluguer de Campo</p>
-                                <p class="text-sm text-slate-400">18 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-green-400">+ 150,00 €</span>
-                        </div>
-                        <!-- Item de receita -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Venda de Merchandising</p>
-                                <p class="text-sm text-slate-400">15 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-green-400">+ 350,00 €</span>
-                        </div>
-                        <!-- Item de receita -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Venda de Merchandising</p>
-                                <p class="text-sm text-slate-400">15 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-green-400">+ 350,00 €</span>
-                        </div>
-                        <!-- Item de receita -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Quota Sócio - Maria Costa</p>
-                                <p class="text-sm text-slate-400">12 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-green-400">+ 25,00 €</span>
-                        </div>
-                        <!-- Item de receita -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Quota Sócio - Maria Costa</p>
-                                <p class="text-sm text-slate-400">12 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-green-400">+ 25,00 €</span>
-                        </div>
-                        <!-- Item de receita -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Patrocínio - Empresa X</p>
-                                <p class="text-sm text-slate-400">10 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-green-400">+ 500,00 €</span>
-                        </div>
-                        <!-- Item de receita -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Patrocínio - Empresa X</p>
-                                <p class="text-sm text-slate-400">10 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-green-400">+ 500,00 €</span>
-                        </div>
-                        <!-- Item de receita -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Quota Sócio - João Silva</p>
-                                <p class="text-sm text-slate-400">05 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-green-400">+ 25,00 €</span>
-                        </div>
-                        <!-- Item de receita -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Venda de Bilhetes - Jogo vs Equipa B</p>
-                                <p class="text-sm text-slate-400">02 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-green-400">+ 1.175,00 €</span>
-                        </div>
+                        <% if @month_incomes.any? %>
+                            <% @month_incomes.each do |income| %>
+                                <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                    <div>
+                                        <p class="font-medium text-white"> <%= income.description %> </p>
+                                        <p class="text-sm text-slate-400"> <%= income.date.strftime("%d/%m/%Y") %> </p>
+                                    </div>
+                                    <span class="font-bold text-green-400"> <%= number_to_currency(income.value, unit: "€", separator: ",", delimiter: ".", format: "%n %u") %> </span>
+                                </div>
+                            <% end %>
+                        <% elsif params[:query].present? %>
+                            <p id="end-expenses-msg" class="text-slate-500 text-xl text-center "> A pesquisa "<%= params[:query] %>" não retornou nenhuma receita</p>
+                        <% elsif !params[:query].present? %>
+                            <p id="end-expenses-msg" class="text-slate-500 text-xl text-center "> Ainda não há nenhuma receita neste mês </p>
+                        <% end %>
                     </div>
                 </div>
                 <div class="mt-4 text-center">
                     <button id="load-more-revenues" class="text-blue-400 hover:text-blue-300 text-sm font-medium hidden">Carregar mais</button>
-                    <p id="end-revenues-msg" class="text-slate-500 text-sm hidden">------------------------- FIM -------------------------</p>
+                    <p id="end-revenues-msg" class="text-slate-500 text-sm hidden">Não existem mais receitas</p>
                 </div>
             </div>
 
@@ -299,54 +248,21 @@
                 <div class="pr-2 max-h-72 overflow-y-auto no-scrollbar" id="expense-scroll-container">
                     <!-- Exemplos de Despesas -->
                     <div class="space-y-4" id="expense-list">
-                        <!-- Item de despesa -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Taxas de Inscrição em Torneio</p>
-                                <p class="text-sm text-slate-400">20 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-red-400">- 100,00 €</span>
-                        </div>
-                        <!-- Item de despesa -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Manutenção do Relvado</p>
-                                <p class="text-sm text-slate-400">14 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-red-400">- 250,00 €</span>
-                        </div>
-                        <!-- Item de despesa -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Salário - Staff</p>
-                                <p class="text-sm text-slate-400">10 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-red-400">- 1500,00 €</span>
-                        </div>
-                        <!-- Item de despesa -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Transporte Equipa Visitante</p>
-                                <p class="text-sm text-slate-400">08 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-red-400">- 200,00 €</span>
-                        </div>
-                        <!-- Item de despesa -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Pagamento de Material Desportivo</p>
-                                <p class="text-sm text-slate-400">03 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-red-400">- 350,50 €</span>
-                        </div>
-                        <!-- Outro item -->
-                        <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
-                            <div>
-                                <p class="font-medium text-white">Fatura de Eletricidade - Pavilhão</p>
-                                <p class="text-sm text-slate-400">01 de Março, 2026</p>
-                            </div>
-                            <span class="font-bold text-red-400">- 100,00 €</span>
-                        </div>
+                        <% if @month_expenses.any? %>
+                            <% @month_expenses.each do |expense| %>
+                                <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700">
+                                    <div>
+                                        <p class="font-medium text-white"> <%= expense.description %> </p>
+                                        <p class="text-sm text-slate-400"> <%= expense.date.strftime("%d/%m/%Y") %> </p>
+                                    </div>
+                                    <span class="font-bold text-red-400">- <%= number_to_currency(expense.value, unit: "€", separator: ",", delimiter: ".", format: "%n %u") %> </span>
+                                </div>
+                            <% end %>
+                        <% elsif params[:query].present? %>
+                            <p id="end-expenses-msg" class="text-slate-500 text-xl text-center "> A pesquisa "<%= params[:query] %>" não retornou nenhuma despesa</p>
+                        <% elsif !params[:query].present? %>
+                            <p id="end-expenses-msg" class="text-slate-500 text-xl text-center "> Ainda não há nenhuma despesa neste mês </p>
+                        <% end %>
                     </div>
                 </div>
                 <div class="mt-4 text-center">
@@ -357,244 +273,126 @@
         </div>
 
         <!-- Modal Add Receitas -->
-        <div id="revenue-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div id="modal-add-income" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
             <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-md border border-slate-700">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-green-400">Adicionar Receita</h2>
-                    <button id="close-revenue-modal" class="text-slate-400 hover:text-white">
+                    <button data-modal-hide="modal-add-income" class="text-slate-400 hover:text-white">
                         <i data-feather="x"></i>
                     </button>
-                </div>
-                <form>
-                    <div class="mb-4">
-                        <label for="revenue-amount" class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
-                        <input type="number" step="0.01" id="revenue-amount" name="amount" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="0,00 €">
-                    </div>
-                    <div class="mb-4">
-                        <label for="revenue-description" class="block text-sm font-medium text-slate-300 mb-2">Descrição</label>
-                        <input type="text" id="revenue-description" name="description" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Ex: Venda de bilhetes">
-                    </div>
-                    <div class="mb-6">
-                        <label for="revenue-date" class="block text-sm font-medium text-slate-300 mb-2">Data</label>
-                        <input type="date" id="revenue-date" name="date" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500">
-                    </div>
-                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                        Criar
-                    </button>
-                </form>
+                </div>  
+                    <%= form_with url: club_incomes_path, method: :post, data: { turbo: false } do |f| %>
+                        <div class="mb-4">
+                            <label for="revenue-amount" class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
+                            <%= f.number_field :value, name: "club_income[value]", step:"0.01", min: 0, class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "0,00 €" %>
+
+                        </div>
+                        <div class="mb-4">
+                            <label for="revenue-description" class="block text-sm font-medium text-slate-300 mb-2">Descrição</label>
+                            <%= f.text_field :description, name: "club_income[description]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "Ex: Venda de Bilhetes" %>
+                        </div>
+                        <div class="mb-6">
+                            <label for="revenue-date" class="block text-sm font-medium text-slate-300 mb-2">Data</label>
+                            <%= f.date_field :date, name: "club_income[date]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500" %>
+                        </div>
+                        <%= f.submit "Confirmar", class:"w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"  %>
+                    <% end %>
             </div>
         </div>
 
         <!-- Modal Add Despesas -->
-        <div id="expense-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div id="modal-add-expense" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
             <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-md border border-slate-700">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-red-400">Adicionar Despesa</h2>
-                    <button id="close-expense-modal" class="text-slate-400 hover:text-white">
+                    <button data-modal-hide="modal-add-expense" class="text-slate-400 hover:text-white">
                         <i data-feather="x"></i>
                     </button>
                 </div>
-                <form>
+                <%= form_with url: club_expenses_path, method: :post, data: { turbo: false } do |f| %>
                     <div class="mb-4">
-                        <label for="expense-amount" class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
-                        <input type="number" step="0.01" id="expense-amount" name="amount" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="0,00 €">
+                        <label for="revenue-amount" class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
+                        <%= f.number_field :value, name: "club_expense[value]", step:"0.01", min: 0, class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "0,00 €" %>
+
                     </div>
                     <div class="mb-4">
-                        <label for="expense-description" class="block text-sm font-medium text-slate-300 mb-2">Descrição</label>
-                        <input type="text" id="expense-description" name="description" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500" placeholder="Ex: Compra de material">
+                        <label for="revenue-description" class="block text-sm font-medium text-slate-300 mb-2">Descrição</label>
+                        <%= f.text_field :description, name: "club_expense[description]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "Ex: Venda de Bilhetes" %>
                     </div>
                     <div class="mb-6">
-                        <label for="expense-date" class="block text-sm font-medium text-slate-300 mb-2">Data</label>
-                        <input type="date" id="expense-date" name="date" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+                        <label for="revenue-date" class="block text-sm font-medium text-slate-300 mb-2">Data</label>
+                        <%= f.date_field :date, name: "club_expense[date]", class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500" %>
                     </div>
-                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                        Criar
-                    </button>
-                </form>
+                    <%= f.submit "Confirmar", class:"w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"  %>
+                <% end %>
             </div>
         </div>
 
         <!-- Modal Add Dinheiro -->
-        <div id="add-money-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div id="modal-start-money" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
             <div class="bg-slate-800 rounded-lg shadow-xl p-8 w-full max-w-md border border-slate-700">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-blue-400">Alterar Saldo da Conta</h2>
-                    <button id="close-add-money-modal" class="text-slate-400 hover:text-white">
+                    <h2 class="text-2xl font-bold text-blue-400">Adicionar saldo à conta</h2>
+                    <button data-modal-hide="modal-start-money" class="text-slate-400 hover:text-white">
                         <i data-feather="x"></i>
                     </button>
                 </div>
-                <form id="add-money-form">
+                <%= form_with url: club_balances_path, method: :post, data: { turbo: false } do |f| %>
                     <div class="mb-6">
-                        <label for="add-money-amount" class="block text-sm font-medium text-slate-300 mb-2">Quantia</label>
-                        <input type="number" step="0.01" id="add-money-amount" name="amount" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0,00 €" required>
+                        <label class="block text-sm font-medium text-slate-300 mb-2">Quantia</label>
+                        <%= f.number_field :value, step: 0.01, min: 0, name: "club_balance[value]", id: "balance-value-input", class: "w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500", placeholder: "0,00 €", required: true %>
                     </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors">
-                        Alterar
-                    </button>
-                </form>
+                    <button type="button" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors cursor-pointer" data-modal-toggle="modal-confirmar-start-money" data-modal-target="modal-confirmar-start-money"> <p > Adicionar <p> </button>
+                    
             </div>
+
+            <div id="modal-confirmar-start-money" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
+                <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                    <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                    <p class="text-gray-300 text-center mb-6">Tem a certeza que pretende adicionar <span id="confirmar-valor" class="font-bold text-white"></span>? Esta ação é permanente e não pode ser alterada no futuro</p>
+                    <div class="flex gap-3">
+                        <button type="button" data-modal-hide="modal-confirmar-start-money" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                            Cancelar
+                        </button>
+                        <%= f.submit "Confirmar", class: "w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors cursor-pointer" %>
+                <% end %>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
     </div>
     
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
             feather.replace();
 
-            // --- MODAL LOGIC ---
-            const openModal = (modal) => {
-                console.log('openModal called with:', modal); // Log the modal element received
-                if (!modal) {
-                    console.error('Error: Modal element is null or undefined. Cannot open modal.');
-                    return;
-                }
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-                console.log('Modal classes after opening:', modal.classList); // Log classes after modification
-                feather.replace(); // Re-render icons for the modal (if any new icons are in the modal)
-            };
-
-            const closeModal = (modal) => {
-                if (!modal) return;
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            };
-
-            const revenueModal = document.getElementById('revenue-modal');
-            const addRevenueBtn = document.getElementById('add-revenue-button');
-            const closeRevenueBtn = document.getElementById('close-revenue-modal');
-            addRevenueBtn?.addEventListener('click', () => openModal(revenueModal));
-            closeRevenueBtn?.addEventListener('click', () => closeModal(revenueModal));
-
-            const expenseModal = document.getElementById('expense-modal');
-            const addExpenseBtn = document.getElementById('add-expense-button');
-            const closeExpenseBtn = document.getElementById('close-expense-modal');
-            addExpenseBtn?.addEventListener('click', () => openModal(expenseModal));
-            closeExpenseBtn?.addEventListener('click', () => closeModal(expenseModal));
-
-                const addMoneyModal = document.getElementById('add-money-modal');
-            const addMoneyTriggers = document.querySelectorAll('.add-money-trigger');
-            const closeAddMoneyBtn = document.getElementById('close-add-money-modal');
-            const addMoneyForm = document.getElementById('add-money-form');
-
-            addMoneyTriggers.forEach(button => {
-                button.addEventListener('click', () => openModal(addMoneyModal));
+            document.querySelector('[data-modal-target="modal-confirmar-start-money"]')?.addEventListener('click', () => {
+                const valor = document.getElementById('balance-value-input').value;
+                const valorFormatado = parseFloat(valor).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                document.getElementById('confirmar-valor').innerText = valorFormatado + ' €';
             });
 
-            closeAddMoneyBtn?.addEventListener('click', () => closeModal(addMoneyModal));
-
-            addMoneyForm?.addEventListener('submit', (event) => {
-                event.preventDefault();
-                const amountInput = document.getElementById('add-money-amount');
-                const amount = parseFloat(amountInput.value);
-
-                if (isNaN(amount) || amount <= 0) {
-                    alert('Por favor, insira uma quantia válida.');
-                    return;
-                }
-
-                if (confirm(`Tem a certeza que quer alterar o saldo da conta para ${amount.toFixed(2)} €?`)) {
-                    // Atualizar UI
-                    const balanceView = document.getElementById('wallet-balance-view');
-                    const emptyView = document.getElementById('wallet-empty-view');
-                    const balanceText = document.getElementById('wallet-balance-amount');
-
-                    // Substitui o saldo atual pelo novo valor inserido
-                    const newBalance = amount;
-                    
-                    balanceText.innerText = newBalance.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
-                    
-                    emptyView.classList.add('hidden');
-                    balanceView.classList.remove('hidden');
-
-                    closeModal(addMoneyModal);
-                    amountInput.value = ''; // Limpa o campo do formulário para a próxima utilização
-                }
-            });
-
-            // --- SEARCH LOGIC ---
-            const searchIcon = document.getElementById('search-icon');
-            const searchInput = document.getElementById('search-input');
-
-            searchIcon?.addEventListener('click', performSearch);
-
-            searchInput?.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
-                    performSearch();
-                }
-            });
-
-            window.addEventListener('click', (event) => {
-                if (event.target === revenueModal) closeModal(revenueModal);
-                if (event.target === expenseModal) closeModal(expenseModal);
-                if (event.target === addMoneyModal) closeModal(addMoneyModal);
-            });
-
-            window.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape') {
-                    if (revenueModal && !revenueModal.classList.contains('hidden')) closeModal(revenueModal);
-                    if (expenseModal && !expenseModal.classList.contains('hidden')) closeModal(expenseModal);
-                    if (addMoneyModal && !addMoneyModal.classList.contains('hidden')) closeModal(addMoneyModal);
-                }
-            });
-
-            // --- LOAD MORE LOGIC ---
-            const setupLoadMore = (listId, containerId, buttonId, endMessageId, itemsPerLoad) => {
-                const list = document.getElementById(listId);
-                const container = document.getElementById(containerId);
-                const button = document.getElementById(buttonId);
-                const endMessage = document.getElementById(endMessageId);
-                if (!list || !container || !button || !endMessage) return;
-
-                const items = Array.from(list.children);
-                let visibleCount = itemsPerLoad;
-
-                // Hide items that should not be visible initially
-                items.forEach((item, index) => {
-                    if (index >= visibleCount) {
-                        item.classList.add('hidden');
-                    }
-                });
-
-                const checkScroll = () => {
-                    // Check if scrolled to bottom (with small tolerance)
-                    const isAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight <= 3;
-
-                    if (visibleCount >= items.length) {
-                        button.classList.add('hidden');
-                        if (isAtBottom) {
-                            endMessage.classList.remove('hidden');
-                        } else {
-                            endMessage.classList.add('hidden');
-                        }
-                        return;
-                    }
-
-                    endMessage.classList.add('hidden');
-                    if (isAtBottom) {
-                        button.classList.remove('hidden');
+                function toggleClearButton(input) {
+                    const clearBtn = document.getElementById('clear-search');
+                    if (input.value.length > 0) {
+                        clearBtn.classList.remove('hidden');
                     } else {
-                        button.classList.add('hidden');
+                        clearBtn.classList.add('hidden');
                     }
-                };
+                }
 
-                container.addEventListener('scroll', checkScroll);
-                // Initial check
-                checkScroll();
-
-                button.addEventListener('click', () => {
-                    const nextVisibleCount = visibleCount + itemsPerLoad;
-                    for (let i = visibleCount; i < nextVisibleCount && i < items.length; i++) {
-                        items[i].classList.remove('hidden');
-                    }
-                    visibleCount = nextVisibleCount;
-
-                    checkScroll();
-                });
-            };
-
-            setupLoadMore('revenue-list', 'revenue-scroll-container', 'load-more-revenues', 'end-revenues-msg', 3);
-            setupLoadMore('expense-list', 'expense-scroll-container', 'load-more-expenses', 'end-expenses-msg', 3);
-        });
+                function clearSearch() {
+                    const input = document.getElementById('search-input');
+                    input.value = '';
+                    document.getElementById('clear-search').classList.add('hidden');
+                    document.getElementById('search-form').requestSubmit();
+                }
     </script>
 
 </body>

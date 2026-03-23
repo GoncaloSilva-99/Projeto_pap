@@ -1,17 +1,12 @@
 Proximos:
+post de guardados está igual ao dos likes (não está a guardar bem)
 aparece uma barra mais clara em cima dos modals
-Fazer perfis de board e adepto
 Dar fix ao modal bugado dos likes nos perfis
 adicionar botão de report (publicações, comentários e perfis) -> não funcionam
 falta adicionar as estatisticas reais da plataforma e algo mais apelativo e demonstrativo da aplicação quando não há login feito
-perfis populares convém aparecer mesmo os perfis populares
-colocar estatisticas reais no dashboard
-arranjar membros da direção apagar no membro+1
-Mudar texto da escolha de conta para algo realista
-Adicionar estatistica de clicks nos perfis para depois colocar nos perfis populares
-Colocar posts nos perfis funcional
-fazer pesquisa da página principal (a redirecionar para página de pesquisa)
-fazer material no dashboard do clube (poder adicionar e gerir stock de material do clube, dar para associar material a um ct, campo ou balneário ou a equipa)
-fazer finanças no dashboard do clube
+fazer pesquisa da página principal (a redirecionar para página de pesquisa) -> arranjar o do tomás
 fazer admin dashboard (estatisticas da aplicação, parte de super admin para criar admins, verificação de clubes, reports de posts e perfis, contas banidas, logs)
 jogadores sem clube poderem ser convidados para aderir a um clube
+se possível, adicionar quotas -> cada equipa tem um preço definido que os jogadores têm que pagar mensalmente
+
+Tomás precisa de arranjar a criação de contas que queimou com a edição

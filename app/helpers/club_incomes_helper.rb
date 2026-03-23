@@ -1,0 +1,2 @@
+module ClubIncomesHelper
+end

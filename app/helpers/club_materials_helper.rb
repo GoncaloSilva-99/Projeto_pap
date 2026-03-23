@@ -1,0 +1,2 @@
+module ClubMaterialsHelper
+end

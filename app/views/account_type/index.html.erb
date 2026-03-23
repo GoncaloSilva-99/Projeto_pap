@@ -25,21 +25,23 @@
                     <h2 class="text-xl font-semibold">Jogador</h2>
                 </div>
                 <p class="text-gray-400 flex-grow">
-                    Os jogadores têm acesso a um ambiente que centraliza tudo o que precisam: o calendário de treinos, o contacto com colegas e treinadores, e o acompanhamento do seu progresso desportivo dentro do clube.
+                    Tens tudo o que precisas num só lugar: os teus treinos organizados, 
+                    o teu perfil desportivo completo e a ligação direta à tua equipa. 
+                    Gere a tua presença e marca a tua presença no teu clube.
                 
                 </p>
                 <ul class="space-y-2 text-sm text-indigo-300 mt-4">
                     <li class="flex items-center">
                         <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
-                        Marcar treinos de teste com equipas
+                        Consulta o calendário de treinos com campo e balneário atribuídos
                     </li>
                     <li class="flex items-center">
                         <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
-                        Possibilidade de marcar ausências e justificar faltas
+                        Perfil com posição, posição secundária e pé/mão dominante
                     </li>
                     <li class="flex items-center">
                         <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
-                        Perfil pessoal com estatísticas, histórico e dados de desempenho
+                        Associação a equipas e visibilidade para treinadores do clube
                     </li>
                 </ul>
                 <% if (user_signed_in? and current_user.club? and current_user.club_profile.has_no_sports?) or (user_signed_in? and current_user.board? and current_user.board_profile.club_profile.has_no_sports?) %>
@@ -58,20 +60,20 @@
                     <h2 class="text-xl font-semibold">Treinador</h2>
                 </div>
                 <p class="text-gray-400 flex-grow">
-                    Os treinadores têm um painel dedicado para planear, comunicar e acompanhar o desempenho da equipa. Podem organizar treinos, gerir presenças e criar estratégias adaptadas à sua equipa.
+                    Tens tudo o que precisas num só lugar: os teus treinos organizados, o teu perfil desportivo completo e a ligação direta à tua equipa. Gere a tua presença e marca a tua presença no teu clube.
                 </p>
                 <ul class="space-y-2 text-sm text-green-300 mt-4">
                     <li class="flex items-center">
                         <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
-                        Concorrer a vagas para treinar um escalão
+                        Consulta o calendário de treinos com campo e balneário atribuídos
                     </li>
                     <li class="flex items-center">
                         <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
-                        Gestão individual de jogadores com observações e notas de desempenho
+                        Perfil com tipo de treinador
                     </li>
                     <li class="flex items-center">
                         <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
-                        Ferramenta para desenhar e guardar táticas personalizada
+                        Associação a equipas e visibilidade para treinadores do clube
                     </li>
                 </ul>
                 <% if (user_signed_in? and current_user.club? and current_user.club_profile.has_no_sports?) or (user_signed_in? and current_user.board? and current_user.board_profile.club_profile.has_no_sports?) %>
@@ -122,20 +124,22 @@
                     <h2 class="text-xl font-semibold">Adepto</h2>
                 </div>
                 <p class="text-gray-400 flex-grow">
-                    Os adeptos podem acompanhar o clube de perto, apoiar as equipas e participar ativamente na comunidade. Têm acesso a bilhetes, produtos oficiais e vantagens como sócios.
+                    Segue os clubes e atletas que gostas, interage com publicações 
+                        e mantém-te a par de tudo o que acontece na comunidade desportiva 
+                        que te é mais próxima.
                 </p>
                 <ul class="space-y-2 text-sm text-rose-300 mt-4">
                     <li class="flex items-center">
                         <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
-                        Compra de bilhetes com geração automática de QR Code
+                        Segue clubes, jogadores e treinadores que te interessam
                     </li>
                     <li class="flex items-center">
                         <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
-                        Acesso a notícias, resultados e anúncios públicos do clube
+                        Interage com publicações - gosta, comenta e guarda para mais tarde
                     </li>
                     <li class="flex items-center">
                         <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
-                        Acesso à loja oficial para adquirir produtos do clube
+                        Feed personalizado com conteúdo dos clubes e atletas que segues
                     </li>
                 </ul>
                 <%= link_to "Escolher Adepto", new_user_profile_registration_path, class: "mt-6 w-full bg-rose-600 hover:bg-rose-700 text-white py-2 px-4 rounded-lg transition text-center" %>
@@ -152,7 +156,7 @@
                     <h2 class="text-xl font-semibold">Clube</h2>
                 </div>
                 <p class="text-gray-400 flex-grow">
-                    Os clubes têm acesso a ferramentas completas para coordenar as escalões, gerir a parte financeira e garantir o bom funcionamento de toda a estrutura interna, desde treinos à experiência dos adeptos
+                    Os clubes têm acesso a ferramentas completas para coordenar as escalões, gerir a parte financeira e garantir o bom funcionamento de toda a estrutura interna
                 
                 </p>
                 <ul class="space-y-2 text-sm text-purple-300 mt-4">
@@ -162,11 +166,11 @@
                     </li>
                     <li class="flex items-center">
                         <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
-                        Sistema de marcação e manutenção de infraestruturas
+                        Sistema manutenção de infraestruturas e treinos
                     </li>
                     <li class="flex items-center">
                         <i data-feather="check" class="feather-check w-4 h-4 mr-2 text-primary-500"></i>
-                        Loja online com gestão de produtos, stock e pagamentos integrados
+                        Gestão financeira mensal do clube
                     </li>
                 </ul>
                 <%= link_to "Escolher Clube", new_club_profile_registration_path, class: "mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded-lg transition text-center" %>

@@ -6,8 +6,180 @@ class DashboardController < ApplicationController
   before_action :setup_search_board, only: [:club_board]
   before_action :sport, only: [:club_infrastructures]
   before_action :infrastructures, only: [:club_infrastructures]
+  before_action :finances, only: [:club_finances]
+  before_action :setup_search_transactions, only: [:club_finances]
+  before_action :set_profile
+  before_action :materials, only: [:club_equipment ]
+  before_action :setup_search_material, only: [:club_equipment]
+  before_action :dashboard, only: [:club_dashboard]
 
   protected
+
+  def dashboard
+    @club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
+    club_id = @club_profile.id
+
+    hoje = Date.current
+    fim_semana = hoje.end_of_week(:monday)
+
+
+    # MEMBROS
+    @total_jogadores = PlayerProfile.where(club_profile_id: club_id).count
+    @total_treinadores = CoachProfile.where(club_profile_id: club_id).count
+    @total_equipas = ClubTeam.where(club_profile_id: club_id).count
+    @jogadores_sem_equipa = PlayerProfile.where(club_profile_id: club_id).where.not(id: PlayerTeam.select(:player_profile_id)).count
+    @treinadores_sem_equipa = CoachProfile.where(club_profile_id: club_id).left_joins(:coach_teams).where(coach_teams: { id: nil }).count
+
+    # MEMBROS POR DESPORTO
+    @jogadores_futebol = PlayerProfile.where(club_profile_id: club_id, sport: 'football').count
+    @jogadores_andebol = PlayerProfile.where(club_profile_id: club_id, sport: 'handball').count
+    @treinadores_futebol = CoachProfile.where(club_profile_id: club_id, sport: 'football').count
+    @treinadores_andebol = CoachProfile.where(club_profile_id: club_id, sport: 'handball').count
+
+    # FINANÇAS
+    @saldo = ClubBalance.find_by(club_profile_id: club_id)
+    @receitas_mes = ClubIncome.where(club_profile_id: club_id).where(date: Date.current.beginning_of_month..Date.current.end_of_month).sum(:value)
+    @despesas_mes = ClubExpense.where(club_profile_id: club_id).where(date: Date.current.beginning_of_month..Date.current.end_of_month).sum(:value)
+    @balanco_mes = @receitas_mes - @despesas_mes
+
+    @top_despesas = ClubExpense
+      .where(club_profile_id: club_id)
+      .where(date: Date.current.beginning_of_month..Date.current.end_of_month)
+      .order(value: :desc)
+      .limit(4)
+
+    ultimas_despesas = ClubExpense.where(club_profile_id: club_id).order(date: :desc).limit(3)
+      .map { |d| { tipo: :despesa, descricao: d.description, valor: d.value, data: d.date } }
+    ultimas_receitas = ClubIncome.where(club_profile_id: club_id).order(date: :desc).limit(3)
+      .map { |r| { tipo: :receita, descricao: r.description, valor: r.value, data: r.date } }
+    @ultimas_transacoes = (ultimas_despesas + ultimas_receitas).sort_by { |t| t[:data] }.reverse.first(4)
+
+    # INFRAESTRUTURAS
+    @total_campos = ClubPitch.where(club_profile_id: club_id).count
+    @total_balnearios = ClubLockerRoom.where(club_profile_id: club_id).count
+    @total_cts = ClubTrainingCenter.where(club_profile_id: club_id).count
+
+    treinos_normais = ClubTeamTraining
+      .joins(club_team: :club_profile)
+      .where(club_profiles: { id: club_id })
+      .where(recurring: false)
+      .where(start_time: Time.current..fim_semana.end_of_day)
+      .order(:start_time)
+      .limit(5)
+
+    treinos_recorrentes = ClubTeamTraining
+      .joins(club_team: :club_profile)
+      .where(club_profiles: { id: club_id })
+      .where(recurring: true)
+
+    virtual_recorrentes = []
+    treinos_recorrentes.each do |treino|
+      (hoje..fim_semana).each do |dia|
+        next unless dia.wday == treino.weekday
+        next unless treino.start_time.present?
+        hora_inicio = dia.in_time_zone('Lisbon').change(hour: treino.start_time.hour, min: treino.start_time.min)
+        next unless hora_inicio > Time.current
+        virtual = treino.dup
+        virtual.start_time = hora_inicio
+        virtual_recorrentes << virtual
+      end
+    end
+
+    @proximos_treinos = (treinos_normais.to_a + virtual_recorrentes).sort_by(&:start_time).first(5)
+
+     treinos_normais_semana = ClubTeamTraining
+      .joins(club_team: :club_profile)
+      .where(club_profiles: { id: club_id })
+      .where(recurring: false)
+      .where(start_time: hoje.beginning_of_day..fim_semana.end_of_day)
+      .count
+
+    @treinos_esta_semana = treinos_normais_semana + virtual_recorrentes.count
+
+    @top_receitas = ClubIncome
+    .where(club_profile_id: club_id)
+    .where(date: Date.current.beginning_of_month..Date.current.end_of_month)
+    .order(value: :desc)
+    .limit(4)
+
+    # MATERIAL
+    @total_materiais = ClubMaterial.where(club_profile_id: club_id).count
+    @materiais_esgotados = ClubMaterial.where(club_profile_id: club_id).where("CAST(quantity AS INTEGER) = 0").count
+    @materiais_futebol = ClubMaterial.where(club_profile_id: club_id, sport: 'Futebol').count
+    @materiais_andebol = ClubMaterial.where(club_profile_id: club_id, sport: 'Andebol').count
+  end
+
+  def setup_search_material
+    @query = params[:query]
+
+    if @query.present?
+      @geral_materials_query = ClubMaterial.search_by_name(@query).where(club_profile_id: @club_id)
+      @football_materials_query = ClubMaterial.search_by_name(@query).where(club_profile_id: @club_id, sport: 'Futebol')
+      @handball_materials_query = ClubMaterial.search_by_name(@query).where(club_profile_id: @club_id, sport: 'Andebol')
+
+      @num_geral_materials = @geral_materials_query.count
+      @num_football_materials = @football_materials_query.count
+      @num_handball_materials = @handball_materials_query.count
+
+      @geral_materials = @geral_materials_query.page(params[:geral_page]).per(8)
+      @football_materials = @football_materials_query.page(params[:football_page]).per(8)
+      @handball_materials = @handball_materials_query.page(params[:handball_page]).per(8)
+    end
+  end
+
+  def materials
+    @selected_sport = params[:sport]
+    @club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
+    if !@selected_sport
+      if @club_profile.has_both_sports?
+        @selected_sport = 'Geral'
+      elsif @club_profile.has_football?
+        @selected_sport = 'Futebol'
+      elsif @club_profile.has_handball?
+        @selected_sport = 'Andebol'
+      end
+    end
+    @club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
+    @geral_materials_query = ClubMaterial.where(club_profile_id: @club_id)
+    @football_materials_query = ClubMaterial.where(club_profile_id: @club_id, sport: 'Futebol')
+    @handball_materials_query = ClubMaterial.where(club_profile_id: @club_id, sport: 'Andebol')
+
+    @num_geral_materials = @geral_materials_query.count
+    @num_football_materials = @football_materials_query.count
+    @num_handball_materials = @handball_materials_query.count
+
+    @geral_materials = @geral_materials_query.page(params[:geral_page]).per(8)
+    @football_materials = @football_materials_query.page(params[:football_page]).per(8)
+    @handball_materials = @handball_materials_query.page(params[:handball_page]).per(8)
+
+  end
+
+
+  def set_profile
+    @club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
+  end
+
+  def finances
+      @club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
+      @first_of_month = params[:start_date] ?  Date.parse(params[:start_date]).beginning_of_month : Date.current.beginning_of_month
+      @last_of_month =  params[:start_date] ?  Date.parse(params[:start_date]).end_of_month : Date.current.end_of_month
+      @current_month = l(@first_of_month, format: "%B")
+      @current_year = @first_of_month.year
+      
+      @month_expenses = ClubExpense.where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
+      @month_expenses_total = 0
+      @month_expenses.each do |expense|
+        @month_expenses_total = @month_expenses_total + expense.value
+      end
+      @month_incomes = ClubIncome.where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
+      @month_incomes_total = 0
+      @month_incomes.each do |income|
+        @month_incomes_total = @month_incomes_total + income.value
+      end
+      @club_balance = ClubBalance.find_by(club_profile_id: @club_id)
+
+
+  end
 
   def infrastructures
     @selected_ct = params[:ct].present? ? params[:ct].to_i : nil
@@ -220,6 +392,16 @@ end
 
     @board_results = board_query.page(params[:board_page]).per(4)
     @base_num_board = BoardProfile.where(club_profile_id: club_id).count
+  end
+
+  def setup_search_transactions
+    club_id = current_user.club? ? current_user.club_profile.id : current_user.board_profile.club_profile.id
+    @query = params[:query]
+
+    if @query.present?
+      @month_expenses = ClubExpense.search_by_description(@query).where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
+      @month_incomes = ClubIncome.search_by_description(@query).where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
+    end
   end
 
 
