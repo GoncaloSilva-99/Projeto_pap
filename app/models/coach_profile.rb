@@ -4,7 +4,7 @@ class CoachProfile < ApplicationRecord
   belongs_to :club_profile, optional: true
   has_one_attached :profile_picture
   has_one_attached :banner_picture
-  accepts_nested_attributes_for :coach_teams
+  accepts_nested_attributes_for :user
 
   SPORTS = ["football", "handball"]
   MIN_AGE = 16.years.ago.to_date

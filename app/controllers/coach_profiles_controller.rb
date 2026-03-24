@@ -60,23 +60,33 @@ class CoachProfilesController < ApplicationController
     @coach_profile.profile_picture.purge if params[:coach_profile][:remove_profile_picture] == '1'
     @coach_profile.banner_picture.purge if params[:coach_profile][:remove_banner_picture] == '1'
 
+    # Extract user-related fields (email / password) so we can update the Devise user separately.
     profile_params = coach_profile_params.dup
     user_attrs = profile_params.delete(:user_attributes)
+
+    # Clean bio - remove indentation spaces but keep user-inserted line breaks
+    if profile_params[:bio].present?
+      profile_params[:bio] = profile_params[:bio].strip.lines.map(&:strip).join("\n")
+    end
 
     user_update_success = true
     account_details_changed = false
 
-    if user_attrs.present? && @coach_profile.user.present?
+    if user_attrs.present?
       user_attrs = user_attrs.to_h
+      # Keep confirmation fields around so validations can run even if blank.
       user_attrs = user_attrs.reject do |k, v|
         v.blank? && !%w[email_confirmation password_confirmation].include?(k.to_s)
       end
 
-      if user_attrs.present?
+      if user_attrs.present? && @coach_profile.user.present?
         user = @coach_profile.user
+
+        # Check if account details should trigger logout.
         account_details_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
         account_details_changed ||= user_attrs[:password].present?
 
+        # If changing email or password, require current password for security.
         email_being_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
         password_being_changed = user_attrs[:password].present?
 
@@ -89,6 +99,7 @@ class CoachProfilesController < ApplicationController
           user_update_success = user.update_without_password(user_attrs.except(:current_password))
         end
 
+        # Surface Devise errors in the form
         if user.errors.any?
           user.errors.full_messages.each { |msg| @coach_profile.errors.add(:base, msg) }
         end
@@ -96,7 +107,7 @@ class CoachProfilesController < ApplicationController
     end
 
     respond_to do |format|
-      if @coach_profile.update(profile_params) && user_update_success
+      if user_update_success && @coach_profile.update(profile_params)
         if account_details_changed
           sign_out(current_user) if current_user
           format.html { redirect_to new_user_session_path, notice: "Dados de login alterados. Por favor, entre novamente.", status: :see_other }

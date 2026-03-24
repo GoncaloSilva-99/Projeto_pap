@@ -4,7 +4,7 @@ class PlayerProfile < ApplicationRecord
   has_one_attached :profile_picture
   has_one_attached :banner_picture
   has_many :player_teams, dependent: :destroy
-  accepts_nested_attributes_for :player_teams
+  accepts_nested_attributes_for :user
   
   
   

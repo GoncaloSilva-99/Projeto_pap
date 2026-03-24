@@ -145,6 +145,4 @@ class User < ApplicationRecord
     .limit(limit)
   end
 
-  
-
 end
