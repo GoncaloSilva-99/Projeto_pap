@@ -127,6 +127,28 @@
                             </div>
                         </div>
                     </div>
+                <% elsif current_user.club? or current_user.board? %>
+                    <%
+                        viewing_club = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
+                        invitation = ClubInvitationPlayer.find_by(club_profile: viewing_club, player_profile: player_profile.id)
+                    %>
+                    <% if invitation.nil? %>
+                        <%= button_to club_invitation_players_path(player_profile_id: player_profile.id),
+                            method: :post,
+                            class: "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium" do %>
+                        Convidar
+                        <% end %>
+                    <% end %>
+
+                    <% if invitation and invitation.pending? %>
+                        <div class="flex items-center gap-2">
+                        <span class="px-3 py-1 bg-yellow-700 text-yellow-200 rounded-lg text-sm">Convite Enviado</span>
+                            <%= button_to club_invitation_player_path(invitation), method: :delete,
+                                class: "px-3 py-1 bg-gray-600 hover:bg-red-700 text-white rounded-lg text-sm" do %>
+                                Cancelar
+                            <% end %>
+                        </div>
+                    <% end %>
                 <% else %>
                     <p class="text-gray-400">Este jogador não pertence a nenhum clube no momento.</p>
                 <% end %>

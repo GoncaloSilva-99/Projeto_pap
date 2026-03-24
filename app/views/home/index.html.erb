@@ -76,6 +76,12 @@
                                 <i data-feather="bookmark" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">Guardados</p>
                             </a>
+                            <% if current_user.player? and current_user.coach? %>
+                                <a data-modal-target="invitation-modal" data-modal-toggle="invitation-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600 hover:text-green-400">
+                                    <i data-feather="mail" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Convites</p>
+                                </a>
+                            <% end %>
                         </div>
                     </div>
                 <% end %>
@@ -1217,6 +1223,21 @@
             <!-- Modal publicações liked -->
 
             <%= render "posts/liked_posts_modal" %>
+
+            <div id="invitation-modal" class="fixed inset-0 z-[100] bg-gray-950 bg-opacity-90 hidden flex items-center justify-center">
+                <div class="bg-gray-900 rounded-xl p-8 w-full max-w-4xl relative shadow-2xl mx-4 h-[80vh] flex flex-col">
+                    <button data-modal-hide="invitation-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                        <i data-feather="x" class="w-6 h-6"></i>
+                    </button>
+                    <h2 class="text-2xl font-bold text-white mb-6 text-center">Convites</h2>
+                    
+                    <div id="favorites-list" class="flex-1 overflow-y-auto space-y-6 pr-2 no-scrollbar">
+                        <div id="saved_posts_list" class="space-y-6">
+                            <%= render "posts/saved_posts_list" %>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
 
             <script>
@@ -1630,7 +1651,7 @@
                             </ul>
                         </div>
                         <div class="md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
-                            <%= image_tag "hero.png", class: "w-full h-72 object-cover", alt: "Gestão de Equipas" %>
+                            <%= image_tag "equipa_sportx.png", class: "w-full h-108 object-contain", alt: "Gestão de Equipas" %>
                         </div>
                     </div>
                 </div>
@@ -1708,7 +1729,7 @@
                             </ul>
                         </div>
                         <div class="md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
-                            <%= image_tag "hero.png", class: "w-full h-72 object-cover", alt: "Perfis" %>
+                            <%= image_tag "perfil_sportx.png", class: "w-full h-98 object-contain", alt: "Perfis" %>
                         </div>
                     </div>
                 </div>

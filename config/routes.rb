@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :club_invitation_coaches
+  resources :club_invitation_players
   resources :club_materials
   resources :club_incomes
   resources :club_expenses
@@ -24,6 +26,13 @@ Rails.application.routes.draw do
   resources :coach_profiles do
     member do
       patch :remove_from_club
+    end
+  end
+
+  resources :club_invitation_players, only: [:create, :destroy] do
+    member do
+      patch :accept
+      patch :reject
     end
   end
 
@@ -91,6 +100,7 @@ Rails.application.routes.draw do
   get "dashboard/club_equipment", as: :club_equipment_dashboard
   get "dashboard/club_infrastructures", as: :club_infrastructures_dashboard
   get "dashboard/club_finances", as: :club_finances_dashboard
+  get "dashboard/club_invitations", as: :club_invitations_dashboard
   
 
   post "dashboard/create_sport", to: "dashboard#create_sport", as: :create_club_sport

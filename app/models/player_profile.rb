@@ -1,4 +1,5 @@
 class PlayerProfile < ApplicationRecord
+  has_many :club_invitation_players, dependent: :destroy
   belongs_to :user
   belongs_to :club_profile, optional: true
   has_one_attached :profile_picture
@@ -6,7 +7,9 @@ class PlayerProfile < ApplicationRecord
   has_many :player_teams, dependent: :destroy
   accepts_nested_attributes_for :player_teams
   
-  
+  def in_a_club?
+    club_profile.present?
+  end
   
   SPORTS = ["football", "handball"]
   POSITIONS = {
