@@ -1,5 +1,7 @@
 class ClubProfile < ApplicationRecord
   belongs_to :user, dependent: :destroy
+  has_many :club_invitation_players, dependent: :destroy
+  has_many :invited_players, through: :club_invitation_players, source: :player_profile
   accepts_nested_attributes_for :user
   has_many :board_profiles, dependent: :destroy
   has_one_attached :profile_picture

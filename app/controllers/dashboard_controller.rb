@@ -12,8 +12,44 @@ class DashboardController < ApplicationController
   before_action :materials, only: [:club_equipment ]
   before_action :setup_search_material, only: [:club_equipment]
   before_action :dashboard, only: [:club_dashboard]
+  before_action :invitations, only: [:club_invitations]
 
   protected
+  
+  def invitations
+    @club = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
+    if params[:sport]
+      @selected_sport = params[:sport]
+    elsif @club.has_football?
+      @selected_sport = 'football'
+    elsif @club.has_handball?
+      @selected_sport = 'handball'
+    end
+
+    if params[:type]
+      @selected_type = params[:type]
+    else
+      @selected_type = 'pending'
+    end
+
+    @player_invitations = ClubInvitationPlayer.where(club_profile_id: @club.id, status: @selected_type)
+    @player_invitations_count = @player_invitations.count
+
+    @player_invitations_results = @player_invitations.page(params[:player_invitations_page]).per(4)
+
+    @coach_invitations = ClubInvitationCoach.where(club_profile_id: @club.id, status: @selected_type)
+    @coach_invitations_count = @coach_invitations.count
+    @coach_invitations_results = @coach_invitations.page(params[:coach_invitations_page]).per(4)
+
+    if params[:query]
+      matching_profile_ids_player = PlayerProfile.search_by_name(@query).pluck(:id)
+      @player_invitations_results = @player_invitations.where(club_profile_id: @club.id, type: @selected_type, player_profile_id: matching_profile_ids_player)
+      matching_profile_ids_coach = CoachProfile.search_by_name(@query).pluck(:id)
+      @player_invitations_results = @player_invitations.where(club_profile_id: @club.id, type: @selected_type, coach_profile_id: matching_profile_ids_coach)
+    end
+
+  end
+
 
   def dashboard
     @club_profile = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile

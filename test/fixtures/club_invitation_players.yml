@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  club_profile: one
+  player_profile: one
+  status: 1
+
+two:
+  club_profile: two
+  player_profile: two
+  status: 1

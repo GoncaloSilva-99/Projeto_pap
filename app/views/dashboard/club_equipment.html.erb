@@ -64,6 +64,13 @@
                 </div>
                 <% end %>
 
+                <%= link_to club_invitations_dashboard_path do %>
+                <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-purple-500 rounded-xl border-l-4 border-transparent hover:border-purple-950 transition-all duration-300">
+                    <i data-feather="mail" class="sidebar-icon text-purple-500 w-5 h-5 mr-3"></i>
+                    <span class="font-medium">Convites</span>
+                </div>
+                <% end %>
+
                 <%= link_to root_path do %>
                 <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-gray-400 rounded-xl border-l-4 border-transparent hover:border-gray-400 transition-all duration-300">
                     <i data-feather="arrow-left" class="sidebar-icon text-gray-400 w-5 h-5 mr-3"></i>
@@ -214,7 +221,7 @@
                                             </div>
 
                                             <div class="mb-4">
-                                                <label class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
+                                                <label class="block text-sm font-medium text-slate-300 mb-2">Quantidade</label>
                                                 <%= f.number_field :quantity, name: "club_material[quantity]", step:"1", min: 0, class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "10", value: geral.quantity %>
                                             </div>
 
@@ -329,7 +336,7 @@
                                             </div>
 
                                             <div class="mb-4">
-                                                <label class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
+                                                <label class="block text-sm font-medium text-slate-300 mb-2">Quantidade</label>
                                                 <%= f.number_field :quantity, name: "club_material[quantity]", step:"1", min: 0, class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "10", value: football.quantity %>
                                             </div>
 
@@ -444,7 +451,7 @@
                                             </div>
 
                                             <div class="mb-4">
-                                                <label class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
+                                                <label class="block text-sm font-medium text-slate-300 mb-2">Quantidade</label>
                                                 <%= f.number_field :quantity, name: "club_material[quantity]", step:"1", min: 0, class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "10", value: handball.quantity %>
                                             </div>
 
@@ -698,7 +705,7 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="block text-sm font-medium text-slate-300 mb-2">Valor</label>
+                                <label class="block text-sm font-medium text-slate-300 mb-2">Quantidade</label>
                                 <%= f.number_field :quantity, name: "club_material[quantity]", step:"1", min: 0, class:"w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-green-500", placeholder: "10" %>
                             </div>
 

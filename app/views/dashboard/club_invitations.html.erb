@@ -1,0 +1,488 @@
+<body class="min-h-screen flex text-white bg-gray-900">
+<!-------------------------------------------------------------------------------- NOME E LOGO DO CLUBE ------------------------------------------------------------------------->
+    <div class="w-64 bg-slate-800 shadow-xl min-h-screen flex flex-col border-r border-slate-700">
+        <!-- Logo e nome do clube -->
+        <div class="p-6 border-b border-slate-700">
+            <div class="flex items-center justify-center mb-3">
+                
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% elsif (current_user.board? && current_user.board_profile.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.club_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-20 h-20 rounded-full border-1" %>
+                <% end %>
+
+                
+            </div>
+            <h1 class="text-lg font-bold text-center text-white">
+                <% if current_user.club? %>
+                    <%= current_user.club_profile.name %>
+                <% elsif current_user.board? %>
+                    <%= current_user.board_profile.club_profile.name %>
+                <% end %>
+            </h1>
+        </div>
+<!-------------------------------------------------------------------------------- SIDEBAR ------------------------------------------------------------------------->
+        <nav class="flex-1 p-4 space-y-2">
+
+            <%= link_to club_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 hover:bg-slate-700 text-slate-300 hover:text-blue-400 rounded-xl border-l-4 hover:border-blue-500 border-transparent transition-all duration-300">
+                <i data-feather="home" class="sidebar-icon text-blue-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Dashboard</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_teams_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-xl border-l-4 border-transparent hover:border-green-500 transition-all duration-300">
+                <i data-feather="users" class="sidebar-icon text-green-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Equipas</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_finances_dashboard_path do %>
+            <div  class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 rounded-xl border-l-4 border-transparent hover:border-yellow-500 transition-all duration-300">
+                <i data-feather="dollar-sign" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Finanças</span>
+            </div>
+            <% end %>
+
+
+            <%= link_to club_infrastructures_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-xl border-l-4 border-transparent hover:border-orange-500 transition-all duration-300">
+                <i data-feather="map-pin" class="sidebar-icon text-orange-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Infraestruturas</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_equipment_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-400 rounded-xl border-l-4 border-transparent hover:border-rose-300 transition-all duration-300">
+                <i data-feather="clipboard" class="sidebar-icon text-rose-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Material</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_board_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-900 rounded-xl border-l-4 border-transparent hover:border-rose-950 transition-all duration-300">
+                <i data-feather="settings" class="sidebar-icon text-rose-900 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Membros da Direção</span>
+            </div>
+            <% end %>
+
+
+            <%= link_to club_invitations_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-purple-500 rounded-xl border-l-4 border-purple-800 transition-all duration-300">
+                <i data-feather="mail" class="sidebar-icon text-purple-500 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Convites</span>
+            </div>
+            <% end %>
+
+            <div class="space-y-2 ml-10 mt-2">
+                <% if @club.has_football? %>
+                    <div class="flex items-center justify-between">
+                        <%= link_to club_invitations_dashboard_path(sport: 'football'), class: "flex-1" do %>
+                            <% if @selected_sport == 'football' %>
+                                <div class="flex items-center px-1 py-2 bg-slate-700 text-purple-400 rounded-lg transition-all duration-200">
+                                    <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-purple-400"></i>
+                                    <span class="text-sm">Futebol</span>
+                                </div>
+                            <% else %>
+                                <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-purple-400 rounded-lg transition-all duration-200">
+                                    <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-purple-400"></i>
+                                    <span class="text-sm">Futebol</span>
+                                </div>
+                            <% end %>
+                        <% end %>
+                    </div>
+                <% end %>
+                <% if @club.has_handball? %>
+                    <div class="flex items-center justify-between">
+                        <%= link_to club_invitations_dashboard_path(sport: 'handball'), class: "flex-1" do %>
+                            <% if @selected_sport == 'handball' %>
+                                <div class="flex items-center px-1 py-2 bg-slate-700 text-purple-400 rounded-lg transition-all duration-200">
+                                    <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-purple-400"></i>
+                                    <span class="text-sm">Andebol</span>
+                                </div>
+                            <% else %>
+                                <div class="flex items-center px-1 py-2 text-slate-300 hover:bg-slate-700 hover:text-purple-400 rounded-lg transition-all duration-200">
+                                    <i data-feather="chevron-right" class="w-4 h-4 mr-2 text-purple-400"></i>
+                                    <span class="text-sm">Andebol</span>
+                                </div>
+                            <% end %>
+                        <% end %>
+                    </div>
+                <% end %>
+            </div>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-gray-400 rounded-xl border-l-4 border-transparent hover:border-gray-400 transition-all duration-300">
+                <i data-feather="arrow-left" class="sidebar-icon text-gray-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Página Inicial</span>
+            </div>
+            <% end %>
+        </nav>
+
+
+        <div class="p-4 border-t border-slate-700">
+            <div class="flex items-center space-x-3">
+                <% if (current_user.club? and current_user.club_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.club_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% elsif (current_user.board? and current_user.board_profile.profile_picture.attached?) %>
+                    <%= image_tag url_for(current_user.board_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% end %>
+                <div class="flex-1">
+                    <% if current_user.club? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.club_profile.name %> </p>
+                    <% elsif current_user.board? %>
+                        <p class="text-sm font-medium text-white"> <%= current_user.board_profile.name %> </p>
+                    <% end %>
+                </div>
+                <%= button_to destroy_user_session_path, method: :delete do %>
+                    <i data-feather="log-out" class="text-slate-400 hover:text-red-400 cursor-pointer transition-colors"></i>
+                <% end %>
+            </div>
+        </div>
+</div>
+<!-------------------------------------------------------------------------------- MAIN ------------------------------------------------------------------------->
+    <div class="flex-1 p-8">
+
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold  text-purple-500 slide-in">Convites</h1>
+                    <p class="text-slate-400 mt-1">Veja todos os convites que o seu clube enviou para jogadores / treinadores</p> 
+                </div>
+            </div>
+            <br>
+            <% if @club.has_no_sports? %>
+                <div class="flex justify-center items-center mb-8">
+                    <div class="flex flex-col items-start">
+                    <h1 class="text-2xl text-neutral-400 slide-in mx-auto">O clube ainda não tem nenhum desporto!</h1>
+                    <h1 class="text-2xl text-neutral-400 slide-in">Adicione um desporto em "<%= link_to "Equipas", club_teams_dashboard_path, class: "hover:underline bold text-green-400 hover:text-green-500" %>" para começar a gerir o material</h1>
+                    </div>
+                </div>
+            <% end %>
+
+            <!---------------------------------------------------- PESQUISAS ---------------------------------------------------->
+        <% if !@club.has_no_sports? %>
+            <div class="flex items-center mb-6 gap-x-4">
+                <%= form_with url: club_invitations_dashboard_path, method: :get, local: true, id: "search-form" do %>
+                    <%= hidden_field_tag :sport, @selected_sport %>
+                    <%= hidden_field_tag :type, @selected_type %>
+                    <div class="relative w-80">
+                        <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none z-10"></i>
+                        <%= text_field_tag :query, params[:query], placeholder: "Pesquisar Convites", class: "bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-10 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white", oninput: "clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(() => this.form.requestSubmit(), 1000); toggleClearButton(this)", id: "search-input" %>
+                        <button type="button" id="clear-search" onclick="clearSearch()" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition <%= 'hidden' unless params[:query].present? %>">
+                            <i data-feather="x" class="w-4 h-4 text-red-400"></i>
+                        </button>
+                    </div>
+                <% end %>
+
+                <% if @selected_sport == "football" %>
+                    <%= link_to club_invitations_dashboard_path(sport: 'football', type: "pending") do %>
+                        <button class="px-6 py-2 rounded-full border transition-all duration-200 <%= @selected_type == 'pending' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-gray-800 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-blue-500/10' %>">Pendentes</button>
+                    <% end %>
+                    <%= link_to club_invitations_dashboard_path(sport: 'football', type: "accepted") do %>
+                        <button class="px-6 py-2 rounded-full border transition-all duration-200 <%= @selected_type == 'accepted' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-gray-800 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-blue-500/10' %>">Aceites</button>
+                    <% end %>
+                    <%= link_to club_invitations_dashboard_path(sport: 'football', type: "rejected") do %>
+                        <button class="px-6 py-2 rounded-full border transition-all duration-200 <%= @selected_type == 'rejected' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-gray-800 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-blue-500/10' %>">Rejeitados</button>
+                    <% end %>
+                <% elsif @selected_sport == "handball" %>
+                    <%= link_to club_invitations_dashboard_path(sport: 'handball', type: "pending") do %>
+                        <button class="px-6 py-2 rounded-full border transition-all duration-200 <%= @selected_type == 'pending' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-gray-800 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-blue-500/10' %>">Pendentes</button>
+                    <% end %>
+                    <%= link_to club_invitations_dashboard_path(sport: 'handball', type: "accepted") do %>
+                        <button class="px-6 py-2 rounded-full border transition-all duration-200 <%= @selected_type == 'accepted' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-gray-800 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-blue-500/10' %>">Aceites</button>
+                    <% end %>
+                    <%= link_to club_invitations_dashboard_path(sport: 'handball', type: "rejected") do %>
+                        <button class="px-6 py-2 rounded-full border transition-all duration-200 <%= @selected_type == 'rejected' ? 'bg-blue-600 border-blue-500 text-white' : 'bg-gray-800 border-gray-600 text-gray-300 hover:border-blue-500 hover:text-blue-400 hover:bg-blue-500/10' %>">Rejeitados</button>
+                    <% end %>
+                <% end %>
+            </div>
+        <% end %>
+
+<!-------------------------------------------------------------------------------- Treinadores ------------------------------------------------------------------------->
+
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-yellow-300 flex items-center space-x-2">
+                        <i data-feather="award" class="w-6 h-6"></i>
+                        <span>Equipa Técnica ( <%= @coach_invitations_count %> )</span>
+                    </h3>
+                </div>
+
+                <% if @coach_invitations_results&.any? %>
+                    <div class="grid grid-cols-4 justify-center gap-6">
+                    <% @coach_invitations_results.each do |coach| %>
+                        <% coach_profile = CoachProfile.find_by(id: coach.coach_profile_id) %>
+                        <div class="bg-gray-800 border-l-4 border-secondary-300 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 relative">
+                            <%= link_to coach_profile_path(coach_profile) do %>
+                                <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                                    <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                                        <% if coach_profile.banner_picture.attached? %>
+                                            <%= image_tag url_for(coach_profile.banner_picture), class: "w-full h-full object-cover" %>
+                                        <% else %>
+                                            <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                        <% end %>
+                                    </div>
+                                    <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
+                                        <% if coach_profile.profile_picture.attached? %>
+                                            <%= image_tag url_for(coach_profile.profile_picture), class: "w-full h-full object-cover " %>
+                                        <% else %>
+                                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
+                                        <% end %>
+                                    </div>
+                                </div>
+                                <div class="p-4 pt-14 pb-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-bold text-lg"> <%= coach_profile.name %> </h3>
+                                            <p class="text-gray-400 text-sm"> <%= coach_profile.role %>  • <%= ((Date.today - coach_profile.birth_date).to_i / 365.25).floor  %> anos</p>
+                                        </div>
+                                        <span class="absolute top-3 right-3 z-10 text-xs font-semibold px-2.5 py-2 rounded-full whitespace-nowrap
+                                            <%= coach.status == 'pending'  ? 'bg-yellow-500/20 text-yellow-400 ring-1 ring-yellow-500/40' : '' %>
+                                            <%= coach.status == 'accepted' ? 'bg-green-500/20  text-green-400  ring-1 ring-green-500/40'  : '' %>
+                                            <%= coach.status == 'rejected' ? 'bg-red-500/20    text-red-400    ring-1 ring-red-500/40'    : '' %>
+                                        ">
+                                            <%= coach.status == 'pending'  ? 'Convite Pendente'  : '' %>
+                                            <%= coach.status == 'accepted' ? 'Aceite'    : '' %>
+                                            <%= coach.status == 'rejected' ? 'Rejeitado' : '' %>
+                                        </span>
+                                    </div>
+                                </div>
+                            <% end %>
+                        </div>
+                        </div> 
+                    <% end %>
+                <% end %>
+
+                
+
+                <% if @coach_invitations_results.total_pages > 1 %>
+                <div class="mt-8 flex justify-end">
+                    <div class="flex flex-col items-end gap-3">               
+
+                    <div class="flex items-center gap-2">
+                        <% if @coach_invitations_results.prev_page %>
+                        <%= link_to club_invitations_dashboard_path(sport: @selected_sport, type: @selected_type, query: params[:query], coach_invitations_page: @coach_invitations_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        </div>
+                        <% end %>
+
+                        <div class="flex items-center gap-1">
+                        <% (1..@coach_invitations_results.total_pages).each do |page| %>
+                            <% if page == @coach_invitations_results.current_page %>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-purple-600 text-white font-bold border-2 border-purple-500 shadow-lg">
+                                <%= page %>
+                            </div>
+                            <% else %>
+                            <%= link_to page, club_invitations_dashboard_path(sport: @selected_sport, type: @selected_type, query: params[:query], coach_invitations_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                            <% end %>
+                        <% end %>
+                        </div>
+
+                        <% if @coach_invitations_results.next_page %>
+                        <%= link_to club_invitations_dashboard_path(sport: @selected_sport, type: @selected_type, query: params[:query], coach_invitations_page: @coach_invitations_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                        <% end %>
+                    </div>
+                    </div>
+                </div>
+
+                <% elsif !@coach_invitations_results&.any? and !params[:query].present? %>
+                    <div class="flex justify-center items-center mb-8">
+                        <div class="flex flex-col items-start">
+                            <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem nenhum convite para equipa técnica neste desporto</h1>
+                        </div>
+                    </div>
+                <% end %>
+                
+            </div>
+
+<!-------------------------------------------------------------------------------- JOGADORES ------------------------------------------------------------------------->
+
+            <div class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-secondary-300 flex items-center space-x-2">
+                        <i data-feather="users" class="w-6 h-6"></i>
+                        <span>Jogadores ( <%= @player_invitations_count %> )</span>
+                    </h3>
+                </div>
+
+                <% if @player_invitations_results&.any? %>
+                    <div class="grid grid-cols-4 justify-center gap-6">
+                    <% @player_invitations_results.each do |player| %>
+                        <% player_profile = PlayerProfile.find_by(id: player.player_profile_id) %>
+                        <div class="bg-gray-800 border-l-4 border-secondary-300 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 relative">
+                            <%= link_to player_profile_path(player_profile) do %>
+                                <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                                    <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                                        <% if player_profile.banner_picture.attached? %>
+                                            <%= image_tag url_for(player_profile.banner_picture), class: "w-full h-full object-cover" %>
+                                        <% else %>
+                                            <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                        <% end %>
+                                    </div>
+                                    <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
+                                        <% if player_profile.profile_picture.attached? %>
+                                            <%= image_tag url_for(player_profile.profile_picture), class: "w-full h-full object-cover " %>
+                                        <% else %>
+                                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover " %>
+                                        <% end %>
+                                    </div>
+                                </div>
+                                <div class="p-4 pt-14 pb-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-bold text-lg"> <%= player_profile.name %> </h3>
+                                            <p class="text-gray-400 text-sm"> <%= player_profile.position %>  <%= " | " + player_profile.secondary_position if player_profile.secondary_position.present? %> • <%= ((Date.today - player_profile.birth_date).to_i / 365.25).floor  %> anos</p>
+                                        </div>
+                                        <span class="absolute top-3 right-3 z-10 text-xs font-semibold px-2.5 py-2 rounded-full whitespace-nowrap
+                                            <%= player.status == 'pending'  ? 'bg-yellow-500/20 text-yellow-400 ring-1 ring-yellow-500/40' : '' %>
+                                            <%= player.status == 'accepted' ? 'bg-green-500/20  text-green-400  ring-1 ring-green-500/40'  : '' %>
+                                            <%= player.status == 'rejected' ? 'bg-red-500/20    text-red-400    ring-1 ring-red-500/40'    : '' %>
+                                        ">
+                                            <%= player.status == 'pending'  ? 'Convite Pendente'  : '' %>
+                                            <%= player.status == 'accepted' ? 'Aceite'    : '' %>
+                                            <%= player.status == 'rejected' ? 'Rejeitado' : '' %>
+                                        </span>
+                                    </div>
+                                </div>
+                            <% end %>
+                        </div>
+                    <% end %>
+                <% end %>
+
+                </div> 
+
+                <% if @player_invitations_results.total_pages > 1 %>
+                <div class="mt-8 flex justify-end">
+                    <div class="flex flex-col items-end gap-3">               
+
+                    <div class="flex items-center gap-2">
+                        <% if @player_invitations_results.prev_page %>
+                        <%= link_to club_invitations_dashboard_path(sport: @selected_sport, type: @selected_type, query: params[:query], player_invitations_page: @player_invitations_results.prev_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <i data-feather="chevron-left" class="w-4 h-4"></i>
+                            <span>Anterior</span>
+                        </div>
+                        <% end %>
+
+                        <div class="flex items-center gap-1">
+                        <% (1..@player_invitations_results.total_pages).each do |page| %>
+                            <% if page == @player_invitations_results.current_page %>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-purple-600 text-white font-bold border-2 border-purple-500 shadow-lg">
+                                <%= page %>
+                            </div>
+                            <% else %>
+                            <%= link_to page, club_invitations_dashboard_path(sport: @selected_sport, type: @selected_type, query: params[:query], player_invitations_page: page), class: "w-10 h-10 flex items-center justify-center rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 transition-all duration-200 font-medium" %>
+                            <% end %>
+                        <% end %>
+                        </div>
+
+                        <% if @player_invitations_results.next_page %>
+                        <%= link_to club_invitations_dashboard_path(sport: @selected_sport, type: @selected_type, query: params[:query], player_invitations_page: @player_invitations_results.next_page), class: "flex items-center gap-2 px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg border border-gray-700 transition-all duration-200 font-medium" do %>
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        <% end %>
+                        <% else %>
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-800/50 text-gray-600 rounded-lg border border-gray-700/50 cursor-not-allowed font-medium">
+                            <span>Seguinte</span>
+                            <i data-feather="chevron-right" class="w-4 h-4"></i>
+                        </div>
+                        <% end %>
+                    </div>
+                    </div>
+                </div>
+
+                <% elsif !@player_invitations_results&.any? and !params[:query].present? %>
+                    <div class="flex justify-center items-center mb-8">
+                        <div class="flex flex-col items-start">
+                            <h1 class="text-2xl text-neutral-400 slide-in mx-auto">Ainda não tem nenhum convite para jogadores neste desporto</h1>
+                        </div>
+                    </div>
+                <% end %>
+                
+            </div>
+            
+    </div>
+
+
+<script>
+    feather.replace()
+</script>
+
+<!-- Configuração da cor principal e secundária do tailwind -->
+
+<script>
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                colors: {
+                    primary: {
+                        500: '#6366f1',
+                    },
+                    secondary: {
+                        500: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    }
+</script>
+
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        }
+                    }
+                }
+            }
+        }
+    </script>

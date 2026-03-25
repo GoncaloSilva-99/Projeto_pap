@@ -77,6 +77,12 @@
                                 <i data-feather="bookmark" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">Guardados</p>
                             </a>
+                            <% if current_user.player? and current_user.coach? %>
+                                <a data-modal-target="invitation-modal" data-modal-toggle="invitation-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600 hover:text-green-400">
+                                    <i data-feather="mail" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Convites</p>
+                                </a>
+                            <% end %>
                         </div>
                     </div>
                 <% end %>
@@ -205,10 +211,6 @@
                                             <span>Definições</span>
                                         <% end %>
                                     <% end%>
-                                </li>
-                                <li>
-                                    <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400">
-                                        <i data-feather="bar-chart-2" class="mr-2"></i>Estatísticas</a>
                                 </li>
                                 <li>
                                     <%= button_to destroy_user_session_path, method: :delete, form_class: "w-full", class: "w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500 dark:active:text-red-500" do %>
@@ -1232,6 +1234,21 @@
             <!-- Modal publicações liked -->
 
             <%= render "posts/liked_posts_modal" %>
+
+            <div id="invitation-modal" class="fixed inset-0 z-[100] bg-gray-950 bg-opacity-90 hidden flex items-center justify-center">
+                <div class="bg-gray-900 rounded-xl p-8 w-full max-w-4xl relative shadow-2xl mx-4 h-[80vh] flex flex-col">
+                    <button data-modal-hide="invitation-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                        <i data-feather="x" class="w-6 h-6"></i>
+                    </button>
+                    <h2 class="text-2xl font-bold text-white mb-6 text-center">Convites</h2>
+                    
+                    <div id="favorites-list" class="flex-1 overflow-y-auto space-y-6 pr-2 no-scrollbar">
+                        <div id="saved_posts_list" class="space-y-6">
+                            <%= render "posts/saved_posts_list" %>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
 
             <script>
@@ -1627,7 +1644,7 @@
 
         <!-- Feature: Gestão de Equipas -->
             <section class="relative py-24 px-6 overflow-hidden" style="scroll-margin-top: 72px;">
-                <%= image_tag "hero.png", class: "absolute inset-0 w-full h-full object-cover opacity-10 z-0", alt: "" %>
+                <%= image_tag "home_equipa2.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-10 z-0", alt: "" %>
                 <div class="container mx-auto relative z-10">
                     <div class="flex flex-col md:flex-row items-center gap-12">
                         <div class="md:w-1/2">
@@ -1645,7 +1662,7 @@
                             </ul>
                         </div>
                         <div class="md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
-                            <%= image_tag "hero.png", class: "w-full h-72 object-cover", alt: "Gestão de Equipas" %>
+                            <%= image_tag "equipa_sportx.png", class: "w-full h-108 object-contain", alt: "Gestão de Equipas" %>
                         </div>
                     </div>
                 </div>
@@ -1655,32 +1672,6 @@
             <section class="relative py-24 px-6 overflow-hidden bg-gray-800" style="scroll-margin-top: 72px;">
                 <div class="container mx-auto relative z-10">
                     <div class="flex flex-col md:flex-row-reverse items-center gap-12">
-                        <div class="md:w-1/2">
-                            <span class="text-green-400 text-sm font-semibold uppercase tracking-widest mb-3 block">Treinos & Instalações</span>
-                            <h2 class="text-3xl md:text-4xl font-bold mb-4 leading-tight">
-                                Planeia cada sessão <span style="background: linear-gradient(to right, #22c55e, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;">ao milímetro</span>
-                            </h2>
-                            <p class="text-gray-400 text-lg mb-6">
-                                Agenda treinos com campo, zona e balneário definidos. Define horários recorrentes ou pontuais e elimina conflitos de instalações entre equipas.
-                            </p>
-                            <ul class="space-y-3 text-gray-300">
-                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-green-400 flex-shrink-0"></i> Agendamento com campo, zona e balneário atribuídos</li>
-                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-green-400 flex-shrink-0"></i> Treinos recorrentes por dia da semana</li>
-                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-green-400 flex-shrink-0"></i> Gestão de centros de treino e infraestruturas</li>
-                            </ul>
-                        </div>
-                        <div class="md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
-                            <%= image_tag "hero.png", class: "w-full h-72 object-cover", alt: "Gestão de Treinos" %>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Feature: Gestão Financeira -->
-            <section class="relative py-24 px-6 overflow-hidden" style="scroll-margin-top: 72px;">
-                <%= image_tag "hero.png", class: "absolute inset-0 w-full h-full object-cover opacity-10 z-0", alt: "" %>
-                <div class="container mx-auto relative z-10">
-                    <div class="flex flex-col md:flex-row items-center gap-12">
                         <div class="md:w-1/2">
                             <span class="text-orange-400 text-sm font-semibold uppercase tracking-widest mb-3 block">Finanças do Clube</span>
                             <h2 class="text-3xl md:text-4xl font-bold mb-4 leading-tight">
@@ -1696,8 +1687,36 @@
                             </ul>
                         </div>
                         <div class="md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
-                            <%= image_tag "hero.png", class: "w-full h-72 object-cover", alt: "Gestão Financeira" %>
+                            <%= image_tag "finanças.png", class: "w-full h-86 object-contain", alt: "Gestão Financeira" %>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feature: Gestão Financeira -->
+            <section class="relative py-24 px-6 overflow-hidden" style="scroll-margin-top: 72px;">
+                <%= image_tag "home_treinos.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-10 z-0", alt: "" %>
+                <div class="container mx-auto relative z-10">
+                    <div class="flex flex-col md:flex-row items-center gap-12">
+
+                        <div class="md:w-1/2">
+                            <span class="text-green-400 text-sm font-semibold uppercase tracking-widest mb-3 block">Treinos & Instalações</span>
+                            <h2 class="text-3xl md:text-4xl font-bold mb-4 leading-tight">
+                                Planeia cada sessão <span style="background: linear-gradient(to right, #22c55e, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;">ao milímetro</span>
+                            </h2>
+                            <p class="text-gray-400 text-lg mb-6">
+                                Agenda treinos com campo, zona e balneário definidos. Define horários recorrentes ou pontuais e elimina conflitos de instalações entre equipas.
+                            </p>
+                            <ul class="space-y-3 text-gray-300">
+                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-green-400 flex-shrink-0"></i> Agendamento com campo, zona e balneário atribuídos</li>
+                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-green-400 flex-shrink-0"></i> Treinos recorrentes por dia da semana</li>
+                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-green-400 flex-shrink-0"></i> Gestão de centros de treino e infraestruturas</li>
+                            </ul>
+                        </div>
+                        <div class="md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
+                            <%= image_tag "treinos.png", class: "w-full  object-contain", alt: "Gestão de Treinos" %>
+                        </div>
+                        
                     </div>
                 </div>
             </section>
@@ -1706,32 +1725,6 @@
             <section class="relative py-24 px-6 overflow-hidden bg-gray-800" style="scroll-margin-top: 72px;">
                 <div class="container mx-auto relative z-10">
                     <div class="flex flex-col md:flex-row-reverse items-center gap-12">
-                        <div class="md:w-1/2">
-                            <span class="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3 block">Comunidade & Publicações</span>
-                            <h2 class="text-3xl md:text-4xl font-bold mb-4 leading-tight">
-                                Mais do que um clube - <span style="background: linear-gradient(to right, #3b82f6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;">uma comunidade</span>
-                            </h2>
-                            <p class="text-gray-400 text-lg mb-6">
-                                Publica, comenta, guarda e interage com conteúdo de clubes, jogadores e treinadores. Segue quem te inspira e mantém-te sempre a par do mundo desportivo.
-                            </p>
-                            <ul class="space-y-3 text-gray-300">
-                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-blue-400 flex-shrink-0"></i> Feed personalizado com publicações de quem segues</li>
-                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-blue-400 flex-shrink-0"></i> Gostos, comentários e publicações guardadas</li>
-                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-blue-400 flex-shrink-0"></i> Sugestões de perfis relevantes para seguir</li>
-                            </ul>
-                        </div>
-                        <div class="md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
-                            <%= image_tag "hero.png", class: "w-full h-72 object-cover", alt: "Comunidade" %>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Feature: Perfis -->
-            <section class="relative py-24 px-6 overflow-hidden" style="scroll-margin-top: 72px;">
-                <%= image_tag "hero.png", class: "absolute inset-0 w-full h-full object-cover opacity-10 z-0", alt: "" %>
-                <div class="container mx-auto relative z-10">
-                    <div class="flex flex-col md:flex-row items-center gap-12">
                         <div class="md:w-1/2">
                             <span class="text-rose-400 text-sm font-semibold uppercase tracking-widest mb-3 block">Perfis Desportivos</span>
                             <h2 class="text-3xl md:text-4xl font-bold mb-4 leading-tight">
@@ -1754,11 +1747,38 @@
                             </ul>
                         </div>
                         <div class="md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
-                            <%= image_tag "hero.png", class: "w-full h-72 object-cover", alt: "Perfis" %>
+                            <%= image_tag "perfil_sportx.png", class: "w-full h-98 object-contain", alt: "Perfis" %>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feature: Perfis -->
+            <section class="relative py-24 px-6 overflow-hidden" style="scroll-margin-top: 72px;">
+                <%= image_tag "home_comunidade.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-10 z-0", alt: "" %>
+                <div class="container mx-auto relative z-10">
+                    <div class="flex flex-col md:flex-row items-center gap-12">
+
+                        <div class="md:w-1/2">
+                            <span class="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3 block">Comunidade & Publicações</span>
+                            <h2 class="text-3xl md:text-4xl font-bold mb-4 leading-tight">
+                                Mais do que um clube - <span style="background: linear-gradient(to right, #3b82f6, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;">uma comunidade</span>
+                            </h2>
+                            <p class="text-gray-400 text-lg mb-6">
+                                Publica, comenta, guarda e interage com conteúdo de clubes, jogadores e treinadores. Segue quem te inspira e mantém-te sempre a par do mundo desportivo.
+                            </p>
+                            <ul class="space-y-3 text-gray-300">
+                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-blue-400 flex-shrink-0"></i> Feed personalizado com publicações de quem segues</li>
+                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-blue-400 flex-shrink-0"></i> Gostos, comentários e publicações guardadas</li>
+                                <li class="flex items-center gap-3"><i data-feather="check-circle" class="w-5 h-5 text-blue-400 flex-shrink-0"></i> Sugestões de perfis relevantes para seguir</li>
+                            </ul>
+                        </div>
+                        <div class="md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-gray-700">
+                            <%= image_tag "exemplo_pub.png", class: "w-full h-86 object-contain", alt: "Comunidade" %>
                         </div>
                     </div>
                         <div class="flex justify-center mt-10">
-                            <%= link_to "Começa Já", choose_account_type_path, class: "bg-red-600 hover:bg-red-800 px-10 py-4 rounded-md font-medium text-lg clickable" %>
+                            <%= link_to "Começa Já", choose_account_type_path, class: "bg-blue-600 hover:bg-blue-800 px-10 py-4 rounded-md font-medium text-lg clickable" %>
                         </div>
                 </div>
             </section>

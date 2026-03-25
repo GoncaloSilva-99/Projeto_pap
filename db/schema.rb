@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_19_185847) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_24_155544) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -89,6 +89,26 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_185847) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["club_profile_id"], name: "index_club_incomes_on_club_profile_id"
+  end
+
+  create_table "club_invitation_coaches", force: :cascade do |t|
+    t.bigint "club_profile_id", null: false
+    t.bigint "coach_profile_id", null: false
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["club_profile_id"], name: "index_club_invitation_coaches_on_club_profile_id"
+    t.index ["coach_profile_id"], name: "index_club_invitation_coaches_on_coach_profile_id"
+  end
+
+  create_table "club_invitation_players", force: :cascade do |t|
+    t.bigint "club_profile_id", null: false
+    t.bigint "player_profile_id", null: false
+    t.string "status", default: "pending", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["club_profile_id"], name: "index_club_invitation_players_on_club_profile_id"
+    t.index ["player_profile_id"], name: "index_club_invitation_players_on_player_profile_id"
   end
 
   create_table "club_locker_rooms", force: :cascade do |t|
@@ -376,6 +396,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_19_185847) do
   add_foreign_key "club_balances", "club_profiles"
   add_foreign_key "club_expenses", "club_profiles"
   add_foreign_key "club_incomes", "club_profiles"
+  add_foreign_key "club_invitation_coaches", "club_profiles"
+  add_foreign_key "club_invitation_coaches", "coach_profiles"
+  add_foreign_key "club_invitation_players", "club_profiles"
+  add_foreign_key "club_invitation_players", "player_profiles"
   add_foreign_key "club_locker_rooms", "club_profiles"
   add_foreign_key "club_locker_rooms", "club_training_centers"
   add_foreign_key "club_locker_rooms", "sports"
