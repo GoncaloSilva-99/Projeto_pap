@@ -60,11 +60,17 @@ class AdminProfilesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_admin_profile
-      @admin_profile = AdminProfile.find(params.expect(:id))
+      @admin_profile = AdminProfile.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def admin_profile_params
-      params.expect(admin_profile: [ :user_id, :name ])
+      permitted_params = [:user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date]
+
+      if action_name == 'update'
+        permitted_params << { user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] }
+      end
+
+      params.require(:admin_profile).permit(*permitted_params)
     end
 end

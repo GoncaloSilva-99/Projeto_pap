@@ -75,7 +75,7 @@
                 <h3 class="text-xl font-bold mb-4">Biografia</h3>
                 <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
                     <% if club_profile.bio.present? %>
-                        <%= club_profile.bio %>
+<%= club_profile.bio %>
                     <% else %>
                             <p class="text-gray-300 mb-4">Ainda sem biografia</p>
                     <% end %>                    
@@ -139,11 +139,12 @@
             <!-- Posts Section -->
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
+                    
                     <h3 class="text-xl font-bold">Publicações</h3>
                 </div>
                 
                         <!-- Create Post -->
-                        <% if current_user.id == club_profile.user_id %>
+                        <% if current_user&.id == club_profile.user_id %>
                             <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg">
                                 
                                     <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>

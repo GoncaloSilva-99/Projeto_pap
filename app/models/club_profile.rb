@@ -1,7 +1,7 @@
 class ClubProfile < ApplicationRecord
+  belongs_to :user, dependent: :destroy
   has_many :club_invitation_players, dependent: :destroy
   has_many :invited_players, through: :club_invitation_players, source: :player_profile
-  belongs_to :user
   accepts_nested_attributes_for :user
   has_many :board_profiles, dependent: :destroy
   has_one_attached :profile_picture
@@ -18,6 +18,9 @@ class ClubProfile < ApplicationRecord
   MIN_DATE = 1.day.ago.to_date
 
   validates_presence_of :name, :foundation_date, :verification_document
+
+  include PgSearch::Model
+  pg_search_scope :search_by_name, against: :name, using: { tsearch: { prefix: true } }
 
   def has_football?
     club_sports.exists?(sport_id: 2)
