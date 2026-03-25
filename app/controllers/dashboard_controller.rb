@@ -18,6 +18,7 @@ class DashboardController < ApplicationController
   
   def invitations
     @club = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
+
     if params[:sport]
       @selected_sport = params[:sport]
     elsif @club.has_football?
@@ -26,28 +27,34 @@ class DashboardController < ApplicationController
       @selected_sport = 'handball'
     end
 
-    if params[:type]
-      @selected_type = params[:type]
-    else
-      @selected_type = 'pending'
-    end
+    @selected_type = params[:type] || 'pending'
 
-    @player_invitations = ClubInvitationPlayer.where(club_profile_id: @club.id, status: @selected_type)
-    @player_invitations_count = @player_invitations.count
+    @player_invitations = ClubInvitationPlayer
+      .joins(:player_profile)
+      .where(club_profile_id: @club.id, status: @selected_type, player_profiles: { sport: @selected_sport })
+
+    @coach_invitations = ClubInvitationCoach
+      .joins(:coach_profile)
+      .where(club_profile_id: @club.id, status: @selected_type, coach_profiles: { sport: @selected_sport})
+
 
     @player_invitations_results = @player_invitations.page(params[:player_invitations_page]).per(4)
+    @coach_invitations_results  = @coach_invitations.page(params[:coach_invitations_page]).per(4)
 
-    @coach_invitations = ClubInvitationCoach.where(club_profile_id: @club.id, status: @selected_type)
-    @coach_invitations_count = @coach_invitations.count
-    @coach_invitations_results = @coach_invitations.page(params[:coach_invitations_page]).per(4)
+    if params[:query].present?
+      matching_player_ids = PlayerProfile.search_by_name(params[:query]).pluck(:id)
+      @player_invitations_results = @player_invitations
+        .where(player_profile_id: matching_player_ids)
+        .page(params[:player_invitations_page]).per(4)
 
-    if params[:query]
-      matching_profile_ids_player = PlayerProfile.search_by_name(@query).pluck(:id)
-      @player_invitations_results = @player_invitations.where(club_profile_id: @club.id, type: @selected_type, player_profile_id: matching_profile_ids_player)
-      matching_profile_ids_coach = CoachProfile.search_by_name(@query).pluck(:id)
-      @player_invitations_results = @player_invitations.where(club_profile_id: @club.id, type: @selected_type, coach_profile_id: matching_profile_ids_coach)
+      matching_coach_ids = CoachProfile.search_by_name(params[:query]).pluck(:id)
+      @coach_invitations_results = @coach_invitations
+        .where(coach_profile_id: matching_coach_ids)
+        .page(params[:coach_invitations_page]).per(4)
     end
 
+    @player_invitations_count = @player_invitations_results.count
+    @coach_invitations_count  = @coach_invitations_results.count
   end
 
 

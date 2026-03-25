@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     end
   end
 
+
   post 'report_profile', to: 'report_profiles#create', as: :report_profile
 
   resources :player_profiles do
