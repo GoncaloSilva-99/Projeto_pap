@@ -36,6 +36,7 @@ class CoachProfilesController < ApplicationController
 
   # GET /coach_profiles/1/edit
   def edit
+    @coach_profile.build_user if @coach_profile.user.nil?
   end
 
   # POST /coach_profiles or /coach_profiles.json
@@ -55,9 +56,64 @@ class CoachProfilesController < ApplicationController
 
   # PATCH/PUT /coach_profiles/1 or /coach_profiles/1.json
   def update
+    # Handle image removal
+    @coach_profile.profile_picture.purge if params[:coach_profile][:remove_profile_picture] == '1'
+    @coach_profile.banner_picture.purge if params[:coach_profile][:remove_banner_picture] == '1'
+
+    # Extract user-related fields (email / password) so we can update the Devise user separately.
+    profile_params = coach_profile_params.dup
+    user_attrs = profile_params.delete(:user_attributes)
+
+    # Clean bio - remove indentation spaces but keep user-inserted line breaks
+    if profile_params[:bio].present?
+      profile_params[:bio] = profile_params[:bio].strip.lines.map(&:strip).join("\n")
+    end
+
+    user_update_success = true
+    account_details_changed = false
+
+    if user_attrs.present?
+      user_attrs = user_attrs.to_h
+      # Keep confirmation fields around so validations can run even if blank.
+      user_attrs = user_attrs.reject do |k, v|
+        v.blank? && !%w[email_confirmation password_confirmation].include?(k.to_s)
+      end
+
+      if user_attrs.present? && @coach_profile.user.present?
+        user = @coach_profile.user
+
+        # Check if account details should trigger logout.
+        account_details_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
+        account_details_changed ||= user_attrs[:password].present?
+
+        # If changing email or password, require current password for security.
+        email_being_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
+        password_being_changed = user_attrs[:password].present?
+
+        if (email_being_changed || password_being_changed) && user_attrs[:current_password].blank?
+          @coach_profile.errors.add(:base, "É necessário introduzir a palavra-passe atual para alterar email ou palavra-passe.")
+          user_update_success = false
+        elsif user_attrs[:current_password].present?
+          user_update_success = user.update_with_password(user_attrs)
+        else
+          user_update_success = user.update_without_password(user_attrs.except(:current_password))
+        end
+
+        # Surface Devise errors in the form
+        if user.errors.any?
+          user.errors.full_messages.each { |msg| @coach_profile.errors.add(:base, msg) }
+        end
+      end
+    end
+
     respond_to do |format|
-      if @coach_profile.update(coach_profile_params)
-        format.html { redirect_to @coach_profile, notice: "Conta de Treinador atualizada com sucesso!", status: :see_other }
+      if user_update_success && @coach_profile.update(profile_params)
+        if account_details_changed
+          sign_out(current_user) if current_user
+          format.html { redirect_to new_user_session_path, notice: "Dados de login alterados. Por favor, entre novamente.", status: :see_other }
+        else
+          format.html { redirect_to @coach_profile, notice: "Conta de Treinador atualizada com sucesso!", status: :see_other }
+        end
         format.json { render :show, status: :ok, location: @coach_profile }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -79,11 +135,17 @@ class CoachProfilesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_coach_profile
-      @coach_profile = CoachProfile.find(params.expect(:id))
+      @coach_profile = CoachProfile.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.
     def coach_profile_params
-      params.expect(coach_profile: [ :user_id, :name, :birth_date, :club_id, :coach_type, :banner_picture, :profile_picture ])
+      permitted_params = [:user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date]
+
+      if action_name == 'update'
+        permitted_params << { user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] }
+      end
+
+      params.require(:coach_profile).permit(*permitted_params)
     end
 end

@@ -19,6 +19,7 @@
         </div>
       <% end %>
 
+      <!-- Imagens de Perfil e Banner -->
       <div class="relative w-full max-w-2xl">
 
                       <!-- Banner -->
@@ -95,6 +96,71 @@
             class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
             placeholder:"Escreva uma breve descrição sobre o coache. A informação estará visível para todos no perfil" %>
       </div>
+
+      <% if coach_profile.persisted? %>
+      <div class="mt-8 border-t border-gray-700 pt-6">
+        <div class="flex items-center gap-2">
+          <h3 class="text-lg font-medium leading-6 text-white">Detalhes da Conta</h3>
+          <button type="button" id="toggle-account-details-btn" class="text-gray-400 hover:text-white transition-colors focus:outline-none p-1">
+            <i data-feather="chevron-down" id="account-details-icon" class="h-5 w-5 transform transition-transform duration-200"></i>
+          </button>
+        </div>
+
+        <!-- Campos de Email e Palavra-passe -->  
+        <div id="account-details-section" class="hidden">
+          <p class="mt-1 text-sm text-gray-400">Altere o seu email e palavra-passe. Deixe os campos em branco se não pretender alterar.</p>
+          <div id="account-details-error" class="hidden mt-3 rounded-md bg-red-900 bg-opacity-50 border border-red-700 text-red-200 px-4 py-3 text-sm" role="alert"></div>
+
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <%= form.fields_for :user do |user_form| %>
+              <!-- Email -->
+              <div>
+                <%= user_form.label :email, "Novo Endereço de Email", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.email_field :email,
+                    id: "coach_profile_email",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"novo@email.com", value: "" %>
+              </div>
+
+              <!-- Email Confirmation -->
+              <div>
+                <%= user_form.label :email_confirmation, "Confirmação do Novo Email", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.email_field :email_confirmation,
+                    id: "coach_profile_email_confirmation",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Confirme o seu email" %>
+              </div>
+
+              <!-- Password -->
+              <div>
+                <%= user_form.label :password, "Nova Palavra-passe", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.password_field :password,
+                    id: "coach_profile_password",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Nova palavra-passe" %>
+              </div>
+
+              <!-- Password Confirmation -->
+              <div>
+                <%= user_form.label :password_confirmation, "Confirmação da Nova Palavra-passe", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.password_field :password_confirmation,
+                    id: "coach_profile_password_confirmation",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Confirme a nova palavra-passe" %>
+              </div>
+
+              <div class="md:col-span-2">
+                <%= user_form.label :current_password, "Palavra-passe Atual (necessária para confirmar alterações)", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.password_field :current_password,
+                    id: "coach_profile_current_password",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Digite a sua palavra-passe atual" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <% end %>
 
       <div class="flex gap-4 pt-4">
         <%= link_to coach_profile_path(coach_profile), class: "w-full bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30 flex items-center justify-center gap-2" do %>
@@ -207,6 +273,132 @@
         }
         hidden.value = '1';
       });
+    }
+
+    // Validação de Email em tempo real
+    const emailInput = document.getElementById('coach_profile_email');
+    const emailConfirmInput = document.getElementById('coach_profile_email_confirmation');
+
+    if (emailInput && emailConfirmInput) {
+      // Cria elemento para mensagem de feedback
+      const feedbackMsg = document.createElement('p');
+      feedbackMsg.className = 'text-xs mt-1 font-medium';
+      emailConfirmInput.parentElement.appendChild(feedbackMsg);
+
+      function validateEmails() {
+        const email = emailInput.value;
+        const confirm = emailConfirmInput.value;
+
+        if (confirm === '') {
+          emailConfirmInput.classList.remove('border-red-500', 'border-green-500');
+          emailConfirmInput.classList.add('border-gray-700');
+          feedbackMsg.textContent = '';
+          return;
+        }
+
+        if (email !== confirm) {
+          emailConfirmInput.classList.remove('border-gray-700', 'border-green-500');
+          emailConfirmInput.classList.add('border-red-500');
+          feedbackMsg.textContent = 'Os emails não coincidem.';
+          feedbackMsg.className = 'text-xs mt-1 font-medium text-red-400';
+        } else {
+          emailConfirmInput.classList.remove('border-gray-700', 'border-red-500');
+          emailConfirmInput.classList.add('border-green-500');
+          feedbackMsg.textContent = '';
+        }
+      }
+
+      emailInput.addEventListener('input', validateEmails);
+      emailConfirmInput.addEventListener('input', validateEmails);
+    }
+
+    // Validação de Password em tempo real
+    const passwordInput = document.getElementById('coach_profile_password');
+    const passwordConfirmInput = document.getElementById('coach_profile_password_confirmation');
+
+    if (passwordInput && passwordConfirmInput) {
+      // Cria elemento para mensagem de feedback
+      const feedbackMsg = document.createElement('p');
+      feedbackMsg.className = 'text-xs mt-1 font-medium';
+      passwordConfirmInput.parentElement.appendChild(feedbackMsg);
+
+      function validatePasswords() {
+        const password = passwordInput.value;
+        const confirm = passwordConfirmInput.value;
+
+        if (confirm === '') {
+          passwordConfirmInput.classList.remove('border-red-500', 'border-green-500');
+          passwordConfirmInput.classList.add('border-gray-700');
+          feedbackMsg.textContent = '';
+          return;
+        }
+
+        if (password !== confirm) {
+          passwordConfirmInput.classList.remove('border-gray-700', 'border-green-500');
+          passwordConfirmInput.classList.add('border-red-500');
+          feedbackMsg.textContent = 'As palavras-passe não coincidem.';
+          feedbackMsg.className = 'text-xs mt-1 font-medium text-red-400';
+        } else {
+          passwordConfirmInput.classList.remove('border-gray-700', 'border-red-500');
+          passwordConfirmInput.classList.add('border-green-500');
+          feedbackMsg.textContent = '';
+        }
+      }
+
+      passwordInput.addEventListener('input', validatePasswords);
+      passwordConfirmInput.addEventListener('input', validatePasswords);
+    }
+
+    // Toggle Account Details Section
+    const toggleDetailsBtn = document.getElementById('toggle-account-details-btn');
+    const detailsSection = document.getElementById('account-details-section');
+    const detailsIcon = document.getElementById('account-details-icon');
+
+    if (toggleDetailsBtn && detailsSection && detailsIcon) {
+      toggleDetailsBtn.addEventListener('click', () => {
+        detailsSection.classList.toggle('hidden');
+        detailsIcon.classList.toggle('rotate-180');
+      });
+    }
+
+    // Prevent form submission if email/password data is invalid or current password is required.
+    const accountError = document.getElementById('account-details-error');
+    const form = document.querySelector('form');
+    const initialEmail = emailInput ? emailInput.value.trim() : '';
+
+    if (form && emailInput && emailConfirmInput && passwordInput && passwordConfirmInput && accountError) {
+      form.addEventListener('submit', (e) => {
+        const email = emailInput.value.trim();
+        const emailConfirm = emailConfirmInput.value.trim();
+        const password = passwordInput.value;
+        const passwordConfirm = passwordConfirmInput.value;
+        const currentPassword = document.getElementById('coach_profile_current_password')?.value;
+
+        const changingEmail = email !== '' && email !== initialEmail;
+        const changingPassword = password !== '' || passwordConfirm !== '';
+
+        let error = '';
+
+        if (changingEmail && email !== emailConfirm) {
+          error = 'Os emails não coincidem.';
+        } else if (changingPassword && password !== passwordConfirm) {
+          error = 'As palavras-passe não coincidem.';
+        } else if ((changingEmail || changingPassword) && !currentPassword) {
+          error = 'Insira a palavra-passe atual para alterar o email ou a palavra-passe.';
+        }
+
+        if (error) {
+          e.preventDefault();
+          accountError.textContent = error;
+          accountError.classList.remove('hidden');
+        } else {
+          accountError.classList.add('hidden');
+        }
+      });
+    }
+
+    if (typeof feather !== 'undefined') {
+      feather.replace();
     }
   });
 </script>
