@@ -36,6 +36,13 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :club_invitation_coaches, only: [:create, :destroy] do
+    member do
+      patch :accept
+      patch :reject
+    end
+  end
+
 
   post 'report_profile', to: 'report_profiles#create', as: :report_profile
 

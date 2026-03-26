@@ -1,70 +1,71 @@
 class ClubInvitationCoachesController < ApplicationController
-  before_action :set_club_invitation_coach, only: %i[ show edit update destroy ]
+    before_action :authenticate_user!
+    before_action :set_invitation, only: [:accept, :reject, :destroy]
 
-  # GET /club_invitation_coaches or /club_invitation_coaches.json
-  def index
-    @club_invitation_coaches = ClubInvitationCoach.all
-  end
-
-  # GET /club_invitation_coaches/1 or /club_invitation_coaches/1.json
-  def show
-  end
-
-  # GET /club_invitation_coaches/new
-  def new
-    @club_invitation_coach = ClubInvitationCoach.new
-  end
-
-  # GET /club_invitation_coaches/1/edit
-  def edit
-  end
-
-  # POST /club_invitation_coaches or /club_invitation_coaches.json
-  def create
-    @club_invitation_coach = ClubInvitationCoach.new(club_invitation_coach_params)
-
-    respond_to do |format|
-      if @club_invitation_coach.save
-        format.html { redirect_to @club_invitation_coach, notice: "Club invitation coach was successfully created." }
-        format.json { render :show, status: :created, location: @club_invitation_coach }
+    def create
+      club = if current_user.club?
+        current_user.club_profile
+      elsif current_user.board?
+        current_user.board_profile.club_profile
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @club_invitation_coach.errors, status: :unprocessable_entity }
+        return redirect_back fallback_location: root_path, alert: "Sem permissão."
+      end
+
+      @coach = CoachProfile.find(params[:coach_profile_id])
+
+      @invitation = ClubInvitationCoach.new(
+        club_profile: club,
+        coach_profile: @coach,
+        status: 'pending'
+      )
+
+      if @invitation.save
+        redirect_back fallback_location: root_path, notice: "Convite enviado!"
+      else
+        redirect_back fallback_location: root_path, alert: @invitation.errors.full_messages.to_sentence
       end
     end
-  end
 
-  # PATCH/PUT /club_invitation_coaches/1 or /club_invitation_coaches/1.json
-  def update
-    respond_to do |format|
-      if @club_invitation_coach.update(club_invitation_coach_params)
-        format.html { redirect_to @club_invitation_coach, notice: "Club invitation coach was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @club_invitation_coach }
+    def accept
+      unless current_user.coach? && @invitation.coach_profile == current_user.coach_profile
+        return redirect_back fallback_location: root_path, alert: "Sem permissão."
+      end
+
+      if @invitation.update(status: :accepted)
+        redirect_back fallback_location: root_path, notice: "Aceitaste o convite de #{@invitation.club_profile.name}!"
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @club_invitation_coach.errors, status: :unprocessable_entity }
+        redirect_back fallback_location: root_path, alert: "Erro ao aceitar convite."
       end
     end
-  end
 
-  # DELETE /club_invitation_coaches/1 or /club_invitation_coaches/1.json
-  def destroy
-    @club_invitation_coach.destroy!
+    def reject
+      unless current_user.coach? && @invitation.coach_profile == current_user.coach_profile
+        return redirect_back fallback_location: root_path, alert: "Sem permissão."
+      end
 
-    respond_to do |format|
-      format.html { redirect_to club_invitation_coaches_path, notice: "Club invitation coach was successfully destroyed.", status: :see_other }
-      format.json { head :no_content }
+      if @invitation.update(status: :rejected)
+        redirect_back fallback_location: root_path, notice: "Convite rejeitado."
+      else
+        redirect_back fallback_location: root_path, alert: "Erro ao rejeitar convite."
+      end
     end
-  end
+
+    def destroy
+      authorized = (current_user.club? && @invitation.club_profile == current_user.club_profile) ||
+                  (current_user.board? && @invitation.club_profile == current_user.board_profile.club_profile)
+
+      unless authorized
+        return redirect_back fallback_location: root_path, alert: "Sem permissão."
+      end
+
+      @invitation.destroy
+      redirect_back fallback_location: root_path, notice: "Convite cancelado."
+    end
+
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_club_invitation_coach
-      @club_invitation_coach = ClubInvitationCoach.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def club_invitation_coach_params
-      params.expect(club_invitation_coach: [ :club_profile_id, :coach_profile_id, :status ])
+    def set_invitation
+      @invitation = ClubInvitationCoach.find(params[:id])
     end
 end

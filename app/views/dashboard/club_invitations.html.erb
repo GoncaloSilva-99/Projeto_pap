@@ -248,16 +248,16 @@
                                     <div class="flex justify-between items-start">
                                         <div>
                                             <h3 class="font-bold text-lg"> <%= coach_profile.name %> </h3>
-                                            <p class="text-gray-400 text-sm"> <%= coach_profile.role %>  • <%= ((Date.today - coach_profile.birth_date).to_i / 365.25).floor  %> anos</p>
+                                            <p class="text-gray-400 text-sm"> <%= coach_profile.coach_type %>  • <%= ((Date.today - coach_profile.birth_date).to_i / 365.25).floor  %> anos</p>
                                         </div>
                                         <span class="absolute top-3 right-3 z-10 text-xs font-semibold px-2.5 py-2 rounded-full whitespace-nowrap
-                                            <%= coach.status == 'pending'  ? 'bg-yellow-500/20 text-yellow-400 ring-1 ring-yellow-500/40' : '' %>
-                                            <%= coach.status == 'accepted' ? 'bg-green-500/20  text-green-400  ring-1 ring-green-500/40'  : '' %>
-                                            <%= coach.status == 'rejected' ? 'bg-red-500/20    text-red-400    ring-1 ring-red-500/40'    : '' %>
+                                            <%= coach.status == 'pending'  ? 'bg-yellow-700 text-yellow-400 ring-1 ring-yellow-500/40' : '' %>
+                                            <%= coach.status == 'accepted' ? 'bg-green-700  text-green-400  ring-1 ring-green-500/40'  : '' %>
+                                            <%= coach.status == 'rejected' ? 'bg-red-700    text-red-200    ring-1 ring-red-500/40'    : '' %>
                                         ">
                                             <%= coach.status == 'pending'  ? 'Convite Pendente'  : '' %>
-                                            <%= coach.status == 'accepted' ? 'Aceite'    : '' %>
-                                            <%= coach.status == 'rejected' ? 'Rejeitado' : '' %>
+                                            <%= coach.status == 'accepted' ? 'Convite Aceite'    : '' %>
+                                            <%= coach.status == 'rejected' ? 'Convite Rejeitado' : '' %>
                                         </span>
                                     </div>
                                 </div>
