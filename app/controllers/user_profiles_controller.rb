@@ -119,7 +119,7 @@ class UserProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_profile_params
-      permitted_params = [:user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date]
+      permitted_params = [:user_id, :name, :status, :approved_by, :bio, :banner, :profile_picture, :foundation_date]
 
       if action_name == 'update'
         permitted_params << { user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] }
