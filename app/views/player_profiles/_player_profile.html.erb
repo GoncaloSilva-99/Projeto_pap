@@ -71,8 +71,8 @@
     <!-- Biography Section -->
     <div class="container mx-auto px-4 py-8">
         <!-- Biography -->
-        <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in mb-8">
-            <h3 class="text-xl font-bold mb-4">Biografia</h3>
+        <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in mb-8 border-l-4 border-blue-500">
+            <h3 class="text-xl font-bold mb-4 text-blue-300">Biografia</h3>
             <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
                 <% if player_profile.bio.present? -%>
 <%= player_profile.bio %>
@@ -84,7 +84,7 @@
         
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">    
             <!-- Biography Details -->
-            <div class="bg-gray-800 rounded-xl p-4 shadow-lg fade-in"> 
+            <div class="bg-gray-800 rounded-xl p-4 shadow-lg fade-in border-l-4 border-green-500"> 
                 <div class="space-y-6 mt-3"> 
                     <div class="flex items-center gap-3"> 
                         <i data-feather="calendar" class="text-gray-400"></i> 
@@ -107,8 +107,8 @@
 
         <!-- Club Section -->
         <div>
-            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in min-w-full w-fit">
-                <h2 class="text-xl font-bold mb-4">Clube</h2>
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in min-w-full w-fit border-l-4 border-red-500">
+                <h2 class="text-xl font-bold mb-4 text-red-300">Clube</h2>
                 <% if player_profile.club_profile.present? %>
                     <div class="flex items-center gap-8 ">
                         <!-- Club Profile Picture -->
@@ -162,12 +162,12 @@
             <!-- Posts Section -->
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-bold mt-8">Publicações</h3>
+                    <h3 class="text-xl font-bold mt-8 text-orange-100">Publicações</h3>
                 </div>
                 
                         <!-- Create Post -->
                         <% if current_user.id == player_profile.user_id %>
-                            <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg">
+                            <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg border-l-4 border-orange-500">
                                 
                                     <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
                                         <div class="flex items-start space-x-4">
