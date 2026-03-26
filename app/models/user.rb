@@ -87,9 +87,7 @@ class User < ApplicationRecord
   has_many :post_likes, dependent: :destroy
   has_many :liked_posts, through: :post_likes, source: :post
 
-  has_many :report_posts, dependent: :destroy
   has_many :report_profiles, dependent: :destroy
-  has_many :report_comments, dependent: :destroy
 
   def follow(other_user)
     return false if self == other_user || following?(other_user)

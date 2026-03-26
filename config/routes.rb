@@ -5,15 +5,12 @@ Rails.application.routes.draw do
   resources :club_incomes
   resources :club_expenses
   resource :club_balances
-  resources :report_comments
-  resources :report_posts
   resources :post_views
   resources :follows, only: [:create, :destroy], param: :user_id
   resources :posts do
     resource :post_likes, only: [:create, :destroy]
     resources :post_comments, only: [:create, :destroy]
     resource :post_saves, only: [:create, :destroy]
-    resources :report_posts, only: [:create]
   end
   resources :club_team_trainings
   resources :club_training_centers
@@ -44,7 +41,7 @@ Rails.application.routes.draw do
   end
 
 
-  post 'report_profile', to: 'report_profiles#create', as: :report_profile
+  resources :report_profiles
 
   resources :player_profiles do
     member do

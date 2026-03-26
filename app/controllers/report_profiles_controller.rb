@@ -25,7 +25,7 @@ class ReportProfilesController < ApplicationController
 
     respond_to do |format|
       if @report_profile.save
-        format.html { redirect_to @report_profile, notice: "Report profile was successfully created." }
+        format.html { redirect_back fallback_location: root_path, notice: "Perfil reportado com sucesso!" }
         format.json { render :show, status: :created, location: @report_profile }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -65,6 +65,6 @@ class ReportProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def report_profile_params
-      params.expect(report_profile: [ :users_id, :content, :resolved ])
+      params.require(:report_profile).permit(:user_id, :content, :resolved)
     end
 end
