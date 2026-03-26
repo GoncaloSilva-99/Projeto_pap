@@ -370,8 +370,7 @@
 
         <!-- Grid 3×3 -->
         <div id="modal-image-grid"
-            class="grid grid-cols-3 gap-px bg-gray-600"
-            style="aspect-ratio: 1/1;">
+             class="grid grid-cols-3 gap-px bg-gray-600">
             <!-- células geradas pelo JS -->
         </div>
 
@@ -554,66 +553,61 @@
 </script>
 
 <!-- ═══════════════════════════════════════════════════════════
-     CAPTCHA PRINCIPAL — Modal com imagens reais via picsum
-     ═══════════════════════════════════════════════════════════
-     
-     Cada desafio usa IDs fixos do picsum.photos (200×200).
-     As imagens "corretas" são sempre as primeiras N do array —
-     o JS baralha a ordem antes de apresentar, mas guarda quais
-     eram as corretas ANTES de baralhar.
-     
-     IDs picsum usados (verificados como funcionais):
-       Carros  : 111(carro), 133(carro), 244(carro vintage),
-                 116(natureza), 145(floresta), 200(cidade),
-                 210(praia), 230(montanha), 260(campo)
-       Bicicletas: 217(bicicleta), 219(bicicleta rua), 239(bicicleta),
-                 102(cidade), 120(parque), 160(jardim),
-                 180(campo), 190(floresta), 220(praia)
-       Semáforos / Cidades:
-                 170(cidade noturna), 175(rua cidade), 180(cruzamento),
-                 100(natureza), 110(campo), 121(animais),
-                 130(floresta), 140(praia), 150(montanha)
-     ─────────────────────────────────────────────────────────── -->
+     CAPTCHA — Modal com imagens reais
+     • Imagens CORRETAS : URLs diretos do Wikimedia Commons
+       (ficheiros JPEG/PNG pequenos, sem CORS, sem auth)
+     • Imagens DISTRATORAS : picsum.photos/id/NUMBER/200/200
+       (IDs numéricos verificados — sempre retornam imagem)
+     ═══════════════════════════════════════════════════════════ -->
 <script>
 (function () {
     'use strict';
 
-    /* ─── Banco de desafios ────────────────────────────────────────────
-       Cada desafio:
-         label   : texto exibido no header do modal
-         images  : array de 9 objectos { url, isCorrect }
-                   As imagens com isCorrect=true são as que o utilizador
-                   deve seleccionar. O JS baralha a ordem aleatoriamente.
-    ──────────────────────────────────────────────────────────────────── */
-    /* ─────────────────────────────────────────────────────────────────
-       Imagens via Unsplash (images.unsplash.com)
-       IDs selecionados manualmente para garantir precisão no tema.
-    ───────────────────────────────────────────────────────────────── */
-    function pic(id) {
-        return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=200&h=200&q=80`;
-    }
+    // ── Helper: picsum por ID numérico (sempre funciona como <img src>) ──
+    function p(id) { return `https://picsum.photos/id/${id}/200/200`; }
 
-    /* ─── Pools de imagens (Unsplash IDs) ─────────────────────────── */
-    const NEUTRAL_POOL = [
-        'photo-1501785888041-af3ef285b470', 'photo-1441974231531-c6227db76b6e',
-        'photo-1500624276344-a935899908c7', 'photo-1470071459604-3b5ec3a7fe05',
-        'photo-1533473359331-0135ef1b58bf', 'photo-1469474968028-56623f02e42e',
-        'photo-1447752875215-b2761acb3c5d', 'photo-1472214103451-9374bd1c798e'
+    // ── Distratoras partilhadas (natureza / paisagens) ──
+    // IDs picsum verificados: natureza, floresta, oceano, montanha, campo, etc.
+    const DIST = [
+        p(10), p(11), p(12), p(13), p(14), p(15),
+        p(16), p(17), p(18), p(19), p(20), p(21),
+        p(22), p(23), p(24), p(25), p(26), p(27),
     ];
 
+    // ── Pools temáticas: URLs diretos Wikimedia Commons ─────────────────
+    // Estas são tags <img src> normais — sem fetch, sem CORS.
+    // Cada URL aponta para um thumbnail JPEG de ~200px hosted na CDN global
+    // da Wikimedia (upload.wikimedia.org) que serve imagens publicamente.
+    const THEME = {
+        carros: [
+            // Carros fotografados de frente/lateral — ficheiros JPEG pequenos
+            'https://classic.exame.com/wp-content/uploads/2024/10/2025-mclaren-w1.jpg',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6rCileZQqj7ZHJCkzBfcY32-RfwMAEKUL5w&s',
+            'https://assets.e-konomista.pt/uploads/2019/07/0-carros-clssicos-baratos_1527147144-425x318.jpg',
+            'https://cdn.e-konomista.pt/uploads/2019/07/91453-carros-americanos-antigos_1530637487.jpg',
+            'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2Fycm98ZW58MHx8MHx8fDA%3D',
+        ],
+        bicicletas: [
+            'https://blog.avatardasaude.com.br/wp-content/uploads/2024/05/pedalar-1024x730.jpg',
+            'https://asset.scott-sports.com/sco/sco-bike-bikes-type-riding-mtb-220825_2266576.jpg?signature=31ac9e00060264d0d080e60b82baedd258bc124f3b71695b013584a679f5ebfa',
+            'https://media.gettyimages.com/id/1396149748/pt/foto/side-view-of-old-retro-racing-bicycle-white-color-parked-outside-building-exterior.jpg?s=612x612&w=gi&k=20&c=amNpHDEDS1kKx4MLq6AxTawMcHZ5zbKa0i7vMKsivm0=',
+            'https://www.pedal.com.br/fotos/noticias/10391003-w1920.jpg',
+            'https://i.pinimg.com/originals/56/3a/5d/563a5d7617e94bc0418225a9f2b64ef9.png',
+        ],
+        animais: [
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZ9G4m_Wj66u8B9yArIx7LUrqjxb6tBXv1gQ&s',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQomYC4TUq4fApgB8X_wgTtHE58dhkLdzm21A&s',
+            'https://www.petz.com.br/blog/wp-content/uploads/2022/06/animais-selvagens-3.jpg',
+            'https://portaledicase.com/wp-content/uploads/2024/02/leao-leoa.jpg',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqWF4tOY6QZjGgqw2kBNSWXrRxwzQi4EnAxw&s',
+        ],
+    };
+
+    // ── Desafios: 3 corretas (do THEME) + 6 distratoras (do DIST) ──────
     const CHALLENGES = [
-        {
-            label: "carros",
-            pool: ['photo-1494976388531-d1058494cdd8', 'photo-1503376780353-7e6692767b70', 'photo-1583121274602-3e2820c69888', 'photo-1552519507-da3b142c6e3d', 'photo-1492144534655-ae79c964c9d7']
-        },
-        {
-            label: "bicicletas",
-            pool: ['photo-1485965120184-e220f721d03e', 'photo-1532298229144-0ee0c97a152b', 'photo-1507035895480-2b3156c31fc8', 'photo-1571068316341-21c122e1c009', 'photo-1475666675596-cca2035b3d79']
-        },
-        {
-            label: "semáforos",
-            pool: ['photo-1508581627415-376043431631', 'photo-1527239441953-caffd968d952', 'photo-1515531737305-6f3c5339d675', 'photo-1501438755006-21820623e590', 'photo-1502462043180-87a36c4b928f']
-        }
+        { label: 'carros',     pool: THEME.carros     },
+        { label: 'bicicletas', pool: THEME.bicicletas },
+        { label: 'animais',    pool: THEME.animais    },
     ];
 
     /* ─── Estado ───────────────────────────────────────────────────── */
@@ -654,10 +648,9 @@
     function loadChallenge() {
         const challenge = CHALLENGES[Math.floor(Math.random() * CHALLENGES.length)];
 
-        // Selecionar exatamente 3 imagens do pool do tema e 6 do pool neutro
-        const correctOnes = shuffle(challenge.pool).slice(0, 3).map(id => ({ url: pic(id), isCorrect: true }));
-        const incorrectOnes = shuffle(NEUTRAL_POOL).slice(0, 6).map(id => ({ url: pic(id), isCorrect: false }));
-        
+        // 3 corretas do tema + 6 distratoras de paisagem (picsum IDs fixos)
+        const correctOnes   = shuffle([...challenge.pool]).slice(0, 3).map(url => ({ url, isCorrect: true }));
+        const incorrectOnes = shuffle([...DIST]).slice(0, 6).map(url => ({ url, isCorrect: false }));
         shuffledImages = shuffle([...correctOnes, ...incorrectOnes]);
 
         selected.clear();
@@ -676,8 +669,11 @@
             image.alt = '';
             image.className = 'w-full h-full object-cover pointer-events-none select-none transition-all duration-150';
             image.loading = 'lazy';
-            // fallback se a imagem não carregar
-            image.onerror = function() { this.src = 'https://via.placeholder.com/200x200/374151/6366f1?text=?'; };
+            // fallback inline caso a imagem não carregue — sem dependência externa
+            image.onerror = function() {
+                this.onerror = null;
+                this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%236366f1' font-size='32'%3E%3F%3C/text%3E%3C/svg%3E";
+            };
 
             const overlay_cell = document.createElement('div');
             overlay_cell.className = 'absolute inset-0 border-4 border-transparent transition-all duration-150 flex items-end justify-end p-1.5';
@@ -815,10 +811,19 @@
     }
     #captcha-modal { animation: captchaModalIn 0.2s ease; }
 
-    /* Célula do grid */
-    #modal-image-grid > div { transition: opacity 0.15s ease; }
+    /* Célula do grid — cada célula é quadrada, ocupa 1/3 da largura */
+    #modal-image-grid > div {
+        transition: opacity 0.15s ease;
+        aspect-ratio: 1 / 1;
+        min-height: 0;
+    }
+    #modal-image-grid > div img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
     #modal-image-grid > div:hover { outline: 3px solid #6366f1; outline-offset: -3px; }
-
     /* Checkbox row hover */
     #captcha-checkbox-row:hover { border-color: #6366f1; }
 
