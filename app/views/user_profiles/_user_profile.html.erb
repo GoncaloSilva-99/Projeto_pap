@@ -72,8 +72,8 @@
     <!-- Biography Section -->
     <div class="container mx-auto px-4 py-8">
         <!-- Biography -->
-        <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in">
-            <h3 class="text-xl font-bold mb-4">Biografia</h3>
+        <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in border-l-4 border-blue-500">
+            <h3 class="text-xl font-bold mb-4 text-blue-300">Biografia</h3>
             <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
                 <% if user_profile.bio.present? -%>
 <%= user_profile.bio %>
@@ -91,12 +91,12 @@
             <!-- Posts Section -->
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-bold">Publicações</h3>
+                    <h3 class="text-xl font-bold text-orange-100">Publicações</h3>
                 </div>
                     
                         <!-- Create Post -->
                         <% if current_user.id == user_profile.user_id %>
-                            <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg">
+                            <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg border-l-4 border-orange-500">
                                 
                                     <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
                                         <div class="flex items-start space-x-4">
