@@ -2,6 +2,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_sign_up_params, only: [:create]
   skip_before_action :require_no_authentication, only: [:new, :create]
   before_action :dont_allow_any_account_to_create_while_logged
+  before_action :dont_allow_any_to_create_admin, only: [:new, :create]
   # before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
@@ -25,6 +26,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
         resource.build_coach_profile
         resource.coach_profile.coach_teams.build
         render "devise/registrations/new_coach_profile" and return
+      when "Admin"
+        resource.build_admin_profile
+        render "devise/registrations/new_admin_profile" and return
     end
     respond_with resource # responde ao pedido http com o objeto resource para que campos possam ser preenchidos automaticamente
   end
@@ -67,6 +71,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
             resource.build_coach_profile if resource.coach_profile.nil?
             resource.coach_profile.coach_teams.build if resource.coach_profile.coach_teams.nil?
             render "devise/registrations/new_coach_profile", status: :unprocessable_entity
+          when "Admin"
+            resource.build_admin_profile if resource.admin_profile.nil?
+            render "devise/registrations/new_admin_profile", status: :unprocessable_entity
         end
       end
   end
@@ -114,8 +121,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
       { player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact, :sport, :dominant_foot_or_hand, :secondary_position, :profile_picture, :banner_picture,  :club_profile_id, { player_teams_attributes: [:club_team_id] } ]  },
       { coach_profile_attributes: [:name, :birth_date, :bio, :club_profile_id, :coach_type, :contact, :sport, :profile_picture, :banner_picture, { coach_teams_attributes: [:club_team_id] } ] },
       { club_profile_attributes: [:name, :foundation_date, :bio, :contact, :verification_document, :profile_picture, :banner_picture] },
-      { board_profile_attributes: [:name, :bio, :birth_date, :contact, :club_profile_id, :profile_picture, :banner_picture]
-     }
+      { board_profile_attributes: [:name, :bio, :birth_date, :contact, :club_profile_id, :profile_picture, :banner_picture] },
+      { admin_profile_attributes: [:name, :profile_picture, :banner_picture, :bio]}
     ]
   end
 
@@ -128,8 +135,15 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def dont_allow_any_account_to_create_while_logged
-    if user_signed_in? and !current_user.club? and !current_user.board?
-      redirect_to root_path, notice: "Já tem sessão iniciada!"
+    if user_signed_in? and !current_user.club? and !current_user.board? and (!current_user.admin? and !current_user.admin_profile.super?)
+      redirect_to root_path, alert: "Já tem sessão iniciada!"
+    end
+  end
+
+  def dont_allow_any_to_create_admin
+    return unless params[:role] == "Admin" || params.dig(:user, :role) == "Admin"
+    unless user_signed_in? && current_user.admin? && current_user.admin_profile.super?
+      redirect_to root_path, alert: "Acesso Negado! Não pode criar contas de Admin sem ser Super Admin"
     end
   end
 

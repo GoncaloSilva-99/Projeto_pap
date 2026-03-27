@@ -1,6 +1,6 @@
 class DashboardController < ApplicationController
   before_action :authenticate_user!
-  before_action :check_if_club_or_board
+  before_action :check_if_club_or_board, only: [:club_equipment, :club_finances, :club_infrastructures, :club_teams, :club_board, :club_dashboard, :club_invitations ]
   before_action :club_teams, only: [:club_teams]
   before_action :setup_search_teams, only: [:club_teams]
   before_action :setup_search_board, only: [:club_board]
@@ -8,11 +8,12 @@ class DashboardController < ApplicationController
   before_action :infrastructures, only: [:club_infrastructures]
   before_action :finances, only: [:club_finances]
   before_action :setup_search_transactions, only: [:club_finances]
-  before_action :set_profile
+  before_action :set_profile, only: [:club_equipment, :club_finances, :club_infrastructures, :club_teams, :club_board, :club_dashboard, :club_invitations ]
   before_action :materials, only: [:club_equipment ]
   before_action :setup_search_material, only: [:club_equipment]
   before_action :dashboard, only: [:club_dashboard]
   before_action :invitations, only: [:club_invitations]
+  before_action :check_if_admin, only: [:admin_dashboard]
 
   protected
   
@@ -341,7 +342,7 @@ end
   end
 
   def check_if_club_or_board
-    if user_signed_in? and !current_user.club? and !current_user.board?
+    if user_signed_in? and !current_user.club? and !current_user.board? and !current_user.admin?
       redirect_to root_path, alert: "Acesso Interdito! Àrea reservada a clubes e membros da direção"
     end
   end
@@ -444,6 +445,12 @@ end
     if @query.present?
       @month_expenses = ClubExpense.search_by_description(@query).where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
       @month_incomes = ClubIncome.search_by_description(@query).where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
+    end
+  end
+
+  def check_if_admin
+    if user_signed_in? and !current_user.admin?
+      redirect_to root_path, alert: "Acesso Interdito! Àrea reservada a Admins"
     end
   end
 

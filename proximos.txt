@@ -1,10 +1,9 @@
 Proximos:
-Acabar convites (no dashboard também falta dar fix na pesquisa e filtrar por desporto)
+adicionar botão para sair do clube (jogadores e treinadores)
 aparece uma barra mais clara em cima dos modals e ao dar like / comentar sair o fundo
 com um campo selecionado, ao mudar de página nos balneários desceleciona o campo
 Dar fix ao modal bugado dos likes nos perfis
-adicionar botão de report (publicações, comentários e perfis) -> não funcionam
-fazer pesquisa da página principal (a redirecionar para página de pesquisa) -> arranjar o do tomás
+fix redirecionamentos -> páginas de perfis para redirect_back, "equipas" a redirecionar mal
 fazer admin dashboard (estatisticas da aplicação, parte de super admin para criar admins, verificação de clubes, reports de posts e perfis, contas banidas, logs)
 
 

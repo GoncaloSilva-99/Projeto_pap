@@ -306,6 +306,9 @@
                                                     <% elsif post.user.user? %>
                                                         <%= link_to post.user.user_profile.name, user_profile_path(post.user.user_profile), 
                                                             data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif post.user.admin? %>
+                                                        <%= link_to post.user.admin_profile.name, admin_profile_path(post.user.admin_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
                                                     <% end %>
                                                     </h3>
                                                     <span class="text-gray-400 text-sm">
@@ -439,6 +442,12 @@
                                                                                     data: { turbo_frame: "_top" }, 
                                                                                     class: "hover:underline" do %>
                                                                                     <%= post.user.user_profile.name %>
+                                                                                <% end %>
+                                                                            <% elsif post.user.admin? %>
+                                                                                <%= link_to admin_profile_path(post.user.admin_profile), 
+                                                                                    data: { turbo_frame: "_top" }, 
+                                                                                    class: "hover:underline" do %>
+                                                                                    <%= post.user.admin_profile.name %>
                                                                                 <% end %>
                                                                             <% end %>
                                                                         </h3>
