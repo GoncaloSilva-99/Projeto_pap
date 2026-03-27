@@ -40,6 +40,9 @@
                                 <% end %>
                             <% else %>
                                 <%= render "follows/follow_button_suggestions", user: player_profile.user %>
+                                <button data-modal-toggle="modal-report" data-modal-target="modal-report" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2">
+                                    Reportar
+                                </button>
                             <% end %>
                         </div>
                     </div>
@@ -130,30 +133,60 @@
                 <% elsif current_user.club? or current_user.board? %>
                     <%
                         viewing_club = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
-                        invitation = ClubInvitationPlayer.find_by(club_profile: viewing_club, player_profile: player_profile.id)
+                        invitation = ClubInvitationPlayer.where(club_profile: viewing_club, player_profile: player_profile.id)
+                        pending_invitation = invitation.find { |i| i.pending? }
                     %>
-                    <% if invitation.nil? %>
-                        <%= button_to club_invitation_players_path(player_profile_id: player_profile.id),
-                            method: :post,
-                            class: "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium" do %>
-                        Convidar
-                        <% end %>
-                    <% end %>
-
-                    <% if invitation and invitation.pending? %>
-                        <div class="flex items-center gap-2">
-                        <span class="px-3 py-1 bg-yellow-700 text-yellow-200 rounded-lg text-sm">Convite Enviado</span>
-                            <%= button_to club_invitation_player_path(invitation), method: :delete,
-                                class: "px-3 py-1 bg-gray-600 hover:bg-red-700 text-white rounded-lg text-sm" do %>
-                                Cancelar
+                <% if invitation.nil? or pending_invitation.nil? %>
+                        <div class="flex flex-col items-center gap-2 py-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0">
+                                    <i data-feather="user-x" class="w-5 h-5 text-gray-400"></i>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-white font-semibold">Sem clube</p>
+                                    <p class="text-gray-400 text-sm">Este jogador está disponível</p>
+                                </div>
+                            </div>
+                            <%= button_to club_invitation_players_path(player_profile_id: player_profile.id), method: :post,
+                                class: "flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-lg transition w-full justify-center mt-1" do %>
+                                <i data-feather="send" class="w-4 h-4"></i>
+                                Convidar para o Clube
                             <% end %>
                         </div>
-                    <% end %>
+                    <% elsif pending_invitation %>
+                        <div class="flex flex-col items-center gap-3 py-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                                    <i data-feather="clock" class="w-6 h-6 text-yellow-400"></i>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-white font-semibold">Convite Pendente</p>
+                                    <p class="text-gray-400 text-sm">À espera de resposta</p>
+                                </div>
+                            </div>
+                            <%= button_to club_invitation_player_path(pending_invitation), method: :delete,
+                                class: "flex items-center gap-2 px-4 py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white text-sm font-bold rounded-lg transition w-full justify-center mt-1" do %>
+                                <i data-feather="x" class="w-4 h-4"></i>
+                                Cancelar Convite
+                            <% end %>
+                        </div>
+                <% end %>
                 <% else %>
-                    <p class="text-gray-400">Este jogador não pertence a nenhum clube no momento.</p>
+                    <div class="flex flex-col items-center gap-2 py-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center flex-shrink-0">
+                                <i data-feather="user-x" class="w-5 h-5 text-gray-400"></i>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-white font-semibold">Sem clube</p>
+                                <p class="text-gray-400 text-sm">Este jogador está disponível</p>
+                            </div>
+                        </div>
+                    </div>
                 <% end %>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Main Content -->
@@ -242,11 +275,6 @@
                                                         </a>
                                                     <% end %>
                                                     <%= render "posts/save_section", post: post %>
-                                                    <% if post.user != current_user %>
-                                                        <a data-modal-toggle="modal-report-post-<%= post.id %>" data-modal-target="modal-report-post-<%= post.id %>" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-b-md transition-colors clickable">
-                                                            <div class="flex items-center"><i data-feather="alert-triangle" class="w-4 h-4 mr-2"></i><span>Reportar publicação</span></div>
-                                                        </a>
-                                                    <% end %>
                                                 </div>
                                             </div>
 
@@ -434,11 +462,6 @@
                                                                             </a>
                                                                         <% end %>
                                                                         <%= render "posts/save_options_modal", post: post %>
-                                                                        <% if post.user != current_user %>
-                                                                            <a data-modal-toggle="modal-report-post-<%= post.id %>" data-modal-target="modal-report-post-<%= post.id %>" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-b-md transition-colors clickable">
-                                                                                <div class="flex items-center"><i data-feather="alert-triangle" class="w-4 h-4 mr-2"></i><span>Reportar publicação</span></div>
-                                                                            </a>
-                                                                        <% end %>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -528,38 +551,6 @@
                                             </div>
                                         </div>    
 
-                                    <!-- Modal confirmação reportar publicação -->
-
-                                    <div id="modal-report-post-<%= post.id %>" class="contents hidden fixed inset-0 z-[110] flex items-center justify-center bg-black bg-opacity-50">
-                                        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700">
-                                            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
-                                                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                                </svg>
-                                            </div>
-                                            <h3 class="text-xl font-semibold text-white text-center mb-2">Reportar publicação</h3>
-                                            <p class="text-gray-300 text-center mb-6">Descreve o motivo do report (mínimo 10 caracteres)</p>
-                                            
-                                            <%= form_with model: ReportPost.new, url: post_report_posts_path(post), local: false, class: "space-y-4" do |f| %>
-                                                <%= f.text_area :content, 
-                                                    rows: 4,
-                                                    class: "w-full bg-gray-700 rounded-lg px-4 py-3 text-white border border-gray-600 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none", 
-                                                    placeholder: "Ex: Conteúdo ofensivo, spam, discurso de ódio...",
-                                                    required: true,
-                                                    minlength: 10,
-                                                    maxlength: 500 %>
-                                                
-                                                <div class="flex gap-3">
-                                                    <button type="button" data-modal-hide="modal-report-post-<%= post.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
-                                                        Cancelar
-                                                    </button>
-                                                    <%= f.submit "Reportar", 
-                                                        data: { modal_hide: "modal-report-post-#{post.id}" },
-                                                        class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium cursor-pointer" %>
-                                                </div>  
-                                            <% end %>
-                                        </div>
-                                    </div>
                                 <% end %>
                             <% else %>
                                 <div class="bg-gray-800 rounded-xl p-12 text-center">
@@ -606,6 +597,41 @@
 
     <%= render "follows/followers_list_modal", user: player_profile.user %>
     <%= render "follows/following_list_modal", user: player_profile.user %>
+
+    <div id="modal-report" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white text-center mb-2">Reportar Perfil</h3>
+            <p class="text-gray-300 text-center mb-6">Descreve o motivo do report (mínimo 10 caracteres)</p>
+
+            <%= form_with url: report_profiles_path, scope: :report_profile, method: :post do |f| %>
+
+                <%= f.text_area :content, 
+                    rows: 4,
+                    class: "w-full bg-gray-700 rounded-lg px-4 py-3 text-white border border-gray-600 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none", 
+                    placeholder: "Ex: Conteúdo ofensivo, spam, discurso de ódio...",
+                    required: true,
+                    minlength: 10,
+                    maxlength: 500 %>
+                
+                <%= f.hidden_field :resolved, value: false %>
+                <%= f.hidden_field :user_id, value: player_profile.user.id %>
+
+                <div class="flex gap-3">
+                    <button type="button" data-modal-hide="modal-report" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                        Cancelar
+                    </button>
+                    <%= f.submit "Reportar", 
+                        class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium cursor-pointer" %>
+                </div>
+            <% end %>
+        </div>
+    </div>
+
      <script>
         // Inicializa os ícones da biblioteca Feather (substitui as tags <i> pelos ícones SVG)
         feather.replace();

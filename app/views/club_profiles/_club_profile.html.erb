@@ -43,13 +43,15 @@
                 <!-- Botão editar campos -->
                 <div class="flex items-center gap-4 mt-4">
                     <% if current_user && current_user.id == club_profile.user_id %>
-                        <%= link_to edit_club_profile_path(club_profile), class: "flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition" do %>
+                        <%= link_to edit_club_profile_path(club_profile), class: "flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition text-lg" do %>
                             <i data-feather="edit"></i>
                             <span>Editar Perfil</span>
                         <% end %>
                     <% else %>
                         <%= render "follows/follow_button_suggestions", user: club_profile.user %>
-                        
+                        <button data-modal-toggle="modal-report" data-modal-target="modal-report" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2">
+                            Reportar
+                        </button>
                     <% end %>
                 </div>
             </div>
@@ -83,7 +85,7 @@
                 <h3 class="text-xl font-bold mb-4 text-blue-300">Biografia</h3>
                 <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
                     <% if club_profile.bio.present? %>
-<%= club_profile.bio %>
+                        <%= club_profile.bio %>
                     <% else %>
                             <p class="text-gray-300 mb-4">Ainda sem biografia</p>
                     <% end %>                    
@@ -228,11 +230,6 @@
                                                         </a>
                                                     <% end %>
                                                     <%= render "posts/save_section", post: post %>
-                                                    <% if post.user != current_user %>
-                                                        <a data-modal-toggle="modal-report-post-<%= post.id %>" data-modal-target="modal-report-post-<%= post.id %>" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-b-md transition-colors clickable">
-                                                            <div class="flex items-center"><i data-feather="alert-triangle" class="w-4 h-4 mr-2"></i><span>Reportar publicação</span></div>
-                                                        </a>
-                                                    <% end %>
                                                 </div>
                                             </div>
 
@@ -420,11 +417,6 @@
                                                                             </a>
                                                                         <% end %>
                                                                         <%= render "posts/save_options_modal", post: post %>
-                                                                        <% if post.user != current_user %>
-                                                                            <a data-modal-toggle="modal-report-post-<%= post.id %>" data-modal-target="modal-report-post-<%= post.id %>" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-b-md transition-colors clickable">
-                                                                                <div class="flex items-center"><i data-feather="alert-triangle" class="w-4 h-4 mr-2"></i><span>Reportar publicação</span></div>
-                                                                            </a>
-                                                                        <% end %>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -513,39 +505,6 @@
                                                 </div>
                                             </div>
                                         </div>    
-
-                                    <!-- Modal confirmação reportar publicação -->
-
-                                    <div id="modal-report-post-<%= post.id %>" class="contents hidden fixed inset-0 z-[110] flex items-center justify-center bg-black bg-opacity-50">
-                                        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700">
-                                            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
-                                                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                                </svg>
-                                            </div>
-                                            <h3 class="text-xl font-semibold text-white text-center mb-2">Reportar publicação</h3>
-                                            <p class="text-gray-300 text-center mb-6">Descreve o motivo do report (mínimo 10 caracteres)</p>
-                                            
-                                            <%= form_with model: ReportPost.new, url: post_report_posts_path(post), local: false, class: "space-y-4" do |f| %>
-                                                <%= f.text_area :content, 
-                                                    rows: 4,
-                                                    class: "w-full bg-gray-700 rounded-lg px-4 py-3 text-white border border-gray-600 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none", 
-                                                    placeholder: "Ex: Conteúdo ofensivo, spam, discurso de ódio...",
-                                                    required: true,
-                                                    minlength: 10,
-                                                    maxlength: 500 %>
-                                                
-                                                <div class="flex gap-3">
-                                                    <button type="button" data-modal-hide="modal-report-post-<%= post.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
-                                                        Cancelar
-                                                    </button>
-                                                    <%= f.submit "Reportar", 
-                                                        data: { modal_hide: "modal-report-post-#{post.id}" },
-                                                        class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium cursor-pointer" %>
-                                                </div>  
-                                            <% end %>
-                                        </div>
-                                    </div>
                                 <% end %>
                             <% else %>
                                 <div class="bg-gray-800 rounded-xl p-12 text-center">
@@ -592,6 +551,42 @@
 
     <%= render "follows/followers_list_modal", user: club_profile.user %>
     <%= render "follows/following_list_modal", user: club_profile.user %>
+
+    <!-- Modal confirmação reportar perfil -->
+
+    <div id="modal-report" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white text-center mb-2">Reportar Perfil</h3>
+            <p class="text-gray-300 text-center mb-6">Descreve o motivo do report (mínimo 10 caracteres)</p>
+
+            <%= form_with url: report_profiles_path, scope: :report_profile, method: :post do |f| %>
+
+                <%= f.text_area :content, 
+                    rows: 4,
+                    class: "w-full bg-gray-700 rounded-lg px-4 py-3 text-white border border-gray-600 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none", 
+                    placeholder: "Ex: Conteúdo ofensivo, spam, discurso de ódio...",
+                    required: true,
+                    minlength: 10,
+                    maxlength: 500 %>
+                
+                <%= f.hidden_field :resolved, value: false %>
+                <%= f.hidden_field :user_id, value: club_profile.user.id %>
+
+                <div class="flex gap-3">
+                    <button type="button" data-modal-hide="modal-report" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                        Cancelar
+                    </button>
+                    <%= f.submit "Reportar", 
+                        class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium cursor-pointer" %>
+                </div>
+            <% end %>
+        </div>
+    </div>
 
     
 

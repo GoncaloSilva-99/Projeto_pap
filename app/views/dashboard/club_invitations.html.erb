@@ -206,12 +206,21 @@
 <!-------------------------------------------------------------------------------- Treinadores ------------------------------------------------------------------------->
 
             <div class="mb-12">
+            
+            <% if params[:query].present? and @coach_invitations_count == 0 and @player_invitations_count == 0 %>
+                <div class="col-span-4 flex flex-col items-center justify-center py-16">
+                    <p class="text-xl text-neutral-400">A pesquisa "<%= params[:query] %>" não retornou nenhum convite </p>
+                </div>
+            <% end %>
+
+            <% if !params[:query].present? or (params[:query].present? and @coach_invitations_count != 0) %>
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xl font-bold text-yellow-300 flex items-center space-x-2">
                         <i data-feather="award" class="w-6 h-6"></i>
                         <span>Equipa Técnica ( <%= @coach_invitations_count %> )</span>
                     </h3>
                 </div>
+            <% end %>
 
                 <% if @coach_invitations_results&.any? %>
                     <div class="grid grid-cols-4 justify-center gap-6">
@@ -239,16 +248,16 @@
                                     <div class="flex justify-between items-start">
                                         <div>
                                             <h3 class="font-bold text-lg"> <%= coach_profile.name %> </h3>
-                                            <p class="text-gray-400 text-sm"> <%= coach_profile.role %>  • <%= ((Date.today - coach_profile.birth_date).to_i / 365.25).floor  %> anos</p>
+                                            <p class="text-gray-400 text-sm"> <%= coach_profile.coach_type %>  • <%= ((Date.today - coach_profile.birth_date).to_i / 365.25).floor  %> anos</p>
                                         </div>
                                         <span class="absolute top-3 right-3 z-10 text-xs font-semibold px-2.5 py-2 rounded-full whitespace-nowrap
-                                            <%= coach.status == 'pending'  ? 'bg-yellow-500/20 text-yellow-400 ring-1 ring-yellow-500/40' : '' %>
-                                            <%= coach.status == 'accepted' ? 'bg-green-500/20  text-green-400  ring-1 ring-green-500/40'  : '' %>
-                                            <%= coach.status == 'rejected' ? 'bg-red-500/20    text-red-400    ring-1 ring-red-500/40'    : '' %>
+                                            <%= coach.status == 'pending'  ? 'bg-yellow-700 text-yellow-400 ring-1 ring-yellow-500/40' : '' %>
+                                            <%= coach.status == 'accepted' ? 'bg-green-700  text-green-400  ring-1 ring-green-500/40'  : '' %>
+                                            <%= coach.status == 'rejected' ? 'bg-red-700    text-red-200    ring-1 ring-red-500/40'    : '' %>
                                         ">
                                             <%= coach.status == 'pending'  ? 'Convite Pendente'  : '' %>
-                                            <%= coach.status == 'accepted' ? 'Aceite'    : '' %>
-                                            <%= coach.status == 'rejected' ? 'Rejeitado' : '' %>
+                                            <%= coach.status == 'accepted' ? 'Convite Aceite'    : '' %>
+                                            <%= coach.status == 'rejected' ? 'Convite Rejeitado' : '' %>
                                         </span>
                                     </div>
                                 </div>
@@ -317,12 +326,14 @@
 <!-------------------------------------------------------------------------------- JOGADORES ------------------------------------------------------------------------->
 
             <div class="mb-12">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xl font-bold text-secondary-300 flex items-center space-x-2">
-                        <i data-feather="users" class="w-6 h-6"></i>
-                        <span>Jogadores ( <%= @player_invitations_count %> )</span>
-                    </h3>
-                </div>
+                <% if !params[:query].present? or (params[:query].present? and @player_invitations_count != 0) %>
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-secondary-300 flex items-center space-x-2">
+                            <i data-feather="users" class="w-6 h-6"></i>
+                            <span>Jogadores ( <%= @player_invitations_count %> )</span>
+                        </h3>
+                    </div>
+                <% end %>
 
                 <% if @player_invitations_results&.any? %>
                     <div class="grid grid-cols-4 justify-center gap-6">
@@ -353,13 +364,13 @@
                                             <p class="text-gray-400 text-sm"> <%= player_profile.position %>  <%= " | " + player_profile.secondary_position if player_profile.secondary_position.present? %> • <%= ((Date.today - player_profile.birth_date).to_i / 365.25).floor  %> anos</p>
                                         </div>
                                         <span class="absolute top-3 right-3 z-10 text-xs font-semibold px-2.5 py-2 rounded-full whitespace-nowrap
-                                            <%= player.status == 'pending'  ? 'bg-yellow-500/20 text-yellow-400 ring-1 ring-yellow-500/40' : '' %>
-                                            <%= player.status == 'accepted' ? 'bg-green-500/20  text-green-400  ring-1 ring-green-500/40'  : '' %>
-                                            <%= player.status == 'rejected' ? 'bg-red-500/20    text-red-400    ring-1 ring-red-500/40'    : '' %>
+                                            <%= player.status == 'pending'  ? 'bg-yellow-700 text-yellow-400 ring-1 ring-yellow-500/40' : '' %>
+                                            <%= player.status == 'accepted' ? 'bg-green-700  text-green-400  ring-1 ring-green-500/40'  : '' %>
+                                            <%= player.status == 'rejected' ? 'bg-red-700    text-red-200    ring-1 ring-red-500/40'    : '' %>
                                         ">
                                             <%= player.status == 'pending'  ? 'Convite Pendente'  : '' %>
-                                            <%= player.status == 'accepted' ? 'Aceite'    : '' %>
-                                            <%= player.status == 'rejected' ? 'Rejeitado' : '' %>
+                                            <%= player.status == 'accepted' ? 'Convite Aceite'    : '' %>
+                                            <%= player.status == 'rejected' ? 'Convite Rejeitado' : '' %>
                                         </span>
                                     </div>
                                 </div>
@@ -452,37 +463,55 @@
 </script>
 
 <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
-                        },
-                        secondary: {
-                            50: '#fdf4ff',
-                            100: '#fae8ff',
-                            200: '#f5d0fe',
-                            300: '#f0abfc',
-                            400: '#e879f9',
-                            500: '#d946ef',
-                            600: '#c026d3',
-                            700: '#a21caf',
-                            800: '#86198f',
-                            900: '#701a75',
-                        }
+    tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                colors: {
+                    primary: {
+                        50: '#f0f9ff',
+                        100: '#e0f2fe',
+                        200: '#bae6fd',
+                        300: '#7dd3fc',
+                        400: '#38bdf8',
+                        500: '#0ea5e9',
+                        600: '#0284c7',
+                        700: '#0369a1',
+                        800: '#075985',
+                        900: '#0c4a6e',
+                    },
+                    secondary: {
+                        50: '#fdf4ff',
+                        100: '#fae8ff',
+                        200: '#f5d0fe',
+                        300: '#f0abfc',
+                        400: '#e879f9',
+                        500: '#d946ef',
+                        600: '#c026d3',
+                        700: '#a21caf',
+                        800: '#86198f',
+                        900: '#701a75',
                     }
                 }
             }
         }
-    </script>
+    }
+</script>
+
+<script>
+    function toggleClearButton(input) {
+        const clearBtn = document.getElementById('clear-search');
+        if (input.value.length > 0) {
+            clearBtn.classList.remove('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
+        }
+    }
+
+    function clearSearch() {
+        const input = document.getElementById('search-input');
+        input.value = '';
+        document.getElementById('clear-search').classList.add('hidden');
+        document.getElementById('search-form').requestSubmit();
+    }
+</script>

@@ -80,7 +80,7 @@
                                 <i data-feather="bookmark" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">Guardados</p>
                             </a>
-                            <% if current_user.player? and current_user.coach? %>
+                            <% if (current_user.player? and current_user.player_profile.club_profile.nil? ) or (current_user.coach? and current_user.coach_profile.club_profile.nil?)%>
                                 <a data-modal-target="invitation-modal" data-modal-toggle="invitation-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600 hover:text-green-400">
                                     <i data-feather="mail" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                                     <p class="text-sm font-medium text-gray-900 dark:text-white">Convites</p>
@@ -748,11 +748,6 @@
                                                         </a>
                                                     <% end %>
                                                     <%= render "posts/save_section", post: post %>
-                                                    <% if post.user != current_user %>
-                                                        <a data-modal-toggle="modal-report-post-<%= post.id %>" data-modal-target="modal-report-post-<%= post.id %>" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-b-md transition-colors clickable">
-                                                            <div class="flex items-center"><i data-feather="alert-triangle" class="w-4 h-4 mr-2"></i><span>Reportar publicação</span></div>
-                                                        </a>
-                                                    <% end %>
                                                 </div>
                                             </div>
 
@@ -936,11 +931,6 @@
                                                                             </a>
                                                                         <% end %>
                                                                         <%= render "posts/save_options_modal", post: post %>
-                                                                        <% if post.user != current_user %>
-                                                                            <a data-modal-toggle="modal-report-post-<%= post.id %>" data-modal-target="modal-report-post-<%= post.id %>" class="download-img-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-b-md transition-colors clickable">
-                                                                                <div class="flex items-center"><i data-feather="alert-triangle" class="w-4 h-4 mr-2"></i><span>Reportar publicação</span></div>
-                                                                            </a>
-                                                                        <% end %>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1032,38 +1022,6 @@
 
 
                                     <% end %>
-                                    <!-- Modal confirmação reportar publicação -->
-
-                                    <div id="modal-report-post-<%= post.id %>" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black bg-opacity-50">
-                                        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700">
-                                            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
-                                                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                                </svg>
-                                            </div>
-                                            <h3 class="text-xl font-semibold text-white text-center mb-2">Reportar publicação</h3>
-                                            <p class="text-gray-300 text-center mb-6">Descreve o motivo do report (mínimo 10 caracteres)</p>
-                                            
-                                            <%= form_with model: ReportPost.new, url: post_report_posts_path(post), local: false, class: "space-y-4" do |f| %>
-                                                <%= f.text_area :content, 
-                                                    rows: 4,
-                                                    class: "w-full bg-gray-700 rounded-lg px-4 py-3 text-white border border-gray-600 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none", 
-                                                    placeholder: "Ex: Conteúdo ofensivo, spam, discurso de ódio...",
-                                                    required: true,
-                                                    minlength: 10,
-                                                    maxlength: 500 %>
-                                                
-                                                <div class="flex gap-3">
-                                                    <button type="button" data-modal-hide="modal-report-post-<%= post.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
-                                                        Cancelar
-                                                    </button>
-                                                    <%= f.submit "Reportar", 
-                                                        data: { modal_hide: "modal-report-post-#{post.id}" },
-                                                        class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium cursor-pointer" %>
-                                                </div>  
-                                            <% end %>
-                                        </div>
-                                    </div>
                                 <% end %>
                             <% else %>
                                 <div class="bg-gray-800 rounded-xl p-12 text-center">
@@ -1262,16 +1220,114 @@
                     <button data-modal-hide="invitation-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
                         <i data-feather="x" class="w-6 h-6"></i>
                     </button>
-                    <h2 class="text-2xl font-bold text-white mb-6 text-center">Convites</h2>
+                    <h2 class="text-2xl font-bold text-white mb-6 text-center">Convites Pendentes</h2>
                     
-                    <div id="favorites-list" class="flex-1 overflow-y-auto space-y-6 pr-2 no-scrollbar">
+                    <div id="invitations-list" class="flex-1 overflow-y-auto space-y-6 pr-2 no-scrollbar">
                         <div id="saved_posts_list" class="space-y-6">
-                            <%= render "posts/saved_posts_list" %>
+                            <% if current_user.player? %>
+                                <% @club_invitations_list_player = ClubInvitationPlayer.where(player_profile_id: current_user.player_profile.id, status: 'pending') %>
+                            <% elsif current_user.coach? %>
+                                <% @club_invitations_list_coach = ClubInvitationCoach.where(coach_profile_id: current_user.coach_profile.id, status: 'pending') %>
+                            <% end %>
+
+                            <% if current_user.player? and @club_invitations_list_player.present? %>
+                                <% @club_invitations_list_player.each do |invitation| %>
+                                    <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+
+                                        <%= link_to club_profile_path(invitation.club_profile) do %>
+                                            <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                                                <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                                                    <% if invitation.club_profile.banner_picture.attached? %>
+                                                        <%= image_tag url_for(invitation.club_profile.banner_picture), class: "w-full h-full object-cover" %>
+                                                    <% else %>
+                                                        <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                                    <% end %>
+                                                </div>
+                                                <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
+                                                    <% if invitation.club_profile.profile_picture.attached? %>
+                                                        <%= image_tag url_for(invitation.club_profile.profile_picture), class: "w-full h-full object-cover" %>
+                                                    <% else %>
+                                                        <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                                                    <% end %>
+                                                </div>
+                                            </div>
+                                        <% end %>
+
+                                        <div class="p-4 pt-4 pb-4 flex items-center justify-between gap-3">
+                                            <%= link_to club_profile_path(invitation.club_profile), class: "ml-36 flex-1 min-w-0" do %>
+                                                <h3 class="font-bold text-lg text-white truncate"><%= invitation.club_profile.name %></h3>
+                                                <p class="text-gray-400 text-sm"><%= invitation.created_at.strftime("%d/%m/%Y") %></p>
+                                            <% end %>
+
+                                            <div class="flex gap-2 flex-shrink-0">
+                                                <%= button_to "Aceitar", accept_club_invitation_player_path(invitation), method: :patch,
+                                                    class: "px-3 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-bold rounded-xl transition" %>
+                                                <%= button_to "Recusar", reject_club_invitation_player_path(invitation), method: :patch,
+                                                    class: "px-3 py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white text-sm font-bold rounded-xl transition" %>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                <% end %>
+                            <% elsif current_user.player? and !@club_invitations_list_player.present? %>
+                                <div class="bg-gray-800 rounded-xl p-12 text-center">
+                                    <i data-feather="mail" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                                    <h3 class="text-xl font-bold text-gray-400 mb-2">Ainda não tens nenhum convite</h3>
+                                </div>
+                            <% end %>
+
+
+                            <% if current_user.coach? and @club_invitations_list_coach.present? %>
+                                <% @club_invitations_list_coach.each do |invitation| %>
+                                    <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg">
+
+                                        <%= link_to club_profile_path(invitation.club_profile) do %>
+                                            <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
+                                                <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
+                                                    <% if invitation.club_profile.banner_picture.attached? %>
+                                                        <%= image_tag url_for(invitation.club_profile.banner_picture), class: "w-full h-full object-cover" %>
+                                                    <% else %>
+                                                        <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                                    <% end %>
+                                                </div>
+                                                <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
+                                                    <% if invitation.club_profile.profile_picture.attached? %>
+                                                        <%= image_tag url_for(invitation.club_profile.profile_picture), class: "w-full h-full object-cover" %>
+                                                    <% else %>
+                                                        <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                                                    <% end %>
+                                                </div>
+                                            </div>
+                                        <% end %>
+
+                                        <div class="p-4 pt-4 pb-4 flex items-center justify-between gap-3">
+                                            <%= link_to club_profile_path(invitation.club_profile), class: "ml-36 flex-1 min-w-0" do %>
+                                                <h3 class="font-bold text-lg text-white truncate"><%= invitation.club_profile.name %></h3>
+                                                <p class="text-gray-400 text-sm"><%= invitation.created_at.strftime("%d/%m/%Y") %></p>
+                                            <% end %>
+
+                                            <div class="flex gap-2 flex-shrink-0">
+                                                <%= button_to "Aceitar", accept_club_invitation_coach_path(invitation), method: :patch,
+                                                    class: "px-3 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-bold rounded-xl transition" %>
+                                                <%= button_to "Recusar", reject_club_invitation_coach_path(invitation), method: :patch,
+                                                    class: "px-3 py-2 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white text-sm font-bold rounded-xl transition" %>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                <% end %>
+                            <% elsif current_user.coach? and !@club_invitations_list_coach.present? %>
+                                <div class="bg-gray-800 rounded-xl p-12 text-center">
+                                    <i data-feather="mail" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                                    <h3 class="text-xl font-bold text-gray-400 mb-2">Ainda não tens nenhum convite</h3>
+                                </div>
+                            <% end %>
+
                         </div>
                     </div>
                 </div>
             </div>
-            
+
 
             <script>
                 // --- Lógica Principal da Página ---
