@@ -4,7 +4,7 @@
         <nav class="bg-gray-800 py-4 px-6 shadow-lg fixed w-full z-30 top-0 start-0" style="--nav-height:64px;"">
             <div class="container mx-auto flex items-center justify-between flex-wrap">
                 
-                <!-- Logo and Search -->
+                <!-- Logo -->
                 <div class="flex items-center space-x-6">
                     <div class="flex items-center" >
                         <% if user_signed_in? %>
@@ -13,33 +13,36 @@
                         </div>
                         <% else %>
                         <div class=" w-8 h-8 rounded-md flex items-center justify-center">
-                            <a href="#inicio"><%= image_tag "logo_sem_texto.png", alt: "Logo", class: "rounded-full" %></a>
+                            <a href="#equipas"><%= image_tag "logo_sem_texto.png", alt: "Logo", class: "rounded-full" %></a>
                         </div>
                         <% end %>
                         <span class="ml-2 font-bold text-xl">SportX</span>
                     </div>
-                    
-                    <div class="relative flex items-center">
-                        <button id="search-button" class="p-2 rounded-full hover:bg-gray-700">
-                            <i data-feather="search"></i>
-                        </button>
-                        <input type="text" id="search-bar" placeholder="Search..." 
-                                class="bg-gray-700 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    </div>
+                    <% if user_signed_in? %>
+                        <div class="relative flex items-center">
+                            <button id="search-button" class="p-2 rounded-full hover:bg-gray-700">
+                                <i data-feather="search"></i>
+                            </button>
+                            <input type="text" id="search-bar" placeholder="Search..." 
+                                    class="bg-gray-700 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    <% end %>
+
                 </div>
 
                 <% if user_signed_in? %>
-                
+
                 <!-- Não tem nenhum botão, porque os botoes estão todos no menu -->
 
                 <% else %>
 
                 <div id="nav-links" class="w-full md:w-auto flex justify-center space-x-6 mt-4 md:mt-0 md:order-none order-3 nav-links-overlap">
                     <a href="#equipas" class="hover:text-orange-400 transition">Equipas</a>
+                    <a href="#finanças" class="hover:text-orange-400 transition">Finanças</a>
                     <a href="#treinos" class="hover:text-orange-400 transition">Treinos</a>
-                    <a href="#finanças" class="hover:text-orange-400 transition">Finanças </a>
-                    <a href="#comunidade" class="hover:text-orange-400 transition">Comunidade </a>
-                    <a href="#perfis" class="hover:text-orange-400 transition">Perfis </a>
+                    <a href="#perfis" class="hover:text-orange-400 transition">Perfis</a>
+                    <a href="#comunidade" class="hover:text-orange-400 transition">Comunidade</a>
+                    <a href="#footer" class="hover:text-orange-400 transition">Contactos</a>
                 </div>
 
                 <% end %>
@@ -362,8 +365,27 @@
                 // Obtém o container do navbar
                 const navContainer = document.querySelector('nav .container');
                 
-                // Se faltar algum elemento, não faz nada
-                if (!searchBar || !navContainer) return;
+                // Se faltar a searchbar (utilizador não autenticado), salta toda a lógica de pesquisa
+                if (!searchBar || !navContainer) {
+                    // --- Menu do Utilizador (apenas) ---
+                    const userMenuContainer = document.getElementById('user-menu-container');
+                    const userMenuButton = document.getElementById('user-menu-button');
+                    const userDropdown = document.getElementById('user-dropdown');
+                    let isMenuPinned = false;
+                    if (userMenuContainer && userMenuButton && userDropdown) {
+                        userMenuContainer.addEventListener('mouseenter', () => userDropdown.classList.remove('hidden'));
+                        userMenuContainer.addEventListener('mouseleave', () => { if (!isMenuPinned) userDropdown.classList.add('hidden'); });
+                        userMenuButton.addEventListener('click', (event) => {
+                            event.stopPropagation();
+                            isMenuPinned = !isMenuPinned;
+                            if (isMenuPinned) userDropdown.classList.remove('hidden');
+                        });
+                        const closePinnedMenu = () => { if (isMenuPinned) { isMenuPinned = false; userDropdown.classList.add('hidden'); } };
+                        document.addEventListener('click', closePinnedMenu);
+                        window.addEventListener('scroll', closePinnedMenu);
+                    }
+                    return;
+                }
 
                 // Funções auxiliares para encontrar elementos e converter valores
                 const getRightSideEl = () => navContainer.querySelector('.right-overlap');
@@ -1699,7 +1721,7 @@
         
 
         <!-- Feature: Gestão de Equipas -->
-            <section class="relative py-24 px-6 overflow-hidden" style="scroll-margin-top: 72px;">
+            <section id="equipas" class="relative py-24 px-6 overflow-hidden" style="scroll-margin-top: 72px;">
                 <%= image_tag "home_equipa2.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-10 z-0", alt: "" %>
                 <div class="container mx-auto relative z-10">
                     <div class="flex flex-col md:flex-row items-center gap-12">
@@ -1724,8 +1746,8 @@
                 </div>
             </section>
 
-            <!-- Feature: Gestão de Treinos -->
-            <section class="relative py-24 px-6 overflow-hidden bg-gray-800" style="scroll-margin-top: 72px;">
+            <!-- Feature: Gestão Financeira -->
+            <section id="finanças" class="relative py-24 px-6 overflow-hidden bg-gray-800" style="scroll-margin-top: 72px;">
                 <div class="container mx-auto relative z-10">
                     <div class="flex flex-col md:flex-row-reverse items-center gap-12">
                         <div class="md:w-1/2">
@@ -1749,8 +1771,8 @@
                 </div>
             </section>
 
-            <!-- Feature: Gestão Financeira -->
-            <section class="relative py-24 px-6 overflow-hidden" style="scroll-margin-top: 72px;">
+            <!-- Feature: Gestão de Treinos -->
+            <section id="treinos" class="relative py-24 px-6 overflow-hidden" style="scroll-margin-top: 72px;">
                 <%= image_tag "home_treinos.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-10 z-0", alt: "" %>
                 <div class="container mx-auto relative z-10">
                     <div class="flex flex-col md:flex-row items-center gap-12">
@@ -1777,8 +1799,8 @@
                 </div>
             </section>
 
-            <!-- Feature: Comunidade & Publicações -->
-            <section class="relative py-24 px-6 overflow-hidden bg-gray-800" style="scroll-margin-top: 72px;">
+            <!-- Feature: Perfis -->
+            <section id="perfis" class="relative py-24 px-6 overflow-hidden bg-gray-800" style="scroll-margin-top: 72px;">
                 <div class="container mx-auto relative z-10">
                     <div class="flex flex-col md:flex-row-reverse items-center gap-12">
                         <div class="md:w-1/2">
@@ -1809,8 +1831,8 @@
                 </div>
             </section>
 
-            <!-- Feature: Perfis -->
-            <section class="relative py-24 px-6 overflow-hidden" style="scroll-margin-top: 72px;">
+            <!-- Feature: Comunidade & Publicações -->
+            <section id="comunidade" class="relative py-24 px-6 overflow-hidden" style="scroll-margin-top: 72px;">
                 <%= image_tag "home_comunidade.jpg", class: "absolute inset-0 w-full h-full object-cover opacity-10 z-0", alt: "" %>
                 <div class="container mx-auto relative z-10">
                     <div class="flex flex-col md:flex-row items-center gap-12">
@@ -1841,7 +1863,7 @@
 
         
         <!-- Footer -->
-        <footer class="bg-gray-800 text-gray-300">
+        <footer id="footer" class="bg-gray-800 text-gray-300">
             <div class="container mx-auto py-12 px-6 items-center">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 w-full">
                     <!-- Brand -->
@@ -1929,7 +1951,7 @@
                 
 
                 <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">
-                    <div class="mb-2">© 2025 SportX - Club Managment. Todos os direitos reservados.</div>
+                    <div class="mb-2">© 2026 SportX - Club Managment. Todos os direitos reservados.</div>
                     <div>Desenvolvido por Tomás Nogueira e Gonçalo Silva • <a href="Política De Privacidade - Sport X.pdf" download>Política de Privacidade</a> • <a href="Termos De Utilização - Sport X.pdf" download>Termos de Utilização</a></div>
                 </div>
             </div>

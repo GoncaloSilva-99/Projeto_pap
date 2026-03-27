@@ -179,7 +179,7 @@
                         alt: "Pré-visualização do banner",
                         class: "w-full h-full object-cover cursor-pointer" %>
 
-                    <%= up.file_field :banner_picture,
+                    <%= up.file_field :banner,
                         id: "user_banner_picture",
                         class: "file-upload-input sr-only",
                         accept: "image/*" %>
@@ -223,7 +223,44 @@
                 </div>
                 </div>
             </div>
+
             <br><br><br><br>
+
+            <!-- ═══════════════════ CAPTCHA CHECKBOX ═══════════════════ -->
+            <div id="captcha-wrapper" class="mt-4">
+                <div id="captcha-checkbox-row"
+                     class="flex items-center justify-between bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 shadow-inner transition-all duration-300 cursor-pointer select-none"
+                     role="button" tabindex="0" aria-label="Verificar que não sou um robô">
+                    <div class="flex items-center gap-3">
+                        <div id="captcha-box"
+                             class="w-7 h-7 rounded border-2 border-gray-500 bg-gray-900 flex items-center justify-center transition-all duration-200 flex-shrink-0">
+                            <svg id="captcha-spinner" class="hidden w-5 h-5 animate-spin text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+                            </svg>
+                            <svg id="captcha-check-icon" class="hidden w-4 h-4 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                        <span id="captcha-label" class="text-sm text-gray-300">Não sou um robô</span>
+                    </div>
+                    <div class="text-right flex-shrink-0 ml-4">
+                        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 ml-auto">
+                            <path d="M32 4C16.536 4 4 16.536 4 32s12.536 28 28 28 28-12.536 28-28S47.464 4 32 4z" fill="#374151"/>
+                            <path d="M32 10c-12.15 0-22 9.85-22 22s9.85 22 22 22 22-9.85 22-22S44.15 10 32 10z" fill="#6366f1" opacity=".25"/>
+                            <path d="M44 28l-8-8-4 4 4 4H20v4h16l-4 4 4 4 8-8-4-4 4-4z" fill="#6366f1"/>
+                        </svg>
+                        <p class="text-[9px] text-gray-500 leading-tight mt-0.5">reCAPTCHA</p>
+                        <p class="text-[8px] text-gray-600 leading-tight">Privacidade · Termos</p>
+                    </div>
+                </div>
+                <p id="captcha-inline-error" class="hidden text-xs text-red-400 mt-1 text-center">
+                    Por favor complete a verificação antes de continuar.
+                </p>
+                <input type="hidden" id="captcha-verified" name="captcha_verified" value="0">
+            </div>
+            <!-- ═══════════════════ /CAPTCHA CHECKBOX ═══════════════════ -->
+
             <div class="flex justify-between pt-4">
                 <button type="button" class="w-32 bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg prev-step" data-prev="2">
                 Voltar
@@ -243,7 +280,66 @@
     </div>
 <% end %>
 
-    
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL CAPTCHA — fora do div principal, ocupa ecrã inteiro
+     ═══════════════════════════════════════════════════════════ -->
+<div id="captcha-modal-overlay"
+     class="fixed inset-0 z-50 hidden items-center justify-center p-4"
+     style="background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);">
+
+    <div id="captcha-modal"
+         class="bg-gray-900 rounded-xl shadow-2xl w-full max-w-sm overflow-hidden border border-gray-700"
+         style="animation: captchaModalIn 0.2s ease;">
+
+        <!-- Header azul -->
+        <div class="bg-indigo-600 px-5 py-4">
+            <p class="text-xs text-indigo-200 font-medium uppercase tracking-wide">Verificação de segurança</p>
+            <p class="text-white font-bold text-lg mt-0.5">
+                Selecione todas as imagens com
+            </p>
+            <p id="modal-category-label" class="text-white font-extrabold text-2xl"></p>
+            <p id="modal-hint" class="text-indigo-200 text-xs mt-1">Clique em Verificar quando não restar nenhuma</p>
+        </div>
+
+        <!-- Grid 3×3 -->
+        <div id="modal-image-grid"
+             class="grid grid-cols-3 gap-px bg-gray-600">
+            <!-- células geradas pelo JS -->
+        </div>
+
+        <!-- Footer -->
+        <div class="flex items-center justify-between px-4 py-3 bg-gray-800 border-t border-gray-700">
+            <div class="flex items-center gap-3">
+                <button type="button" id="modal-reload-btn"
+                        title="Novo desafio"
+                        class="text-gray-400 hover:text-indigo-400 transition-colors p-1 rounded hover:bg-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                </button>
+                <button type="button" title="Ajuda"
+                        class="text-gray-400 hover:text-indigo-400 transition-colors p-1 rounded hover:bg-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="flex items-center gap-3">
+                <p id="modal-error-msg" class="hidden text-xs text-red-400 font-medium">Seleção incorreta!</p>
+                <button type="button" id="modal-verify-btn"
+                        class="bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-sm font-bold px-5 py-2 rounded-lg transition-all duration-150 shadow-lg">
+                    VERIFICAR
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ═══════════════════════════════════════════════════════════ /MODAL -->
+
+
 <!--------------------------------------------------------------- Scripts ----------------------------------------------------------------------------->
 
 
@@ -256,12 +352,10 @@
             const progressLine = document.querySelector('.progress-line');
 
             function showStep(stepNum) {
-                // mostrar conteúdo
                 stepContents.forEach(el => el.classList.add('hidden'));
                 const content = document.querySelector(`.step-content[data-step="${stepNum}"]`);
                 if (content) content.classList.remove('hidden');
 
-                // atualizar indicadores
                 steps.forEach(s => {
                 const n = parseInt(s.dataset.step, 10);
                 const circle = s.querySelector('div');
@@ -280,17 +374,14 @@
                 }
                 });
 
-                // atualizar linha de progresso
                 const totalSteps = steps.length;
                 const completed = Math.max(0, stepNum - 1);
                 const percent = (completed / (totalSteps - 1)) * 100;
                 if (progressLine) progressLine.style.width = `${percent}%`;
             }
 
-            // inicializar
             showStep(1);
 
-            // next / prev handlers 
             document.querySelectorAll('.next-step').forEach(btn => {
                 btn.addEventListener('click', () => {
                 const next = parseInt(btn.dataset.next, 10);
@@ -464,6 +555,217 @@
             });
         </script>
 
+<!-- ═══════════════════════════════════════════════════════════
+     CAPTCHA — Modal com imagens reais
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+    'use strict';
+
+    function p(id) { return `https://picsum.photos/id/${id}/200/200`; }
+
+    const DIST = [
+        p(10), p(11), p(12), p(13), p(14), p(15),
+        p(16), p(17), p(18), p(19), p(20), p(21),
+        p(22), p(23), p(24), p(25), p(26), p(27),
+    ];
+
+    const THEME = {
+        carros: [
+            'https://classic.exame.com/wp-content/uploads/2024/10/2025-mclaren-w1.jpg',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6rCileZQqj7ZHJCkzBfcY32-RfwMAEKUL5w&s',
+            'https://assets.e-konomista.pt/uploads/2019/07/0-carros-clssicos-baratos_1527147144-425x318.jpg',
+            'https://cdn.e-konomista.pt/uploads/2019/07/91453-carros-americanos-antigos_1530637487.jpg',
+            'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2Fycm98ZW58MHx8MHx8fDA%3D',
+        ],
+        bicicletas: [
+            'https://blog.avatardasaude.com.br/wp-content/uploads/2024/05/pedalar-1024x730.jpg',
+            'https://asset.scott-sports.com/sco/sco-bike-bikes-type-riding-mtb-220825_2266576.jpg?signature=31ac9e00060264d0d080e60b82baedd258bc124f3b71695b013584a679f5ebfa',
+            'https://media.gettyimages.com/id/1396149748/pt/foto/side-view-of-old-retro-racing-bicycle-white-color-parked-outside-building-exterior.jpg?s=612x612&w=gi&k=20&c=amNpHDEDS1kKx4MLq6AxTawMcHZ5zbKa0i7vMKsivm0=',
+            'https://www.pedal.com.br/fotos/noticias/10391003-w1920.jpg',
+            'https://i.pinimg.com/originals/56/3a/5d/563a5d7617e94bc0418225a9f2b64ef9.png',
+        ],
+        animais: [
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZ9G4m_Wj66u8B9yArIx7LUrqjxb6tBXv1gQ&s',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQomYC4TUq4fApgB8X_wgTtHE58dhkLdzm21A&s',
+            'https://www.petz.com.br/blog/wp-content/uploads/2022/06/animais-selvagens-3.jpg',
+            'https://portaledicase.com/wp-content/uploads/2024/02/leao-leoa.jpg',
+            'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqWF4tOY6QZjGgqw2kBNSWXrRxwzQi4EnAxw&s',
+        ],
+    };
+
+    const CHALLENGES = [
+        { label: 'carros',     pool: THEME.carros     },
+        { label: 'bicicletas', pool: THEME.bicicletas },
+        { label: 'animais',    pool: THEME.animais    },
+    ];
+
+    let shuffledImages = [];
+    let selected = new Set();
+    let captchaVerified = false;
+
+    const overlay        = document.getElementById('captcha-modal-overlay');
+    const modalGrid      = document.getElementById('modal-image-grid');
+    const modalCategory  = document.getElementById('modal-category-label');
+    const modalVerifyBtn = document.getElementById('modal-verify-btn');
+    const modalReloadBtn = document.getElementById('modal-reload-btn');
+    const modalErrorMsg  = document.getElementById('modal-error-msg');
+    const modalHint      = document.getElementById('modal-hint');
+
+    const checkboxRow    = document.getElementById('captcha-checkbox-row');
+    const captchaBox     = document.getElementById('captcha-box');
+    const spinner        = document.getElementById('captcha-spinner');
+    const checkIcon      = document.getElementById('captcha-check-icon');
+    const captchaLabel   = document.getElementById('captcha-label');
+    const inlineError    = document.getElementById('captcha-inline-error');
+    const hiddenField    = document.getElementById('captcha-verified');
+    const form           = document.getElementById('multiStepForm');
+
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function loadChallenge() {
+        const challenge = CHALLENGES[Math.floor(Math.random() * CHALLENGES.length)];
+        const correctOnes   = shuffle([...challenge.pool]).slice(0, 3).map(url => ({ url, isCorrect: true }));
+        const incorrectOnes = shuffle([...DIST]).slice(0, 6).map(url => ({ url, isCorrect: false }));
+        shuffledImages = shuffle([...correctOnes, ...incorrectOnes]);
+
+        selected.clear();
+        modalErrorMsg.classList.add('hidden');
+        modalCategory.textContent = challenge.label;
+        if (modalHint) modalHint.textContent = `Selecione as 3 imagens corretas e clique em Verificar`;
+        modalGrid.innerHTML = '';
+
+        shuffledImages.forEach((img, i) => {
+            const cell = document.createElement('div');
+            cell.className = 'relative cursor-pointer overflow-hidden bg-gray-700';
+            cell.style.aspectRatio = '1/1';
+
+            const image = document.createElement('img');
+            image.src = img.url;
+            image.alt = '';
+            image.className = 'w-full h-full object-cover pointer-events-none select-none transition-all duration-150';
+            image.loading = 'lazy';
+            image.onerror = function() {
+                this.onerror = null;
+                this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect width='200' height='200' fill='%23374151'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%236366f1' font-size='32'%3E%3F%3C/text%3E%3C/svg%3E";
+            };
+
+            const overlay_cell = document.createElement('div');
+            overlay_cell.className = 'absolute inset-0 border-4 border-transparent transition-all duration-150 flex items-end justify-end p-1.5';
+
+            const tick = document.createElement('div');
+            tick.className = 'w-7 h-7 rounded-full bg-indigo-600 hidden items-center justify-center shadow-lg border-2 border-white';
+            tick.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+
+            overlay_cell.appendChild(tick);
+            cell.appendChild(image);
+            cell.appendChild(overlay_cell);
+            modalGrid.appendChild(cell);
+
+            cell.addEventListener('click', () => {
+                if (selected.has(i)) {
+                    selected.delete(i);
+                    overlay_cell.classList.remove('border-indigo-500', 'bg-indigo-500/20');
+                    overlay_cell.classList.add('border-transparent');
+                    tick.classList.add('hidden'); tick.classList.remove('flex');
+                    image.style.filter = '';
+                } else {
+                    selected.add(i);
+                    overlay_cell.classList.add('border-indigo-500', 'bg-indigo-500/20');
+                    overlay_cell.classList.remove('border-transparent');
+                    tick.classList.remove('hidden'); tick.classList.add('flex');
+                    image.style.filter = 'brightness(0.65)';
+                }
+            });
+        });
+    }
+
+    function openModal() {
+        loadChallenge();
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        spinner.classList.remove('hidden');
+        captchaBox.classList.add('border-indigo-500');
+    }
+
+    function closeModal() {
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+
+    function verify() {
+        const correctIndices = shuffledImages
+            .map((img, i) => img.isCorrect ? i : null)
+            .filter(i => i !== null);
+
+        const selectedArr   = [...selected].sort((a,b) => a-b);
+        const correctSorted = correctIndices.sort((a,b) => a-b);
+        const isCorrect = JSON.stringify(selectedArr) === JSON.stringify(correctSorted);
+
+        if (isCorrect) {
+            closeModal();
+            spinner.classList.add('hidden');
+            checkIcon.classList.remove('hidden');
+            checkboxRow.classList.add('border-indigo-500');
+            checkboxRow.classList.remove('border-gray-700');
+            captchaBox.classList.add('bg-indigo-500/20');
+            captchaLabel.textContent = 'Verificado!';
+            captchaLabel.classList.add('text-indigo-400', 'font-semibold');
+            captchaLabel.classList.remove('text-gray-300');
+            hiddenField.value = '1';
+            captchaVerified = true;
+            inlineError.classList.add('hidden');
+        } else {
+            modalErrorMsg.classList.remove('hidden');
+            modalGrid.style.opacity = '0.4';
+            setTimeout(() => {
+                modalGrid.style.opacity = '';
+                loadChallenge();
+                modalErrorMsg.classList.add('hidden');
+            }, 700);
+        }
+    }
+
+    checkboxRow.addEventListener('click', () => {
+        if (captchaVerified) return;
+        openModal();
+    });
+    checkboxRow.addEventListener('keydown', (e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && !captchaVerified) { e.preventDefault(); openModal(); }
+    });
+
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closeModal();
+            spinner.classList.add('hidden');
+            captchaBox.classList.remove('border-indigo-500');
+        }
+    });
+
+    modalVerifyBtn.addEventListener('click', verify);
+    modalReloadBtn.addEventListener('click', () => { loadChallenge(); modalErrorMsg.classList.add('hidden'); });
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (hiddenField.value !== '1') {
+                e.preventDefault();
+                inlineError.classList.remove('hidden');
+                document.getElementById('captcha-wrapper').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+    }
+})();
+</script>
+
 <!--------------------------------------------------------------- CSS ----------------------------------------------------------------------------->        
 
         <!-- CSS dos steps -->
@@ -483,6 +785,29 @@
             .progress-line {
                 transition: width 0.5s ease;
             }
+
+            /* Modal CAPTCHA */
+            @keyframes captchaModalIn {
+                from { opacity: 0; transform: scale(0.94) translateY(-8px); }
+                to   { opacity: 1; transform: scale(1)    translateY(0);    }
+            }
+            #captcha-modal { animation: captchaModalIn 0.2s ease; }
+
+            /* Célula do grid */
+            #modal-image-grid > div {
+                transition: opacity 0.15s ease;
+                aspect-ratio: 1 / 1;
+                min-height: 0;
+            }
+            #modal-image-grid > div img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+            #modal-image-grid > div:hover { outline: 3px solid #6366f1; outline-offset: -3px; }
+            #captcha-checkbox-row:hover { border-color: #6366f1; }
+            #modal-image-grid { transition: opacity 0.2s ease; }
         </style>
     
     <!-- CSS para alinhar botão de ver password -->
@@ -492,7 +817,3 @@
             top: -20px; 
         }
     </style>
-
-
-
-
