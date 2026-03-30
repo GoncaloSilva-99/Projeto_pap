@@ -72,6 +72,12 @@
                                     <p class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</p>
                                 <% end %>
                             <% end %>
+                            <% if current_user.admin? %>
+                                <%= link_to admin_dashboard_path, class: "block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600" do %>
+                                    <i data-feather="shield" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</p>
+                                <% end %>
+                            <% end %>
                             <a data-modal-target="liked-modal" data-modal-toggle="liked-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
                                 <i data-feather="heart" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
                                 <p class="text-sm font-medium text-gray-900 dark:text-white">Likes</p>
@@ -658,7 +664,6 @@
                     <div class="flex-1 space-y-6  pr-2 scroll-smooth no-scrollbar" id="feed-container">
                         <!-- Create Post -->
                         <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg">
-                            <% if !current_user.admin? and !current_user.super_admin? %>
                                 <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
                                     <div class="flex items-start space-x-4">
                                         <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
@@ -708,7 +713,7 @@
                                         </div>
                                     </div>
                                 <% end %>
-                            <% end %>
+
 
                         </div>
 
@@ -742,7 +747,7 @@
                                                     <i data-feather="more-vertical"></i>
                                                 </button>
                                                 <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
-                                                    <% if post.user == current_user or current_user.admin? or current_user.super_admin? %>
+                                                    <% if post.user == current_user or current_user.admin?  %>
                                                         <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
                                                             <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
                                                         </a>
@@ -804,6 +809,9 @@
                                                             data: { turbo_frame: "_top" }, class: "hover:underline" %>
                                                     <% elsif post.user.user? %>
                                                         <%= link_to post.user.user_profile.name, user_profile_path(post.user.user_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif post.user.admin? %>
+                                                        <%= link_to post.user.admin_profile.name, admin_profile_path(post.user.admin_profile), 
                                                             data: { turbo_frame: "_top" }, class: "hover:underline" %>
                                                     <% end %>
                                                     </h3>
@@ -925,7 +933,7 @@
                                                                         <i data-feather="more-vertical"></i>
                                                                     </button>
                                                                     <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
-                                                                        <% if post.user == current_user or current_user.admin? or current_user.super_admin? %>
+                                                                        <% if post.user == current_user or current_user.admin? %>
                                                                             <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
                                                                                 <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
                                                                             </a>

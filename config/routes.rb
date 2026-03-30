@@ -73,8 +73,6 @@ Rails.application.routes.draw do
   devise_for :users, controllers: {
     registrations: "users/registrations",
     sessions: "users/sessions"
-
-    
   }
 
   devise_scope :user do
@@ -94,6 +92,9 @@ Rails.application.routes.draw do
     get "/board_profile/sign_up", to: "users/registrations#new", as: :new_board_profile_registration, defaults: { role: "Board" }
     post "/board_profile", to: "users/registrations#create"
 
+    get "/register_admin", to: "users/registrations#new", as: :new_admin_profile_registration, defaults: {role: "Admin"}
+    post "/admin_profile", to: "users/registrations#create"
+
     get "player_profile/sign_up/equipas", to: "users/registrations#equipas"
   end
 
@@ -106,6 +107,7 @@ Rails.application.routes.draw do
   get "dashboard/club_infrastructures", as: :club_infrastructures_dashboard
   get "dashboard/club_finances", as: :club_finances_dashboard
   get "dashboard/club_invitations", as: :club_invitations_dashboard
+  get "dashboard/admin_dashboard", as: :admin_dashboard
   
 
   post "dashboard/create_sport", to: "dashboard#create_sport", as: :create_club_sport
