@@ -2,7 +2,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_sign_up_params, only: [:create]
   skip_before_action :require_no_authentication, only: [:new, :create]
   before_action :dont_allow_any_account_to_create_while_logged
-  before_action :dont_allow_any_to_create_admin, only: [:new, :create]
+  #before_action :dont_allow_any_to_create_admin, only: [:new, :create]
   # before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
@@ -122,7 +122,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       { coach_profile_attributes: [:name, :birth_date, :bio, :club_profile_id, :coach_type, :contact, :sport, :profile_picture, :banner_picture, { coach_teams_attributes: [:club_team_id] } ] },
       { club_profile_attributes: [:name, :foundation_date, :bio, :contact, :verification_document, :profile_picture, :banner_picture] },
       { board_profile_attributes: [:name, :bio, :birth_date, :contact, :club_profile_id, :profile_picture, :banner_picture] },
-      { admin_profile_attributes: [:name, :profile_picture, :banner_picture, :bio]}
+      { admin_profile_attributes: [:name, :profile_picture, :banner_picture, :bio, :role]}
     ]
   end
 

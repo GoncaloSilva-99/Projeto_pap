@@ -95,7 +95,9 @@
                             <p class="text-sm font-medium text-white"> <%= current_user.board_profile.name %> </p>
                         <% end %>
                     </div>
-                    <i data-feather="log-out" class="text-slate-400 hover:text-red-400 cursor-pointer transition-colors"></i>
+                    <%= button_to destroy_user_session_path, method: :delete do %>
+                        <i data-feather="log-out" class="text-slate-400 hover:text-red-400 cursor-pointer transition-colors"></i>
+                    <% end %>
                 </div>
             </div>
     </div>
