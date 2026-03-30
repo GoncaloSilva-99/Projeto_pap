@@ -103,7 +103,7 @@
           </div>
 
           <%# Three-dot options (only shown to post owner / admin) %>
-          <% if user_signed_in? && (post.user == current_user || current_user.admin? || current_user.super_admin?) %>
+          <% if user_signed_in? && (post.user == current_user || current_user.admin?) %>
             <div class="relative">
               <button class="search-post-options-btn p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition">
                 <i data-feather="more-vertical"></i>
@@ -232,7 +232,7 @@
 </div>
 
 <%# ── Delete confirmation modal ── %>
-<% if user_signed_in? && (post.user == current_user || current_user.admin? || current_user.super_admin?) %>
+<% if user_signed_in? && (post.user == current_user || current_user.admin?) %>
   <div id="search-modal-apagar-<%= post.id %>"
        class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black bg-opacity-60">
     <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700">

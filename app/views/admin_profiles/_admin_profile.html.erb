@@ -79,9 +79,9 @@
             <h3 class="text-xl font-bold mb-4 text-blue-300">Biografia</h3>
             <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
                 <% if admin_profile.bio.present? -%>
-                    <%= admin_profile.bio %>
+<%= admin_profile.bio %>
                 <%- else -%>
-                        <p class="text-gray-300 mb-4">Ainda sem biografia</p>
+<p class="text-gray-300">Ainda sem biografia</p>
                 <%- end -%>                    
             </div>
         </div>    

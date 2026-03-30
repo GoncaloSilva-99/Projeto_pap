@@ -55,7 +55,7 @@
         <span class="text-xs text-gray-400 leading-none"><%= time_ago_in_words(comment.created_at) %> atrás</span>
       </div>
 
-      <% if comment.user == current_user or current_user.admin? or current_user.super_admin? %>
+      <% if comment.user == current_user or current_user.admin? %>
         <div data-modal-target="modal-apagar-comment-<%= comment.id %>" data-modal-toggle="modal-apagar-comment-<%= comment.id %>" class="flex items-center justify-center w-9 h-9 text-gray-400 hover:text-red-500 hover:bg-gray-600 rounded-full transition clickable" > 
           <i data-feather="trash-2" class="w-4 h-4"></i>
         </div>
