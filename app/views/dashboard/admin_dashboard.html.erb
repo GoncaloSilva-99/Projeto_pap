@@ -1,0 +1,363 @@
+<body class="min-h-screen flex text-white bg-gray-900">
+<!---------------------------------------------------- NOME E LOGO DO CLUBE ---------------------------------------------------->
+    <div class="w-64 bg-slate-800 shadow-xl min-h-screen flex flex-col border-r border-slate-700">
+    <!-- Logo e nome do clube -->
+        <div class="p-6 border-b border-slate-700">
+            <div class="flex items-center justify-center mb-3">
+                
+                <% if current_user.admin_profile.profile_picture.attached? %>
+                    <%= image_tag url_for(current_user.admin_profile.profile_picture), class: "w-20 h-20 rounded-full border-1" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-20 h-20 rounded-full border-1" %>
+                <% end %>
+
+                
+            </div>
+            <h1 class="text-lg font-bold text-center text-white">
+                <%= current_user.admin_profile.name %>
+            </h1>
+        </div>
+<!---------------------------------------------------- OPÇÕES DO SIDEBAR ---------------------------------------------------->
+        <nav class="flex-1 p-4 space-y-2">
+            
+            <%= link_to club_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-blue-400 rounded-xl border-l-4 border-blue-500 transition-all duration-300">
+                <i data-feather="home" class="sidebar-icon text-blue-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Dashboard</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_teams_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-xl border-l-4 border-transparent hover:border-green-500 transition-all duration-300">
+                <i data-feather="users" class="sidebar-icon text-green-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Equipas</span>
+            </div>
+            <% end %>
+
+
+            <%= link_to club_finances_dashboard_path do %>
+            <div  class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 rounded-xl border-l-4 border-transparent hover:border-yellow-500 transition-all duration-300">
+                <i data-feather="dollar-sign" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Finanças</span>
+            </div>
+            <% end %>
+
+
+
+            <%= link_to club_infrastructures_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-xl border-l-4 border-transparent hover:border-orange-500 transition-all duration-300">
+                <i data-feather="map-pin" class="sidebar-icon text-orange-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Infraestruturas</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_equipment_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-400 rounded-xl border-l-4 border-transparent hover:border-rose-300 transition-all duration-300">
+                <i data-feather="clipboard" class="sidebar-icon text-rose-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Material</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_board_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-900 rounded-xl border-l-4 border-transparent hover:border-rose-950 transition-all duration-300">
+                <i data-feather="settings" class="sidebar-icon text-rose-900 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Membros da Direção</span>
+            </div>
+            <% end %>
+
+            <%= link_to club_invitations_dashboard_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-purple-500 rounded-xl border-l-4 border-transparent hover:border-purple-950 transition-all duration-300">
+                <i data-feather="mail" class="sidebar-icon text-purple-500 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Convites</span>
+            </div>
+            <% end %>
+
+            <%= link_to root_path do %>
+            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-gray-400 rounded-xl border-l-4 border-transparent hover:border-gray-400 transition-all duration-300">
+                <i data-feather="arrow-left" class="sidebar-icon text-gray-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Página Inicial</span>
+            </div>
+            <% end %>
+        </nav>
+
+
+        <div class="p-4 border-t border-slate-700">
+            <div class="flex items-center space-x-3">
+                <% if current_user.admin_profile.profile_picture.attached? %>
+                    <%= image_tag url_for(current_user.admin_profile.profile_picture), class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-10 h-10 rounded-full border-2 border-slate-600" %>
+                <% end %>
+                <div class="flex-1">
+                        <p class="text-sm font-medium text-white"> <%= current_user.admin_profile.name %> </p>
+                </div>
+                <%= button_to destroy_user_session_path, method: :delete do %>
+                    <i data-feather="log-out" class="text-slate-400 hover:text-red-400 cursor-pointer transition-colors"></i>
+                <% end %>
+            </div>
+        </div>
+</div>
+<!---------------------------------------------------- MAIN CONTENT ---------------------------------------------------->
+    <div class="flex-1 p-8 overflow-auto">
+        <!-- Header -->
+        <div class="flex-1 p-8 overflow-auto">
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold slide-in text-blue-400">Dashboard</h1>
+      <p class="text-slate-400 mt-1">Visão geral de toda a plataforma</p>
+    </div>
+  </div>
+
+  <!-- Cards de topo -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+    <div class="stat-card rounded-xl shadow-lg p-6 border-l-4 border-blue-500 glow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-slate-400">Total de Utilizadores</p>
+          <p class="text-2xl font-bold text-white"><%= @total_users %></p>
+          <p class="text-xs text-green-400 mt-1">+<%= @novos_users_semana %> nos últimos 7 dias</p>
+        </div>
+        <div class="w-12 h-12 bg-blue-900/30 rounded-lg flex items-center justify-center">
+          <i data-feather="users" class="text-blue-400"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card rounded-xl shadow-lg p-6 border-l-4 border-green-500 glow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-slate-400">Clubes Aprovados</p>
+          <p class="text-2xl font-bold text-white"><%= @total_clubs_aprovados %></p>
+          <p class="text-xs text-green-400 mt-1">+<%= @novos_clubs_aprovados_semana %> nos últimos 7 dias</p>
+        </div>
+        <div class="w-12 h-12 bg-green-900/30 rounded-lg flex items-center justify-center">
+          <i data-feather="shield" class="text-green-400"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card rounded-xl shadow-lg p-6 border-l-4 border-yellow-500 glow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-slate-400">Total de Posts</p>
+          <p class="text-2xl font-bold text-white"><%= @total_posts %></p>
+          <p class="text-xs text-green-400 mt-1">+<%= @novos_posts_semana %> nos últimos 7 dias</p>
+        </div>
+        <div class="w-12 h-12 bg-yellow-900/30 rounded-lg flex items-center justify-center">
+          <i data-feather="file-text" class="text-yellow-400"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card rounded-xl shadow-lg p-6 border-l-4 border-<%= @clubes_pendentes > 0 ? 'red' : 'slate' %>-500 glow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-slate-400">Clubes Pendentes</p>
+          <p class="text-2xl font-bold <%= @clubes_pendentes > 0 ? 'text-red-400' : 'text-white' %>"><%= @clubes_pendentes %></p>
+          <p class="text-xs <%= @novos_pendentes_semana > 0 ? 'text-red-400' : 'text-slate-400' %> mt-1">
+            +<%= @novos_pendentes_semana %> nos últimos 7 dias
+          </p>
+        </div>
+        <div class="w-12 h-12 bg-red-900/30 rounded-lg flex items-center justify-center">
+          <i data-feather="clock" class="text-red-400"></i>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Grelha -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+
+    <!-- Utilizadores por tipo -->
+    <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+      <h3 class="text-lg font-semibold text-white mb-4">Utilizadores por Tipo</h3>
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Jogadores</span>
+          <div class="text-right">
+            <span class="text-blue-400 font-bold"><%= @total_jogadores %></span>
+            <span class="text-green-400 text-xs ml-2">+<%= @novos_jogadores %></span>
+          </div>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Treinadores</span>
+          <div class="text-right">
+            <span class="text-green-400 font-bold"><%= @total_treinadores %></span>
+            <span class="text-green-400 text-xs ml-2">+<%= @novos_treinadores %></span>
+          </div>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Administradores</span>
+          <div class="text-right">
+            <span class="text-purple-400 font-bold"><%= @total_admins %></span>
+            <span class="text-green-400 text-xs ml-2">+<%= @novos_admins %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Novos registos esta semana -->
+    <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+      <h3 class="text-lg font-semibold text-white mb-4">Novos Registos — Última Semana</h3>
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Jogadores</span>
+          <span class="text-blue-400 font-bold">+<%= @novos_jogadores_semana %></span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Treinadores</span>
+          <span class="text-green-400 font-bold">+<%= @novos_treinadores_semana %></span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Clubes</span>
+          <span class="text-yellow-400 font-bold">+<%= @novos_clubes_semana %></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atividade nos posts -->
+    <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+      <h3 class="text-lg font-semibold text-white mb-4">Atividade nos Posts</h3>
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Total de Likes</span>
+          <div class="text-right">
+            <span class="text-pink-400 font-bold"><%= @total_likes %></span>
+            <span class="text-green-400 text-xs ml-2">+<%= @novos_likes_semana %></span>
+          </div>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Total de Comentários</span>
+          <div class="text-right">
+            <span class="text-indigo-400 font-bold"><%= @total_comentarios %></span>
+            <span class="text-green-400 text-xs ml-2">+<%= @novos_comentarios_semana %></span>
+          </div>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Total de Visualizações</span>
+          <div class="text-right">
+            <span class="text-slate-300 font-bold"><%= @total_views %></span>
+            <span class="text-green-400 text-xs ml-2">+<%= @novas_views_semana %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reportes -->
+    <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+      <h3 class="text-lg font-semibold text-white mb-4">Reportes de Perfis</h3>
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Por Resolver</span>
+          <div class="text-right">
+            <span class="<%= @reportes_por_resolver > 0 ? 'text-red-400' : 'text-green-400' %> font-bold"><%= @reportes_por_resolver %></span>
+            <span class="<%= @novos_reportes_semana > 0 ? 'text-red-400' : 'text-slate-400' %> text-xs ml-2">+<%= @novos_reportes_semana %> novos</span>
+          </div>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Já Resolvidos</span>
+          <span class="text-green-400 font-bold"><%= @reportes_resolvidos %></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desportos -->
+    <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+      <h3 class="text-lg font-semibold text-white mb-4">Por Desporto</h3>
+      <div class="space-y-4">
+        <% @desportos.each do |d| %>
+          <div>
+            <p class="text-white text-sm font-semibold mb-1 mt-0"><%= d[:nome] %></p>
+            <div class="flex justify-between text-xs">
+              <span class="text-slate-400"><%= d[:clubes] %> clubes</span>
+              <span class="text-slate-400">
+                <%= d[:jogadores] %> jogadores
+                <span class="text-green-400">+<%= d[:novos_jogadores] %></span>
+              </span>
+              <span class="text-slate-400">
+                <%= d[:treinadores] %> treinadores
+                <span class="text-green-400">+<%= d[:novos_treinadores] %></span>
+              </span>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Rede social -->
+    <div class="bg-slate-800 rounded-xl shadow-lg p-6 border border-slate-700">
+      <h3 class="text-lg font-semibold text-white mb-4">Rede Social</h3>
+      <div class="space-y-4">
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Total de Follows</span>
+          <div class="text-right">
+            <span class="text-blue-400 font-bold"><%= @total_follows %></span>
+            <span class="text-green-400 text-xs ml-2">+<%= @novos_follows_semana %></span>
+          </div>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Posts Guardados</span>
+          <div class="text-right">
+            <span class="text-yellow-400 font-bold"><%= @total_saves %></span>
+            <span class="text-green-400 text-xs ml-2">+<%= @novos_saves_semana %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+        </div>
+</div>
+    <script>
+        feather.replace();
+    </script>
+
+</body>
+
+
+
+<style>
+
+    h1 {
+        font-size: 16px;
+        margin-top: 0;
+    }
+
+    p {
+        color: rgb(107, 114, 128);
+        font-size: 15px;
+        margin-bottom: 10px;
+        margin-top: 5px;
+    }
+
+    .card {
+        max-width: 620px;
+        margin: 0 auto;
+        padding: 16px;
+        border: 1px solid lightgray;
+        border-radius: 16px;
+    }
+
+    .card p:last-child {
+        margin-bottom: 0;
+    }
+
+    .sidebar-icon {
+        transition: all 0.3s ease;
+    }
+    
+    .sidebar-item:hover .sidebar-icon {
+        transform: translateX(5px);
+    }
+    
+    .stat-card {
+        background: rgba(30, 41, 59, 0.8);
+    }
+    
+    .glow {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+</style>

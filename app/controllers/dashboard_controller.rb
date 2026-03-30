@@ -1,6 +1,6 @@
 class DashboardController < ApplicationController
   before_action :authenticate_user!
-  before_action :check_if_club_or_board
+  before_action :check_if_club_or_board, only: [:club_equipment, :club_finances, :club_infrastructures, :club_teams, :club_board, :club_dashboard, :club_invitations ]
   before_action :club_teams, only: [:club_teams]
   before_action :setup_search_teams, only: [:club_teams]
   before_action :setup_search_board, only: [:club_board]
@@ -8,13 +8,74 @@ class DashboardController < ApplicationController
   before_action :infrastructures, only: [:club_infrastructures]
   before_action :finances, only: [:club_finances]
   before_action :setup_search_transactions, only: [:club_finances]
-  before_action :set_profile
+  before_action :set_profile, only: [:club_equipment, :club_finances, :club_infrastructures, :club_teams, :club_board, :club_dashboard, :club_invitations ]
   before_action :materials, only: [:club_equipment ]
   before_action :setup_search_material, only: [:club_equipment]
   before_action :dashboard, only: [:club_dashboard]
   before_action :invitations, only: [:club_invitations]
+  before_action :check_if_admin, only: [:admin_dashboard]
+  before_action :admin_dashboard, only: [:admin_dashboard]
 
   protected
+
+  def admin_dashboard
+      # Cards de topo
+@total_users = User.count
+@total_clubs_aprovados = ClubProfile.where(status: true).count
+@total_posts = Post.count
+@clubes_pendentes = ClubProfile.where(status: [false, nil]).count
+
+@novos_users_semana = User.where(created_at: 1.week.ago..Time.current).count
+@novos_clubs_aprovados_semana = ClubProfile.where(status: true, updated_at: 1.week.ago..Time.current).count
+@novos_posts_semana = Post.where(created_at: 1.week.ago..Time.current).count
+@novos_pendentes_semana = ClubProfile.where(status: [false, nil], created_at: 1.week.ago..Time.current).count
+
+# Utilizadores por tipo
+@total_jogadores = PlayerProfile.count
+@total_treinadores = CoachProfile.count
+@total_admins = AdminProfile.count
+
+@novos_jogadores = PlayerProfile.where(created_at: 1.week.ago..Time.current).count
+@novos_treinadores = CoachProfile.where(created_at: 1.week.ago..Time.current).count
+@novos_admins = AdminProfile.where(created_at: 1.week.ago..Time.current).count
+
+# Novos registos esta semana
+@novos_jogadores_semana = @novos_jogadores
+@novos_treinadores_semana = @novos_treinadores
+@novos_clubes_semana = ClubProfile.where(created_at: 1.week.ago..Time.current).count
+
+# Atividade nos posts
+@total_likes = PostLike.count
+@total_comentarios = PostComment.count
+@total_views = PostView.count
+
+@novos_likes_semana = PostLike.where(created_at: 1.week.ago..Time.current).count
+@novos_comentarios_semana = PostComment.where(created_at: 1.week.ago..Time.current).count
+@novas_views_semana = PostView.where(created_at: 1.week.ago..Time.current).count
+
+# Reportes
+@reportes_por_resolver = ReportProfile.where(resolved: [false, nil]).count
+@reportes_resolvidos = ReportProfile.where(resolved: true).count
+@novos_reportes_semana = ReportProfile.where(created_at: 1.week.ago..Time.current).count
+
+# Desportos
+@desportos = Sport.all.map do |sport|
+  {
+    nome: sport.name,
+    clubes: ClubSport.where(sport_id: sport.id).count,
+    jogadores: PlayerProfile.where(sport: sport.name).count,
+    treinadores: CoachProfile.where(sport: sport.name).count,
+    novos_jogadores: PlayerProfile.where(sport: sport.name, created_at: 1.week.ago..Time.current).count,
+    novos_treinadores: CoachProfile.where(sport: sport.name, created_at: 1.week.ago..Time.current).count
+  }
+end
+
+# Rede social
+@total_follows = Follow.count
+@total_saves = PostSafe.count
+@novos_follows_semana = Follow.where(created_at: 1.week.ago..Time.current).count
+@novos_saves_semana = PostSafe.where(created_at: 1.week.ago..Time.current).count
+  end
   
   def invitations
     @club = current_user.club? ? current_user.club_profile : current_user.board_profile.club_profile
@@ -341,7 +402,7 @@ end
   end
 
   def check_if_club_or_board
-    if user_signed_in? and !current_user.club? and !current_user.board?
+    if user_signed_in? and !current_user.club? and !current_user.board? and !current_user.admin?
       redirect_to root_path, alert: "Acesso Interdito! Àrea reservada a clubes e membros da direção"
     end
   end
@@ -444,6 +505,12 @@ end
     if @query.present?
       @month_expenses = ClubExpense.search_by_description(@query).where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
       @month_incomes = ClubIncome.search_by_description(@query).where(club_profile_id: @club_id).where("date >= ? AND date <= ?", @first_of_month, @last_of_month)
+    end
+  end
+
+  def check_if_admin
+    if user_signed_in? and !current_user.admin?
+      redirect_to root_path, alert: "Acesso Interdito! Àrea reservada a Admins"
     end
   end
 

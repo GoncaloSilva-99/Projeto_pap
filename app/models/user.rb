@@ -63,10 +63,6 @@ class User < ApplicationRecord
     role == "Admin"
   end
 
-  def super_admin?
-    role == "SuperAdmin"
-  end
-
   REGEX_EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
   has_many :posts, dependent: :destroy

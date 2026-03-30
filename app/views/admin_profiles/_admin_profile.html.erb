@@ -1,12 +1,706 @@
-<div id="<%= dom_id admin_profile %>">
-  <p>
-    <strong>User:</strong>
-    <%= admin_profile.user_id %>
-  </p>
 
-  <p>
-    <strong>Name:</strong>
-    <%= admin_profile.name %>
-  </p>
+<body class="bg-gray-900 text-gray-100 min-h-screen">
 
-</div>
+    <!-- Banner -->
+    <div class="relative h-64 bg-gradient-to-r from-indigo-900 to-purple-900 overflow-hidden">
+        <button onclick="window.location.href='/'" class="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-2 bg-red-800 bg-opacity-50 hover:bg-opacity-85 rounded-lg transition text-white">
+            <i data-feather="arrow-left"></i>
+            <span>Voltar</span>
+        </button>
+        <div class="absolute inset-0 bg-black opacity-30"></div>
+        <div class="relative h-full flex items-center justify-center">
+            <% if admin_profile.banner_picture.attached? %>
+                <%= image_tag url_for(admin_profile.banner_picture), class: "w-full h-full object-cover" %>
+            <% else %>
+                <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+            <% end %>
+        </div>
+    </div>
+    <!-- Profile Picture -->
+    <div class="container mx-auto px-4 -mt-12 relative z-10">
+        <div class="flex flex-col md:flex-row items-center md:items-end gap-6">
+            <div id="profile-pic-container" class="profile-pic w-32 h-32 md:w-40 md:h-40 rounded-full bg-gray-800 overflow-hidden border-4 border-gray-700 shadow-xl cursor-pointer group relative">
+                <% if admin_profile.profile_picture.attached? %>
+                    <%= image_tag url_for(admin_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                <% else %>
+                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                <% end %>
+            </div>
+            <!-- user Name, follow buttons and Stats -->
+            <div class="flex-1 w-full">
+                <div class="flex flex-col items-center text-center md:flex-row md:text-left justify-between md:items-end w-full">
+                    <!-- Name and buttons -->
+                    <div class="flex flex-col items-center md:items-start">
+                        <h2 class="text-2xl md:text-3xl font-bold py-1"><%= admin_profile.name %></h2>
+                        <!-- Botão editar campos -->
+                        <div class="flex items-center gap-4 mt-2">
+                            <% if current_user && current_user.id == admin_profile.user_id %>
+                                <%= link_to edit_admin_profile_path(admin_profile), class: "flex items-center gap-2 px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg transition" do %>
+                                    <i data-feather="edit"></i>
+                                    <span>Editar Perfil</span>
+                                <% end %>
+                            <% else %>
+                                <%= render "follows/follow_button_suggestions", user: admin_profile.user %>
+                                <button data-modal-toggle="modal-report" data-modal-target="modal-report" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2">
+                                    Reportar
+                                </button>
+                            <% end %>
+                        </div>
+                    </div>
+
+                    <!-- Profile Stats -->
+                    <div class="mt-5 md:mt-0 rounded-xl p-6">
+                        <div class="flex justify-center text-center gap-8">
+                            <div data-modal-target="modal-followers" data-modal-toggle="modal-followers" class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
+                                <%= render "follows/followers_count", user: admin_profile.user %>
+                            </div>
+                            <div data-modal-target="modal-following" data-modal-toggle="modal-following" class="group hover:bg-gray-700 rounded-lg px-4 py-2 transition cursor-pointer">
+                                <%= render "follows/following_count", user: admin_profile.user %>
+                            </div>
+                            <div class="rounded-lg px-4 py-2 transition">
+                                <span class="font-bold text-xl text-gray-100"><%= @posts.count %></span>
+                                <% if @posts.count == 1 %>
+                                    <span class="text-gray-400 transition-colors block text-sm">Publicação</span>
+                                <% else %>
+                                    <span class="text-gray-400 transition-colors block text-sm">Publicações</span>
+                                <% end %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Biography Section -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Biography -->
+        <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in border-l-4 border-blue-500">
+            <h3 class="text-xl font-bold mb-4 text-blue-300">Biografia</h3>
+            <div class="bg-gray-700 rounded-xl py-1 px-8 shadow-lg fade-in whitespace-pre-wrap">
+                <% if admin_profile.bio.present? -%>
+                    <%= admin_profile.bio %>
+                <%- else -%>
+                        <p class="text-gray-300 mb-4">Ainda sem biografia</p>
+                <%- end -%>                    
+            </div>
+        </div>    
+    </div>
+
+     <!-- Main Content -->
+    <div class="container mx-auto px-4 py-2">
+        <div class="lg:col-span-3 space-y-8">
+            
+            <!-- Posts Section -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-orange-100">Publicações</h3>
+                </div>
+                    
+                        <!-- Create Post -->
+                        <% if current_user.id == admin_profile.user_id %>
+                            <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg border-l-4 border-orange-500">
+                                
+                                    <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
+                                        <div class="flex items-start space-x-4">
+                                            <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                <% if admin_profile.profile_picture.attached? %>
+                                                    <%= image_tag url_for(admin_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                                <% else %>
+                                                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                                <% end %>
+                                            </div>
+                                            <div class="flex-1">
+                                                <%= f.text_area :content, 
+                                                    rows: 3,
+                                                    placeholder: "O que estás a pensar?",
+                                                    class: "w-full bg-gray-700 rounded-lg p-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" %>
+
+                                                <!-- Image Preview -->
+                                                <div id="image-preview-container" class="hidden mt-3 relative">
+                                                    <div id="image-carousel" class="flex overflow-x-auto scroll-smooth rounded-lg no-scrollbar gap-2">
+                                                        <!-- Images will be injected here by JS -->
+                                                    </div>
+                                                    <button id="prev-image-btn" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                                        <i data-feather="chevron-left" class="w-6 h-6"></i>
+                                                    </button>
+                                                    <button id="next-image-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-1 rounded-full hidden transition-all z-10">
+                                                        <i data-feather="chevron-right" class="w-6 h-6"></i>
+                                                    </button>
+                                                    <div id="image-dots" class="flex justify-center items-center space-x-2 mt-2">
+                                                        <!-- Dots will be injected here by JS -->
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="flex justify-between items-center mt-3">
+                                                    <div class="flex items-center space-x-2">
+                                                        <%= f.file_field :images, 
+                                                            multiple: true,
+                                                            accept: "image/*",
+                                                            class: "hidden",
+                                                            id: "post-image-upload" %>
+                                                        <label for="post_images_input" class="p-2 text-gray-400 hover:text-blue-400 rounded-full hover:bg-gray-700 cursor-pointer" id="btn-upload-image">
+                                                            <i data-feather="image" class="w-5 h-5"></i>
+                                                        </label>
+                                                    </div>
+                                                    
+                                                    <%= f.submit "Publicar", 
+                                                        class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer" %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% end %>
+                                
+
+                            </div>
+                        <% end %>
+
+                        <div id="posts_list" class="space-y-6">
+                            <% if @posts.present? %>
+                                <% @posts.each do |post| %>
+                                    <% @post = post.id %>
+
+
+                                    <%= turbo_frame_tag "post_#{post.id}", class: "post-card block" do %>
+                                        <div class="bg-gray-800 rounded-xl p-6 shadow-lg relative" >
+                                            <div class="absolute top-4 right-4 z-10">
+                                                <button class="post-options-btn p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition">
+                                                    <i data-feather="more-vertical"></i>
+                                                </button>
+                                                <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
+                                                    <% if post.user == current_user or current_user.admin? or current_user.super_admin? %>
+                                                        <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
+                                                            <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
+                                                        </a>
+                                                    <% end %>
+                                                    <%= render "posts/save_section", post: post %>
+                                                </div>
+                                            </div>
+
+                                            
+
+                                            
+
+                                            <div class="clickable" data-modal-target="modal-post-<%=post.id%>" data-modal-toggle="modal-post-<%=post.id%>">
+                                            <div class="flex items-center justify-between mb-4">
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                        <% if admin_profile.profile_picture.attached? %>
+                                                            <%= image_tag url_for(admin_profile.profile_picture), class: "w-full h-full object-cover" %>
+                                                        <% else %>
+                                                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover" %>
+                                                        <% end %>
+                                                    </div>
+                                                <div>
+                                                    <h3 class="font-bold text-white">
+                                                    <% if post.user.club? %>
+                                                        <%= link_to post.user.club_profile.name, club_profile_path(post.user.club_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif post.user.player? %>
+                                                        <%= link_to post.user.player_profile.name, player_profile_path(post.user.player_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif post.user.coach? %>
+                                                        <%= link_to post.user.coach_profile.name, coach_profile_path(post.user.coach_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif post.user.board? %>
+                                                        <%= link_to post.user.board_profile.name, board_profile_path(post.user.board_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif post.user.user? %>
+                                                        <%= link_to post.user.user_profile.name, user_profile_path(post.user.user_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif post.user.user? %>
+                                                        <%= link_to post.user.user_profile.name, user_profile_path(post.user.user_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% elsif post.user.admin? %>
+                                                        <%= link_to post.user.admin_profile.name, admin_profile_path(post.user.admin_profile), 
+                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                    <% end %>
+                                                    </h3>
+                                                    <span class="text-gray-400 text-sm">
+                                                    <%= time_ago_in_words(post.created_at) %> atrás
+                                                    </span>
+                                                </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <p class="text-gray-300 mb-4">
+                                                <%= post.content %>
+                                            </p>
+                                            
+                                            <% if post.images.attached? %>
+                                                <div class="mb-4">
+                                                    <% if post.images.count == 1 %>
+                                                        <%= image_tag post.images.first, class: "w-full rounded-lg object-cover max-h-96" %>
+                                                    <% else %>
+                                                        <!-- Carrossel com múltiplas imagens -->
+                                                        <div class="post-images-carousel relative rounded-lg overflow-hidden">
+                                                            <div class="carousel-images flex transition-transform duration-300 ease-in-out">
+                                                                <% post.images.each do |image| %>
+                                                                    <div class="carousel-image w-full flex-shrink-0">
+                                                                        <%= image_tag image, class: "w-full h-96 object-contain" %>
+                                                                    </div>
+                                                                <% end %>
+                                                            </div>
+                                                            
+                                                            <!-- Botões de navegação -->
+                                                            <button class="carousel-prev absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-2 rounded-full transition-all z-10">
+                                                                <i data-feather="chevron-left" class="w-6 h-6"></i>
+                                                            </button>
+                                                            <button class="carousel-next absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-2 rounded-full transition-all z-10">
+                                                                <i data-feather="chevron-right" class="w-6 h-6"></i>
+                                                            </button>
+                                                            
+                                                            <!-- Dots indicadores -->
+                                                            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                                                                <% post.images.count.times do |i| %>
+                                                                    <button class="carousel-dot w-2 h-2 rounded-full bg-gray-600 transition-colors cursor-pointer"></button>
+                                                                <% end %>
+                                                            </div>
+                                                        </div>
+                                                    <% end %>
+                                                </div>
+                                            
+                                            <% end %>
+                                            </div>    
+
+                                            <div class="flex items-center pt-4 border-t border-gray-700">
+                                                
+                                                <%= render "posts/like_section", post: post %>
+
+                                                <div data-modal-target="modal-post-<%=post.id%>" data-modal-toggle="modal-post-<%=post.id%>" class="px-4">
+                                                    <%= render "posts/comments_count", post: post %>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    <% end %>
+
+                                    <!-- Modal confirmação apagar publicação -->
+
+                                            <div id="modal-apagar-post-<%= post.id %>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                                <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                                                    <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                                                    <p class="text-gray-300 text-center mb-6"> Tem a certeza que pretende apagar esta publicação? Esta ação é irreversível! </b>  </p>
+                                                    <div class="flex gap-3">
+                                                        <button data-modal-hide="modal-apagar-post-<%= post.id %>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                                            Cancelar
+                                                        </button>
+                                                        <%= button_to post_path(post), method: :delete, 
+                                                            onclick: "document.body.style.overflow=''",
+                                                            data: { turbo_frame: "_top", modal_hide: "modal-apagar-post-#{post.id}" },
+                                                            class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
+                                                            Apagar Publicação
+                                                        <% end %>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                    <!-- Full Screen Comment Modal -->
+                                        <div id="modal-post-<%=post.id%>" class="fixed inset-0 z-[100] bg-black bg-opacity-50 hidden  ">
+                                            <div class="flex flex-col lg:flex-row w-full h-full">
+                                                <!-- Left: Post Content (Visible on Desktop) -->
+                                                <div class="hidden lg:flex lg:w-2/3 h-full bg-transparent bg-opacity-50 items-center justify-center p-8 overflow-y-auto relative">
+                                                    <div id="modal-post-container" class="w-full bg-gray-800 rounded-xl p-6 shadow-2xl flex flex-col" style="max-width: 800px; max-height: 90vh;">
+                                                            <div class="flex items-center justify-between mb-4">
+                                                                <div class="flex items-center space-x-3">
+                                                                    <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                                                                        <% if current_user.admin_profile.profile_picture.attached? %>
+                                                                            <%= image_tag url_for(current_user.admin_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                                                        <% else %>
+                                                                            <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                                                        <% end %>
+                                                                    </div>
+                                                                    <div>
+                                                                        <h3 class="font-bold text-white">
+                                                                            <% if post.user.club? %>
+                                                                                <%= link_to club_profile_path(post.user.club_profile), 
+                                                                                    data: { turbo_frame: "_top" }, 
+                                                                                    class: "hover:underline" do %>
+                                                                                    <%= post.user.club_profile.name %>
+                                                                                <% end %>
+                                                                            <% elsif post.user.player? %>
+                                                                                <%= link_to player_profile_path(post.user.player_profile), 
+                                                                                    data: { turbo_frame: "_top" }, 
+                                                                                    class: "hover:underline" do %>
+                                                                                    <%= post.user.player_profile.name %>
+                                                                                <% end %>
+                                                                            <% elsif post.user.coach? %>
+                                                                                <%= link_to coach_profile_path(post.user.coach_profile), 
+                                                                                    data: { turbo_frame: "_top" }, 
+                                                                                    class: "hover:underline" do %>
+                                                                                    <%= post.user.coach_profile.name %>
+                                                                                <% end %>
+                                                                            <% elsif post.user.board? %>
+                                                                                <%= link_to board_profile_path(post.user.board_profile), 
+                                                                                    data: { turbo_frame: "_top" }, 
+                                                                                    class: "hover:underline" do %>
+                                                                                    <%= post.user.board_profile.name %>
+                                                                                <% end %>
+                                                                            <% elsif post.user.user? %>
+                                                                                <%= link_to user_profile_path(post.user.user_profile), 
+                                                                                    data: { turbo_frame: "_top" }, 
+                                                                                    class: "hover:underline" do %>
+                                                                                    <%= post.user.user_profile.name %>
+                                                                                <% end %>
+                                                                            <% elsif post.user.admin? %>
+                                                                                <%= link_to admin_profile_path(post.user.admin_profile), 
+                                                                                    data: { turbo_frame: "_top" }, 
+                                                                                    class: "hover:underline" do %>
+                                                                                    <%= post.user.admin_profile.name %>
+                                                                                <% end %>
+                                                                            <% end %>
+                                                                        </h3>
+                                                                        <span class="text-gray-400 text-sm">
+                                                                            <%= time_ago_in_words(post.created_at) %> atrás
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="relative">
+                                                                    <button class="post-options-btn p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition">
+                                                                        <i data-feather="more-vertical"></i>
+                                                                    </button>
+                                                                    <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
+                                                                        <% if post.user == current_user or current_user.admin? or current_user.super_admin? %>
+                                                                            <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
+                                                                                <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
+                                                                            </a>
+                                                                        <% end %>
+                                                                        <%= render "posts/save_options_modal", post: post %>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            
+                                                            
+                                                            <p class="text-gray-300 mb-4">
+                                                                <%= post.content %>
+                                                            </p>
+                                                            
+                                                            <% if post.images.attached? %>
+                                                                <div class="mb-4">
+                                                                    <% if post.images.count == 1 %>
+                                                                        <%= image_tag post.images.first, class: "w-full rounded-lg object-cover flex-1 min-h-0" %>
+                                                                    <% else %>
+                                                                        <!-- Carrossel com múltiplas imagens -->
+                                                                        <div class="post-images-carousel relative rounded-lg overflow-hidden">
+                                                                            <div class="carousel-images flex transition-transform duration-300 ease-in-out">
+                                                                                <% post.images.each do |image| %>
+                                                                                    <div class="carousel-image w-full flex-shrink-0">
+                                                                                        <%= image_tag image, class: "w-full h-96 object-contain" %>
+                                                                                    </div>
+                                                                                <% end %>
+                                                                            </div>
+                                                                            
+                                                                            <!-- Botões de navegação -->
+                                                                            <button class="carousel-prev absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-2 rounded-full transition-all z-10">
+                                                                                <i data-feather="chevron-left" class="w-6 h-6"></i>
+                                                                            </button>
+                                                                            <button class="carousel-next absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-75 hover:bg-opacity-100 text-white p-2 rounded-full transition-all z-10">
+                                                                                <i data-feather="chevron-right" class="w-6 h-6"></i>
+                                                                            </button>
+                                                                            
+                                                                            <!-- Dots indicadores -->
+                                                                            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                                                                                <% post.images.count.times do |i| %>
+                                                                                    <button class="carousel-dot w-2 h-2 rounded-full bg-gray-600 transition-colors cursor-pointer"></button>
+                                                                                <% end %>
+                                                                            </div>
+                                                                        </div>
+                                                                    <% end %>
+                                                                </div>
+                                                            
+                                                            <% end %>
+                                                            
+                                                        <%= turbo_frame_tag "like_section_modal_#{post.id}" do %>
+                                                            <div class="flex items-center pt-4 border-gray-700">
+                                                                <%= render "posts/like_section_modal", post: post %>
+                                                            </div>
+                                                        <% end %>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Right: Comments -->
+                                                <div class="w-full lg:w-1/3 h-full bg-gray-800 border-l border-gray-700 flex flex-col">
+                                                    <!-- Header -->
+                                                    <div class="p-4 border-b border-gray-700 flex justify-between items-center bg-gray-800 z-10">
+                                                        <h3 class="text-xl font-bold text-white">
+                                                            Comentários (
+                                                            <%= turbo_frame_tag "comments_count_on_#{post.id}" do %>
+                                                                <%= render "posts/comments_count_on", post: post %> 
+                                                            <% end %>
+                                                            )
+                                                        </h3>
+                                                        <button id="close-modal-btn" class="text-gray-400 hover:text-white p-2 rounded-full hover:bg-gray-700 transition">
+                                                            <div class="flex items-center gap-2" data-modal-hide="modal-post-<%=post.id%>">
+                                                                <span class="text-sm font-medium">Voltar</span>
+                                                                <i data-feather="x" class="w-5 h-5"></i>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                    
+                                                    <!-- Comments List -->
+                                                    <div class="flex-1 overflow-y-auto p-4 space-y-4" id="comments_list_<%= post.id %>">
+                                                        <%= render "post_comments/comments_list", post: post %>
+                                                    </div>
+
+                                                    <!-- Input Area -->
+                                                    <div class="p-4 border-t border-gray-700 bg-gray-800">
+                                                        <div class="flex items-center space-x-2 ">
+                                                            <%= turbo_frame_tag "comment_form_#{post.id}", class: "w-full" do %>
+                                                                <%= render "post_comments/form", post: post, comment: PostComment.new %>
+                                                            <% end %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>    
+                                <% end %>
+                            <% else %>
+                                <div class="bg-gray-800 rounded-xl p-12 text-center">
+                                    <i data-feather="inbox" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                                    <h3 class="text-xl font-bold text-gray-400 mb-2">Ainda não há posts</h3>
+                                </div>
+                            <% end %>
+                        </div>
+                        
+                        <% if @posts.any? %>
+                            <div class="text-center mt-8">
+                                <% if @has_more_posts %>
+                                    <%= link_to root_path(page: @page + 1), 
+                                        class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium inline-block transition" do %>
+                                        <i data-feather="chevron-down" class="w-4 h-4 inline mr-2"></i>
+                                        Carregar mais posts
+                                    <% end %>
+                                <% else %>
+                                    <div class="flex items-center justify-center space-x-3 text-gray-400">
+                                        <div class="h-px bg-gray-700 flex-1 max-w-xs"></div>
+                                        <span class="text-sm font-medium">Não há mais posts para mostrar</span>
+                                        <div class="h-px bg-gray-700 flex-1 max-w-xs"></div>
+                                    </div>
+                                <% end %>
+                            </div>
+                        <% end %>
+                    </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Image Modal -->
+    <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4">
+        <div id="modal-image-container" class="relative">
+            <img id="modal-image" src="" alt="Profile Picture Fullscreen" class="max-w-full max-h-full rounded-lg">
+            <button id="close-image-modal">
+                <i data-feather="x" class="w-3 h-3"></i>
+            </button>
+        </div>
+    </div>
+
+    <%= render "follows/followers_list_modal", user: admin_profile.user %>
+    <%= render "follows/following_list_modal", user: admin_profile.user %>
+
+        <div id="modal-report" class="hidden fixed inset-0 z-[110] flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700">
+            <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white text-center mb-2">Reportar Perfil</h3>
+            <p class="text-gray-300 text-center mb-6">Descreve o motivo do report (mínimo 10 caracteres)</p>
+
+            <%= form_with url: report_profiles_path, scope: :report_profile, method: :post do |f| %>
+
+                <%= f.text_area :content, 
+                    rows: 4,
+                    class: "w-full bg-gray-700 rounded-lg px-4 py-3 text-white border border-gray-600 focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none", 
+                    placeholder: "Ex: Conteúdo ofensivo, spam, discurso de ódio...",
+                    required: true,
+                    minlength: 10,
+                    maxlength: 500 %>
+                
+                <%= f.hidden_field :resolved, value: false %>
+                <%= f.hidden_field :user_id, value: admin_profile.user.id %>
+
+                <div class="flex gap-3">
+                    <button type="button" data-modal-hide="modal-report" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                        Cancelar
+                    </button>
+                    <%= f.submit "Reportar", 
+                        class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium cursor-pointer" %>
+                </div>
+            <% end %>
+        </div>
+    </div>
+
+    <script>
+        // Inicializa os ícones da biblioteca Feather (substitui as tags <i> pelos ícones SVG)
+        feather.replace();
+
+        // --- Lógica do Modal de Imagem (Visualizar foto de perfil em ecrã inteiro) ---
+        
+        // Encontra o contentor da foto de perfil pequena
+        const profilePicContainer = document.getElementById('profile-pic-container');
+        // Encontra o modal (janela flutuante) que vai mostrar a imagem grande
+        const imageModal = document.getElementById('image-modal');
+        // Encontra o elemento de imagem dentro do modal
+        const modalImage = document.getElementById('modal-image');
+        // Encontra o botão de fechar o modal
+        const closeImageModalBtn = document.getElementById('close-image-modal');
+
+        // Verifica se todos os elementos existem na página antes de adicionar eventos
+        if (profilePicContainer && imageModal && modalImage && closeImageModalBtn) {
+            // Quando se clica na foto de perfil pequena
+            profilePicContainer.addEventListener('click', () => {
+                // Encontra a imagem real dentro do contentor
+                const profilePicImg = document.getElementById('profile-pic-img');
+                // Se a imagem existir
+                if (profilePicImg) {
+                    // Copia o endereço da imagem pequena para a imagem grande do modal
+                    modalImage.src = profilePicImg.src;
+                    // Remove a classe que esconde o modal
+                    imageModal.classList.remove('hidden');
+                    // Adiciona a classe para centrar o conteúdo (flex)
+                    imageModal.classList.add('flex');
+                    // Impede que a página por trás faça scroll
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+
+            // Função para fechar o modal
+            const closeModal = () => {
+                // Esconde o modal novamente
+                imageModal.classList.add('hidden');
+                // Remove a formatação de flex
+                imageModal.classList.remove('flex');
+                // Permite que a página volte a fazer scroll
+                document.body.style.overflow = '';
+            };
+
+            // Quando se clica no botão de fechar, executa a função de fechar
+            closeImageModalBtn.addEventListener('click', closeModal);
+            
+            // Quando se clica na área escura à volta da imagem, também fecha
+            imageModal.addEventListener('click', (e) => {
+                // Verifica se o clique foi exatamente no fundo escuro e não na imagem
+                if (e.target === imageModal) closeModal();
+            });
+
+            // Gestão dos dropdowns dos 3 pontos
+                document.body.addEventListener('click', (e) => {
+                    const target = e.target;
+                    
+                    const optionsBtn = target.closest('.post-options-btn');
+                    if (optionsBtn) {
+                        e.stopPropagation();
+                        document.querySelectorAll('.post-options-dropdown').forEach(d => {
+                            if (d !== optionsBtn.nextElementSibling) d.classList.add('hidden');
+                        });
+                        optionsBtn.nextElementSibling.classList.toggle('hidden');
+                        return;
+                    }
+                    
+                    if (!target.closest('.post-options-dropdown')) {
+                        document.querySelectorAll('.post-options-dropdown').forEach(d => d.classList.add('hidden'));
+                    }
+                });
+
+                document.addEventListener('turbo:frame-load', () => {
+                    if (typeof feather !== 'undefined') feather.replace();
+                    initializeCarousels();
+                    
+                    // ADICIONA ESTA LINHA:
+                    if (typeof initFlowbite !== 'undefined') initFlowbite();
+                });
+
+                // ADICIONA TAMBÉM ESTE EVENTO NOVO (para Turbo Stream updates):
+                document.addEventListener('turbo:before-stream-render', (event) => {
+                    // Depois do Turbo Stream renderizar, re-inicializa o Flowbite
+                    setTimeout(() => {
+                        if (typeof initFlowbite !== 'undefined') initFlowbite();
+                        if (typeof feather !== 'undefined') feather.replace();
+                    }, 50);
+                });
+        }
+
+    </script>
+
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .profile-pic {
+            border: 4px solid #1e293b;
+            transition: transform 0.3s ease;
+        }
+        
+        .profile-pic:hover {
+            transform: scale(1.05);
+        }
+        
+        .post-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Thin Scrollbar for Emoji Picker */
+        .thin-scrollbar::-webkit-scrollbar {
+            height: 2px;
+        }
+        .thin-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .thin-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 20px;
+        }
+
+        #modal-image-container #close-image-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: rgba(41, 41, 51, 0.5); /* cinza quase transparente */
+            color: white;
+            border-radius: 9999px; /* rounded-full */
+            padding: 0.5rem; /* p-2 */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, background-color 0.3s ease, visibility 0.3s ease;
+        }
+
+        #modal-image-container:hover #close-image-modal {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #modal-image-container #close-image-modal:hover {
+            background-color: #ef4444; /* red-500 */
+        }
+    </style>
+</body> 
