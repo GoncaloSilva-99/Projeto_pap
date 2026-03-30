@@ -309,15 +309,8 @@
                 <div class="flex flex-wrap items-center gap-1 mt-1">
                   <% if profile_sport.present? %>
                     <span class="text-xs text-gray-400 flex items-center gap-1">
-                      <i data-feather="activity" class="w-3 h-3 text-blue-400 flex-shrink-0"></i>
+                      <i data-feather="skip-forward" class="w-3 h-3 text-orange-500 flex-shrink-0"></i>
                       <%= profile_sport %>
-                    </span>
-                  <% end %>
-                  <% if profile.respond_to?(:city) && profile.city.present? %>
-                    <span class="text-xs text-gray-500 flex items-center gap-1">
-                      <% if profile_sport.present? %><span class="text-gray-700">·</span><% end %>
-                      <i data-feather="map-pin" class="w-3 h-3 text-gray-500 flex-shrink-0"></i>
-                      <%= profile.city %>
                     </span>
                   <% end %>
                 </div>
