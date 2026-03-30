@@ -1,30 +1,24 @@
 <%= turbo_frame_tag "like_section_#{post.id}", style: "display: contents;" do %>
-    <div class="flex items-center gap-4">
-        <div class="flex items-center gap-2">
-            <% if post.liked_by?(current_user) %>
-                <%= button_to post_post_likes_path(post),
-                    method: :delete,
-                    form: { class: "inline" },
-                    class: "text-red-500 hover:text-red-400 transition p-0",
-                    data: { turbo_frame: "like_section_#{post.id}" } do %>
-                    <i data-feather="heart" class="w-5 h-5 fill-current"></i>
-                <% end %>
-                <div class="clickable" data-modal-toggle="modal-post-likes-<%= post.id %>" data-modal-target="modal-post-likes-<%= post.id %>">
-                    <span class="text-red-500"><%= post.likes_count %> <%= 'like'.pluralize(post.likes_count) %></span>
-                </div>
-            <% else %>
-                <%= button_to post_post_likes_path(post),
-                    method: :post,
-                    form: { class: "inline" },
-                    class: "text-gray-400 hover:text-red-500 transition p-0",
-                    data: { turbo_frame: "like_section_#{post.id}" } do %>
-                    <i data-feather="heart" class="w-5 h-5"></i>
-                <% end %>
-                <div class="clickable" data-modal-toggle="modal-post-likes-<%= post.id %>" data-modal-target="modal-post-likes-<%= post.id %>">
-                    <span class="text-gray-400"><%= post.likes_count %> <%= 'like'.pluralize(post.likes_count) %></span>
-                </div>
+    <div class="flex items-center">
+        <% if post.liked_by?(current_user) %>
+            <%= button_to post_post_likes_path(post),
+                method: :delete,
+                form: { class: "inline-flex items-center" },
+                class: "inline-flex items-center gap-2 leading-none text-red-500 hover:text-red-400 transition p-0 align-middle bg-transparent border-0 shadow-none",
+                data: { turbo_frame: "like_section_#{post.id}" } do %>
+                <i data-feather="heart" class="w-5 h-5 fill-current"></i>
+                <span class="inline-flex items-center leading-none"><%= post.likes_count %> <%= 'like'.pluralize(post.likes_count) %></span>
             <% end %>
-        </div>
+        <% else %>
+            <%= button_to post_post_likes_path(post),
+                method: :post,
+                form: { class: "inline-flex items-center" },
+                class: "inline-flex items-center gap-2 leading-none text-gray-400 hover:text-red-500 transition p-0 align-middle bg-transparent border-0 shadow-none",
+                data: { turbo_frame: "like_section_#{post.id}" } do %>
+                <i data-feather="heart" class="w-5 h-5"></i>
+                <span class="inline-flex items-center leading-none"><%= post.likes_count %> <%= 'like'.pluralize(post.likes_count) %></span>
+            <% end %>
+        <% end %>
     </div>
 
 <% end %>

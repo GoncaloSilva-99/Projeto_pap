@@ -26,17 +26,43 @@ class HomeController < ApplicationController
     @selected_category = params[:category].presence_in(%w[perfis publicacoes]) || 'perfis'
 
     if @query.present?
-      @profile_results = []
-      @profile_results += CoachProfile.search_by_name(@query) if defined?(CoachProfile)
-      @profile_results += PlayerProfile.search_by_name(@query) if defined?(PlayerProfile)
-      @profile_results += BoardProfile.search_by_name(@query) if defined?(BoardProfile)
-      @profile_results += ClubProfile.search_by_name(@query) if defined?(ClubProfile)
-      @profile_results = @profile_results.uniq
+      # --- Perfis ---
+      clubs   = ClubProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%").to_a
+      boards  = BoardProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%").to_a
+      coaches = CoachProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%").to_a
+      players = PlayerProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%").to_a
+      users   = UserProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%").to_a
 
-      @post_results = Post.where("caption ILIKE :q OR text ILIKE :q", q: "%#{@query}%")
+      @profile_results = (clubs + boards + coaches + players + users).uniq
+
+      # --- Posts: IDs dos autores cujo nome contém a query ---
+      name_q = "%#{@query.downcase}%"
+
+      author_user_ids = (
+        ClubProfile.where("LOWER(name) LIKE ?", name_q).pluck(:user_id) +
+        PlayerProfile.where("LOWER(name) LIKE ?", name_q).pluck(:user_id) +
+        CoachProfile.where("LOWER(name) LIKE ?", name_q).pluck(:user_id) +
+        BoardProfile.where("LOWER(name) LIKE ?", name_q).pluck(:user_id) +
+        AdminProfile.where("LOWER(name) LIKE ?", name_q).pluck(:user_id) +
+        UserProfile.where("LOWER(name) LIKE ?", name_q).pluck(:user_id)
+      ).uniq
+
+      # Grupo 1: posts de autores cujo nome bate com a query
+      @author_posts = Post.includes(:user)
+                          .where(user_id: author_user_ids)
+                          .order(created_at: :desc)
+                          .to_a
+
+      # Grupo 2: posts cujo conteúdo bate com a query (excluindo os do grupo 1)
+      @content_posts = Post.includes(:user)
+                          .where.not(user_id: author_user_ids)
+                          .where("LOWER(content) LIKE ?", "%#{@query.downcase}%")
+                          .order(created_at: :desc)
+                          .to_a
     else
       @profile_results = []
-      @post_results = []
+      @author_posts    = []
+      @content_posts   = []
     end
   end
 end
