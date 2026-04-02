@@ -210,7 +210,7 @@
                                                     <i data-feather="more-vertical"></i>
                                                 </button>
                                                 <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
-                                                    <% if post.user == current_user or current_user.admin? or current_user.super_admin? %>
+                                                    <% if post.user == current_user or current_user.admin?  %>
                                                         <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
                                                             <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
                                                         </a>
@@ -406,7 +406,7 @@
                                                                         <i data-feather="more-vertical"></i>
                                                                     </button>
                                                                     <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
-                                                                        <% if post.user == current_user or current_user.admin? or current_user.super_admin? %>
+                                                                        <% if post.user == current_user or current_user.admin? %>
                                                                             <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
                                                                                 <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
                                                                             </a>

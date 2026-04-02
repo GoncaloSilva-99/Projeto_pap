@@ -1,16 +1,30 @@
-Proximos:
-adicionar botão para sair do clube (jogadores e treinadores) -> Na secção de convites, mostrar o clube a que pertence e mostrar a opção de sair do clube
-Adicionar verificações duplas para aceitar / rejeitar convites
-aparece uma barra mais clara em cima dos modals e ao dar like / comentar sair o fundo
-com um campo selecionado, ao mudar de página nos balneários desceleciona o campo
-Dar fix ao modal bugado dos likes nos perfis
-fix redirecionamentos -> páginas de perfis para redirect_back, "equipas" a redirecionar mal
-fazer admin dashboard (estatisticas da aplicação, parte de super admin para criar admins, verificação de clubes, reports de posts e perfis, contas banidas, logs)
-Adicionar sugestões (também no admin dashboard)
+1/04:
+Acabar dahsboard do dashboard de admin
+
+3/04:
+Fix dar like / comentar sair o fundo
+Fix redirecionamentos ser redirect_back, "equipas" e "infraestruturas" a redirecionar mal
+com campo seleciuonado, ao mudar de página nos balneários desceleciona o campo
+Fix Modal bugado dos likes nos perfis
+
+4/04:
+Verificação de clubes no dashboard
 Não permitir que clubes não verificados façam as coisas
 
-Se possível:
+5/04:
+Report de posts e perfis
+Contas banidas -> dashboard, criar tabela, adicionar botão nos perfis, mensagem ao fazer login
+Se der, enviar um email a informar que a conta foi banida e o motivo
 
-Verificação de email ao criar conta
-Ao banir uma conta, enviar um email a informar
+6/04:
+Verificar email ao criar conta
+
+Depois:
+Arranjar maneira de publicar o site
+
+
+
+
+
+
 
