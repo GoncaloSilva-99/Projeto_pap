@@ -1,6 +1,3 @@
-1/04:
-Acabar dahsboard do dashboard de admin
-
 3/04:
 Fix dar like / comentar sair o fundo
 Fix redirecionamentos ser redirect_back, "equipas" e "infraestruturas" a redirecionar mal
@@ -17,6 +14,7 @@ Contas banidas -> dashboard, criar tabela, adicionar botão nos perfis, mensagem
 Se der, enviar um email a informar que a conta foi banida e o motivo
 
 6/04:
+Acabar dahsboard do dashboard de admin
 Verificar email ao criar conta
 
 Depois:

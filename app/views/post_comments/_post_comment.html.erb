@@ -10,6 +10,10 @@
         commenter_profile = comment.user.coach_profile
       elsif comment.user.board?
         commenter_profile = comment.user.board_profile
+      elsif comment.user.admin?
+        commenter_profile = comment.user.admin_profile
+      elsif comment.user.user?
+        commenter_profile = comment.user.user_profile
       end
     %>
     
@@ -47,6 +51,18 @@
               data: { turbo_frame: "_top" }, 
               class: "hover:underline" do %>
               <%= comment.user.board_profile.name %>
+            <% end %>
+          <% elsif comment.user.admin? %>
+            <%= link_to admin_profile_path(comment.user.admin_profile), 
+              data: { turbo_frame: "_top" }, 
+              class: "hover:underline" do %>
+              <%= comment.user.admin_profile.name %>
+            <% end %>
+          <% elsif comment.user.user? %>
+            <%= link_to user_profile_path(comment.user.user_profile), 
+              data: { turbo_frame: "_top" }, 
+              class: "hover:underline" do %>
+              <%= comment.user.user_profile.name %>
             <% end %>
           <% else %>
             <%= comment.user.email %>

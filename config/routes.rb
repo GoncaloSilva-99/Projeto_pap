@@ -108,6 +108,10 @@ Rails.application.routes.draw do
   get "dashboard/club_finances", as: :club_finances_dashboard
   get "dashboard/club_invitations", as: :club_invitations_dashboard
   get "dashboard/admin_dashboard", as: :admin_dashboard
+  get "dashboard/club_verification", as: :club_verification_dashboard
+  get "dashboard/reports", as: :reports_dashboard
+  get "dashboard/bans", as: :bans_dashboard
+  get "dashboard/admins", as: :list_admins_dashboard
   
 
   post "dashboard/create_sport", to: "dashboard#create_sport", as: :create_club_sport

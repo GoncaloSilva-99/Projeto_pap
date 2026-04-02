@@ -1,3 +1,4 @@
+
 <% if post.post_comments.any? %>
     <% post.post_comments.newest_first.each do |comment| %>
         <%= render "post_comments/post_comment", comment: comment %>

@@ -20,55 +20,41 @@
 <!---------------------------------------------------- OPÇÕES DO SIDEBAR ---------------------------------------------------->
         <nav class="flex-1 p-4 space-y-2">
             
-            <%= link_to club_dashboard_path do %>
+            <%= link_to admin_dashboard_path do %>
             <div class="sidebar-item flex items-center px-4 py-3 bg-slate-700 text-blue-400 rounded-xl border-l-4 border-blue-500 transition-all duration-300">
                 <i data-feather="home" class="sidebar-icon text-blue-400 w-5 h-5 mr-3"></i>
                 <span class="font-medium">Dashboard</span>
             </div>
             <% end %>
 
-            <%= link_to club_teams_dashboard_path do %>
+            <% if current_user.admin_profile.super? %>
+              <%= link_to list_admins_dashboard_path do %>
+              <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-xl border-l-4 border-transparent hover:border-orange-500 transition-all duration-300">
+                  <i data-feather="user" class="sidebar-icon text-orange-400 w-5 h-5 mr-3"></i>
+                  <span class="font-medium">Admins</span>
+              </div>
+              <% end %>
+            <% end %>
+
+            <%= link_to club_verification_dashboard_path do %>
             <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-green-400 rounded-xl border-l-4 border-transparent hover:border-green-500 transition-all duration-300">
                 <i data-feather="users" class="sidebar-icon text-green-400 w-5 h-5 mr-3"></i>
-                <span class="font-medium">Equipas</span>
+                <span class="font-medium">Verificação de Clubes</span>
             </div>
             <% end %>
 
 
-            <%= link_to club_finances_dashboard_path do %>
+            <%= link_to reports_dashboard_path do %>
             <div  class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-yellow-400 rounded-xl border-l-4 border-transparent hover:border-yellow-500 transition-all duration-300">
-                <i data-feather="dollar-sign" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
-                <span class="font-medium">Finanças</span>
+                <i data-feather="alert-triangle" class="sidebar-icon text-yellow-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Reports</span>
             </div>
             <% end %>
 
-
-
-            <%= link_to club_infrastructures_dashboard_path do %>
+            <%= link_to bans_dashboard_path do %>
             <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-orange-400 rounded-xl border-l-4 border-transparent hover:border-orange-500 transition-all duration-300">
-                <i data-feather="map-pin" class="sidebar-icon text-orange-400 w-5 h-5 mr-3"></i>
-                <span class="font-medium">Infraestruturas</span>
-            </div>
-            <% end %>
-
-            <%= link_to club_equipment_dashboard_path do %>
-            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-400 rounded-xl border-l-4 border-transparent hover:border-rose-300 transition-all duration-300">
-                <i data-feather="clipboard" class="sidebar-icon text-rose-400 w-5 h-5 mr-3"></i>
-                <span class="font-medium">Material</span>
-            </div>
-            <% end %>
-
-            <%= link_to club_board_dashboard_path do %>
-            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-rose-900 rounded-xl border-l-4 border-transparent hover:border-rose-950 transition-all duration-300">
-                <i data-feather="settings" class="sidebar-icon text-rose-900 w-5 h-5 mr-3"></i>
-                <span class="font-medium">Membros da Direção</span>
-            </div>
-            <% end %>
-
-            <%= link_to club_invitations_dashboard_path do %>
-            <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-purple-500 rounded-xl border-l-4 border-transparent hover:border-purple-950 transition-all duration-300">
-                <i data-feather="mail" class="sidebar-icon text-purple-500 w-5 h-5 mr-3"></i>
-                <span class="font-medium">Convites</span>
+                <i data-feather="slash" class="sidebar-icon text-orange-400 w-5 h-5 mr-3"></i>
+                <span class="font-medium">Bans</span>
             </div>
             <% end %>
 
