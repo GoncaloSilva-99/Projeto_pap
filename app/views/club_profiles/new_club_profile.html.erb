@@ -133,6 +133,9 @@
 
         <%= f.fields_for :club_profile do |cp| %>
             <div class="step-content hidden" data-step="2">
+                
+                <%= cp.hidden_field :status, value: 'pending' %>
+
                 <!-- Nome -->
                 <div>
                     <label class="block text-sm font-medium text-gray-400 mb-1 required-label">Nome</label>

@@ -120,7 +120,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       { user_profile_attributes: [:name, :bio, :profile_picture, :banner] },
       { player_profile_attributes: [:name, :birth_date, :position, :bio, :contact, :parents_contact, :sport, :dominant_foot_or_hand, :secondary_position, :profile_picture, :banner_picture,  :club_profile_id, { player_teams_attributes: [:club_team_id] } ]  },
       { coach_profile_attributes: [:name, :birth_date, :bio, :club_profile_id, :coach_type, :contact, :sport, :profile_picture, :banner_picture, { coach_teams_attributes: [:club_team_id] } ] },
-      { club_profile_attributes: [:name, :foundation_date, :bio, :contact, :verification_document, :profile_picture, :banner_picture] },
+      { club_profile_attributes: [:name, :foundation_date, :bio, :contact, :verification_document, :profile_picture, :banner_picture, :status] },
       { board_profile_attributes: [:name, :bio, :birth_date, :contact, :club_profile_id, :profile_picture, :banner_picture] },
       { admin_profile_attributes: [:name, :profile_picture, :banner_picture, :bio, :role]}
     ]

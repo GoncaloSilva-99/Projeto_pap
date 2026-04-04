@@ -1,8 +1,8 @@
-3/04:
+
 Fix dar like / comentar sair o fundo
 Fix redirecionamentos ser redirect_back, "equipas" e "infraestruturas" a redirecionar mal
 com campo seleciuonado, ao mudar de página nos balneários desceleciona o campo
-Fix Modal bugado dos likes nos perfis
+Fix Modal bugado dos likes nos perfis (tirar se não der para arranjar)
 
 4/04:
 Verificação de clubes no dashboard

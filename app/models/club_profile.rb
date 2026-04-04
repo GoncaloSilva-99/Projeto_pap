@@ -54,4 +54,16 @@ class ClubProfile < ApplicationRecord
     has_handball_teams? and has_football_teams?
   end
 
+  def verified?
+    status == 'verified'
+  end
+
+  def verification_pending?
+    status == 'pending'
+  end
+
+  def verification_rejected?
+    status == 'rejected'
+  end
+
 end

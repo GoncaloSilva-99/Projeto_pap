@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_27_104559) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_04_185428) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -152,8 +152,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_27_104559) do
   create_table "club_profiles", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name"
-    t.boolean "status"
-    t.integer "approved_by"
+    t.string "status", default: "pending"
+    t.integer "decided_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "bio"
@@ -361,6 +361,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_27_104559) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "role"
+    t.boolean "banned", default: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

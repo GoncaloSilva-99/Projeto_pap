@@ -206,6 +206,7 @@
 <!-------------------------------------------------------------------------------- Treinadores ------------------------------------------------------------------------->
 
             <div class="mb-12">
+    <% if !@club_profile.has_no_sports? %>
             
             <% if params[:query].present? and @coach_invitations_count == 0 and @player_invitations_count == 0 %>
                 <div class="col-span-4 flex flex-col items-center justify-center py-16">
@@ -436,6 +437,8 @@
             </div>
             
     </div>
+
+    <% end %>
 
 
 <script>

@@ -312,11 +312,7 @@
                     </h3>
                     <div class="flex items-center gap-4">
                     <% if @selected_team != 'others' %>
-                        <%= link_to new_coach_profile_registration_path(selected_sport: @selected_sport, selected_team: @selected_team ) do %>
-                            <button class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-200 transform hover:scale-105">
-                                <i data-feather="user-plus" class="w-4 h-4"></i>
-                            </button>
-                        <% end %>
+                        <div class="sidebar-item flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-purple-400 rounded-xl border-l-4 border-transparent hover:border-purple-500 transition-all duration-300">
                     <% end %>
                     </div>
                 </div>
