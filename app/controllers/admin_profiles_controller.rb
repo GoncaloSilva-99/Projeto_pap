@@ -26,6 +26,7 @@ class AdminProfilesController < ApplicationController
 
   # GET /admin_profiles/1/edit
   def edit
+    @admin_profile.build_user if @admin_profile.user.nil?
   end
 
   # POST /admin_profiles or /admin_profiles.json
@@ -45,9 +46,52 @@ class AdminProfilesController < ApplicationController
 
   # PATCH/PUT /admin_profiles/1 or /admin_profiles/1.json
   def update
+    @admin_profile.profile_picture.purge if params[:admin_profile][:remove_profile_picture] == '1'
+    @admin_profile.banner_picture.purge if params[:admin_profile][:remove_banner_picture] == '1'
+
+    profile_params = admin_profile_params.dup
+    user_attrs = profile_params.delete(:user_attributes)
+
+    user_update_success = true
+    account_details_changed = false
+
+    if user_attrs.present? && @admin_profile.user.present?
+      user_attrs = user_attrs.to_h
+      user_attrs = user_attrs.reject do |k, v|
+        v.blank? && !%w[email_confirmation password_confirmation].include?(k.to_s)
+      end
+
+      if user_attrs.present?
+        user = @admin_profile.user
+        account_details_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
+        account_details_changed ||= user_attrs[:password].present?
+
+        email_being_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
+        password_being_changed = user_attrs[:password].present?
+
+        if (email_being_changed || password_being_changed) && user_attrs[:current_password].blank?
+          @admin_profile.errors.add(:base, "É necessário introduzir a palavra-passe atual para alterar email ou palavra-passe.")
+          user_update_success = false
+        elsif user_attrs[:current_password].present?
+          user_update_success = user.update_with_password(user_attrs)
+        else
+          user_update_success = user.update_without_password(user_attrs.except(:current_password))
+        end
+
+        if user.errors.any?
+          user.errors.full_messages.each { |msg| @admin_profile.errors.add(:base, msg) }
+        end
+      end
+    end
+
     respond_to do |format|
-      if @admin_profile.update(admin_profile_params)
-        format.html { redirect_to @admin_profile, notice: "Admin profile was successfully updated.", status: :see_other }
+      if @admin_profile.update(profile_params) && user_update_success
+        if account_details_changed
+          sign_out(current_user) if current_user
+          format.html { redirect_to new_user_session_path, notice: "Dados de login alterados. Por favor, entre novamente.", status: :see_other }
+        else
+          format.html { redirect_to @admin_profile, notice: "Admin profile was successfully updated.", status: :see_other }
+        end
         format.json { render :show, status: :ok, location: @admin_profile }
       else
         format.html { render :edit, status: :unprocessable_entity }

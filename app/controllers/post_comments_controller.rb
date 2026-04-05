@@ -20,6 +20,10 @@ class PostCommentsController < ApplicationController
               locals: { post: @post }
             ),
             turbo_stream.replace(
+              "search_comments_count_#{@post.id}",
+              @post.comments_count
+            ),
+            turbo_stream.replace(
               "flash",
               partial: "shared/flash"
             )
@@ -76,6 +80,10 @@ class PostCommentsController < ApplicationController
             "comments_count_on_#{@post.id}", 
             partial: "posts/comments_count_on", 
             locals: { post: @post }
+          ),
+          turbo_stream.replace(
+            "search_comments_count_#{@post.id}",
+            @post.comments_count
           )
           ]
         end

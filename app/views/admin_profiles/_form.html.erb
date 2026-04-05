@@ -1,27 +1,370 @@
-<%= form_with(model: admin_profile) do |form| %>
-  <% if admin_profile.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(admin_profile.errors.count, "error") %> prohibited this admin_profile from being saved:</h2>
+<div class="bg-gray-900 text-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+  <div class="text-center mb-6">
+      <div class="text-center">
+              <%= image_tag "logo_sem_texto.png", alt: "Logo", class: "mx-auto mb-4", height: 70, width: 70 %>
+          <p class="text-indigo-100 font-bold mt-2">Editar Perfil</p>
+      </div>
+  </div>
 
-      <ul>
-        <% admin_profile.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+  <div class="bg-gray-800 p-8 rounded-xl shadow-lg max-w-2xl w-full mx-auto">
+    <%= form_with(model: admin_profile, class: "space-y-6") do |form| %>
+      <% if admin_profile.errors.any? %>
+        <div id="error_explanation" class="bg-red-900 bg-opacity-50 border border-red-700 text-red-300 px-4 py-3 rounded-lg" role="alert">
+          <h2 class="font-bold text-lg mb-2"><%= pluralize(admin_profile.errors.count, "erro") %> impediu que as alterações fossem guardadas:</h2>
+          <ul class="list-disc list-inside text-sm">
+            <% admin_profile.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="relative w-full max-w-2xl">
+
+                      <!-- Banner -->
+                      <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg group">
+                        <% if admin_profile.banner_picture.attached? %>
+                          <%= image_tag url_for(admin_profile.banner_picture),
+                          id: "admin_banner_preview",
+                          alt: "Pré-visualização do banner do admin",
+                          class: "w-full h-full object-cover cursor-pointer" %>
+                        <% else %>
+                          <%= image_tag "default_banner.jpg",
+                          id: "admin_banner_preview",
+                          alt: "Pré-visualização do banner do admin",
+                          class: "w-full h-full object-cover cursor-pointer" %>
+                        <% end %>
+
+                        <%= form.file_field :banner_picture, id: "admin_banner_picture", class: "file-upload-input sr-only", accept: "image/*" %>
+
+                        <button type="button" id="add-banner-btn" class="<%= admin_profile.banner_picture.attached? ? 'hidden' : '' %> absolute inset-0 bg-blue-500 bg-opacity-0 group-hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                          </svg>
+                        </button>
+
+                        <button type="button" id="remove-banner-btn" class="<%= admin_profile.banner_picture.attached? ? '' : 'hidden' %> absolute inset-0 bg-red-500 bg-opacity-0 group-hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+
+
+                      <!-- Foto de Perfil  -->
+                      <div class="absolute top-20 left-8 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
+                        <% if admin_profile.profile_picture.attached? %>
+                          <%= image_tag url_for(admin_profile.profile_picture),
+                          id: "pp_profile_preview",
+                          alt: "Pré-visualização da imagem de perfil",
+                          class: "w-full h-full object-cover cursor-pointer" %>
+                        <% else %>
+                          <%= image_tag "default_pp.jpg",
+                          id: "pp_profile_preview",
+                          alt: "Pré-visualização da imagem de perfil",
+                          class: "w-full h-full object-cover cursor-pointer" %>
+                        <% end %>
+
+                        <%= form.file_field :profile_picture, id: "pp_profile_picture", class: "file-upload-input sr-only", accept: "image/*" %>
+
+                        <button type="button" id="add-profile-btn" class="<%= admin_profile.profile_picture.attached? ? 'hidden' : '' %> absolute inset-0 bg-blue-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                          </svg>
+                        </button>
+
+                        <button type="button" id="remove-profile-btn" class="<%= admin_profile.profile_picture.attached? ? '' : 'hidden' %> absolute inset-0 bg-red-500 bg-opacity-0 hover:bg-opacity-90 text-white font-medium transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+      </div>
+
+      <div>
+        <%= form.label :name, "Nome do admin", class: "block text-sm font-medium text-gray-400 mb-1 mt-16" %>
+        <%= form.text_field :name,
+            class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+            placeholder:"Ex. SportX FC" %>
+      </div>
+
+      <div>
+        <%= form.label :bio, "Biografia", class: "block text-sm font-medium text-gray-400 mb-1" %>
+        <%= form.textarea :bio,
+            rows: 6,
+            class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+            placeholder:"Escreva uma breve descrição sobre o admin. A informação estará visível para todos no perfil" %>
+      </div>
+
+      <% if admin_profile.persisted? %>
+      <div class="mt-8 border-t border-gray-700 pt-6">
+        <div class="flex items-center gap-2">
+          <h3 class="text-lg font-medium leading-6 text-white">Detalhes da Conta</h3>
+          <button type="button" id="toggle-account-details-btn" class="text-gray-400 hover:text-white transition-colors focus:outline-none p-1">
+            <i data-feather="chevron-down" id="account-details-icon" class="h-5 w-5 transform transition-transform duration-200"></i>
+          </button>
+        </div>
+
+        <div id="account-details-section" class="hidden">
+          <p class="mt-1 text-sm text-gray-400">Altere o seu email e palavra-passe. Deixe os campos em branco se não pretender alterar.</p>
+          <div id="account-details-error" class="hidden mt-3 rounded-md bg-red-900 bg-opacity-50 border border-red-700 text-red-200 px-4 py-3 text-sm" role="alert"></div>
+
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <%= form.fields_for :user do |user_form| %>
+              <div>
+                <%= user_form.label :email, "Novo Endereço de Email", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.email_field :email,
+                    id: "admin_profile_email",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"novo@email.com", value: "" %>
+              </div>
+
+              <div>
+                <%= user_form.label :email_confirmation, "Confirmação do Novo Email", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.email_field :email_confirmation,
+                    id: "admin_profile_email_confirmation",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Confirme o seu email" %>
+              </div>
+
+              <div>
+                <%= user_form.label :password, "Nova Palavra-passe", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.password_field :password,
+                    id: "admin_profile_password",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Nova palavra-passe" %>
+              </div>
+
+              <div>
+                <%= user_form.label :password_confirmation, "Confirmação da Nova Palavra-passe", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.password_field :password_confirmation,
+                    id: "admin_profile_password_confirmation",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Confirme a nova palavra-passe" %>
+              </div>
+
+              <div class="md:col-span-2">
+                <%= user_form.label :current_password, "Palavra-passe Atual (necessária para confirmar alterações)", class: "block text-sm font-medium text-gray-400 mb-1" %>
+                <%= user_form.password_field :current_password,
+                    id: "admin_profile_current_password",
+                    class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
+                    placeholder:"Digite a sua palavra-passe atual" %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <% end %>
+
+      <div class="flex gap-4 pt-4">
+        <%= link_to admin_profile_path(admin_profile), class: "w-full bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30 flex items-center justify-center gap-2" do %>
+            <i data-feather="arrow-left"></i>
+            <span>Descartar Alterações</span>
         <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
+        <%= form.submit "Guardar Alterações", class: "w-full bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-primary-500/30" %>
+      </div>
+    <% end %>
   </div>
+</div>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Profile picture
+    const profileInput = document.getElementById('pp_profile_picture');
+    const profilePreview = document.getElementById('pp_profile_preview');
+    const removeProfileBtn = document.getElementById('remove-profile-btn');
+    const addProfileBtn = document.getElementById('add-profile-btn');
 
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+    if (profilePreview && removeProfileBtn && addProfileBtn) {
+      addProfileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileInput.click();
+      });
+
+      if (profileInput) {
+        profileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              profilePreview.src = ev.target.result;
+              removeProfileBtn.classList.remove('hidden');
+              addProfileBtn.classList.add('hidden');
+              const rem = document.querySelector('input[name="admin_profile[remove_profile_picture]"]');
+              if (rem) rem.value = '';
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      profilePreview.addEventListener('click', () => {
+        if (profileInput) profileInput.click();
+      });
+
+      removeProfileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (profileInput) profileInput.value = '';
+        profilePreview.src = '<%= image_path("default_pp.jpg") %>';
+        removeProfileBtn.classList.add('hidden');
+        addProfileBtn.classList.remove('hidden');
+        let hidden = document.querySelector('input[name="admin_profile[remove_profile_picture]"]');
+        if (!hidden) {
+          hidden = document.createElement('input');
+          hidden.type = 'hidden';
+          hidden.name = 'admin_profile[remove_profile_picture]';
+          document.querySelector('form').appendChild(hidden);
+        }
+        hidden.value = '1';
+      });
+    }
+
+    // Banner
+    const bannerInput = document.getElementById('admin_banner_picture');
+    const bannerPreview = document.getElementById('admin_banner_preview');
+    const removeBannerBtn = document.getElementById('remove-banner-btn');
+    const addBannerBtn = document.getElementById('add-banner-btn');
+
+    if (bannerPreview && removeBannerBtn && addBannerBtn) {
+      addBannerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        bannerInput.click();
+      });
+
+      if (bannerInput) {
+        bannerInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+              bannerPreview.src = ev.target.result;
+              removeBannerBtn.classList.remove('hidden');
+              addBannerBtn.classList.add('hidden');
+              const rem = document.querySelector('input[name="admin_profile[remove_banner_picture]"]');
+              if (rem) rem.value = '';
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+
+      bannerPreview.addEventListener('click', () => {
+        if (bannerInput) bannerInput.click();
+      });
+
+      removeBannerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (bannerInput) bannerInput.value = '';
+        bannerPreview.src = '<%= image_path("default_banner.jpg") %>';
+        removeBannerBtn.classList.add('hidden');
+        addBannerBtn.classList.remove('hidden');
+        let hidden = document.querySelector('input[name="admin_profile[remove_banner_picture]"]');
+        if (!hidden) {
+          hidden = document.createElement('input');
+          hidden.type = 'hidden';
+          hidden.name = 'admin_profile[remove_banner_picture]';
+          document.querySelector('form').appendChild(hidden);
+        }
+        hidden.value = '1';
+      });
+    }
+
+    const toggleDetailsBtn = document.getElementById('toggle-account-details-btn');
+    const detailsSection = document.getElementById('account-details-section');
+    const detailsIcon = document.getElementById('account-details-icon');
+
+    if (toggleDetailsBtn && detailsSection && detailsIcon) {
+      toggleDetailsBtn.addEventListener('click', () => {
+        detailsSection.classList.toggle('hidden');
+        detailsIcon.classList.toggle('rotate-180');
+      });
+    }
+
+    const accountError = document.getElementById('account-details-error');
+    const form = document.querySelector('form');
+    const emailInput = document.getElementById('admin_profile_email');
+    const emailConfirmInput = document.getElementById('admin_profile_email_confirmation');
+    const passwordInput = document.getElementById('admin_profile_password');
+    const passwordConfirmInput = document.getElementById('admin_profile_password_confirmation');
+
+    if (emailInput && emailConfirmInput) {
+      const feedback = document.createElement('p');
+      feedback.className = 'text-xs mt-1 font-medium';
+      emailConfirmInput.parentElement.appendChild(feedback);
+
+      function checkEmail() {
+        const email = emailInput.value.trim();
+        const confirm = emailConfirmInput.value.trim();
+        if (!confirm) {
+          feedback.textContent = '';
+          return;
+        }
+        if (email !== confirm) {
+          feedback.textContent = 'Os emails não coincidem.';
+          feedback.className = 'text-xs mt-1 font-medium text-red-400';
+        } else {
+          feedback.textContent = 'Os emails coincidem.';
+          feedback.className = 'text-xs mt-1 font-medium text-green-400';
+        }
+      }
+      emailInput.addEventListener('input', checkEmail);
+      emailConfirmInput.addEventListener('input', checkEmail);
+    }
+
+    if (passwordInput && passwordConfirmInput) {
+      const feedback = document.createElement('p');
+      feedback.className = 'text-xs mt-1 font-medium';
+      passwordConfirmInput.parentElement.appendChild(feedback);
+
+      function checkPassword() {
+        const password = passwordInput.value;
+        const confirm = passwordConfirmInput.value;
+        if (!confirm) {
+          feedback.textContent = '';
+          return;
+        }
+        if (password !== confirm) {
+          feedback.textContent = 'As palavras-passe não coincidem.';
+          feedback.className = 'text-xs mt-1 font-medium text-red-400';
+        } else {
+          feedback.textContent = 'As palavras-passe coincidem.';
+          feedback.className = 'text-xs mt-1 font-medium text-green-400';
+        }
+      }
+      passwordInput.addEventListener('input', checkPassword);
+      passwordConfirmInput.addEventListener('input', checkPassword);
+    }
+
+    if (form && accountError && emailInput && emailConfirmInput && passwordInput && passwordConfirmInput) {
+      form.addEventListener('submit', (e) => {
+        const email = emailInput.value.trim();
+        const emailConfirm = emailConfirmInput.value.trim();
+        const password = passwordInput.value;
+        const passwordConfirm = passwordConfirmInput.value;
+        const currentPassword = document.getElementById('admin_profile_current_password')?.value;
+
+        const changingEmail = email !== '';
+        const changingPassword = password !== '' || passwordConfirm !== '';
+        let error = '';
+
+        if (changingEmail && email !== emailConfirm) {
+          error = 'Os emails não coincidem.';
+        } else if (changingPassword && password !== passwordConfirm) {
+          error = 'As palavras-passe não coincidem.';
+        } else if ((changingEmail || changingPassword) && !currentPassword) {
+          error = 'Para alterar dados de conta é necessária a palavra-passe atual.';
+        }
+
+        if (error) {
+          e.preventDefault();
+          accountError.textContent = error;
+          accountError.classList.remove('hidden');
+        }
+      });
+    }
+
+    if (typeof feather !== 'undefined') {
+      feather.replace();
+    }
+  });
+</script>
