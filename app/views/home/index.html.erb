@@ -78,14 +78,16 @@
                                     <p class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</p>
                                 <% end %>
                             <% end %>
-                            <a data-modal-target="liked-modal" data-modal-toggle="liked-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
-                                <i data-feather="heart" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">Likes</p>
-                            </a>
-                            <a data-modal-target="saved-modal" data-modal-toggle="saved-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600 hover:text-green-400">
-                                <i data-feather="bookmark" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">Guardados</p>
-                            </a>
+                            <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
+                                <a data-modal-target="liked-modal" data-modal-toggle="liked-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
+                                    <i data-feather="heart" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Likes</p>
+                                </a>
+                                <a data-modal-target="saved-modal" data-modal-toggle="saved-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600 hover:text-green-400">
+                                    <i data-feather="bookmark" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">Guardados</p>
+                                </a>
+                            <% end %>
                             <% if (current_user.player? and current_user.player_profile.club_profile.nil? ) or (current_user.coach? and current_user.coach_profile.club_profile.nil?)%>
                                 <a data-modal-target="invitation-modal" data-modal-toggle="invitation-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600 hover:text-green-400">
                                     <i data-feather="mail" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400 dark:group-hover:text-gray-400" aria-hidden="true" fill="none" viewBox="0 0 16 16"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></i>
@@ -662,7 +664,30 @@
                 <div class="flex flex-col lg:flex-row gap-8">
                     <!-- Main Feed -->
                     <div class="flex-1 space-y-6  pr-2 scroll-smooth no-scrollbar" id="feed-container">
+                        <% if current_user.club? and current_user.club_profile.verification_pending? %>
+                                <div class="flex flex-col items-center p-8 text-yellow-100 rounded-2xl bg-yellow-700/20 border border-yellow-600/40 text-center w-full shadow-lg">
+                                    <div class="w-16 h-16 rounded-full bg-yellow-600/30 flex items-center justify-center mb-4">
+                                        <svg class="w-8 h-8 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                        </svg>
+                                    </div>
+                                    <span class="text-xl font-bold mb-2">Verificação Pendente</span>
+                                    <span class="text-sm text-yellow-200/80">Enquanto não é tomada uma decisão por parte da administração, algumas funcionalidades estarão indisponíveis por questões de segurança</span>
+                                </div>
+                        <% elsif current_user.club? and current_user.club_profile.verification_rejected? %>
+                        
+                            <div class="flex flex-col items-center p-8 text-red-100 rounded-2xl bg-red-700/20 border border-red-600/40 text-center w-full shadow-lg">
+                                <div class="w-16 h-16 rounded-full bg-red-600/30 flex items-center justify-center mb-4">
+                                    <svg class="w-8 h-8 text-red-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xl font-bold mb-2">Verificação Rejeitada</span>
+                                <span class="text-sm text-red-200/80">Se quiser solicitar uma nova verificação poderá fazê-lo através do seu perfil, mudando, primeiro, o documento de verificação na página de edição de perfil</span>
+                            </div>
+                        <% end %>
                         <!-- Create Post -->
+                        <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
                         <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg">
                                 <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
                                     <div class="flex items-start space-x-4">
@@ -712,10 +737,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                <% end %>
+                                
 
 
                         </div>
+                        <% end %>
 
                         
 
@@ -742,6 +768,7 @@
 
                                     <%= turbo_frame_tag "post_#{post.id}", class: "post-card block" do %>
                                         <div class="bg-gray-800 rounded-xl p-6 shadow-lg relative" >
+                                            <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
                                             <div class="absolute top-4 right-4 z-10">
                                                 <button class="post-options-btn p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition">
                                                     <i data-feather="more-vertical"></i>
@@ -755,6 +782,7 @@
                                                     <%= render "posts/save_section", post: post %>
                                                 </div>
                                             </div>
+                                            <%end%>
 
                                             <!-- Modal confirmação apagar publicação -->
 
@@ -861,7 +889,7 @@
                                             
                                             <% end %>
                                             </div>    
-
+                                            <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
                                             <div class="flex items-center pt-4 border-t border-gray-700">
                                                 
                                                 <%= render "posts/like_section", post: post %>
@@ -870,6 +898,7 @@
                                                     <%= render "posts/comments_count", post: post %>
                                                 </div>
                                             </div>
+                                            <% end %>
                                         </div>
 
 
@@ -935,17 +964,20 @@
                                                                 </div>
                                                                 
                                                                 <div class="relative">
+                                                                    <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
                                                                     <button class="post-options-btn p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition">
                                                                         <i data-feather="more-vertical"></i>
                                                                     </button>
-                                                                    <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
-                                                                        <% if post.user == current_user or current_user.admin? %>
-                                                                            <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
-                                                                                <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
-                                                                            </a>
-                                                                        <% end %>
-                                                                        <%= render "posts/save_options_modal", post: post %>
-                                                                    </div>
+                                                                    
+                                                                        <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
+                                                                            <% if post.user == current_user or current_user.admin? %>
+                                                                                <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
+                                                                                    <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
+                                                                                </a>
+                                                                            <% end %>
+                                                                            <%= render "posts/save_options_modal", post: post %>
+                                                                        </div>
+                                                                    <% end %>
                                                                 </div>
                                                             </div>
 
@@ -990,10 +1022,12 @@
                                                             
                                                             <% end %>
                                                             
-                                                        <%= turbo_frame_tag "like_section_modal_#{post.id}" do %>
-                                                            <div class="flex items-center pt-4 border-gray-700">
-                                                                <%= render "posts/like_section_modal", post: post %>
-                                                            </div>
+                                                        <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
+                                                            <%= turbo_frame_tag "like_section_modal_#{post.id}" do %>
+                                                                <div class="flex items-center pt-4 border-gray-700">
+                                                                    <%= render "posts/like_section_modal", post: post %>
+                                                                </div>
+                                                            <% end %>
                                                         <% end %>
                                                     </div>
                                                 </div>
@@ -1023,6 +1057,7 @@
                                                     </div>
 
                                                     <!-- Input Area -->
+                                                    <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
                                                     <div class="p-4 border-t border-gray-700 bg-gray-800">
                                                         <div class="flex items-center space-x-2 ">
                                                             <%= turbo_frame_tag "comment_form_#{post.id}", class: "w-full" do %>
@@ -1030,6 +1065,7 @@
                                                             <% end %>
                                                         </div>
                                                     </div>
+                                                    <% end %>
                                                 </div>
                                             </div>
                                         </div>    
@@ -1045,6 +1081,7 @@
                                 </div>
                             <% end %>
                         </div>
+
                         
                         <% if @posts.any? %>
                             <div class="text-center mt-8">
@@ -1063,6 +1100,14 @@
                                 <% end %>
                             </div>
                         <% end %>
+
+
+                        <% else %>
+                            <div class="bg-gray-800 rounded-xl p-12 text-center">
+                                <i data-feather="inbox" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+                                <h3 class="text-xl font-bold text-gray-400 mb-2">Os posts serão mostrados quando o clube for verificado!</h3>
+                            </div>
+                        <% end %>
                     </div>
 
                     <!-- Sidebar Suggestions -->
@@ -1072,67 +1117,71 @@
                     <div class="bg-gray-800 rounded-xl p-6 shadow-lg sticky top-24">
                         <h3 class="text-xl font-bold text-white mb-6">Sugestões para si</h3>
                         <div class="space-y-6">
-                            <% if @suggested_users.present? %>
-                                <% @suggested_users.each do |user| %>
-                                    <div class="flex items-center gap-3">
-                                        <div class="flex items-center space-x-3 flex-1 min-w-0">
-                                            <div class="w-12 h-12 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center text-white font-bold">
-                                                <% 
-                                                    suggested_user_profile = nil
-                                                    if user.club?
-                                                        suggested_user_profile = user.club_profile
-                                                    elsif user.player?
-                                                        suggested_user_profile = user.player_profile
-                                                    elsif user.board?
-                                                        suggested_user_profile = user.board_profile
-                                                    elsif user.coach?
-                                                        suggested_user_profile = user.coach_profile
-                                                    elsif user.admin?
-                                                        suggested_user_profile = user.admin_profile
-                                                    elsif user.user?
-                                                        suggested_user_profile = user.user_profile
-                                                    end
-                                                %>
-                                                <% if suggested_user_profile && suggested_user_profile.profile_picture.attached? %>
-                                                    <%= image_tag url_for(suggested_user_profile.profile_picture), class: "w-full h-full object-cover rounded-full", id: "profile-pic-img" %>
-                                                <% else %>
-                                                    <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover rounded-full", id: "profile-pic-img" %>
-                                                <% end %>
-                                            </div>
-                                            <div class="min-w-0">
-                                                <div class="font-semibold text-white truncate">
-                                                    <% if user.club? %>
-                                                        <%= link_to user.club_profile.name, club_profile_path(user.club_profile), 
-                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
-                                                    <% elsif user.player? %>
-                                                        <%= link_to user.player_profile.name, player_profile_path(user.player_profile), 
-                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
-                                                    <% elsif user.coach? %>
-                                                        <%= link_to user.coach_profile.name, coach_profile_path(user.coach_profile), 
-                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
-                                                    <% elsif user.board? %>
-                                                        <%= link_to user.board_profile.name, board_profile_path(user.board_profile), 
-                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
-                                                    <% elsif user.admin? %>
-                                                        <%= link_to user.admin_profile.name, admin_profile_path(user.admin_profile), 
-                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
-                                                    <% elsif user.user? %>
-                                                        <%= link_to user.user_profile.name, user_profile_path(user.user_profile), 
-                                                            data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                            <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
+                                <% if @suggested_users.present? %>
+                                    <% @suggested_users.each do |user| %>
+                                        <div class="flex items-center gap-3">
+                                            <div class="flex items-center space-x-3 flex-1 min-w-0">
+                                                <div class="w-12 h-12 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center text-white font-bold">
+                                                    <% 
+                                                        suggested_user_profile = nil
+                                                        if user.club?
+                                                            suggested_user_profile = user.club_profile
+                                                        elsif user.player?
+                                                            suggested_user_profile = user.player_profile
+                                                        elsif user.board?
+                                                            suggested_user_profile = user.board_profile
+                                                        elsif user.coach?
+                                                            suggested_user_profile = user.coach_profile
+                                                        elsif user.admin?
+                                                            suggested_user_profile = user.admin_profile
+                                                        elsif user.user?
+                                                            suggested_user_profile = user.user_profile
+                                                        end
+                                                    %>
+                                                    <% if suggested_user_profile && suggested_user_profile.profile_picture.attached? %>
+                                                        <%= image_tag url_for(suggested_user_profile.profile_picture), class: "w-full h-full object-cover rounded-full", id: "profile-pic-img" %>
+                                                    <% else %>
+                                                        <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover rounded-full", id: "profile-pic-img" %>
                                                     <% end %>
                                                 </div>
+                                                <div class="min-w-0">
+                                                    <div class="font-semibold text-white truncate">
+                                                        <% if user.club? %>
+                                                            <%= link_to user.club_profile.name, club_profile_path(user.club_profile), 
+                                                                data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                        <% elsif user.player? %>
+                                                            <%= link_to user.player_profile.name, player_profile_path(user.player_profile), 
+                                                                data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                        <% elsif user.coach? %>
+                                                            <%= link_to user.coach_profile.name, coach_profile_path(user.coach_profile), 
+                                                                data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                        <% elsif user.board? %>
+                                                            <%= link_to user.board_profile.name, board_profile_path(user.board_profile), 
+                                                                data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                        <% elsif user.admin? %>
+                                                            <%= link_to user.admin_profile.name, admin_profile_path(user.admin_profile), 
+                                                                data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                        <% elsif user.user? %>
+                                                            <%= link_to user.user_profile.name, user_profile_path(user.user_profile), 
+                                                                data: { turbo_frame: "_top" }, class: "hover:underline" %>
+                                                        <% end %>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        
-                                        <%= render "follows/follow_button_suggestions", user: user %>
+                                            
+                                            <%= render "follows/follow_button_suggestions", user: user %>
 
-                                    </div>
+                                        </div>
+                                    <% end %>
+                                        <div class="mt-6 pt-4 border-t border-gray-700 text-center">
+                                            <a data-modal-toggle="suggestions-modal" data-modal-target="suggestions-modal" class=" clickable text-sm text-blue-400 hover:text-blue-300">Ver sugestões</a>
+                                        </div>
+                                <% else %>
+                                    <p class="text-gray-400 text-sm text-center">Sem sugestões disponíveis</p>
                                 <% end %>
-                                    <div class="mt-6 pt-4 border-t border-gray-700 text-center">
-                                        <a data-modal-toggle="suggestions-modal" data-modal-target="suggestions-modal" class=" clickable text-sm text-blue-400 hover:text-blue-300">Ver sugestões</a>
-                                    </div>
                             <% else %>
-                                <p class="text-gray-400 text-sm text-center">Sem sugestões disponíveis</p>
+                                <p class="text-gray-400 text-sm text-center">As sugestões estarão disponíveis uma vez que o clube for verificado</p>
                             <% end %>
                         </div>
                     </div>

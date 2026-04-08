@@ -111,6 +111,7 @@
                         <p class="text-slate-400 mt-1">Controle stocks, registe adições e remoções de materiais, organize por equipa ou modalidade e acompanhe tudo de forma simples</p> 
                     </div>
                 </div>
+<% if @club_profile.verified? %>
 
     <% if !@club_profile.has_no_sports? %>
 
@@ -256,6 +257,48 @@
 
                                 </div>
                             </div> 
+                            <div id="modal-apagar-geral-<%=geral.id%>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
+                                <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                                    <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                                    <p class="text-gray-300 text-center mb-6">Tem a certeza que pretende apagar "<%=geral.name%>"? </p>
+                                    <div class="flex gap-3 mt-4">
+                                        <button type="button" data-modal-hide="modal-apagar-geral-<%=geral.id%>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                            Cancelar
+                                        </button>
+                                        <%= button_to "Apagar", club_material_path(geral), 
+                                            method: :delete,
+                                            class: "flex-1 text-center bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-lg transition-colors",
+                                            form: { style: "display: contents" } %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="modal-apagar-geral-<%=geral.id%>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
+                                <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+                                    <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+                                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+                                    <p class="text-gray-300 text-center mb-6">Tem a certeza que pretende apagar "<%=geral.name%>"? </p>
+                                    <div class="flex gap-3 mt-4">
+                                        <button type="button" data-modal-hide="modal-apagar-geral-<%=geral.id%>" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                                            Cancelar
+                                        </button>
+                                        <%= button_to "Apagar", club_material_path(geral), 
+                                            method: :delete,
+                                            class: "flex-1 text-center bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-lg transition-colors",
+                                            form: { style: "display: contents" } %>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div id="modal-apagar-geral-<%=geral.id%>" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 modal">
                                 <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
                                     <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
@@ -739,14 +782,46 @@
             
             
 
-    <% else %>
-        <div class="flex justify-center items-center mb-8">
-            <div class="flex flex-col items-start">
-            <h1 class="text-2xl text-neutral-400 slide-in mx-auto">O clube ainda não tem nenhum desporto!</h1>
-            <h1 class="text-2xl text-neutral-400 slide-in">Adicione um desporto em "<%= link_to "Equipas", club_teams_dashboard_path, class: "hover:underline bold text-green-400 hover:text-green-500" %>" para começar a gerir o material</h1>
+        <% else %>
+            <div class="flex justify-center items-center mb-8">
+                <div class="flex flex-col items-start">
+                <h1 class="text-2xl text-neutral-400 slide-in mx-auto">O clube ainda não tem nenhum desporto!</h1>
+                <h1 class="text-2xl text-neutral-400 slide-in">Adicione um desporto em "<%= link_to "Equipas", club_teams_dashboard_path, class: "hover:underline bold text-green-400 hover:text-green-500" %>" para começar a gerir o material</h1>
+                </div>
             </div>
+        <% end %>
+
+<% else %>
+    <div class="flex justify-center items-center mb-8">
+            <div class="flex flex-col items-start">
+            <% if @club_profile.verification_pending? %>
+                <div class="flex justify-center mt-16 px-4">
+                    <div class="flex flex-col items-center p-8 text-yellow-100 rounded-2xl bg-yellow-700/20 border border-yellow-600/40 text-center max-w-md w-full shadow-lg">
+                        <div class="w-16 h-16 rounded-full bg-yellow-600/30 flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold mb-2">Verificação Pendente</span>
+                        <span class="text-sm text-yellow-200/80">Esta secção será desbloqueada uma vez que o clube esteja verificado</span>
+                    </div>
+                </div>
+            <% elsif @club_profile.verification_rejected? %>
+                <div class="flex justify-center mt-16 px-4">
+                    <div class="flex flex-col items-center p-8 text-red-100 rounded-2xl bg-red-700/20 border border-red-600/40 text-center max-w-md w-full shadow-lg">
+                        <div class="w-16 h-16 rounded-full bg-red-600/30 flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-red-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold mb-2">Verificação Rejeitada</span>
+                        <span class="text-sm text-red-200/80">Esta secção será desbloqueada uma vez que o clube esteja verificado</span>
+                    </div>
+                </div>
+            <% end %>
+            </div>  
         </div>
-    <% end %>
+<% end %>
 
     <script>
         feather.replace();

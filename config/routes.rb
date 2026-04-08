@@ -33,6 +33,14 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :club_profiles do
+    member do
+      patch :accept_verification
+      patch :reject_verification
+      patch :appeal_verification
+    end
+  end
+
   resources :club_invitation_coaches, only: [:create, :destroy] do
     member do
       patch :accept

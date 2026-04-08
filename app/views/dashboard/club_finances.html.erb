@@ -110,6 +110,15 @@
 </div>
 <!---------------------------------------------------- MAIN CONTENT ---------------------------------------------------->
     <div class="flex-1 p-8 overflow-auto">
+        <% if !@club_profile.verified? %>
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold slide-in text-yellow-400">Finanças</h1>
+                <p class="text-slate-400 mt-1"> Adicione os lucros e despesas e trate de toda a gestão financeira por mês </p>
+            </div>
+        </div>
+        <% end %>
+        <% if @club_profile.verified? %>
         <!-- Month Navigator -->
         <div class="flex justify-center items-center mb-8">
 
@@ -125,7 +134,7 @@
             <% end %>
             
         </div>
-
+    
         <!-- Linha de Separador -->
         <hr class="border-slate-700 my-8">
 
@@ -280,6 +289,37 @@
                 </div>
             </div>
         </div>
+    <% else %>
+    <div class="flex justify-center items-center mb-8">
+            <div class="flex flex-col items-start">
+            <% if @club_profile.verification_pending? %>
+                <div class="flex justify-center mt-16 px-4">
+                    <div class="flex flex-col items-center p-8 text-yellow-100 rounded-2xl bg-yellow-700/20 border border-yellow-600/40 text-center max-w-md w-full shadow-lg">
+                        <div class="w-16 h-16 rounded-full bg-yellow-600/30 flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold mb-2">Verificação Pendente</span>
+                        <span class="text-sm text-yellow-200/80">Esta secção será desbloqueada uma vez que o clube esteja verificado</span>
+                    </div>
+                </div>
+            <% elsif @club_profile.verification_rejected? %>
+                <div class="flex justify-center mt-16 px-4">
+                    <div class="flex flex-col items-center p-8 text-red-100 rounded-2xl bg-red-700/20 border border-red-600/40 text-center max-w-md w-full shadow-lg">
+                        <div class="w-16 h-16 rounded-full bg-red-600/30 flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-red-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold mb-2">Verificação Rejeitada</span>
+                        <span class="text-sm text-red-200/80">Esta secção será desbloqueada uma vez que o clube esteja verificado</span>
+                    </div>
+                </div>
+            <% end %>
+            </div>  
+        </div>
+<% end %>
 
         <!-- Modal Add Receitas -->
         <div id="modal-add-income" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">

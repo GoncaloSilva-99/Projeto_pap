@@ -27,13 +27,16 @@ class HomeController < ApplicationController
 
     if @query.present?
       # --- Perfis ---
-      clubs   = ClubProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%").to_a
+      clubs   = ClubProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%")
+                     .where(status: 'verified')
+                     .to_a
       boards  = BoardProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%").to_a
       coaches = CoachProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%").to_a
       players = PlayerProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%").to_a
       users   = UserProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%").to_a
+      admins  = AdminProfile.where("LOWER(name) LIKE ?", "%#{@query.downcase}%").to_a
 
-      @profile_results = (clubs + boards + coaches + players + users).uniq
+      @profile_results = (clubs + boards + coaches + players + users + admins).uniq
 
       # --- Posts: IDs dos autores cujo nome contém a query ---
       name_q = "%#{@query.downcase}%"

@@ -96,6 +96,46 @@
             class:"w-full bg-gray-800 rounded-md px-4 py-2 text-white border border-gray-700 focus:ring-2 focus:ring-secondary-500 focus:border-transparent",
             placeholder:"Escreva uma breve descrição sobre o clube. A informação estará visível para todos no perfil" %>
       </div>
+    <% if club_profile.verification_rejected? %>
+      <div class="mt-6">
+        <%= form.label :verification_document, "Documento de Verificação", class: "block text-sm font-medium text-gray-400 mb-1" %>
+
+        <div class="file-upload-wrapper flex flex-col items-center gap-4 w-full mx-auto" aria-live="polite">
+          
+
+          <div class="file-upload-preview-doc w-full border border-dashed border-gray-500 rounded-lg p-4 text-center text-gray-300">
+            <% if club_profile.verification_document.attached? %>
+
+              <% content_type = club_profile.verification_document.content_type %>
+              <% if content_type.start_with?("image/") %>
+                <img src="<%= url_for(club_profile.verification_document) %>"
+                    alt="Pré-visualização do documento"
+                    class="max-h-64 mx-auto rounded-lg shadow-md"/>
+              <% else %>
+                <span class="text-red-400 font-medium"><%= club_profile.verification_document.filename %></span>
+              <% end %>
+            <% else %>
+              Nenhum documento carregado
+            <% end %>
+          </div>
+
+          <div class="flex items-center justify-center gap-3 w-full">
+            <label for="verification_document_input" class="file-upload-label px-6 py-3 rounded-lg cursor-pointer select-none">
+              <%= club_profile.verification_document.attached? ? "Substituir ficheiro" : "Escolher ficheiro" %>
+            </label>
+
+            <span class="file-upload-filename-doc text-sm truncate">
+              <%= club_profile.verification_document.attached? ? club_profile.verification_document.filename : "Nenhum ficheiro selecionado" %>
+            </span>
+          </div>
+
+          <%= form.file_field :verification_document,
+              id: "verification_document_input",
+              class: "sr-only",
+              accept: ".pdf,.jpg,.jpeg,.png" %>
+        </div>
+      </div>
+      <% end %>
 
       <% if club_profile.persisted? %>
       <div class="mt-8 border-t border-gray-700 pt-6">
@@ -401,5 +441,41 @@
     if (typeof feather !== 'undefined') {
       feather.replace();
     }
+
+// Documento de Verificação
+const docInput = document.getElementById('verification_document_input');
+const docPreview = document.querySelector('.file-upload-preview-doc');
+const docFilename = document.querySelector('.file-upload-filename-doc');
+
+if (docInput && docPreview) {
+  docInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.type === 'application/pdf') {
+      docPreview.innerHTML = `<span class="text-red-400 font-medium">📄 ${file.name}</span>`;
+
+    } else if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        docPreview.innerHTML = `<img src="${ev.target.result}"
+            alt="Pré-visualização do documento"
+            class="max-h-64 mx-auto rounded-lg shadow-md"/>`;
+      };
+      reader.readAsDataURL(file);
+
+    } else {
+      alert('Tipo de ficheiro não é aceite. Use PDF ou imagem.');
+      docInput.value = '';
+      return;
+    }
+
+    // Atualiza o nome do ficheiro em baixo
+    if (docFilename) docFilename.textContent = file.name;
   });
+}
+
+});
+
+  
 </script>

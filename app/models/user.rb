@@ -132,11 +132,13 @@ class User < ApplicationRecord
     excluded_ids = following.pluck(:id) + [id]
 
     User.where.not(id: excluded_ids)
-    .where.not(role: 'admin')
-    .left_joins(:follower_relationships)
-    .group('users.id')
-    .order('COUNT(follows.id) DESC')
-    .limit(limit)
+      .where.not(role: 'admin')
+      .left_joins(:follower_relationships)
+      .left_joins(:club_profile)
+      .where("users.role != 'Club' OR club_profiles.status = 'verified'")
+      .group('users.id')
+      .order('COUNT(follows.id) DESC')
+      .limit(limit)
   end
 
 end

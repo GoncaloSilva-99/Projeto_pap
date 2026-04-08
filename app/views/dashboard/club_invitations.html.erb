@@ -154,12 +154,13 @@
                     <p class="text-slate-400 mt-1">Veja todos os convites que o seu clube enviou para jogadores / treinadores</p> 
                 </div>
             </div>
+<% if @club_profile.verified? %>
             <br>
             <% if @club.has_no_sports? %>
                 <div class="flex justify-center items-center mb-8">
                     <div class="flex flex-col items-start">
                     <h1 class="text-2xl text-neutral-400 slide-in mx-auto">O clube ainda não tem nenhum desporto!</h1>
-                    <h1 class="text-2xl text-neutral-400 slide-in">Adicione um desporto em "<%= link_to "Equipas", club_teams_dashboard_path, class: "hover:underline bold text-green-400 hover:text-green-500" %>" para começar a gerir o material</h1>
+                    <h1 class="text-2xl text-neutral-400 slide-in">Adicione um desporto em "<%= link_to "Equipas", club_teams_dashboard_path, class: "hover:underline bold text-green-400 hover:text-green-500" %>" para poder fazer convites </h1>
                     </div>
                 </div>
             <% end %>
@@ -439,6 +440,38 @@
     </div>
 
     <% end %>
+
+<% else %>
+    <div class="flex justify-center items-center mb-8">
+            <div class="flex flex-col items-start">
+            <% if @club_profile.verification_pending? %>
+                <div class="flex justify-center mt-16 px-4">
+                    <div class="flex flex-col items-center p-8 text-yellow-100 rounded-2xl bg-yellow-700/20 border border-yellow-600/40 text-center max-w-md w-full shadow-lg">
+                        <div class="w-16 h-16 rounded-full bg-yellow-600/30 flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold mb-2">Verificação Pendente</span>
+                        <span class="text-sm text-yellow-200/80">Esta secção será desbloqueada uma vez que o clube esteja verificado</span>
+                    </div>
+                </div>
+            <% elsif @club_profile.verification_rejected? %>
+                <div class="flex justify-center mt-16 px-4">
+                    <div class="flex flex-col items-center p-8 text-red-100 rounded-2xl bg-red-700/20 border border-red-600/40 text-center max-w-md w-full shadow-lg">
+                        <div class="w-16 h-16 rounded-full bg-red-600/30 flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-red-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold mb-2">Verificação Rejeitada</span>
+                        <span class="text-sm text-red-200/80">Esta secção será desbloqueada uma vez que o clube esteja verificado</span>
+                    </div>
+                </div>
+            <% end %>
+            </div>  
+        </div>
+<% end %>
 
 
 <script>

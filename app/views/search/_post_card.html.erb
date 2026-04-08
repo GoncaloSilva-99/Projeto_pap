@@ -56,18 +56,21 @@
 
   <%# Actions row %>
   <div class="mt-auto flex items-center pt-4 border-t border-gray-700">
-    <% if user_signed_in? %>
-      <%= render "posts/like_section", post: post %>
-    <% else %>
-      <span class="flex items-center gap-2 text-gray-400 text-sm">
-        <i data-feather="heart" class="w-4 h-4"></i>
-        <%= post.likes_count %>
-      </span>
-    <% end %>
+    <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
+      <% if user_signed_in? %>
+        <%= render "posts/like_section", post: post %>
+      <% else %>
+        <span class="flex items-center gap-2 text-gray-400 text-sm">
+          <i data-feather="heart" class="w-4 h-4"></i>
+          <%= post.likes_count %>
+        </span>
+      <% end %>
+    
 
-    <div class="px-4 search-open-modal-trigger" data-search-modal-id="search-post-modal-<%= post.id %>">
-      <%= render "posts/comments_count", post: post %>
-    </div>
+      <div class="px-4 search-open-modal-trigger" data-search-modal-id="search-post-modal-<%= post.id %>">
+        <%= render "posts/comments_count", post: post %>
+      </div>
+    <% end %>
   </div>
 </div>
 
@@ -154,6 +157,7 @@
 
         <%# Like section (Turbo-powered, same as main feed) %>
         <div class="flex items-center pt-4 border-t border-gray-700">
+        <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
           <% if user_signed_in? %>
             <%= render "posts/like_section_modal", post: post %>
           <% else %>
@@ -162,6 +166,7 @@
               <%= post.likes_count %>
             </span>
           <% end %>
+        <% end %>
         </div>
       </div>
     </div>
@@ -220,7 +225,7 @@
       </div>
 
       <%# Comment input (Turbo Frame — same as main feed) %>
-      <% if user_signed_in? %>
+      <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
         <div class="p-4 border-t border-gray-700 bg-gray-800">
           <%= turbo_frame_tag "comment_form_#{post.id}", class: "w-full" do %>
             <%= render "post_comments/form", post: post, comment: PostComment.new %>

@@ -40,10 +40,19 @@
                                     <span>Editar Perfil</span>
                                 <% end %>
                             <% else %>
-                                <%= render "follows/follow_button_suggestions", user: admin_profile.user %>
-                                <button data-modal-toggle="modal-report" data-modal-target="modal-report" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2">
-                                    Reportar
-                                </button>
+                                <% if current_user.club? and !current_user.club_profile.verified? %>
+                                    <button type="disabled" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap w-20 flex-shrink-0 cursor-not-allowed">
+                                        Seguir
+                                    </button>
+                                    <button type="disabled" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2 cursor-not-allowed">
+                                        Reportar
+                                    </button>
+                                <% else %>
+                                    <%= render "follows/follow_button_suggestions", user: admin_profile.user %>
+                                    <button data-modal-toggle="modal-report" data-modal-target="modal-report" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2">
+                                        Reportar
+                                    </button>
+                                <% end %>
                             <% end %>
                         </div>
                     </div>
@@ -164,17 +173,19 @@
                                     <%= turbo_frame_tag "post_#{post.id}", class: "post-card block" do %>
                                         <div class="bg-gray-800 rounded-xl p-6 shadow-lg relative" >
                                             <div class="absolute top-4 right-4 z-10">
-                                                <button class="post-options-btn p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition">
-                                                    <i data-feather="more-vertical"></i>
-                                                </button>
-                                                <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
-                                                    <% if post.user == current_user or current_user.admin? %>
-                                                        <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
-                                                            <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
-                                                        </a>
-                                                    <% end %>
-                                                    <%= render "posts/save_section", post: post %>
-                                                </div>
+                                                <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
+                                                    <button class="post-options-btn p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition">
+                                                        <i data-feather="more-vertical"></i>
+                                                    </button>
+                                                    <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
+                                                        <% if post.user == current_user or current_user.admin? %>
+                                                            <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
+                                                                <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
+                                                            </a>
+                                                        <% end %>
+                                                        <%= render "posts/save_section", post: post %>
+                                                    </div>
+                                                <% end %>
                                             </div>
 
                                             
@@ -265,11 +276,15 @@
 
                                             <div class="flex items-center pt-4 border-t border-gray-700">
                                                 
+                                                <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
                                                 <%= render "posts/like_section", post: post %>
 
                                                 <div data-modal-target="modal-post-<%=post.id%>" data-modal-toggle="modal-post-<%=post.id%>" class="px-4">
                                                     <%= render "posts/comments_count", post: post %>
                                                 </div>
+                                                <% end %>
+
+
                                             </div>
                                         </div>
 
@@ -310,8 +325,8 @@
                                                             <div class="flex items-center justify-between mb-4">
                                                                 <div class="flex items-center space-x-3">
                                                                     <div class="w-10 h-10 rounded-full bg-gray-700 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                                                                        <% if current_user.admin_profile.profile_picture.attached? %>
-                                                                            <%= image_tag url_for(current_user.admin_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
+                                                                        <% if admin_profile.profile_picture.attached? %>
+                                                                            <%= image_tag url_for(admin_profile.profile_picture), class: "w-full h-full object-cover", id: "profile-pic-img" %>
                                                                         <% else %>
                                                                             <%= image_tag "default_pp.jpg", class: "w-full h-full object-cover", id: "profile-pic-img" %>
                                                                         <% end %>
@@ -363,17 +378,19 @@
                                                                 </div>
                                                                 
                                                                 <div class="relative">
-                                                                    <button class="post-options-btn p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition">
-                                                                        <i data-feather="more-vertical"></i>
-                                                                    </button>
-                                                                    <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
-                                                                        <% if post.user == current_user or current_user.admin?  %>
-                                                                            <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
-                                                                                <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
-                                                                            </a>
-                                                                        <% end %>
-                                                                        <%= render "posts/save_options_modal", post: post %>
-                                                                    </div>
+                                                                    <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
+                                                                        <button class="post-options-btn p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition">
+                                                                            <i data-feather="more-vertical"></i>
+                                                                        </button>
+                                                                        <div class="post-options-dropdown hidden absolute right-0 mt-2 w-56 bg-gray-700 rounded-md shadow-lg z-10 border border-gray-600">
+                                                                            <% if post.user == current_user or current_user.admin?  %>
+                                                                                <a data-modal-target="modal-apagar-post-<%= post.id %>" data-modal-toggle="modal-apagar-post-<%= post.id %>" class="save-post-btn block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-red-700 rounded-t-md transition-colors clickable">
+                                                                                    <div class="flex items-center"><i data-feather="trash-2" class="w-4 h-4 mr-2"></i><span class="save-text">Apagar publicação</span></div>
+                                                                                </a>
+                                                                            <% end %>
+                                                                            <%= render "posts/save_options_modal", post: post %>
+                                                                        </div>
+                                                                    <% end %>
                                                                 </div>
                                                             </div>
 
@@ -419,9 +436,11 @@
                                                             <% end %>
                                                             
                                                         <%= turbo_frame_tag "like_section_modal_#{post.id}" do %>
-                                                            <div class="flex items-center pt-4 border-gray-700">
-                                                                <%= render "posts/like_section_modal", post: post %>
-                                                            </div>
+                                                            <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
+                                                                <div class="flex items-center pt-4 border-gray-700">
+                                                                    <%= render "posts/like_section_modal", post: post %>
+                                                                </div>
+                                                            <% end %>
                                                         <% end %>
                                                     </div>
                                                 </div>
@@ -452,11 +471,13 @@
 
                                                     <!-- Input Area -->
                                                     <div class="p-4 border-t border-gray-700 bg-gray-800">
-                                                        <div class="flex items-center space-x-2 ">
-                                                            <%= turbo_frame_tag "comment_form_#{post.id}", class: "w-full" do %>
-                                                                <%= render "post_comments/form", post: post, comment: PostComment.new %>
-                                                            <% end %>
-                                                        </div>
+                                                        <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
+                                                            <div class="flex items-center space-x-2 ">
+                                                                <%= turbo_frame_tag "comment_form_#{post.id}", class: "w-full" do %>
+                                                                    <%= render "post_comments/form", post: post, comment: PostComment.new %>
+                                                                <% end %>
+                                                            </div>
+                                                        <% end %>
                                                     </div>
                                                 </div>
                                             </div>

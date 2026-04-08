@@ -8,52 +8,21 @@
         <div class="flex items-center">
           <% if user_signed_in? %>
             <div class="w-8 h-8 rounded-md flex items-center justify-center">
-              <a href="<%= root_path %>#inicio-pub"><%= image_tag "logo_sem_texto.png", alt: "Logo", class: "rounded-full" %></a>
+              <a href="<%= root_path %>"><%= image_tag "logo_sem_texto.png", alt: "Logo", class: "rounded-full" %></a>
             </div>
           <% else %>
             <div class="w-8 h-8 rounded-md flex items-center justify-center">
-              <a href="<%= root_path %>#inicio"><%= image_tag "logo_sem_texto.png", alt: "Logo", class: "rounded-full" %></a>
+              <a href="<%= root_path %>><%= image_tag "logo_sem_texto.png", alt: "Logo", class: "rounded-full" %></a>
             </div>
           <% end %>
           <span class="ml-2 font-bold text-xl">SportX</span>
         </div>
       </div>
 
-      <% unless user_signed_in? %>
-        <div class="w-full md:w-auto flex justify-center space-x-6 mt-4 md:mt-0">
-          <a href="<%= root_path %>#inicio" class="hover:text-orange-400 transition">Início</a>
-          <a href="<%= root_path %>#stats" class="hover:text-orange-400 transition">Estatísticas</a>
-          <a href="<%= root_path %>#popular-profiles" class="hover:text-orange-400 transition">Perfis Populares</a>
-        </div>
-      <% end %>
+
 
       <div class="flex items-center space-x-4">
-        <% if user_signed_in? %>
-          <button type="button" data-dropdown-toggle="apps-dropdown" class="p-2 text-gray-400 rounded-lg hover:text-white hover:bg-gray-700">
-            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
-              <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
-            </svg>
-          </button>
-          <div class="hidden z-50 my-4 max-w-sm text-base list-none bg-white rounded-lg divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600" id="apps-dropdown">
-            <div class="block py-2 px-4 text-base font-medium text-center text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400">Apps</div>
-            <div class="grid grid-cols-2 gap-3 p-4">
-              <% if current_user.club? %>
-                <%= link_to club_dashboard_path, class: "block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600" do %>
-                  <i data-feather="shield" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400"></i>
-                  <p class="text-sm font-medium text-gray-900 dark:text-white">Dashboard</p>
-                <% end %>
-              <% end %>
-              <a data-modal-target="liked-modal" data-modal-toggle="liked-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
-                <i data-feather="heart" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400"></i>
-                <p class="text-sm font-medium text-gray-900 dark:text-white">Likes</p>
-              </a>
-              <a data-modal-target="saved-modal" data-modal-toggle="saved-modal" class="clickable block p-4 text-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 group border border-gray-600">
-                <i data-feather="bookmark" class="mx-auto mb-2 w-5 h-5 text-gray-400 group-hover:text-gray-500 dark:text-gray-400"></i>
-                <p class="text-sm font-medium text-gray-900 dark:text-white">Guardados</p>
-              </a>
-            </div>
-          </div>
-        <% end %>
+
 
         <div class="relative" id="user-menu-container">
           <% if user_signed_in? %>
@@ -125,6 +94,45 @@
                     <% end %>
                   <% end %>
                 </li>
+                <li>
+                                    <% if current_user.club? %>
+                                        <% @club_obj = ClubProfile.find(current_user.club_profile.id) %>
+                                        <%= link_to edit_club_profile_path(@club_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                            <i data-feather="settings" class="mr-2"></i>
+                                            <span>Definições</span>
+                                        <% end %>
+                                    <% elsif current_user.player? %>
+                                        <% @player_obj = PlayerProfile.find(current_user.player_profile.id) %>
+                                        <%= link_to edit_player_profile_path(@player_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                            <i data-feather="settings" class="mr-2"></i>
+                                            <span>Definições</span>
+                                        <% end %>
+                                    <% elsif current_user.board? %>
+                                        <% @board_obj = BoardProfile.find(current_user.board_profile.id) %>
+                                            <%= link_to edit_board_profile_path(@board_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                                <i data-feather="settings" class="mr-2"></i>
+                                                <span>Definições</span>
+                                            <% end %>
+                                    <% elsif current_user.coach? %>
+                                        <% @coach_obj = CoachProfile&.find(current_user.coach_profile.id) %>
+                                        <%= link_to edit_coach_profile_path(@coach_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                            <i data-feather="settings" class="mr-2"></i>
+                                            <span>Definições</span>
+                                        <% end %>
+                                    <% elsif current_user.admin? %>
+                                        <% @admin_obj = AdminProfile.find(current_user.admin_profile.id) %>
+                                        <%= link_to edit_admin_profile_path(@admin_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                            <i data-feather="settings" class="mr-2"></i>
+                                            <span>Definições</span>
+                                        <% end %>
+                                    <% elsif current_user.user? %>
+                                        <% @user_obj = UserProfile.find(current_user.user_profile.id) %>
+                                        <%= link_to edit_user_profile_path(@user_obj), class: "flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-600 dark:text-gray-200 dark:hover:text-blue-400 dark:active:text-blue-400" do %>
+                                            <i data-feather="settings" class="mr-2"></i>
+                                            <span>Definições</span>
+                                        <% end %>
+                                    <% end%>
+                                </li>
                 <li>
                   <%= button_to destroy_user_session_path, method: :delete, form_class: "w-full", class: "w-full text-left flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-red-500" do %>
                     <i data-feather="log-out" class="mr-2"></i>Log out
@@ -293,14 +301,6 @@
                   <% end %>
                 </div>
 
-                <span class="absolute top-2 right-2 text-xs font-semibold px-2 py-0.5 rounded-full
-                  <%= profile.is_a?(ClubProfile) ? 'bg-indigo-700 text-indigo-200' :
-                      profile.is_a?(PlayerProfile) ? 'bg-green-800 text-green-200' :
-                      profile.is_a?(CoachProfile) ? 'bg-yellow-800 text-yellow-200' :
-                      profile.is_a?(BoardProfile) ? 'bg-rose-900 text-rose-200' :
-                      'bg-gray-700 text-gray-300' %>">
-                  <%= profile_type_label %>
-                </span>
               </div>
 
               <div class="px-4 pb-4 pt-10">

@@ -1,6 +1,35 @@
 class ClubProfilesController < ApplicationController
   before_action :set_club_profile, only: %i[ show edit update destroy ]
 
+  def accept_verification
+    @club_profile = ClubProfile.find(params[:id])
+    @admin_id = params[:admin_id]
+    @club_profile.update(status: 'verified', decided_by: @admin_id)
+    respond_to do |format|
+      format.html { redirect_to club_verification_dashboard_path, notice: "Clube verificado com sucesso!", status: :see_other }
+      format.json { head :no_content }
+    end
+  end
+
+  def appeal_verification
+    @club_profile = ClubProfile.find(params[:id])
+    @club_profile.update(status: 'pending')
+    respond_to do |format|
+      format.html { redirect_to club_profile_path, notice: "A verificação do clube está agora pendente!", status: :see_other }
+      format.json { head :no_content }
+    end
+  end
+
+  def reject_verification
+    @club_profile = ClubProfile.find(params[:id])
+    @admin_id = params[:admin_id]
+    @club_profile.update(status: 'rejected', decided_by: @admin_id)
+    respond_to do |format|
+      format.html { redirect_to club_verification_dashboard_path, notice: "Verificação do clube rejeitada com sucesso!", status: :see_other }
+      format.json { head :no_content }
+    end
+  end
+
   # GET /club_profiles or /club_profiles.json
   def index
     @club_profiles = ClubProfile.all
@@ -57,6 +86,9 @@ class ClubProfilesController < ApplicationController
     # Clean bio - remove indentation spaces but keep user-inserted line breaks
     if profile_params[:bio].present?
       profile_params[:bio] = profile_params[:bio].strip.lines.map(&:strip).join("\n")
+    end
+    if profile_params[:verification_document].blank? && @club_profile.verification_document.attached?
+      profile_params = profile_params.except(:verification_document)
     end
 
     user_update_success = true
@@ -130,10 +162,10 @@ class ClubProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def club_profile_params
-      permitted_params = [:user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date, :status]
+      permitted_params = [:user_id, :name, :status, :approved_by, :bio, :banner_picture, :profile_picture, :foundation_date, :status, :verification_document]
 
       if action_name == 'update'
-        permitted_params << { user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation] }
+        permitted_params << { user_attributes: [:email, :email_confirmation, :current_password, :password, :password_confirmation, :verification_document] }
       end
 
       params.require(:club_profile).permit(*permitted_params)

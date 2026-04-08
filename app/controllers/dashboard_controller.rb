@@ -26,7 +26,7 @@ class DashboardController < ApplicationController
     if @type == "Pendentes"
       @clubs_query = ClubProfile.where(status: 'pending')
     elsif @type == "Aprovados"
-      @clubs_query = ClubProfile.where(status: 'approved')
+      @clubs_query = ClubProfile.where(status: 'verified')
     elsif @type == "Rejeitados"
       @clubs_query = ClubProfile.where(status: 'rejected')
     end
@@ -35,7 +35,7 @@ class DashboardController < ApplicationController
       if @type == "Pendentes"
         @clubs_query = ClubProfile.search_by_name(params[:query]).where(status: 'pending')
       elsif @type == "Aprovados"
-        @clubs_query = ClubProfile.search_by_name(params[:query]).where(status: 'approved')
+        @clubs_query = ClubProfile.search_by_name(params[:query]).where(status: 'verified')
       elsif @type == "Rejeitados"
         @clubs_query = ClubProfile.search_by_name(params[:query]).where(status: 'rejected')
       end
