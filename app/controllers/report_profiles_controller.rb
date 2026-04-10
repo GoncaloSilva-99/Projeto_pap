@@ -1,6 +1,23 @@
 class ReportProfilesController < ApplicationController
   before_action :set_report_profile, only: %i[ show edit update destroy ]
 
+  def resolve_report
+    @report = ReportProfile.find(params[:id])
+    
+    if params[:admin_observations].blank?
+      redirect_to reports_dashboard_path, alert: "As observações são obrigatórias."
+      return
+    end
+
+    @report.update(
+      admin_observations: params[:admin_observations],
+      resolved: true,
+      resolved_by: current_user.id
+    )
+
+    redirect_to reports_dashboard_path, notice: "Report resolvido com sucesso."
+  end
+
   # GET /report_profiles or /report_profiles.json
   def index
     @report_profiles = ReportProfile.all
@@ -65,6 +82,6 @@ class ReportProfilesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def report_profile_params
-      params.require(:report_profile).permit(:user_id, :content, :resolved)
+      params.require(:report_profile).permit(:user_id, :content, :resolved, :admin_observations, :resolved_by, :reported_by)
     end
 end

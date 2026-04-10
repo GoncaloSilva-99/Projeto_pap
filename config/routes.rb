@@ -48,6 +48,8 @@ Rails.application.routes.draw do
     end
   end
 
+  patch 'dashboard/reports/:id/resolve', to: 'dashboard#resolve_report', as: 'resolve_report_dashboard'
+  patch 'dashboard/reports/:id/unresolve', to: 'dashboard#unresolve_report', as: 'unresolve_report_dashboard'
 
   resources :report_profiles
 

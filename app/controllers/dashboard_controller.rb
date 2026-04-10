@@ -17,8 +17,69 @@ class DashboardController < ApplicationController
   before_action :admin_dashboard, only: [:admin_dashboard]
   before_action :admins, only: [:admins]
   before_action :club_verification, only: [:club_verification]
+  before_action :reports, only: [:reports]
+
+  def resolve_report
+    @report = ReportProfile.find(params[:id])
+
+    if params[:admin_observations].blank?
+      redirect_to reports_dashboard_path, alert: "As observações são obrigatórias."
+      return
+    end
+
+    @report.update(
+      admin_observations: params[:admin_observations],
+      resolved: true,
+      resolved_by: current_user.id
+    )
+
+    redirect_to reports_dashboard_path, notice: "Report resolvido com sucesso."
+  end
+
+  def unresolve_report
+    @report = ReportProfile.find(params[:id])
+
+    @report.update(
+      admin_observations: nil,
+      resolved: false,
+      resolved_by: nil
+    )
+
+    redirect_to reports_dashboard_path, notice: "Report está de novo pendente"
+  end
 
   protected
+
+  def reports
+    @type = params[:type] || "Pendentes"
+
+    if @type == "Pendentes"
+      @reports_query = ReportProfile.where(resolved: false)
+    elsif @type == "Resolvidos"
+      @reports_query = ReportProfile.where(resolved: true)
+    end
+
+    if params[:query].present?
+      query = params[:query].downcase
+
+      matching_user_ids = []
+
+      [PlayerProfile, CoachProfile, ClubProfile, UserProfile, BoardProfile, AdminProfile].each do |model|
+        matching_user_ids += model.search_by_name(params[:query]).pluck(:user_id)
+      end
+
+      matching_user_ids.uniq!
+
+      @reports_query = @reports_query.where(
+        "user_id IN (?) OR reported_by IN (?)",
+        matching_user_ids,
+        matching_user_ids
+      )
+    end
+
+    @reports = @reports_query.page(params[:reports_page]).per(8)
+    @reports_count = @reports_query.count
+  end
 
   def club_verification
     @type = params[:type] || "Pendentes"
