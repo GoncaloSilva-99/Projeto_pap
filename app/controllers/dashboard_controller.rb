@@ -20,6 +20,11 @@ class DashboardController < ApplicationController
   before_action :reports, only: [:reports]
   before_action :bans, only: [:bans]
 
+    TRADUCOES_DESPORTO = {
+      "football" => "Futebol",
+      "handball" => "Andebol"
+    }.freeze
+
   def resolve_report
     @report = ReportProfile.find(params[:id])
 
@@ -158,6 +163,8 @@ class DashboardController < ApplicationController
     
   end
 
+
+
   def admin_dashboard
     @total_users = User.count
     @total_clubs_aprovados = ClubProfile.where(status: true).count
@@ -197,10 +204,16 @@ class DashboardController < ApplicationController
     @reportes_resolvidos = ReportProfile.where(resolved: true).count
     @novos_reportes_semana = ReportProfile.where(created_at: 1.week.ago..Time.current).count
 
+    @total_clubes = ClubProfile.count
+    @novos_clubes = ClubProfile.where(created_at: 1.week.ago..Time.current).count
+
+    @total_adeptos = UserProfile.count
+    @novos_adeptos = UserProfile.where(created_at: 1.week.ago..Time.current).count
+
 
     @desportos = Sport.all.map do |sport|
       {
-        nome: sport.name,
+        nome: TRADUCOES_DESPORTO[sport.name] || sport.name,
         clubes: ClubSport.where(sport_id: sport.id).count,
         jogadores: PlayerProfile.where(sport: sport.name).count,
         treinadores: CoachProfile.where(sport: sport.name).count,
@@ -208,6 +221,11 @@ class DashboardController < ApplicationController
         novos_treinadores: CoachProfile.where(sport: sport.name, created_at: 1.week.ago..Time.current).count
       }
     end
+
+    @total_board = BoardProfile.count
+    @novos_board = BoardProfile.where(created_at: 1.week.ago..Time.current).count
+
+    @reportes_resolvidos_semana = ReportProfile.where(resolved: true, updated_at: 1.week.ago..Time.current).count
 
 
     @total_follows = Follow.count
