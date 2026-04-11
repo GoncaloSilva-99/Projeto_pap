@@ -72,39 +72,40 @@ class CoachProfilesController < ApplicationController
     user_update_success = true
     account_details_changed = false
 
-    if user_attrs.present?
-      user_attrs = user_attrs.to_h
-      # Keep confirmation fields around so validations can run even if blank.
-      user_attrs = user_attrs.reject do |k, v|
-        v.blank? && !%w[email_confirmation password_confirmation].include?(k.to_s)
-      end
-
-      if user_attrs.present? && @coach_profile.user.present?
+      if user_attrs.present?
         user = @coach_profile.user
-
-        # Check if account details should trigger logout.
-        account_details_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
-        account_details_changed ||= user_attrs[:password].present?
-
-        # If changing email or password, require current password for security.
         email_being_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
         password_being_changed = user_attrs[:password].present?
 
         if (email_being_changed || password_being_changed) && user_attrs[:current_password].blank?
           @coach_profile.errors.add(:base, "É necessário introduzir a palavra-passe atual para alterar email ou palavra-passe.")
           user_update_success = false
-        elsif user_attrs[:current_password].present?
-          user_update_success = user.update_with_password(user_attrs)
+        elsif !user.valid_password?(user_attrs[:current_password].to_s)
+          @coach_profile.errors.add(:base, "A palavra-passe atual está incorreta.")
+          user_update_success = false
         else
-          user_update_success = user.update_without_password(user_attrs.except(:current_password))
+          if email_being_changed
+            user.skip_reconfirmation!
+            user.update_column(:unconfirmed_email, user_attrs[:email])
+            token, encoded_token = Devise.token_generator.generate(User, :confirmation_token)
+            user.update_columns(
+              confirmation_token: encoded_token,
+              confirmation_sent_at: Time.now.utc
+            )
+            UserMailer.reconfirmation_email(user, token).deliver_now
+          end
+          if password_being_changed
+            user.password = user_attrs[:password]
+            user.password_confirmation = user_attrs[:password_confirmation]
+          end
+          user_update_success = user.save
+          account_details_changed = email_being_changed || password_being_changed
         end
 
-        # Surface Devise errors in the form
         if user.errors.any?
           user.errors.full_messages.each { |msg| @coach_profile.errors.add(:base, msg) }
         end
       end
-    end
 
     respond_to do |format|
       if user_update_success && @coach_profile.update(profile_params)

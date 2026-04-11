@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 40px;">
+    <div style="max-width: 500px; margin: auto; background: white; border-radius: 8px; padding: 30px;">
+      
+      <h2 style="color: #333;">Confirmação de novo email </h2>
+      
+      <p>Olá <strong><%= @resource.email %></strong>,</p>
+      
+      <p>Recebemos um pedido para alterar o email da tua conta para <strong><%= @resource.unconfirmed_email %></strong>.</p>
+      
+      <p>Clica no botão abaixo para confirmar o novo endereço de email.</p>
+      
+      <a href="<%= confirmation_url(@resource, confirmation_token: @token) %>"
+         style="display: inline-block; background-color: #007bff; color: white;
+                padding: 12px 24px; border-radius: 6px; text-decoration: none;
+                font-weight: bold; margin: 20px 0;">
+        Confirmar novo email
+      </a>
+      
+      <p style="color: #999; font-size: 12px;">
+        Se não fizeste este pedido, podes ignorar este email - o teu email atual continua ativo.
+      </p>
+
+    </div>
+  </body>
+</html>

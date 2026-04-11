@@ -74,19 +74,32 @@ class PlayerProfilesController < ApplicationController
 
       if user_attrs.present?
         user = @player_profile.user
-        account_details_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
-        account_details_changed ||= user_attrs[:password].present?
-
         email_being_changed = user_attrs[:email].present? && user_attrs[:email] != user.email
         password_being_changed = user_attrs[:password].present?
 
         if (email_being_changed || password_being_changed) && user_attrs[:current_password].blank?
           @player_profile.errors.add(:base, "É necessário introduzir a palavra-passe atual para alterar email ou palavra-passe.")
           user_update_success = false
-        elsif user_attrs[:current_password].present?
-          user_update_success = user.update_with_password(user_attrs)
+        elsif !user.valid_password?(user_attrs[:current_password].to_s)
+          @player_profile.errors.add(:base, "A palavra-passe atual está incorreta.")
+          user_update_success = false
         else
-          user_update_success = user.update_without_password(user_attrs.except(:current_password))
+          if email_being_changed
+            user.skip_reconfirmation!
+            user.update_column(:unconfirmed_email, user_attrs[:email])
+            token, encoded_token = Devise.token_generator.generate(User, :confirmation_token)
+            user.update_columns(
+              confirmation_token: encoded_token,
+              confirmation_sent_at: Time.now.utc
+            )
+            UserMailer.reconfirmation_email(user, token).deliver_now
+          end
+          if password_being_changed
+            user.password = user_attrs[:password]
+            user.password_confirmation = user_attrs[:password_confirmation]
+          end
+          user_update_success = user.save
+          account_details_changed = email_being_changed || password_being_changed
         end
 
         if user.errors.any?

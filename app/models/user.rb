@@ -2,18 +2,13 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable, :confirmable
 
   validates :role, presence: true, inclusion: {in: ["User", "Player", "Coach", "Club", "Board", "Admin", "SuperAdmin"]}
   validates :email, presence: true
 
-  # Allow email confirmation in forms.
-  attr_accessor :email_confirmation
-  validates :email, confirmation: true, if: -> { email_confirmation.present? }
-  validates :email_confirmation, presence: true, on: :update, if: -> { email_changed? }
 
-  # Devise already validates password presence on create.
-  # These validations allow updating other attributes without requiring a password change.
+  attr_accessor :email_confirmation
   validates :password, confirmation: true, if: :password_required?
   validates :password_confirmation, presence: true, on: :update, if: :password_required?
 

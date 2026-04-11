@@ -38,7 +38,7 @@ en:
       destroyed: "A sua conta foi apagada com sucesso!"
       signed_up: "Bem vindo! A sua conta foi criada com sucesso."
       signed_up_but_inactive: "A sua conta foi criada com sucesso. Ative a conta para poder entrar"
-      signed_up_but_unconfirmed: "A sua conta foi criada com sucesso! Siga as instruções do email que foi enviado para poder confirmar a sua conta. Este email poderá demorar alguns minutos"
+      signed_up_but_unconfirmed: "A sua conta foi criada com sucesso! Siga as instruções do email que foi enviado para poder confirmar a sua conta"
       update_needs_confirmation: "You updated your account successfully, but we need to verify your new email address. Please check your email and follow the confirmation link to confirm your new email address."
       updated: "Your account has been updated successfully."
       updated_but_not_signed_in: "Your account has been updated successfully, but since your password was changed, you need to sign in again."

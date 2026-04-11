@@ -28,6 +28,8 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 
+gem 'letter_opener_web', group: :development
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 

@@ -6,5 +6,4 @@ verificação de emails ao criar conta
 acabar banimentos e dashboard de banimentos
 impedir que utilizadores banidos sejam sugeridos ou apareçam nas pesquisas
 melhorar o sistema de publicações e sugestões
-adicionar página de utilizadores (todos os utilizadores da aplicação)
 arranjar maneira de publicar o site

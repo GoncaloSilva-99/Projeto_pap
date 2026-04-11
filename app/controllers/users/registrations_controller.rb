@@ -37,7 +37,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def create
     build_resource(sign_up_params)
     if resource.save
-      set_flash_message! :notice, :signed_up
       if (user_signed_in? and current_user.club?) or (user_signed_in? and current_user.board?)
         sport = if params[:selected_team].present? and params[:selected_team] != 'others'
                   team = ClubTeam.find(params[:selected_team]) rescue nil
@@ -47,8 +46,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
                 end
           respond_with resource, location: club_dashboard_path
       else
-        sign_up(resource_name, resource)
-        respond_with resource, location: after_sign_up_path_for(resource)
+        expire_data_after_sign_in!
+        respond_with resource, location: after_inactive_sign_up_path_for(resource)
       end
     else
       clean_up_passwords resource
@@ -113,6 +112,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   protected
+
+  def after_inactive_sign_up_path_for(resource)
+    new_user_session_path
+  end
 
   def permitted_attributes
     [
