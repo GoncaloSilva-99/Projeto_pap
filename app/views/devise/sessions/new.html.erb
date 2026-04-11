@@ -9,7 +9,23 @@
             <% end %>
             <p class="text-sky-50/70">Entrar na sua conta SportX</p>
         </div>
-
+          
+        <% if flash[:banned] %>
+          <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-200 dark:bg-gray-800 dark:text-red-400" role="alert">
+              <svg class="shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+              </svg>
+              <span class="sr-only">Danger</span>
+              <div>
+                  <span class="font-medium">A tua conta foi banida!</span>
+                  <p class="text-sm mt-1">Motivo do banimento: <%= flash[:banned] %></p>
+              </div>
+              <button type="button" class="ms-auto -mx-1.5 -my-1.5 rounded focus:ring-2 focus:ring-brand-medium hover:bg-brand-soft inline-flex items-center justify-center h-8 w-8" data-dismiss-target="#alert-close" aria-label="Close" >
+                  <span class="sr-only">Close</span>
+                  <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
+              </button>
+          </div>
+        <% end %>
 
             <!-- Email -->
             <div>
@@ -51,6 +67,23 @@
 </body>
 
 <!-- JS de mostrar password -->
+
+<script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.querySelector('[role="alert"]');
+            const closeBtn = document.querySelector('[data-dismiss-target="#alert-close"]');
+
+            if (closeBtn && alertBox) {
+              closeBtn.addEventListener('click', function() {
+                alertBox.style.opacity = '0';
+                alertBox.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => {
+                  alertBox.style.display = 'none';
+                }, 300);
+              });
+            }
+          });
+        </script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {

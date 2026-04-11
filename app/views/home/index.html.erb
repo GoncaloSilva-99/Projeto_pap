@@ -23,7 +23,7 @@
                             <button id="search-button" class="p-2 rounded-full hover:bg-gray-700">
                                 <i data-feather="search"></i>
                             </button>
-                            <input type="text" id="search-bar" placeholder="Search..." 
+                            <input type="text" id="search-bar" placeholder="Pesquisa..." 
                                     class="bg-gray-700 rounded-full px-4 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
                     <% end %>
@@ -732,8 +732,10 @@
                                                     </label>
                                                 </div>
                                                 
-                                                <%= f.submit "Publicar", 
-                                                    class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer" %>
+                                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer flex items-center gap-2">
+                                                    <i data-feather="send" class="w-4 h-4" style="display: inline-block; vertical-align: middle;"></i>
+                                                    <span style="vertical-align: middle;">Publicar</span>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -1085,18 +1087,10 @@
                         
                         <% if @posts.any? %>
                             <div class="text-center mt-8">
-                                <% if @has_more_posts %>
-                                    <%= link_to root_path(page: @page + 1), 
-                                        class: "bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium inline-block transition" do %>
-                                        <i data-feather="chevron-down" class="w-4 h-4 inline mr-2"></i>
-                                        Carregar mais posts
-                                    <% end %>
-                                <% else %>
-                                    <div class="flex items-center justify-center space-x-3 text-gray-400">
-                                        <div class="h-px bg-gray-700 flex-1 max-w-xs"></div>
-                                        <span class="text-sm font-medium">Não há mais posts para mostrar</span>
-                                        <div class="h-px bg-gray-700 flex-1 max-w-xs"></div>
-                                    </div>
+                                <%= link_to root_path, 
+                                    class: "bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium inline-block transition" do %>
+                                    <i data-feather="refresh-cw" class="w-4 h-4 inline mr-2"></i>
+                                    Ver mais publicações
                                 <% end %>
                             </div>
                         <% end %>

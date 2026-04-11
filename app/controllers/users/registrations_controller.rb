@@ -45,7 +45,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
                 else
                   params[:selected_sport].presence || 'handball'
                 end
-          respond_with resource, location: club_teams_dashboard_path(sport: sport, team: params[:selected_team])
+          respond_with resource, location: club_dashboard_path
       else
         sign_up(resource_name, resource)
         respond_with resource, location: after_sign_up_path_for(resource)

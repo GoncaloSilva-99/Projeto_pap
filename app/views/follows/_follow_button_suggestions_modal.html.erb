@@ -3,17 +3,19 @@
         <%= button_to follow_path(user_id: user.id),
             method: :delete,
             form: { class: "inline" },
-            class: "bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap w-auto flex-shrink-0",
+            class: "bg-gray-600 hover:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap w-auto flex-shrink-0",
             data: { turbo_frame: "follow_button_suggestion_modal_#{user.id}" } do %>
-            A Seguir
+            <i data-feather="user-check" class="w-4 h-4" style="display: inline-block; vertical-align: middle; margin-right: 4px;"></i>
+            <span style="vertical-align: middle;">A Seguir</span>
         <% end %>
     <% else %>
         <%= button_to follows_path(user_id: user.id),
             method: :post,
             form: { class: "inline" },
-            class: "bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap w-20 flex-shrink-0",
+            class: "bg-indigo-600 hover:bg-indigo-800 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap w-auto flex-shrink-0",
             data: { turbo_frame: "follow_button_suggestion_modal_#{user.id}" } do %>
-            Seguir
+            <i data-feather="user-plus" class="w-4 h-4" style="display: inline-block; vertical-align: middle; margin-right: 4px;"></i>
+            <span style="vertical-align: middle;">Seguir</span>
         <% end %>
     <% end %>
 

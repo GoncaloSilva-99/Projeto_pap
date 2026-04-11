@@ -1,43 +1,10 @@
-
-Fix dar like / comentar sair o fundo
-Fix redirecionamentos ser redirect_back, "equipas" e "infraestruturas" a redirecionar mal
+FALTA:
+ao dar like / comentar sai o fundo e ao seguir no modal de sugestões também (não acontece nas pesquisas)
 com campo seleciuonado, ao mudar de página nos balneários desceleciona o campo
 Fix Modal bugado dos likes nos perfis (tirar se não der para arranjar)
-
-4/04:
-Verificação de clubes no dashboard
-Não permitir que clubes não verificados façam as coisas
-
-5/04:
-Report de posts e perfis
-Contas banidas -> dashboard, criar tabela, adicionar botão nos perfis, mensagem ao fazer login
-Se der, enviar um email a informar que a conta foi banida e o motivo
-
-6/04:
-Acabar dahsboard do dashboard de admin
-Verificar email ao criar conta
-
-Depois:
-Arranjar maneira de publicar o site
-
-
-
-
-
-
-
-----------------------------------------
-
-Página de gestão de admins (Tipo "Equipas") com os cards de cada admin e super admin, divididos assim;
-
-Página de verificação de clubes vai ter design parecido com os convites, tem os botões de verificados, rejeitados e pendentes (botões estilo a página de convites, em que 
-tem os pendentes, rejeitados e aceites), cards dos clubes que quando clicado abre um modal que mostra uma imagem (depois troco para o documento de verificação)
-e que tem opções de aceitar e rejeitar nos aceites e rejeitados, arranja maneira de aparecer um sitio no card do clube que foi rejeitado que tenha um nome 
-(para mostrar o nome do admin que rejeitou ou aceitou), para os outros admins saberem
-
-Página de reports também com a mesma lógica, resolvidos e pendentes, lista de reports em que dá para abrir, ler o report, e marcar como resolvido(com nome de admin também)
-
-Página que mostra todos os utilizadores da plataforma, com filtros das contas banidas e contas ativas (mesmos botões da página de convites, sempre)
-
-Nada tem de estar funcional, nem pesquisas nem nada, apenas design
-TODAS AS PAGINAS TÊM DE TER BARRA DE PESQUISA
+verificação de emails ao criar conta
+acabar banimentos e dashboard de banimentos
+impedir que utilizadores banidos sejam sugeridos ou apareçam nas pesquisas
+melhorar o sistema de publicações e sugestões
+adicionar página de utilizadores (todos os utilizadores da aplicação)
+arranjar maneira de publicar o site

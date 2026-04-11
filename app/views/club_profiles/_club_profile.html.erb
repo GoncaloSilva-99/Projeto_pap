@@ -31,32 +31,49 @@
                 </div>
                 <!-- Botão editar campos -->
                 <div class="flex items-center gap-4 mt-4">
-                    <% if current_user && current_user.id == club_profile.user_id %>
-                        <%= link_to edit_club_profile_path(club_profile), class: "flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-800 rounded-lg transition text-lg" do %>
-                            <span>Editar Perfil</span>
-                        <% end %>
-                        <% if club_profile.verification_rejected? %>
-                            <button data-modal-target="appeal-verification" data-modal-toggle="appeal-verification" class="flex items-center gap-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-800 rounded-lg transition text-lg">
-                                Solicitar Nova Verificação
-                            </button>
-                        <% end %>
-                    <% else %>
-                         <% if current_user.club? and !current_user.club_profile.verified? %>
-                                    <button type="disabled" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap w-20 flex-shrink-0 cursor-not-allowed">
-                                        Seguir
-                                    </button>
-                                    <button type="disabled" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2 cursor-not-allowed">
-                                        Reportar
-                                    </button>
-                                <% else %>
-                                    <%= render "follows/follow_button_suggestions", user: club_profile.user %>
-                                    <button data-modal-toggle="modal-report" data-modal-target="modal-report" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2">
-                                        Reportar
-                                    </button>
+                    <% if !club_profile.user.banned? %>
+                        <% if current_user && current_user.id == club_profile.user_id %>
+                            <%= link_to edit_club_profile_path(club_profile), class: "flex items-center gap-2 px-4 py-2 bg-blue-700 hover:bg-blue-800 rounded-lg transition" do %>
+                                    <i data-feather="edit"></i>
+                                    <span>Editar Perfil</span>
                                 <% end %>
+                            <% if club_profile.verification_rejected? %>
+                                <button data-modal-target="appeal-verification" data-modal-toggle="appeal-verification" class="flex items-center gap-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-800 rounded-lg transition text-lg">
+                                    Solicitar Nova Verificação
+                                </button>
+                            <% end %>
+                        <% else %>
+                            <% if current_user.club? and !current_user.club_profile.verified? %>
+                                        <button type="disabled" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap w-20 flex-shrink-0 cursor-not-allowed">
+                                            Seguir
+                                        </button>
+                                        <button type="disabled" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2 cursor-not-allowed">
+                                            <i data-feather="alert-triangle" class="w-4 h-4"></i>
+                                            Reportar
+                                        </button>
+                                    <% else %>
+                                        <%= render "follows/follow_button_suggestions", user: club_profile.user %>
+                                        <button data-modal-toggle="modal-report" data-modal-target="modal-report" class="bg-yellow-600 hover:bg-yellow-800 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2">
+                                            <i data-feather="alert-triangle" class="w-4 h-4"></i>
+                                            Reportar
+                                        </button>
+                                    <% end %>
+                        <% end %>
+                    <% end %>
+                    <% if current_user.admin? and !club_profile.user.banned? %>
+                        <button data-modal-toggle="ban-modal" data-modal-target="ban-modal" class="bg-red-600 hover:bg-red-800 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2">
+                            <i data-feather="slash" class="w-4 h-4"></i>
+                            Banir Utilizador
+                        </button>
+                    <% elsif current_user.admin? and club_profile.user.banned? %>
+                        <button data-modal-toggle="unban-modal" data-modal-target="unban-modal" class="bg-yellow-600 hover:bg-yellow-800 text-white px-4 py-2 rounded-lg font-medium text-sm transition whitespace-nowrap flex-shrink-0 flex items-center gap-2">
+                            <i data-feather="slash" class="w-4 h-4"></i>
+                            Revogar Banimento
+                        </button>
                     <% end %>
                 </div>
             </div>
+<% if !club_profile.user.banned? %>
             <!-- Profile Stats -->
             <div class="mt-5 md:mt-0 rounded-xl p-6">
                 <div class="flex justify-center text-center gap-8">
@@ -97,8 +114,8 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <!-- Biography Details -->
-            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in space-y-4 border-l-4 border-green-500">
-                <h3 class="text-xl font-bold mb-4 text-green-200">Info</h3>
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in space-y-4 border-l-4 border-blue-500">
+                <h3 class="text-xl font-bold mb-4 text-blue-300">Info</h3>
                 <div class="space-y-6 mt-1"> 
                     <div class="flex items-center gap-3"> 
                         <i data-feather="calendar" class="text-gray-400"></i>
@@ -131,8 +148,8 @@
             </div>
 
             <!-- Contact Details -->
-            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in border-l-4 border-red-500">
-                <h3 class="text-xl font-bold mb-4 text-red-300">Contactos</h3>
+            <div class="bg-gray-800 rounded-xl p-6 shadow-lg fade-in border-l-4 border-blue-500">
+                <h3 class="text-xl font-bold mb-4 text-blue-300">Contactos</h3>
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
                         <i data-feather="phone" class="text-gray-400"></i>
@@ -150,17 +167,16 @@
     <!-- Main Content -->
     <div class="container mx-auto px-4 py-2">
         <div class="lg:col-span-3 space-y-8">
-            
             <!-- Posts Section -->
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
                     
-                    <h3 class="text-xl font-bold text-orange-100">Publicações</h3>
+                    <h3 class="text-xl font-bold text-red-400">Publicações</h3>
                 </div>
                 
                         <!-- Create Post -->
                         <% if current_user&.id == club_profile.user_id %>
-                            <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg border-l-4 border-orange-500">
+                            <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg border-l-4 border-red-500">
                                 
                                     <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
                                         <div class="flex items-start space-x-4">
@@ -205,8 +221,10 @@
                                                         </label>
                                                     </div>
                                                     
-                                                    <%= f.submit "Publicar", 
-                                                        class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer" %>
+                                                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer flex items-center gap-2">
+                                                        <i data-feather="send" class="w-4 h-4" style="display: inline-block; vertical-align: middle;"></i>
+                                                        <span style="vertical-align: middle;">Publicar</span>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -653,6 +671,74 @@
             </button>
             <%= button_to appeal_verification_club_profile_path(club_profile), method: :patch, class: "flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium" do %>
                 Apelar Decisão
+            <% end %>
+        </div>
+    </div>
+</div>
+<% else %>
+</div> 
+    </div> 
+</div>
+    <div class="flex justify-center px-4 mt-16">
+        <div class="flex flex-col items-center p-8 text-red-100 rounded-2xl bg-red-700/20 border border-red-600/40 text-center max-w-md w-full shadow-lg">
+            <div class="w-16 h-16 rounded-full bg-red-600/30 flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-red-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                </svg>
+            </div>
+            <span class="text-xl font-bold mb-2">Utilizador Banido</span>
+            <span class="text-sm text-red-200/80">Este perfil está indisponível uma vez que o utilizador foi banido pela administração </span>
+        </div>
+    </div>
+<% end %>
+
+<div id="ban-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+        <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+            <i data-feather="slash" class="w-6 h-6 text-red-400" style="display: block;"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-white text-center mb-2">Banir Utilizador</h3>
+
+        <%= form_with url: ban_user_path(club_profile.user), method: :patch, local: true do |f| %>
+            <div class="mb-4">
+                <label class="text-xs text-slate-400 mb-1 block">Motivo do banimento <span class="text-red-400">*</span></label>
+                <%= f.text_area :ban_reason,
+                    placeholder: "Escreva o motivo do banimento",
+                    required: true,
+                    class: "w-full bg-slate-700 border border-slate-600 rounded-lg p-3 text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-yellow-500",
+                    rows: 3 %>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="button" data-modal-hide="ban-modal" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                    Cancelar
+                </button>
+                <button type="submit" class="flex-1 bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    Banir Utilizador
+                </button>
+            </div>
+            
+        <% end %>
+        
+    </div>
+</div>
+
+<div id="unban-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-2xl border border-gray-700 transform transition-all">
+        <div class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-900 rounded-full">
+            <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-white text-center mb-2">Confirmar ação</h3>
+        <p class="text-gray-300 text-center mb-6"> Tem a certeza revogar o banimento a este utilizador? </b>  </p>
+        <div class="flex gap-3">
+            <button data-modal-hide="unban-modal" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                Cancelar
+            </button>
+            <%= button_to unban_user_path(club_profile.user), method: :patch, 
+                class: "flex-1 bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-lg transition-colors" do %>
+                Revogar Banimento
             <% end %>
         </div>
     </div>

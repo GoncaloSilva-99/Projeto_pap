@@ -3,7 +3,7 @@
     <div class="fixed top-4 right-4 z-[150] space-y-3 transition-opacity duration-500"
         id="flash-container">
 
-      <% flash.each do |type, message| %>
+      <% flash.to_h.except("banned").each do |type, message| %>
 
         <% case type
           when 'alert'

@@ -18,6 +18,7 @@ class DashboardController < ApplicationController
   before_action :admins, only: [:admins]
   before_action :club_verification, only: [:club_verification]
   before_action :reports, only: [:reports]
+  before_action :bans, only: [:bans]
 
   def resolve_report
     @report = ReportProfile.find(params[:id])
@@ -49,6 +50,26 @@ class DashboardController < ApplicationController
   end
 
   protected
+
+  def bans
+    @banned_users = User.where(banned: true)
+
+    if params[:query].present?
+      matching_user_ids = []
+
+      [PlayerProfile, CoachProfile, ClubProfile, UserProfile, BoardProfile].each do |model|
+        matching_user_ids += model.search_by_name(params[:query]).pluck(:user_id)
+      end
+
+      matching_user_ids.uniq!
+
+      @banned_users = @banned_users.where(id: matching_user_ids)
+    end
+
+    @banned_users_count = @banned_users.count
+    @banned_users = @banned_users.page(params[:bans_page]).per(8)
+    
+  end
 
   def reports
     @type = params[:type] || "Pendentes"
@@ -101,11 +122,11 @@ class DashboardController < ApplicationController
         @clubs_query = ClubProfile.search_by_name(params[:query]).where(status: 'rejected')
       end
       @clubs = @clubs_query.page(params[:clubs_page]).per(8)
-      @clubs_count = @clubs.count
+      @clubs_count = @clubs_query.count
     end
 
     @clubs = @clubs_query.page(params[:admin_page]).per(8)
-    @clubs_count = @clubs.count
+    @clubs_count = @clubs_query.count
     
   end
 

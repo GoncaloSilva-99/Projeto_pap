@@ -63,6 +63,10 @@ class User < ApplicationRecord
     role == "Admin"
   end
 
+  def banned?
+    banned == true
+  end
+
   REGEX_EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
   has_many :posts, dependent: :destroy
@@ -108,31 +112,49 @@ class User < ApplicationRecord
     followers.count
   end
 
-  def feed_posts(page: 1, per_page: 25)
-    followed_ids = following.pluck(:id) + [id]
+  def home_feed(page: 1, per_page: 25)
+    followed_ids = following.pluck(:id)
+    all_excluded = followed_ids + [id]
 
-    Post.from_users(followed_ids)
-    .not_viewed_by(self)
-    .recent
-    .limit(per_page)
-    .offset((page - 1) * per_page)
-  end
+    # Camada 1: posts não vistos de quem segues
+    layer1 = Post.from_users(followed_ids)
+      .excluding_banned_users
+      .not_viewed_by_user(self)
+      .popular
+      .limit(per_page)
+      .offset((page - 1) * per_page)
+      .to_a
 
-  def discover_posts(page: 1, per_page: 10)
-    excluded_ids = following.pluck(:id) + [id]
+    remaining = per_page - layer1.length
+    seen_ids = layer1.map(&:id)
 
-    Post.where.not(user_id: excluded_ids)
-    .not_viewed_by(self)
-    .recent
-    .limit(per_page)
-    .offset((page - 1) * per_page)
+    # Camada 2: posts não vistos de quem não segues
+    layer2 = remaining > 0 ? Post.where.not(user_id: all_excluded)
+      .excluding_banned_users
+      .not_viewed_by_user(self)
+      .where.not(id: seen_ids)
+      .popular
+      .limit(remaining)
+      .to_a : []
+
+    remaining -= layer2.length
+    seen_ids += layer2.map(&:id)
+
+    # Camada 3: fallback — os mais populares de sempre (já vistos)
+    layer3 = remaining > 0 ? Post.excluding_banned_users
+      .where.not(id: seen_ids)
+      .popular
+      .limit(remaining)
+      .to_a : []
+
+    layer1 + layer2 + layer3
   end
 
   def suggested_users_to_follow(limit: 6)
     excluded_ids = following.pluck(:id) + [id]
 
     User.where.not(id: excluded_ids)
-      .where.not(role: 'admin')
+      .where(banned: [false, nil])
       .left_joins(:follower_relationships)
       .left_joins(:club_profile)
       .where("users.role != 'Club' OR club_profiles.status = 'verified'")

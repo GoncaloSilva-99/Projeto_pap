@@ -77,6 +77,12 @@ Rails.application.routes.draw do
   resources :user_profiles
   resources :sports
 
+  resources :users, only: [:index] do
+    member do
+      patch :ban
+      patch :unban
+    end
+  end
 
 
 

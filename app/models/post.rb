@@ -15,11 +15,20 @@ class Post < ApplicationRecord
 
   scope :from_users, ->(user_ids) { where(user_id: user_ids) }
 
-  scope :not_viewed_by, ->(user) {
-    left_joins(:post_views)
-    .where(post_views: { user_id: nil })
-    .or(where.not(post_views: { user_id: user.id }))
-    .distinct
+  scope :popular, -> {
+    left_joins(:post_likes, :post_comments, :post_views)
+      .group("posts.id")
+      .order(
+        Arel.sql("(COUNT(DISTINCT post_likes.id) * 3 + COUNT(DISTINCT post_comments.id) * 2 + COUNT(DISTINCT post_views.id)) DESC, RANDOM()")
+      )
+  }
+
+  scope :not_viewed_by_user, ->(user) {
+    where.not(id: user.post_views.select(:post_id))
+  }
+
+  scope :excluding_banned_users, -> {
+    where.not(user_id: User.where(banned: true).select(:id))
   }
 
 

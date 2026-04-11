@@ -97,12 +97,12 @@
             <!-- Posts Section -->
             <div class="space-y-6">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-bold text-orange-100">Publicações</h3>
+                    <h3 class="text-xl font-bold text-red-400">Publicações</h3>
                 </div>
                     
                         <!-- Create Post -->
                         <% if current_user.id == admin_profile.user_id %>
-                            <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg border-l-4 border-orange-500">
+                            <div id="inicio-pub" class="bg-gray-800 rounded-xl p-4 shadow-lg border-l-4 border-red-500">
                                 
                                     <%= form_with model: Post.new, url: posts_path, local: false, multipart: true, id: "new_post_form", class: "space-y-4" do |f| %>
                                         <div class="flex items-start space-x-4">
@@ -147,8 +147,10 @@
                                                         </label>
                                                     </div>
                                                     
-                                                    <%= f.submit "Publicar", 
-                                                        class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer" %>
+                                                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium cursor-pointer flex items-center gap-2">
+                                                    <i data-feather="send" class="w-4 h-4" style="display: inline-block; vertical-align: middle;"></i>
+                                                    <span style="vertical-align: middle;">Publicar</span>
+                                                </button>
                                                 </div>
                                             </div>
                                         </div>
