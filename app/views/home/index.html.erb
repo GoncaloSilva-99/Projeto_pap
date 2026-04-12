@@ -1025,11 +1025,9 @@
                                                             <% end %>
                                                             
                                                         <% if !current_user.club? or (current_user.club? and current_user.club_profile.verified?) %>
-                                                            <%= turbo_frame_tag "like_section_modal_#{post.id}" do %>
-                                                                <div class="flex items-center pt-4 border-gray-700">
-                                                                    <%= render "posts/like_section_modal", post: post %>
-                                                                </div>
-                                                            <% end %>
+                                                            <div class="flex items-center pt-4 border-gray-700">
+                                                                <%= render "posts/like_section_modal", post: post %>
+                                                            </div>
                                                         <% end %>
                                                     </div>
                                                 </div>
