@@ -157,10 +157,18 @@
                         <div data-modal-toggle="bans-<%=banned.id%>" data-modal-target="bans-<%=banned.id%>" class="clickable bg-gray-800 border-l-4 border-red-400 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 relative">
                                 <div class="relative h-40 bg-gradient-to-r from-primary/20 to-secondary/20">
                                     <div class="relative w-full h-40 rounded-lg overflow-hidden shadow-lg">
-                                        <% if banned_profile.banner_picture.attached? %>
-                                            <%= image_tag url_for(banned_profile.banner_picture), class: "w-full h-full object-cover" %>
+                                        <% if !banned.user? %>
+                                            <% if banned_profile.banner_picture.attached? %>
+                                                <%= image_tag url_for(banned_profile.banner_picture), class: "w-full h-full object-cover" %>
+                                            <% else %>
+                                                <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                            <% end %>
                                         <% else %>
-                                            <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                            <% if banned_profile.banner.attached? %>
+                                                <%= image_tag url_for(banned_profile.banner), class: "w-full h-full object-cover" %>
+                                            <% else %>
+                                                <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                            <% end %>
                                         <% end %>
                                     </div>
                                     <div class="absolute top-20 left-4 w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 group">
@@ -195,11 +203,20 @@
                                 <%= link_to profile_path_banned  do %>
                                 <div class="bg-gray-800 border-l-4 border-red-400 rounded-xl overflow-hidden transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary/10 relative">
                                     <div class="relative h-24 w-full">
-                                        <% if banned_profile.banner_picture.attached? %>
-                                            <%= image_tag url_for(banned_profile.banner_picture), class: "w-full h-full object-cover" %>
+                                        <% if !banned.user? %>
+                                            <% if banned_profile.banner.attached? %>
+                                                <%= image_tag url_for(banned_profile.banner), class: "w-full h-full object-cover" %>
+                                            <% else %>
+                                                <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                            <% end %>
                                         <% else %>
-                                            <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                            <% if banned_profile.banner_picture.attached? %>
+                                                <%= image_tag url_for(banned_profile.banner_picture), class: "w-full h-full object-cover" %>
+                                            <% else %>
+                                                <%= image_tag "default_banner.jpg", class: "w-full h-full object-cover" %>
+                                            <% end %>
                                         <% end %>
+                                        
                                     </div>
 
                                     <div class="bg-slate-700 px-4 pb-4 pt-10 relative">
