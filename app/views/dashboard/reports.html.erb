@@ -310,7 +310,8 @@
                                                 <% end %>
                                             <% else %>
                                                 <label class="block text-sm font-medium text-slate-300 mb-2">Report resolvido por:</label>
-                                                    <% admin = AdminProfile.find_by(id: report.resolved_by) %>
+                                                    <% user = User.find_by(id: report.resolved_by) %>
+                                                    <% admin = user.admin_profile %>
                                                     <%= link_to admin_profile_path(admin), class: "block mb-6 rounded-xl overflow-hidden border border-slate-600 hover:border-slate-400 transition-colors" do %>
 
                                                         <div class="relative h-24 w-full">

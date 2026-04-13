@@ -715,6 +715,8 @@
                 
                 <%= f.hidden_field :resolved, value: false %>
                 <%= f.hidden_field :user_id, value: player_profile.user.id %>
+                <%= f.hidden_field :reported_by, value: current_user.id %>
+
 
                 <div class="flex gap-3">
                     <button type="button" data-modal-hide="modal-report" class="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
