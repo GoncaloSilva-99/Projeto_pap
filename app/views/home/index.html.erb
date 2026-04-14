@@ -1462,6 +1462,158 @@
 
             <script>
                 // --- Lógica Principal da Página ---
+                document.addEventListener('DOMContentLoaded', () => {
+                    
+                    // --- Gestor de Janelas (Modais) ---
+                    // Array para guardar a lista de modais abertos (funciona como uma pilha)
+                    const openModals = [];
+
+                    // Função para abrir um modal
+                    const openModal = (modalElement) => {
+                        if (!modalElement) return;
+                        // Calcula um z-index maior que o anterior para o novo modal ficar por cima
+                        const newZIndex = 100 + openModals.length * 10;
+                        modalElement.style.zIndex = newZIndex;
+                        // Remove a classe 'hidden' para mostrar o modal
+                        modalElement.classList.remove('hidden');
+                        // Adiciona o modal à lista de abertos
+                        openModals.push(modalElement);
+                        // Bloqueia o scroll do body para a página de trás não mexer
+                        document.body.style.overflow = 'hidden';
+                    };
+
+                    // Função para fechar um modal
+                    const closeModal = (modalElement) => {
+                        if (!modalElement) return;
+                        // Adiciona a classe 'hidden' para esconder o modal
+                        modalElement.classList.add('hidden');
+                        // Limpa o z-index
+                        modalElement.style.zIndex = '';
+                        // Procura a posição deste modal na lista de abertos
+                        const index = openModals.findIndex(m => m === modalElement);
+                        // Se encontrou, remove-o da lista (splice remove 1 elemento na posição index)
+                        if (index > -1) openModals.splice(index, 1);
+                        // Se não houver mais modais abertos, devolve o scroll à página (body)
+                        if (openModals.length === 0) document.body.style.overflow = '';
+                    };
+
+                    // --- Seleção de Elementos ---
+                    // Guarda referências para os elementos HTML que vamos usar
+                    const modal = document.getElementById('comment-modal');
+                    const closeModalBtn = document.getElementById('close-modal-btn');
+                    const modalPostContainer = document.getElementById('modal-post-container');
+                    const modalCommentsList = document.getElementById('modal-comments-list');
+                    
+                    // --- Abrir Modal de Post ---
+                    const openPostModal = (postCard) => {
+                        const postId = postCard.dataset.postId;
+                        
+                        // Guarda o ID do post atual no modal para sabermos onde comentar
+                        modal.dataset.currentPostId = postId;
+                        
+                        // Configura o container do modal para parecer um card de post
+                        modalPostContainer.classList.add('post-card');
+                        modalPostContainer.dataset.postId = postId;
+                        
+                        // Clona os elementos do post original (cabeçalho, texto, media, ações)
+                        // Usamos cloneNode(true) para copiar tudo sem remover do feed original
+                        const header = postCard.querySelector('.flex.items-center.justify-between.mb-4').cloneNode(true);
+                        const text = postCard.querySelector('.post-text').cloneNode(true);
+                        const media = postCard.querySelector('.post-media').cloneNode(true);
+                        const actions = postCard.querySelector('.post-actions').cloneNode(true);
+
+                        // Ajusta o estilo da imagem/media para ocupar o espaço todo no modal
+                        media.classList.remove('h-64', 'mb-4');
+                        media.classList.add('flex-1', 'w-full');
+
+                        // Limpa o conteúdo anterior do modal
+                        modalPostContainer.innerHTML = '';
+
+                        // Adiciona os elementos clonados ao modal
+                        modalPostContainer.appendChild(header);
+                        modalPostContainer.appendChild(text);
+                        modalPostContainer.appendChild(media);
+                        modalPostContainer.appendChild(actions);
+
+                        // Reinicializa os ícones Feather (porque os novos elementos clonados ainda não são SVG)
+                        feather.replace();
+
+                        // Adiciona um comentário de exemplo apenas no post 1
+                        if (postId === "1") {
+                            modalCommentsList.innerHTML = `
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 rounded-full bg-gray-600 flex-shrink-0 flex items-center justify-center text-xs text-white">U</div>
+                                    <div class="bg-gray-700 rounded-lg p-3 flex-1">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <p class="text-sm font-semibold text-white">Utilizador Exemplo</p>
+                                            <span class="text-xs text-gray-400">Há 2 horas</span>
+                                        </div>
+                                        <p class="text-sm text-gray-300">Grande jogo! Parabéns à equipa. 👏</p>
+                                    </div>
+                                </div>`;
+                        } else {
+                            modalCommentsList.innerHTML = '<p class="text-gray-400 text-sm text-center">Ainda não há comentários.</p>';
+                        }
+
+                        // Abre o modal visualmente
+                        openModal(modal);
+                    };
+
+                    // --- Gestão de Cliques (Event Delegation) ---
+                    // Em vez de adicionar um evento a cada botão, adicionamos um ao 'body' e vemos onde foi o clique.
+                    // Isto é mais eficiente e funciona para elementos criados dinamicamente.
+                    document.body.addEventListener('click', (e) => {
+                        const target = e.target;
+
+                        // 1. Botão de Opções (três pontinhos) - Abre/Fecha menu
+                        const optionsBtn = target.closest('.post-options-btn');
+                        if (optionsBtn) {
+                            e.stopPropagation();
+                            // Fecha outros dropdowns que estejam abertos
+                            document.querySelectorAll('.post-options-dropdown').forEach(d => {
+                                if (d !== optionsBtn.nextElementSibling) d.classList.add('hidden');
+                            });
+                            // Alterna a visibilidade do dropdown atual
+                            optionsBtn.nextElementSibling.classList.toggle('hidden');
+                            return;
+                        }
+
+                        // Fecha dropdowns se clicar fora
+                        if (!target.closest('.post-options-dropdown')) {
+                            document.querySelectorAll('.post-options-dropdown').forEach(d => d.classList.add('hidden'));
+                        }
+
+                        // 2. Botão de Comentário - Abre modal
+                        const commentBtn = target.closest('.comment-btn');
+                        if (commentBtn) {
+                            e.stopPropagation();
+                            const postCard = commentBtn.closest('.post-card');
+                            // Abre o modal do post
+                            openPostModal(postCard);
+                            return;
+                        }
+
+                        // 3. Clique Geral no Post (Abre Modal)
+                        const postCard = target.closest('.post-card');
+                        if (postCard) {
+                            // Ignora se clicou em botões, links ou inputs (para não abrir o modal sem querer)
+                            if (target.closest('a') || target.closest('button') || target.closest('input') || target.closest('textarea')) {
+                                return;
+                            }
+                            // Ignora se o utilizador estiver a selecionar texto
+                            if (window.getSelection().toString().length > 0) return;
+
+                            openPostModal(postCard);
+                        }
+                    });
+
+                    // Botão de fechar modal
+                    closeModalBtn.addEventListener('click', () => {
+                        // Fecha os dropdowns dos 3 pontinhos antes de fechar o modal
+                        document.querySelectorAll('.post-options-dropdown').forEach(d => d.classList.add('hidden'));
+                        closeModal(modal);
+                    });
+
 
                     // --- Modal de Sugestões (Carrossel) ---
                     const viewAllSuggestionsBtn = document.getElementById('view-all-suggestions-btn');
@@ -1526,8 +1678,33 @@
                         });
                     }
 
+                    // --- Modal de Favoritos ---
+                    const favoritesLink = document.getElementById('favorites-app-link');
+                    const favoritesModal = document.getElementById('favorites-modal');
+                    const closeFavoritesBtn = document.getElementById('close-favorites-modal');
+                    const favoritesList = document.getElementById('favorites-list');
 
+                    if (favoritesLink && favoritesModal) {
+                        favoritesLink.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            // Limpa a lista e mostra mensagem estática, já que a funcionalidade de guardar foi removida
+                            favoritesList.innerHTML = '<div class="h-full flex items-center justify-center text-gray-400">Ainda não tens publicações guardadas.</div>';
+                            openModal(favoritesModal);
+                        });
 
+                        closeFavoritesBtn.addEventListener('click', () => closeModal(favoritesModal));
+                    }
+
+                    // --- BOTÃO DE SEGUIR (GERAL) ---
+                    document.querySelectorAll('.follow-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            this.innerHTML = '<span class="text-gray-400 text-sm">a seguir</span>';
+                            this.classList.remove('text-blue-400', 'hover:text-white');
+                            this.classList.add('cursor-default');
+                        });
+                    });
+
+                    // --- AUTO-RESIZE DA TEXTAREA ---
                     // Faz a caixa de texto crescer conforme escrevemos
                     const postContent = document.getElementById('post-content');
                     if (postContent) {
@@ -1542,6 +1719,8 @@
                 initializeCarousels();
 
 
+                });
+
                 // --- Re-inicializar funcionalidades após Turbo Stream atualizar ---
                 document.addEventListener('turbo:frame-load', () => {
                     // Reinicializa os ícones Feather
@@ -1551,7 +1730,7 @@
                     initializeCarousels();
                 });
 
-                // --- Função para inicializar carrosséis ---
+                // --- Função para inicializar carrosséis (MOVE O CÓDIGO QUE JÁ TENS) ---
                 function initializeCarousels() {
                     document.querySelectorAll('.post-images-carousel').forEach(carousel => {
                         const container = carousel.querySelector('.carousel-images');
@@ -1618,7 +1797,7 @@
                     });
                 }
 
-
+                // Re-inicializa após Turbo Stream atualizar (já tens este evento)
                     document.addEventListener('turbo:frame-load', () => {
                         if (typeof feather !== 'undefined') feather.replace();
                         initializeCarousels();
@@ -1627,7 +1806,7 @@
                         if (typeof initFlowbite !== 'undefined') initFlowbite();
                     });
 
-
+                    // ADICIONA TAMBÉM ESTE EVENTO NOVO (para Turbo Stream updates):
                     document.addEventListener('turbo:before-stream-render', (event) => {
                         // Depois do Turbo Stream renderizar, re-inicializa o Flowbite
                         setTimeout(() => {
@@ -1855,6 +2034,12 @@
                             </div>
                             <div class="flex items-center space-x-4">
                                 <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                                    <i data-feather="phone" class="w-4 h-4 text-blue-500 group-hover:text-red-500 transition-colors duration-150"></i>
+                                </span>
+                                <div><a href="tel:+351912345678" class="hover:text-orange-400 transition">+351 912 345 678</a></div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
                                     <i data-feather="mail" class="w-4 h-4 text-blue-500 group-hover:text-red-500 transition-colors duration-150"></i>
                                 </span>
                                 <div><a href="mailto:support.sportx@gmail.com" class="hover:text-orange-400 transition">support.sportx@gmail.com</a></div>
@@ -1867,7 +2052,29 @@
                         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d630.7743905081369!2d-8.618508752518986!3d41.23297970912057!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd24665606eefb45%3A0xc5dd8b06cc341a7b!2sEscola%20Secund%C3%A1ria%20da%20Maia!5e0!3m2!1spt-PT!2spt!4v1768834005628!5m2!1spt-PT!2spt" width="300" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="rounded-lg"></iframe>
                     </div>
                 </div>
-
+                <!-- Social Media Links -->
+                <div class="border-t border-gray-700 mt-8 pt-6 text-gray-350 text-sm font-bold">
+                    <div class="flex items-center justify-center space-x-4">
+                        <span>Siga-nos:</span>
+                        <div class="flex items-center space-x-3">
+                                <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center group hover:bg-orange-200 transition-colors duration-150 cursor-pointer">
+                                    <i data-feather="github" class="w-4 h-4 text-orange-200 group-hover:text-red-500 transition-colors duration-150"></i>
+                                </span>
+                                <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center group hover:bg-orange-200 transition-colors duration-150 cursor-pointer">
+                                    <i data-feather="instagram" class="w-4 h-4 text-orange-200 group-hover:text-red-500 transition-colors duration-150"></i>
+                                </span>
+                                <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center group hover:bg-orange-200 transition-colors duration-150 cursor-pointer">
+                                    <i data-feather="facebook" class="w-4 h-4 text-orange-200 group-hover:text-red-500 transition-colors duration-150"></i>
+                                </span>
+                                <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center group hover:bg-orange-200 transition-colors duration-150 cursor-pointer">
+                                    <i data-feather="twitter" class="w-4 h-4 text-orange-200 group-hover:text-red-500 transition-colors duration-150"></i>
+                                </span>
+                                <span class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center group hover:bg-orange-200 transition-colors duration-150 cursor-pointer">
+                                    <i data-feather="youtube" class="w-4 h-4 text-orange-200 group-hover:text-red-500 transition-colors duration-150"></i>
+                                </span>
+                        </div>
+                    </div>
+                </div>
                 
 
                 <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-500 text-sm">
