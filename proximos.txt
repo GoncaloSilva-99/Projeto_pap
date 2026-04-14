@@ -1,9 +1,3 @@
-FALTA:
-ao dar like / comentar sai o fundo e ao seguir no modal de sugestões também (não acontece nas pesquisas)
-com campo seleciuonado, ao mudar de página nos balneários desceleciona o campo
-Fix Modal bugado dos likes nos perfis (tirar se não der para arranjar)
-verificação de emails ao criar conta
-acabar banimentos e dashboard de banimentos
-impedir que utilizadores banidos sejam sugeridos ou apareçam nas pesquisas
-melhorar o sistema de publicações e sugestões
-arranjar maneira de publicar o site
+para apresentar:
+
+ngrok http 3000 num segundo terminal com o servidor aberto

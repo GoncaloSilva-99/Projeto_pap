@@ -264,8 +264,25 @@
                                     <% end %>
 
                                     <label class="block text-sm font-medium text-slate-300 mb-2">Documento de Verificação</label>
-                                    <div id="profile-pic-container-<%= club.id %>" class="w-full h-48 rounded-lg overflow-hidden border-2 border-slate-600 cursor-pointer hover:border-slate-400 transition-colors mb-4">
-                                        <%= image_tag url_for(club.verification_document), class: "w-full h-full object-cover", id: "profile-pic-img-#{club.id}" %>
+                                    <% doc = club.verification_document %>
+                                    <% is_pdf = doc.attached? && doc.content_type == "application/pdf" %>
+
+                                    <div id="profile-pic-container-<%= club.id %>"
+                                        class="w-full h-48 rounded-lg overflow-hidden border-2 border-slate-600 <%= is_pdf ? 'cursor-default' : 'cursor-pointer hover:border-slate-400' %> transition-colors mb-4"
+                                        data-doc-type="<%= is_pdf ? 'pdf' : 'image' %>">
+
+                                    <% if is_pdf %>
+                                        <div class="w-full h-full flex flex-col items-center justify-center bg-slate-700 gap-2 pointer-events-none"
+                                            id="profile-pic-img-<%= club.id %>"
+                                            data-pdf-url="<%= url_for(doc) %>">
+                                            <i data-feather="file-text" class="w-10 h-10 text-slate-400"></i>
+                                            <span class="text-slate-400 text-sm">Clique para ver o PDF</span>
+                                        </div>
+                                    <% else %>
+                                        <%= image_tag url_for(doc),
+                                            class: "w-full h-full object-cover",
+                                            id: "profile-pic-img-#{club.id}" %>
+                                    <% end %>
                                     </div>
 
                                     <div class="flex w-full gap-4">
@@ -401,13 +418,30 @@
             
     </div>
 
-<!-- Image Modal -->
+    <!-- Image Modal -->
     <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4">
         <div id="modal-image-container" class="relative">
-            <img id="modal-image" src="" alt="Profile Picture Fullscreen" class="max-w-full max-h-full rounded-lg">
+            <img id="modal-image" src="" alt="Document Fullscreen"
+                class="rounded-lg object-contain cursor-zoom-in transition-all duration-300"
+                style="width: 500px; height: 350px; max-width: 90vw; max-height: 80vh;">
             <button id="close-image-modal">
                 <i data-feather="x" class="w-3 h-3"></i>
             </button>
+        </div>
+    </div>
+
+    <!-- PDF Modal -->
+    <div id="pdf-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4">
+        <div id="pdf-modal-container" class="relative flex flex-col transition-all duration-300" style="width: 800px; height: 85vh; max-width: 90vw; max-height: 90vh;">
+            <div class="absolute top-2 right-2 z-10 flex gap-2">
+                <button id="zoom-pdf-modal" class="bg-gray-800 hover:bg-blue-600 text-white rounded-full p-2 transition-colors">
+                    <i data-feather="maximize-2" class="w-4 h-4"></i>
+                </button>
+                <button id="close-pdf-modal" class="bg-gray-800 hover:bg-red-500 text-white rounded-full p-2 transition-colors">
+                    <i data-feather="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <iframe id="modal-pdf" src="" class="w-full flex-1 rounded-lg border border-slate-600"></iframe>
         </div>
     </div>
 
@@ -488,46 +522,106 @@
         document.getElementById('search-form').requestSubmit();
     }
 
-    // Encontra o modal e a imagem grande (estes são únicos na página)
-        const imageModal = document.getElementById('image-modal');
-        const modalImage = document.getElementById('modal-image');
-        const closeImageModalBtn = document.getElementById('close-image-modal');
+    // Declarações primeiro — só depois de declarar é que podes usar estas variáveis
+    const imageModal     = document.getElementById('image-modal');
+    const modalImage     = document.getElementById('modal-image');
+    const closeImageBtn  = document.getElementById('close-image-modal');
+    const pdfModal       = document.getElementById('pdf-modal');
+    const modalPdf       = document.getElementById('modal-pdf');
+    const closePdfBtn    = document.getElementById('close-pdf-modal');
 
-        // Função para fechar o modal
-        const closeModal = () => {
-            imageModal.classList.add('hidden');
-            imageModal.classList.remove('flex');
-            document.body.style.overflow = '';
-        };
+    const pdfModalContainer = document.getElementById('pdf-modal-container');
+    const zoomPdfBtn        = document.getElementById('zoom-pdf-modal');
+    let isPdfZoomed = false;
 
-        // Para cada clube, adiciona o listener ao seu próprio contentor
-        document.querySelectorAll('[id^="profile-pic-container-"]').forEach(container => {
-            // Extrai o id do clube a partir do id do contentor (ex: "profile-pic-container-5" → "5")
-            const clubId = container.id.replace('profile-pic-container-', '');
-            
-            container.addEventListener('click', () => {
-                // Encontra a imagem correspondente ao mesmo clube
-                const img = document.getElementById('profile-pic-img-' + clubId);
-                if (img && imageModal && modalImage) {
-                    modalImage.src = img.src;
-                    imageModal.classList.remove('hidden');
-                    imageModal.classList.add('flex');
-                    document.body.style.overflow = 'hidden';
-                }
-            });
+    zoomPdfBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (isPdfZoomed) {
+            pdfModalContainer.style.width  = '800px';
+            pdfModalContainer.style.height = '85vh';
+            isPdfZoomed = false;
+        } else {
+            pdfModalContainer.style.width  = '95vw';
+            pdfModalContainer.style.height = '95vh';
+            isPdfZoomed = true;
+        }
+    });
+
+    const closePdfModal = () => {
+        pdfModal.classList.add('hidden');
+        pdfModal.classList.remove('flex');
+        document.body.style.overflow = '';
+        modalPdf.src = '';
+        isPdfZoomed = false;
+        pdfModalContainer.style.width  = '800px';
+        pdfModalContainer.style.height = '85vh';
+    };
+
+    let isZoomed = false;
+
+    // Fecha o modal de imagem e reseta o zoom
+    const closeImageModal = () => {
+        imageModal.classList.add('hidden');
+        imageModal.classList.remove('flex');
+        document.body.style.overflow = '';
+        // Reseta o zoom para a próxima vez que abrir
+        isZoomed = false;
+        modalImage.style.width  = '500px';
+        modalImage.style.height = '350px';
+        modalImage.classList.replace('cursor-zoom-out', 'cursor-zoom-in');
+    };
+
+
+    // Zoom na imagem ao clicar
+    modalImage.addEventListener('click', (e) => {
+        e.stopPropagation(); // impede que o clique chegue ao fundo escuro e feche o modal
+        if (isZoomed) {
+            modalImage.style.width  = '500px';
+            modalImage.style.height = '350px';
+            modalImage.classList.replace('cursor-zoom-out', 'cursor-zoom-in');
+            isZoomed = false;
+        } else {
+            modalImage.style.width  = '90vw';
+            modalImage.style.height = '80vh';
+            modalImage.classList.replace('cursor-zoom-in', 'cursor-zoom-out');
+            isZoomed = true;
+        }
+    });
+
+    // Botões de fechar
+    closeImageBtn.addEventListener('click', closeImageModal);
+    closePdfBtn.addEventListener('click', closePdfModal);
+
+    // Fechar ao clicar no fundo escuro
+    imageModal.addEventListener('click', (e) => { if (e.target === imageModal) closeImageModal(); });
+    pdfModal.addEventListener('click',   (e) => { if (e.target === pdfModal)   closePdfModal();   });
+
+    // Listener em cada contentor de documento
+    document.querySelectorAll('[id^="profile-pic-container-"]').forEach(container => {
+        const clubId  = container.id.replace('profile-pic-container-', '');
+        const docType = container.dataset.docType; // "pdf" ou "image", definido no HTML
+
+        container.addEventListener('click', () => {
+            const el = document.getElementById('profile-pic-img-' + clubId);
+            if (!el) return;
+
+            if (docType === 'pdf') {
+                // Abre o modal de PDF com o src do iframe
+                modalPdf.src = el.dataset.pdfUrl;
+                pdfModal.classList.remove('hidden');
+                pdfModal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            } else {
+                // Abre o modal de imagem
+                modalImage.src = el.src;
+                imageModal.classList.remove('hidden');
+                imageModal.classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            }
         });
+    });
 
-        // Fecha ao clicar no botão X
-        if (closeImageModalBtn) {
-            closeImageModalBtn.addEventListener('click', closeModal);
-        }
-
-        // Fecha ao clicar no fundo escuro
-        if (imageModal) {
-            imageModal.addEventListener('click', (e) => {
-                if (e.target === imageModal) closeModal();
-            });
-        }
+    feather.replace();
 </script>
 
 <style>

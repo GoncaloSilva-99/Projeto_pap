@@ -44,6 +44,9 @@
                                     <% elsif following.user? %>
                                         <%= link_to following.user_profile.name, user_profile_path(following.user_profile), 
                                             data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
+                                    <% elsif following.admin? %>
+                                        <%= link_to following.admin_profile.name, admin_profile_path(following.admin_profile), 
+                                            data: { turbo_frame: "_top" }, class: "text-white font-semibold hover:underline" %>
                                     <% end %>
                                 </div>
                             </div>
